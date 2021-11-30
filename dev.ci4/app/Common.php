@@ -17,10 +17,6 @@
 define('VIEWPATH', APPPATH . 'Views/');
 define('PUBLICPATH', $_SERVER['DOCUMENT_ROOT']);
 
-function form_close() {
-	return '</form>';
-}
-
 function getlink($path, $label='') {
 	$path = trim($path, '/');
 	if(!\App\Libraries\Auth::check_path($path)) return '';

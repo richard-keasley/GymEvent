@@ -116,7 +116,9 @@ public function categories($event_id=0) {
 	
 	$filter = []; $flds = ['disid'];
 	foreach($flds as $fld) $filter[$fld] = $this->request->getGet($fld);
-	if(!$filter['disid'] && $this->data['entries']) $filter['disid'] = $this->data['entries'][0]->id;
+	if(!$filter['disid'] && $this->data['entries']) {
+		$filter['disid'] = $this->data['entries'][0]->id;
+	}
 	
 	if($this->request->getPost('save')) {
 		// update

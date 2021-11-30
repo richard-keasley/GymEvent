@@ -25,8 +25,10 @@ if($event->deleted_at) { ?>
 	echo getlink("videos/view/{$event->id}", 'videos');
 	echo getlink("admin/entries/scoreboard/{$event->id}", 'scoreboard');
 	echo view('entries/populate/button', ['event'=>$event]);
-} ?></form>
-<?php $this->endSection();
+} 
+
+echo form_close();
+$this->endSection();
 
 $this->section('content'); ?>
 <section class="mb-3 row"><?php

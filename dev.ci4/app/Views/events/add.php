@@ -5,8 +5,10 @@ $this->section('content');
 $attr = [
 	'class' => "vars"
 ];
-echo form_open(base_url(uri_string()), $attr); ?>
-<input type="hidden" name="save" value="1">
+$hidden = [
+	'save' => '1'
+];
+echo form_open(base_url(uri_string()), $attr, $hidden); ?>
 
 <p class="input-group">
   <label class="input-group-text">title</label>
@@ -25,5 +27,6 @@ echo form_open(base_url(uri_string()), $attr); ?>
 	<button class="btn btn-primary" name="save" type="submit" value="1">create</button>
 </div>
 
-</form>
-<?php $this->endSection(); 
+<?php 
+echo form_close();
+$this->endSection(); 
