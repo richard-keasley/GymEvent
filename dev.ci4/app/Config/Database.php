@@ -1,4 +1,6 @@
 <?php namespace Config;
+/* passwords in here... do not store on GitHub */
+
 
 /**
  * Database Configuration

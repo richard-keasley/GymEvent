@@ -1,21 +1,7 @@
-*/config/development
-*/logs/log-*.php
-!*/logs/index.html
-*/cache/*
-!*/cache/index.html
-!*/cache/.htaccess
+#codeigniter 4
+dev.ci4/.env
+dev.ci4/system/*
+dev.ci4/writable/*
 
-*/gymevent.ci4/.env
-
-
-user_guide_src/build/*
-user_guide_src/cilexer/build/*
-user_guide_src/cilexer/dist/*
-user_guide_src/cilexer/pycilexer.egg-info/*
-
-#codeigniter 3
-application/logs/*
-!application/logs/index.html
-!application/logs/.htaccess
-/vendor/
-gymevent.ci4/.env
+# hide passwords 
+dev.ci4/app/Config/Database.php
