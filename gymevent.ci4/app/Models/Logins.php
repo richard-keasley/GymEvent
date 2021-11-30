@@ -1,0 +1,86 @@
+<?php namespace App\Models;
+use CodeIgniter\Model;
+
+class Logins extends Model {
+
+protected $table = 'logins';
+protected $primaryKey = 'id';
+protected $updatedField  = 'updated';
+protected $allowedFields = ['ip', 'user_id', 'error', 'updated'];
+protected $beforeInsert = ['beforeInsert'];
+
+function beforeInsert($data) {
+	$request = service('request');	
+	$data['data']['ip'] = $request->getIPAddress();
+	return $data;
+}
+
+function block_ip($ip) {
+	$request = service('request');	
+	return $request->getIPAddress()==$ip ? false: $this->insert(['ip' => $ip, 'error' => 'blocked']);
+}
+	
+function check_ip($ip) {
+	$res = $this->where('error', 'blocked')
+		->where('ip', $ip)
+		->findAll();
+	if($res) return false;
+	
+	$dt = new \DateTime(); 
+	$dt->sub(new \DateInterval('P7D'));
+	$this->where('updated <', $dt->format('Y-m-d H:i:s'))->delete();
+	
+	$sql = "SELECT COUNT(`ip`) AS 'count' FROM `{$this->table}` WHERE `error`>'' AND `ip`='{$ip}'";
+	$query = $this->query($sql);
+	$row = $query->getRow();
+	return $row ? $row->count<5 : true ;
+}
+
+static $_ip_info = [];
+static function ip_info($ip, $attribs=null) {
+	if(!$ip) {
+		$request = service('request');	
+		$ip = $request->getIPAddress();
+	}
+	if(empty(self::$_ip_info[$ip])) {
+		$url = "http://ip-api.com/json/$ip";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+		$response = curl_exec($ch);
+		if($response) $response = json_decode($response, 1);
+		if($response) {
+			$status = empty($response['status']) ? 'fail' : $response['status'] ;
+			if($status!='success') {
+				$response['status'] = 'fail';
+				if(empty($response['message'])) $response['message'] = 'unknown error'; 
+			}
+		}
+		else {
+			#d(curl_getinfo($ch));
+			$http_code = intval(curl_getinfo($ch, CURLINFO_HTTP_CODE));
+			$message = $http_code>299 ? "Response: {$http_code}" : 'no response' ;
+			$response = [
+				'status' => 'fail',
+				'message' => $message
+			];
+		}
+		curl_close($ch);
+		self::$_ip_info[$ip] = $response;
+	}
+	
+	$info = self::$_ip_info[$ip];
+	if($info['status']!='success') return [$info['message']];
+	if(empty($attribs)) return $info;
+
+	$retval = [];
+	foreach($attribs as $attrib) {
+		if(isset(self::$_ip_info[$ip][$attrib])) {
+			$retval[$attrib] = self::$_ip_info[$ip][$attrib];
+		}
+	}
+	return $retval;
+}
+
+}

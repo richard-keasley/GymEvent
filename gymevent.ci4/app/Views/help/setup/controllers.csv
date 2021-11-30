@@ -1,0 +1,17 @@
+controller,method,params,depends,0,1,2,3
+events,index,, ,-,,,
+ ,view,event, ,-,,,
+clubrets,index,,,club,,,
+ ,view,event/user,clubrets,admin, (club),admin,admin
+ ,edit,event/user,clubrets,admin, (club),admin,admin
+ ,add,event/user,clubrets,admin, (club),admin,admin
+entries,index,,,-,,,
+ ,view,event,clubrets,admin,admin,-,admin
+music,index,,,club,,,
+ ,view,event,music,admin, (club), (club),admin
+ ,edit,entry,music,admin, (club),admin,admin
+videos,index,,,-,,,
+ ,view,event,videos,admin, (club), -,admin
+ ,edit,entry,videos,admin, (club),admin,admin
+user,*,,,club,,,
+admin,*,,,admin,,,
