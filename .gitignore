@@ -18,3 +18,4 @@ application/logs/*
 !application/logs/index.html
 !application/logs/.htaccess
 /vendor/
+gymevent.ci4/.env
