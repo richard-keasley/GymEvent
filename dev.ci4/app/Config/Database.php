@@ -34,9 +34,9 @@ class Database extends \CodeIgniter\Database\Config
 	public $default = [
 		'DSN'      => '',
 		'hostname' => 'localhost',
-		'username' => 'gymevent_admin',
-		'password' => 'H.BUt1ggtOwYvmzUG7k86',
-		'database' => 'gymevent_main',
+		'username' => '[DB user]',
+		'password' => '[DB password]',
+		'database' => '[DB name]',
 		'DBDriver' => 'MySQLi',
 		'DBPrefix' => '',
 		'pConnect' => false,
