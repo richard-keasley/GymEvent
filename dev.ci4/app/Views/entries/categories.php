@@ -162,11 +162,11 @@ function newrow(show) {
 
 <section class="my-2">
 <?php if($exesets) { ?>
-<p><button class="ps-3 btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sbdata" aria-expanded="false">
+<p><button class="ps-3 btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#exerciseset" aria-expanded="false">
 <span class="bi bi-arrows-expand"></span>
 <span class="bi bi-arrows-collapse"></span>
-</button> View scoreboard data (last updated on <?php echo $scoreboard->get_time('exerciseset', 'j F Y');?>)</p>
-<div id="sbdata" class="collapse">
+</button> View exercise sets (last updated on <?php echo $scoreboard->get_time('exerciseset', 'j F Y');?>)</p>
+<div id="exerciseset" class="collapse">
 <h5>Exercise sets</h5>
 <ul><?php 
 foreach($exesets as $exeset) {
@@ -174,6 +174,31 @@ foreach($exesets as $exeset) {
 	printf('<li><strong>%u. %s:</strong> %s</li>', $exeset['SetId'], $exeset['Name'], implode(', ', $exe_names));
 }
 ?></ul>
+</div>
+<?php } ?>
+</section>
+
+<section class="my-2">
+<?php 
+$sb_disciplines = $scoreboard->get_disciplines();
+if($sb_disciplines) { ?>
+<p><button class="ps-3 btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sb_disciplines" aria-expanded="false">
+<span class="bi bi-arrows-expand"></span>
+<span class="bi bi-arrows-collapse"></span>
+</button> View Scoreboard disciplines (last updated on <?php echo $scoreboard->get_time('disciplines', 'j F Y');?>)</p>
+<div id="sb_disciplines" class="collapse">
+<h5>Scoreboard disciplines</h5>
+<ul class="list-group">
+<?php foreach($sb_disciplines as $category) { ?>
+	<li class="list-group-item"><ul>
+	<?php 
+	foreach($category['children'] as $disrow) {
+		printf('<li><strong>%u:</strong> %s (%s)</li>', $disrow['DisId'], $disrow['Name'], $disrow['ShortName']);
+	}
+	?>
+	</ul></li>
+<?php } ?>
+</ul>
 </div>
 <?php } ?>
 </section>
