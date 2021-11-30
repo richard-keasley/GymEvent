@@ -18,8 +18,10 @@ $('[name=disid]').change(function() { $('[name=selector]').submit(); });
 </script>
 </form>
 
-<?php echo form_open(base_url(uri_string())); ?>
-<input type="hidden" name="save" value="1">
+<?php echo form_open(base_url(uri_string())); 
+echo form_hidden('save', 1);
+echo form_hidden('disid', $dis->id);
+?>
 <div class="toolbar sticky-top">
 	<?php echo \App\Libraries\View::back_link("entries/view/{$event->id}");?>
 	<button class="btn btn-primary" type="submit">save</button>
