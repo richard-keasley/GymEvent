@@ -81,9 +81,9 @@ static function view_html($html, $return=1) {
 }
 
 static function get_images() {
-	$pos = strlen(PUBLICPATH);
+	$pos = strlen(FCPATH);
 	$path = self::get_var('settings', 'image_path');
-	$pattern = PUBLICPATH . $path;
+	$pattern = FCPATH . $path;
 	$retval = [];
 	foreach(glob($pattern) as $file) {
 		if(is_file($file)) {

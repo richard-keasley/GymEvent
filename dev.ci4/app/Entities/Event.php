@@ -86,7 +86,7 @@ public function file_link($basename) {
 }
 
 public function file_path($basename='') {
-	return PUBLICPATH . "/public/events/{$this->id}/files/{$basename}";
+	return FCPATH . "/public/events/{$this->id}/files/{$basename}";
 }
 
 public function getFiles() {

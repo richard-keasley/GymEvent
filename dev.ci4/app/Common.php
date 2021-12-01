@@ -15,7 +15,6 @@
  */
  
 define('VIEWPATH', APPPATH . 'Views/');
-define('PUBLICPATH', $_SERVER['DOCUMENT_ROOT']);
 
 function getlink($path, $label='') {
 	$path = trim($path, '/');

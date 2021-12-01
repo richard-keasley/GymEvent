@@ -129,7 +129,7 @@ public function filebase($extension='') {
 } 
 
 public function filepath() {
-	return sprintf('%s/public/events/%u/music/', PUBLICPATH, $this->event_id);
+	return sprintf('%s/public/events/%u/music/', FCPATH, $this->event_id);
 } 
 
 public function urlpath() {

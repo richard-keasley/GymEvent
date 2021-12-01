@@ -4,7 +4,7 @@ $this->section('content'); ?>
 <ul class="nav"><?php 
 $path =  '/public/profile';
 
-foreach(glob(PUBLICPATH . $path .'/*') as $file) {
+foreach(glob(FCPATH . $path .'/*') as $file) {
 	$basename = basename($file);
 	if(strpos($basename, 'index.')!==0) {
 		printf('<li><img src="%1$s/%2$s" title="%2$s"></li>', $path, basename($file));

@@ -33,7 +33,6 @@ $title = $event ? $event->title : 'Event not found' ;
 printf('<h2>%s</h2>', $title);
 
 #printf('<p>%s</p>', $track->urlpath());
-#printf('<p>%s</p>', PUBLICPATH);
 
 $tr = []; $tbody = [];
 foreach($teams as $team) {

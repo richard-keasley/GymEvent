@@ -101,11 +101,20 @@ $this->section('bottom'); ?>
 <code>sudo a2enmod rewrite<br>
 sudo service apache2 restart</code></p>
 
+<script>
+$(function() {
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('mark'));
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+	return new bootstrap.Tooltip(tooltipTriggerEl);
+})
+});
+</script>
+
 <?php $this->endSection();
 
 function path_label($const_name, $file='') {
 	$title = rtrim(constant($const_name), DIRECTORY_SEPARATOR) . "/{$file}";
 	$text = $const_name;
 	if($file) $text .= "/{$file}";
-	return sprintf('<mark title="%s">%s</mark>', $title, $text);
+	return sprintf('<mark data-bs-toggle="tooltip" title="%s">%s</mark>', $title, $text);
 }

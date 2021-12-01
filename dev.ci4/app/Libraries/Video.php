@@ -26,7 +26,7 @@ public function filebase($extension='') {
 	return sprintf('%03d_%s%s', $this->entry_num, $this->exe, $extension);
 }
 public function filepath() {
-	return PUBLICPATH . "/public/events/{$this->event_id}/videos/";
+	return FCPATH . "/public/events/{$this->event_id}/videos/";
 }
 public function urlpath() {
 	return "/public/events/{$this->event_id}/videos/";
