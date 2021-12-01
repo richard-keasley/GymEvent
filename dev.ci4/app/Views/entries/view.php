@@ -24,8 +24,10 @@ if(\App\Libraries\Auth::check_path('admin/entries/edit')) {
 		$(this).closest('form').submit();
 	});
 	</script>
-	</form>
-<?php } 
+	<?php 
+	echo form_close();
+} 
+
 foreach($entries as $dis) { ?>
 	<div class="vars">
 	<h4><?php echo $dis->name;?></h4>

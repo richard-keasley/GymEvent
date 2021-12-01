@@ -1,4 +1,6 @@
 <?php
+helper('form');
+
 if(empty($title)) $title = "Error";
 if(empty($code)) $code = 500;
 if($code==401) $title = 'Unauthorized';
@@ -11,6 +13,7 @@ if(empty($message) || $message=='(null)') $message = "Sorry! We can't do that!";
 $messages = [$message];
 
 include(VIEWPATH . 'includes/_head.php'); 
-
-$breadcrumbs = [['', '<span class="bi-house-fill"> home</span>']];
-echo \App\Libraries\View::breadcrumbs($breadcrumbs);
+?>
+<ul class="breadcrumb">
+	<li class="breadcrumb-item active"><a href="<?php echo base_url();?>"><span class="bi-house-fill"> home</span></a></li>
+</ul>

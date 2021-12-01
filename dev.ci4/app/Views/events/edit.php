@@ -9,12 +9,13 @@ $this->section('content');
 $attr = [
 	'id' => "editform"
 ];
-echo form_open_multipart(base_url(uri_string()), $attr); ?>
-<input type="hidden" name="save" value="1">
-<input type="hidden" name="cmd" value="">
-<input type="hidden" name="key" value="">
-
-<?php 
+$hidden = [
+	'save' => '1',
+	'cmd' => '',
+	'key' => ''
+];
+echo form_open_multipart(base_url(uri_string()), $attr, $hidden); 
+ 
 echo $acc->start('accordion');
 
 echo $acc->item_start('Details'); ?>
@@ -24,7 +25,7 @@ echo $acc->item_start('Details'); ?>
 	<?php echo form_input("title", $event->title, 'class="form-control"');?>
 </p>
 <p class="input-group">
-  <label class="input-group-text">date</label>
+	<label class="input-group-text">date</label>
 	<?php echo form_input("date", $event->date, 'class="form-control"', 'date');?>
 </p>
 <p><label>Description [HTML]</label> <?php echo form_textarea("description", $event->description, 'class="form-control"');?></p>
@@ -133,7 +134,8 @@ foreach($event->files as $key=>$filename) {
 </div>
 
 <?php echo $acc->end(); ?> 
-</form>
+<?php echo form_close(); ?> 
+
 <?php $this->endSection(); 
 
 $this->section('top') ?>

@@ -2,7 +2,7 @@
 $scoreboard = new \App\ThirdParty\scoreboard;
 $exesets = $scoreboard->get_exesets();
 
-$this->section('content');?>
+$this->section('content'); ?>
 <form name="selector" method="GET" class="input-group">
 <label class="input-group-text">Select discipline to edit</label> 
 <select name="disid" class="form-control"><?php 
@@ -18,9 +18,13 @@ $('[name=disid]').change(function() { $('[name=selector]').submit(); });
 </script>
 </form>
 
-<?php echo form_open(base_url(uri_string())); 
-echo form_hidden('save', 1);
-echo form_hidden('disid', $dis->id);
+<?php 
+$action = base_url(uri_string()) . "?disid={$filter['disid']}";
+$attr = [];
+$hidden = [
+	'save' => '1'
+];
+echo form_open($action, $attr, $hidden);
 ?>
 <div class="toolbar sticky-top">
 	<?php echo \App\Libraries\View::back_link("entries/view/{$event->id}");?>
@@ -203,7 +207,7 @@ if($sb_disciplines) { ?>
 <?php } ?>
 </section>
 
-</form>
+<?php echo form_close();?>
 
 <?php $this->endSection(); 
 
