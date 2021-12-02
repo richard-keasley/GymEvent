@@ -1,6 +1,5 @@
 <?php namespace Config;
-/* passwords in here... do not store on GitHub */
-
+/* No passwords in here (visible on Github). Use /.env */
 
 /**
  * Database Configuration
