@@ -59,6 +59,13 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	// look for back_link
 	$back_link = $this->request->getGet('bl');
 	if($back_link) $this->data['back_link'] = $back_link;
+	
+	// add in device name
+	$config = config('App');
+	if(!empty($config->device['name'])) {
+		$this->data['heading'] .= " ({$config->device['name']})";
+	}
+	
 }
 
 }

@@ -1,5 +1,5 @@
 <?php namespace Config;
-/* No passwords in here (visible on Github). Use /.env */
+/* Do not save passwords in here (it's on GitHub). Use .env */
 
 /**
  * Database Configuration
@@ -33,9 +33,9 @@ class Database extends \CodeIgniter\Database\Config
 	public $default = [
 		'DSN'      => '',
 		'hostname' => 'localhost',
-		'username' => '[DB user]',
-		'password' => '[DB password]',
-		'database' => '[DB name]',
+		'username' => 'DB_user',
+		'password' => 'DB_password',
+		'database' => 'DB_database',
 		'DBDriver' => 'MySQLi',
 		'DBPrefix' => '',
 		'pConnect' => false,
