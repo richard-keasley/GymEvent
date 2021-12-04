@@ -4,9 +4,7 @@ use CodeIgniter\Config\BaseConfig;
 
 class App extends BaseConfig
 {
-	public $device = [
-		'name' => 'gymevent'
-	];
+	public $device = 'gymevent';
 
 	/*
 	|--------------------------------------------------------------------------

@@ -1,6 +1,5 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$acc = new \App\Libraries\Ui\Accordion;
 
 $this->section('content');
 $attr = [
@@ -132,14 +131,12 @@ $this->section('bottom');?>
 	
 	<?php 
 	$grouped = $intention->rules->skills->get_grouped();
+	$acc = new \App\Libraries\Ui\Accordion;
 	
-	$tabnames = [];
-	foreach(array_keys($grouped) as $grp_id) $tabnames[$grp_id] = "Group $grp_id";
-	$tabs = new \App\Libraries\Ui\Tabs($tabnames, 'elg');
-	echo $tabs->tabs();
-	
+	$tab_data = [];
 	foreach($grouped as $grp_id=>$group) {
-		echo $tabs->panel_start($grp_id);
+		ob_start();
+
 		/* start difficulty accordion */
 		echo $acc->start("acc-elg{$grp_id}");
 		foreach($group as $dif=>$skills) { 
@@ -155,10 +152,16 @@ $this->section('bottom');?>
 			?></div>
 			<?php
 		}
-		/* end difficulty accordion */
 		echo $acc->end();
+		/* end difficulty accordion */
+	
+		$tab_data[$grp_id] = [
+			'heading' => "Group {$grp_id}",
+			'content' => ob_get_clean()
+		];
 	}
-	echo $tabs->content_end();
+	$tabs = new \App\Libraries\Ui\T2($tab_data, 'elg');
+	echo $tabs->htm();
 	?>
 	
 	</div>

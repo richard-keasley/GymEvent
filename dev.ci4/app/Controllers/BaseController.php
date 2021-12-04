@@ -62,10 +62,10 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	
 	// add in device name
 	$config = config('App');
-	if(!empty($config->device['name'])) {
-		$this->data['heading'] .= " ({$config->device['name']})";
+	$this->data['device'] = $config->device;
+	if($this->data['device']) {
+		$this->data['heading'] .= " ({$this->data['device']})";
 	}
-	
 }
 
 }
