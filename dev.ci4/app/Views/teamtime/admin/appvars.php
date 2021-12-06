@@ -1,15 +1,13 @@
 <?php $this->extend('default');
 $tt_lib = new \App\Libraries\Teamtime();
-$acc = new \App\Libraries\Ui\Accordion;
 
 $this->section('content'); 
-echo $acc->start('accAppvar');
+
+$acc = new \App\Libraries\Ui\Accordion;
 foreach($tt_lib::get_vars() as $appvar) {
-	$varname = substr($appvar->id, 9);
-	echo $acc->item_start($varname);
-	echo view('includes/appvar', ['appvar'=>$appvar]);
+	$acc->set_item(substr($appvar->id, 9), view('includes/appvar', ['appvar'=>$appvar]));
 }
-echo $acc->end();
+echo $acc->htm();
 $this->endSection(); 
 
 $this->section('bottom'); ?>

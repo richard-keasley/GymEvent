@@ -5,14 +5,13 @@
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" type="text/css" href="/public/ui/bootstrap.css">
-<link rel="stylesheet" type="text/css" href="/public/ui/bootstrap-icons-1.5.0/bootstrap-icons.css">
 <link rel="stylesheet" type="text/css" href="/public/ui/custom.css">
 <script src="/public/ui/jquery/jquery-3.6.0.min.js" type="text/javascript"></script>
 <title><?php echo $title;?></title>
 <?php if(!empty($head)) echo $head;?>
 </head>
 
-<body class="container-fluid">
+<body class="container">
 <header>
 <h1><?php echo empty($heading) ? $title : $heading;?></h1>
 

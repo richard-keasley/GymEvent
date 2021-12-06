@@ -1,81 +1,71 @@
 <?php namespace App\Libraries\Ui;
 
 class Tabs {
-private $id = '';
-private $in_panel = false;
-private $in_content = false;
-public $selected = 0;
-public $tabs = [];
+public $id = '';
+public $selected = null;
+public $items = [];
 public $format = [
-	'tabs_start' => '<nav class="nav nav-tabs" role="tablist">',
-	'tabs_end' => '</nav>',
-	'content_start' => '<div id="%s" class="tab-content">',
+	'headings_start' => '<nav class="nav nav-tabs" role="tablist">',
+	'headings_end' => '</nav>',
+	'panels_start' => '<div id="%s" class="tab-content">',
 	'panel_start' => '<div class="%s" id="%s" aria-labelledby="%s" role="tabpanel">',
 	'panel_end' => '</div>',
-	'content_end' => '</div>'
+	'panels_end' => '</div>'
 ];
 
-public function __construct($tabs, $id='tabs') {
-	$this->tabs = $tabs;
+public function __construct($items=[], $id='tabs') {
+	$this->items = $items;
 	$this->id = $id;
-	$this->selected = array_key_first($tabs);
 }
 
-public function tabs() {
-	$buffer = '';
-	foreach($this->tabs as $key=>$label) {
-		$active = $key===$this->selected;
-		$attr = [
-			'href' => "#{$this->id}panel{$key}",
-			'class' => $active ? 'nav-link active' : 'nav-link',
-			'id' => "{$this->id}tab{$key}",
-			'data-bs-toggle' => "tab",
-			'role' => "tab",
-			'aria-controls' => "{$this->id}panel{$key}",
-			'aria-selected' => $active ? 'true' : 'false'
-		];
-		$buffer .= '<a';
-		foreach($attr as $key=>$val) $buffer .= sprintf(' %s="%s"', $key, $val);
-		$buffer .= '>' . $label . '</a>';
-	}
-	return $this->format['tabs_start'] . $buffer . $this->format['tabs_end'];
+public function set_item($heading, $content, $key=null) {
+	$item = [
+		'heading' => $heading,
+		'content' => $content
+	];
+	if($key) $this->items[$key] = $item;
+	else $this->items[] = $item;
 }
 
-function content_start() {
-	$this->in_content = true;
-	return sprintf($this->format['content_start'], $this->id);
-}
+public function htm() {
 
-function panel_start($key) {
-	$buffer = ''; 
-	if(!$this->in_content) $buffer .= $this->content_start();
-	if($this->in_panel) $buffer .= $this->panel_end();
-	$this->in_panel = true;
+if(empty($this->items)) return;
+if(is_null($this->selected)) $this->selected = array_key_first($this->items);
 	
+ob_start();
+
+echo $this->format['headings_start'];
+foreach($this->items as $key=>$item) {
+	$active = $key===$this->selected;
+	$attr = [
+		'href' => "#{$this->id}item{$key}",
+		'class' => $active ? 'nav-link active' : 'nav-link',
+		'id' => "{$this->id}tab{$key}",
+		'data-bs-toggle' => "tab",
+		'role' => "tab",
+		'aria-controls' => "{$this->id}item{$key}",
+		'aria-selected' => $active ? 'true' : 'false'
+	];
+	printf('<a %s>%s</a>', stringify_attributes($attr), $item['heading']);
+}
+echo $this->format['headings_end'];
+	
+printf($this->format['panels_start'], $this->id);
+foreach($this->items as $key=>$item) {
 	$active = $key===$this->selected;
 	$class = $active ? 'tab-pane active' : 'tab-pane';
-	$id = "{$this->id}panel{$key}";
+	$id = "{$this->id}item{$key}";
 	$labelledby = "{$this->id}tab{$key}";
-	$buffer .= sprintf($this->format['panel_start'], $class, $id, $labelledby);
-	return $buffer;
+	printf($this->format['panel_start'], $class, $id, $labelledby);
+	echo $item['content'];
+	echo $this->format['panel_end'];
 }
 
-function panel_end() {
-	$this->in_panel = false;
-	return $this->format['panel_end'];
-}
-
-function content_end() {
-	$buffer = ''; 
-	if($this->in_panel) $buffer .= $this->panel_end();
-	if($this->in_content) $buffer .= $this->format['content_end'];
-	$this->in_content = false;
-	
-	$selector = $this->id;
-	$buffer .= <<<EOT
+echo $this->format['panels_end'];
+?>
 <script>
 $(function() {
-var elTabPanes = document.querySelector('#$selector').querySelectorAll('.tab-pane');
+var elTabPanes = document.querySelector('#<?php echo $this->id;?>').querySelectorAll('.tab-pane');
 var activeTab = localStorage.getItem('activeTab');
 var i, tabNames = [];
 for (i = 0; i < elTabPanes.length; ++i) {
@@ -89,8 +79,8 @@ $('[data-bs-toggle=tab]').on('show.bs.tab', function(e) {
 });
 });
 </script>
-EOT;
-	return $buffer;
+<?php 
+return ob_get_clean();
 }
 	
 }

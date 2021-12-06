@@ -131,16 +131,17 @@ $this->section('bottom');?>
 	
 	<?php 
 	$grouped = $intention->rules->skills->get_grouped();
-	$acc = new \App\Libraries\Ui\Accordion;
+	$tabs = new \App\Libraries\Ui\Tabs();
 	
-	$tab_data = [];
-	foreach($grouped as $grp_id=>$group) {
+	foreach($grouped as $grp_id=>$skillset) {
 		ob_start();
 
 		/* start difficulty accordion */
-		echo $acc->start("acc-elg{$grp_id}");
-		foreach($group as $dif=>$skills) { 
-			echo $acc->item_start($dif); ?>
+		$acc = new \App\Libraries\Ui\Accordion([], "dif-elg{$grp_id}");
+		
+		foreach($skillset as $dif=>$skills) { 
+			ob_start();
+			?>
 			<div class="d-grid"><?php 
 			foreach($skills as $sk_id=>$skill) {
 				$attribs = [];
@@ -151,16 +152,13 @@ $this->section('bottom');?>
 			}
 			?></div>
 			<?php
+			$acc->set_item($dif, ob_get_clean());
 		}
-		echo $acc->end();
+		echo $acc->htm();
 		/* end difficulty accordion */
-	
-		$tab_data[$grp_id] = [
-			'heading' => "Group {$grp_id}",
-			'content' => ob_get_clean()
-		];
+		
+		$tabs->set_item("Group {$grp_id}", ob_get_clean(), $grp_id);
 	}
-	$tabs = new \App\Libraries\Ui\T2($tab_data, 'elg');
 	echo $tabs->htm();
 	?>
 	

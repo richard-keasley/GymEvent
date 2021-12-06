@@ -1,6 +1,5 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$acc = new \App\Libraries\Ui\Accordion;
 helper('inflector');
 
 $this->section('content'); 
@@ -16,9 +15,9 @@ $hidden = [
 ];
 echo form_open_multipart(base_url(uri_string()), $attr, $hidden); 
  
-echo $acc->start('accordion');
+$acc = new \App\Libraries\Ui\Accordion;
 
-echo $acc->item_start('Details'); ?>
+ob_start(); // Details ?> 
 <p><label>ID:</label> <?php echo $id;?></p>
 <p class="input-group">
 	<label class="input-group-text">title</label>
@@ -29,14 +28,18 @@ echo $acc->item_start('Details'); ?>
 	<?php echo form_input("date", $event->date, 'class="form-control"', 'date');?>
 </p>
 <p><label>Description [HTML]</label> <?php echo form_textarea("description", $event->description, 'class="form-control"');?></p>
+<?php
+$acc->set_item('Details', ob_get_clean());
 
-<?php echo $acc->item_start('Payment'); ?>
+ob_start(); // Payment ?> 
 <p><label>Payment info [HTML]</label>
 <?php echo form_textarea("payment", $event->payment, 'class="form-control"'); ?>
 </p>
 <p>The text that explains how clubs should pay. Include bank details and any dead-lines.</p>
+<?php
+$acc->set_item('Payment', ob_get_clean());
 
-<?php echo $acc->item_start('disciplines / categories'); ?>
+ob_start(); // disciplines / categories ?> 
 <p>Do not use spaces, commas or special characters within discipline names and  category names.</p>
 <div id="discats">
 <?php 
@@ -92,12 +95,16 @@ echo $table->generate($tbody);
 echo form_hidden('discats', '');?>
 <button name="add" type="button" class="btn bi-plus-square btn-success" title="add row"></button>
 </div>
+<?php 
+$acc->set_item('disciplines / categories', ob_get_clean());
 
-<?php echo $acc->item_start('Staff'); ?>
+ob_start(); // Staff ?>
 <p>A comma separated list of all staff categories. E.g. <code>coach, judge, helper</code>. Items should not include spaces or special characters.</p>
-<?php echo form_input('staffcats', implode(', ', $event->staffcats), 'class="form-control"'); ?>
+<?php 
+echo form_input('staffcats', implode(', ', $event->staffcats), 'class="form-control"'); 
+$acc->set_item('Staff', ob_get_clean());
 
-<?php echo $acc->item_start('Event states'); 
+ob_start(); // Event states
 $fieldnames = ['clubrets', 'music', 'videos'];
 $colours = \App\Entities\Event::state_colours;
 $input = ['class' => 'btn-check'];
@@ -116,9 +123,11 @@ foreach($fieldnames as $fieldname) { ?>
 	} ?>
 	</div>
 	</div>
-<?php } ?>
+<?php } 
+$acc->set_item('Event states', ob_get_clean());
 
-<?php echo $acc->item_start('Downloads'); ?>
+ob_start(); // Downloads
+?>
 <ul class="list-group"><?php 
 $pattern = '<li class="list-group-item">%s <button type="button" name="cmd" value="delfile" data-key="%u" class="btn btn-danger bi-trash"></button></li>';
 foreach($event->files as $key=>$filename) {
@@ -132,11 +141,14 @@ foreach($event->files as $key=>$filename) {
 	<button class="btn btn-primary" type="button" name="cmd" value="upload">upload</button>
 </div>
 </div>
+<?php
+$acc->set_item('Downloads', ob_get_clean());
 
-<?php echo $acc->end(); ?> 
-<?php echo form_close(); ?> 
+echo $acc->htm(); 
 
-<?php $this->endSection(); 
+echo form_close(); 
+
+$this->endSection(); 
 
 $this->section('top') ?>
 <div class="toolbar sticky-top">
@@ -148,13 +160,6 @@ $this->section('top') ?>
 $this->section('bottom') ?>
 <script>
 $(function() {
-
-let activeTab = localStorage.getItem('activeTab');
-if(activeTab) $(activeTab).collapse('show');
-$('#accordion [data-bs-toggle=collapse]').on('click', function(e) {
-	activeTab = e.target.getAttribute('data-bs-target');
-	localStorage.setItem('activeTab', activeTab);
-});	
 	
 $('#discats [name=add]').click(function() {
 	var $tr = $('#discats tbody tr:last');

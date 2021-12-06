@@ -1,45 +1,57 @@
 <?php namespace App\Libraries\Ui;
 
 class Accordion {
-private $id = '';
-private $num = 0;
+public $id = '';
+public $items = [];
 
-const formats = [
-	'start' => '<div class="accordion" id="%1$s">',
-	'item_start' => '<div class="accordion-item">',
-	'header_start' => '<div class="accordion-header" id="%1$s-heading-%2$u"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#%1$s-body-%2$u" aria-expanded="false" aria-controls="%1$s-body-%2$u">',
-	'header_end' => '</button></div>',
-	'body_start' => '<div id="%1$s-body-%2$u" class="accordion-collapse collapse" aria-labelledby="%1$s-heading-%2$u" data-bs-parent="#%1$s"><div class="accordion-body table-responsive">',
-	'body_end' => '</div></div>',
-	'item_end' => '</div>',
-	'end' => '</div>'
-];
-
-function __get($format) {
-	if(isset(self::formats[$format])) $format = self::formats[$format];
-	return sprintf($format, $this->id, $this->num);
-}
-
-function start($id='acc') {
+public function __construct($items=[], $id='tabs') {
+	$this->items = $items;
 	$this->id = $id;
-	$this->num = 0;
-	return $this->start;
 }
 
-function end() {
-	return $this->item_end() . $this->end;
+public function set_item($heading, $content, $key=null) {
+	$item = [
+		'heading' => $heading,
+		'content' => $content
+	];
+	if($key) $this->items[$key] = $item;
+	else $this->items[] = $item;
 }
 
-function item_start($label) {
-	$buffer = $this->num ? $this->item_end() : '';
-	$this->num++;
-	return $buffer . $this->item_start . 
-	$this->header_start . $label . $this->header_end . 
-	$this->body_start;
-}
+public function htm() {
+	ob_start();
+	printf('<div class="accordion" id="%s">', $this->id); // accordion start
+	foreach($this->items as $key=>$item) { ?>
+		<div class="accordion-item">
+		<?php
+		// heading
+		printf('<div class="accordion-header" id="%1$s-heading-%2$u">', $this->id, $key);
+		printf('<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#%1$s-body-%2$u" aria-expanded="false" aria-controls="%1$s-body-%2$u">', $this->id, $key);
+		echo $item['heading'];
+		echo '</button></div>';
+		// content
+		printf('<div id="%1$s-body-%2$u" class="accordion-collapse collapse" aria-labelledby="%1$s-heading-%2$u" data-bs-parent="#%1$s">', $this->id, $key);
+		printf('<div class="accordion-body table-responsive">%s</div>', $item['content']);
+		echo '</div>'; 
+		?>
+		</div>
+		<?php
+	}
+?>
+<script>
+$(function() {
 
-private function item_end() {
-	return $this->num ? $this->body_end . $this->item_end : '' ;
+let activeTab = localStorage.getItem('activeTab');
+if(activeTab) $(activeTab).collapse('show');
+$('#<?php echo $this->id;?> [data-bs-toggle=collapse]').on('click', function(e) {
+	activeTab = e.target.getAttribute('data-bs-target');
+	localStorage.setItem('activeTab', activeTab);
+});	
+});
+</script>
+<?php
+	echo '</div>'; // accordion end
+	return ob_get_clean();
 }
 
 }
