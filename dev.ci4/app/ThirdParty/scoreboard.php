@@ -32,6 +32,21 @@ function get_disciplines() {
 	return $this->join_tables($tables[0], $tables[1], 'CategoryId');
 }
 
+function get_discats() {
+	$retval = [];
+	$cats = $this->get_table('disciplinecategory');
+	$diss = $this->get_table('disciplines');
+	if(!$cats || !$diss) return $retval;
+	foreach($cats as $key=>$cat) {
+		$cat['disciplines'] = [];
+		foreach($diss as $dis) {
+			if($dis['CategoryId']==$cat['CategoryId']) $cat['disciplines'][] = $dis;
+		}
+		$retval[] = $cat;
+	}
+	return $retval;
+}
+
 function get_table($varname) {
 	$include = __DIR__ . "/scoreboard/{$varname}.php";
 	if(file_exists($include)) {

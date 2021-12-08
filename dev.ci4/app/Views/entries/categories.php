@@ -184,7 +184,8 @@ foreach($exesets as $exeset) {
 
 <section class="my-2">
 <?php 
-$sb_disciplines = $scoreboard->get_disciplines();
+$sb_disciplines = $scoreboard->get_discats();
+# $sb_disciplines = $scoreboard->get_disciplines();
 if($sb_disciplines) { ?>
 <p><button class="ps-3 btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sb_disciplines" aria-expanded="false">
 <span class="bi bi-arrows-expand"></span>
@@ -194,13 +195,14 @@ if($sb_disciplines) { ?>
 <h5>Scoreboard disciplines</h5>
 <ul class="list-group">
 <?php foreach($sb_disciplines as $category) { ?>
-	<li class="list-group-item"><ul>
-	<?php 
-	foreach($category['children'] as $disrow) {
-		printf('<li><strong>%u:</strong> %s (%s)</li>', $disrow['DisId'], $disrow['Name'], $disrow['ShortName']);
-	}
-	?>
-	</ul></li>
+	<li class="list-group-item">
+	<strong><?php echo $category['Description']; ?></strong>
+	<ul><?php 
+	foreach($category['disciplines'] as $dis) {
+		printf('<li><strong>%u.</strong> %s (%s)</li>', $dis['DisId'], $dis['Name'], $dis['ShortName']);
+	} 
+	?></ul>
+	</li>
 <?php } ?>
 </ul>
 </div>

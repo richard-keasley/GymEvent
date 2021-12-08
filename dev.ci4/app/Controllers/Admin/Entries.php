@@ -340,10 +340,11 @@ public function scoreboard($event_id=0) {
 	$this->data['users'] = $users;
 	
 	// view
-	$this->response->setHeader('Content-Type', 'text/plain');
+	#$this->response->setHeader('Content-Type', 'text/plain');
 	#$this->response->setHeader('Content-Type', 'application/sql');
 	#$this->response->setHeader('Content-Disposition', 'attachment; filename=scoreboard.sql');
-	return view('events/scoreboard', $this->data);
+	# return view('entries/sb-sql', $this->data);
+	return view('entries/export-csv', $this->data);
 }
 
 }
