@@ -19,6 +19,7 @@ if($event->deleted_at) { ?>
 <?php } else { ?>
 	<button type="submit" name="state" value="hide" title="hide this event" class="btn btn-danger bi-x-circle"></button>
 	<?php	
+	echo getlink("events/view/{$event->id}", '<span class="bi-eye" title="customer view of this event"></span>');
 	echo getlink("admin/clubrets/event/{$event->id}", 'returns');
 	echo getlink("admin/entries/view/{$event->id}", 'entries');
 	echo getlink("admin/music/view/{$event->id}", 'music');

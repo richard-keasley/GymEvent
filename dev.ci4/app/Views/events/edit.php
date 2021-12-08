@@ -40,7 +40,38 @@ ob_start(); // Payment ?>
 $acc->set_item('Payment', ob_get_clean());
 
 ob_start(); // disciplines / categories ?> 
-<p>Do not use spaces, commas or special characters within discipline names and  category names.</p>
+<p>Do not use spaces, commas or special characters within discipline and categories. Try to use the same abbreviations as <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#sbdis">scoreboard</button>.</p>
+
+<div class="modal" id="sbdis" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+	<h5 class="modal-title">Discipline abbreviations</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+	<ul class="list-group">
+	<?php
+	$scoreboard = new \App\ThirdParty\scoreboard;
+	foreach($scoreboard->get_discats() as $category) { ?>
+		<li class="list-group-item">
+		<strong><?php echo $category['Description']; ?></strong>
+		<ul><?php 
+		foreach($category['disciplines'] as $dis) {
+			printf('<li><strong>%s</strong> %s</li>', $dis['ShortName'], $dis['Name']);
+		} 
+		?></ul>
+		</li>
+	<?php } ?>
+	</ul>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+
 <div id="discats">
 <?php 
 $tbody = [];

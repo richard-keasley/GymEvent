@@ -185,7 +185,6 @@ foreach($exesets as $exeset) {
 <section class="my-2">
 <?php 
 $sb_disciplines = $scoreboard->get_discats();
-# $sb_disciplines = $scoreboard->get_disciplines();
 if($sb_disciplines) { ?>
 <p><button class="ps-3 btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sb_disciplines" aria-expanded="false">
 <span class="bi bi-arrows-expand"></span>
