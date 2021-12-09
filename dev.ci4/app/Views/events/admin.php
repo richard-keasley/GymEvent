@@ -24,7 +24,7 @@ if($event->deleted_at) { ?>
 	echo getlink("admin/entries/view/{$event->id}", 'entries');
 	echo getlink("admin/music/view/{$event->id}", 'music');
 	echo getlink("videos/view/{$event->id}", 'videos');
-	echo getlink("admin/entries/scoreboard/{$event->id}", 'scoreboard');
+	echo getlink("admin/entries/export/{$event->id}", 'export');
 	echo view('entries/populate/button', ['event'=>$event]);
 } 
 

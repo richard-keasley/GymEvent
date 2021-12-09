@@ -322,7 +322,7 @@ public function import($event_id=0) {
 	return view('entries/import', $this->data);
 }
 
-public function scoreboard($event_id=0) {
+public function export($event_id=0) {
 	$this->find($event_id);
 	
 	$usr_model = new \App\Models\Users();

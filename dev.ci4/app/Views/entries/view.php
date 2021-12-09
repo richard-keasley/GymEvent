@@ -11,9 +11,9 @@ if(\App\Libraries\Auth::check_path('admin/entries/edit')) {
 	echo form_open(base_url(uri_string()), $attr);
 	echo \App\Libraries\View::back_link("admin/events/view/{$event->id}");
 	echo getlink("admin/entries/edit/{$event->id}", 'edit');
-	echo getlink("admin/entries/import/{$event->id}", 'import');
 	echo getlink("admin/entries/categories/{$event->id}", 'categories');
-	echo getlink("admin/entries/scoreboard/{$event->id}", 'scoreboard');
+	echo getlink("admin/entries/import/{$event->id}", 'import');
+	echo getlink("admin/entries/export/{$event->id}", 'export');
 	?>
  	<input type="hidden" name="renumber" value="0">
 	<button class="btn btn-primary" name="chk_renumber" value="1" type="button">Renumber</button>

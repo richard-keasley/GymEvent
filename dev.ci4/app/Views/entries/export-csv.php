@@ -29,7 +29,7 @@ $entry_map = [
 
 $tbody = []; $row = [];
 foreach($entries as $dis) { 
-	$row['dis_name'] = $dis->name;
+	# $row['dis_name'] = $dis->name;
 	$row['dis_abbr'] = $dis->abbr;
 	
 	foreach($dis->cats as $cat) { 
@@ -49,7 +49,6 @@ foreach($entries as $dis) {
 		// end cat 
 	} // end dis  
 } // end event
-
 if(!$row) return; 
 
 $table = new \CodeIgniter\View\Table();
@@ -57,4 +56,3 @@ $template = ['table_open' => '<table border=1 style="border-collapse:collapse">'
 $table->setTemplate($template);
 $table->setHeading(array_keys($row));
 echo $table->generate($tbody);
-
