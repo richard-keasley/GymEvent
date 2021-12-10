@@ -6,7 +6,7 @@ private $model = null;
 
 function __construct() {
 	$this->data['breadcrumbs'][] = 'admin';
-	$this->data['breadcrumbs'][] = 'admin/events';
+	$this->data['breadcrumbs'][] = 'admin/entries';
 	$this->mdl_entries = new \App\Models\Entries();
 	$this->data['title'] = "entries";
 	$this->data['heading'] = "Event entries - admin";
@@ -16,6 +16,8 @@ private function find($event_id) {
 	$evt_model = new \App\Models\Events();
 	$this->data['event'] = $evt_model->find($event_id);
 	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
+	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
+	$this->data['breadcrumbs'][] = ["admin/entries/view/{$event_id}", 'entries'];
 	$this->data['entries'] = $this->mdl_entries->evt_discats($event_id);
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title;
@@ -55,8 +57,6 @@ public function view($event_id=0) {
 		
 	if($this->data['event']->clubrets==0) $this->data['messages'][] = ['Returns have not started for this event', 'warning'];
 	if($this->data['event']->clubrets==1) $this->data['messages'][] = ['Returns for this event are still open', 'warning'];
-	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
-	$this->data['breadcrumbs'][] = ["admin/entries/view/{$event_id}", 'entries'];
 	return view('entries/view', $this->data);
 }
 
@@ -101,8 +101,6 @@ public function edit($event_id=0) {
 	}		
 	
 	// view
-	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
-	$this->data['breadcrumbs'][] = ["admin/entries/view/{$event_id}", 'entries'];
 	$this->data['breadcrumbs'][] = "admin/entries/edit/{$event_id}";
 	
 	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
@@ -169,8 +167,6 @@ public function categories($event_id=0) {
 		$this->find($event_id);
 	}
 	// view
-	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
-	$this->data['breadcrumbs'][] = ["admin/entries/view/{$event_id}", 'entries'];
 	$this->data['breadcrumbs'][] = "admin/entries/categories/{$event_id}";
 	
 	$this->data['heading'] .= ' - categories';
@@ -315,36 +311,71 @@ public function import($event_id=0) {
 	// read from database
 	$this->find($event_id);
 		
-	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
-	$this->data['breadcrumbs'][] = ["admin/entries/view/{$event_id}", 'entries'];
 	$this->data['breadcrumbs'][] = ["admin/entries/import/{$event_id}", 'import'];
 
 	return view('entries/import', $this->data);
 }
 
-public function export($event_id=0) {
+public function export($event_id=0, $format='view') {
 	$this->find($event_id);
 	
 	$usr_model = new \App\Models\Users();
-	$users = [];
+	$this->data['users'] = [];
 	foreach($this->data['entries'] as $dis) { 
 		foreach($dis->cats as $cat) { 
 			foreach($cat->entries as $entry) {
 				$user_id = $entry->user_id;
-				if(empty($users[$user_id])) {
-					$users[$user_id] = $usr_model->withDeleted()->find($user_id);
+				if(empty($this->data['users'][$user_id])) {
+					$this->data['users'][$user_id] = $usr_model->withDeleted()->find($user_id);
 				}
 			}	
 		}
 	}
-	$this->data['users'] = $users;
 	
-	// view
-	#$this->response->setHeader('Content-Type', 'text/plain');
-	#$this->response->setHeader('Content-Type', 'application/sql');
-	#$this->response->setHeader('Content-Disposition', 'attachment; filename=scoreboard.sql');
-	# return view('entries/sb-sql', $this->data);
-	return view('entries/export-csv', $this->data);
+	$this->data['export'] = []; $row = [];
+	foreach($this->data['entries'] as $dis) { 
+		$row['dis_name'] = $dis->name;
+		$row['dis_abbr'] = $dis->abbr;
+		
+		foreach($dis->cats as $cat) { 
+			$row['cat_name'] = $cat->name;
+			$row['cat_abbr'] = $cat->abbr;
+			$row['cat_order'] = $cat->sort;
+			$row['cat_setid'] = $cat->exercises;
+			
+			foreach($cat->entries as $entry) {
+				$row['entry_club_name'] = $this->data['users'][$entry->user_id]->name;
+				$row['entry_club_shortName'] = $this->data['users'][$entry->user_id]->abbr;
+				$row['entry_number'] = $entry->num;
+				$row['entry_title'] = $entry->name;
+				$row['entry_DoB'] = $entry->dob;
+				$this->data['export'][] = $row;
+			}		
+			// end cat 
+		} // end dis  
+	} // end entries
+	
+	$title = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $this->data['event']->title));
+	switch($format) {
+		case 'csv':
+			ob_start();
+			$fp =  fopen('php://output', 'w');
+			if($this->data['export']) {
+				fputcsv($fp, array_keys($this->data['export'][0]));
+				foreach ($this->data['export'] as $row) fputcsv($fp, $row);
+			}
+			fclose($fp);
+			return $this->response->download("{$title}.csv", ob_get_clean());
+			
+		case 'sql':
+			return $this->response->download("{$title}.sql.txt", view('entries/export-sql', $this->data));
+			
+		case 'view':
+		default:
+			$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
+			return view('entries/export', $this->data);
+	}
 }
 
 }
+	

@@ -470,6 +470,9 @@ class Mimes
 			'image/x-ico',
 			'image/vnd.microsoft.icon',
 		],
+		'sql' => [
+			'text/x-sql'
+		]
 	];
 
 	//--------------------------------------------------------------------
