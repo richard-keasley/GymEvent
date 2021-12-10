@@ -74,6 +74,7 @@ $attr = [
 	'class' => "toolbar sticky-top"
 ];
 echo form_open(base_url(uri_string()), $attr);
-echo implode(' ', $toolbar); ?>
-</form>
-<?php $this->endSection(); 
+echo implode(' ', $toolbar);
+echo form_close();
+
+$this->endSection(); 

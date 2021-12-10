@@ -8,6 +8,12 @@ public function __construct() {
 	$this->data['breadcrumbs'][] = 'admin/users';
 	$this->data['base_url'] = base_url(['admin', 'users']);
 }
+
+private function find($user_id) {
+	$this->data['user'] = $this->usr_model->withDeleted()->find($user_id);
+	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
+	$this->data['user_self'] = $this->data['user']->self();
+}
 	
 public function index() {
 	// update
@@ -35,7 +41,8 @@ public function index() {
 		$this->data['messages'][] = ["clubs disabled", 'success'];
 	}
 	// read
-	$filter_by = $this->request->getGet('by');$filter_val = $this->request->getGet('val');
+	$filter_by = $this->request->getGet('by');
+	$filter_val = $this->request->getGet('val');
 		
 	$this->usr_model->orderby('name');
 	if($filter_by=='deleted') {
@@ -52,10 +59,7 @@ public function index() {
 }
 
 public function view($user_id=0) {
-	$this->data['user'] = $this->usr_model->withDeleted()->find($user_id);
-	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
-
-	$this->data['user_self'] = $this->data['user']->self();
+	$this->find($user_id);
 	
 	if(!$this->data['user_self']) {
 		$set_enabled = $this->request->getPost('enable');
@@ -102,6 +106,7 @@ public function view($user_id=0) {
 		}
 		else {
 			$this->data['toolbar'][] = '<button name="enable" value="disable" type="submit" title="disable" class="btn bi-x-circle btn-danger"></button>';
+			$this->data['toolbar'][] = getlink("admin/users/merge/{$user_id}", '<span class="bi-layer-backward" title="merge"></span>');			
 		}
 		if(\App\Libraries\Auth::check_path('superuser')) { 
 			$this->data['toolbar'][] = '<button name="loginas" value="1" type="submit" class="btn btn-secondary">login as&hellip;</button>';
@@ -112,11 +117,9 @@ public function view($user_id=0) {
 
 public function edit($user_id=0) {
 	// compare to /user/edit
-	$this->data['user'] = $this->usr_model->withDeleted()->find($user_id);
-	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
-	if(!\App\Libraries\Auth::check_role($this->data['user']->role)) throw new \RuntimeException("You can not edit this user", 403);
+	$this->find($user_id);
 
-	$this->data['user_self'] = $this->data['user']->self();
+	if(!\App\Libraries\Auth::check_role($this->data['user']->role)) throw new \RuntimeException("You can not edit this user", 403);
 		
 	if($this->request->getPost('save')) {
 		$postUser = $this->request->getPost();
@@ -212,7 +215,10 @@ public function logins($filter='', $id='') {
 	switch($filter) {
 		case 'user_id':
 			$id = intval($id);
-			$user = $this->usr_model->find($id);
+			$this->find($id);
+			$where = $filter;
+			$this->data['breadcrumbs'][] = ["admin/users/view/{$id}", $this->data['user']->name];
+			break;
 		case 'ip':
 			$where = $filter;
 			break;
@@ -233,7 +239,7 @@ public function logins($filter='', $id='') {
 	$this->data['breadcrumbs'][] = ['admin/users/logins', 'login errors'];
 	switch($filter) {
 		case 'user_id':
-			$this->data['heading'] = sprintf('Logins for %s', $user->name);
+			$this->data['heading'] = sprintf('Logins for %s', $this->data['user']->name);
 			break;
 		case 'ip':
 			$this->data['heading'] = sprintf('Logins from IP %s', $id);
@@ -245,6 +251,37 @@ public function logins($filter='', $id='') {
 	if($filter) $this->data['breadcrumbs'][] = ["admin/users/logins/{$filter}/{$id}", "{$filter}={$id}"];
 	$this->data['title'] = "logins";
 	return view('users/logins', $this->data);
+}
+
+public function merge($user_id=0) {
+	$this->find($user_id);
+	$this->data['users'] = $this->usr_model->orderby('name')->where('id <>', $user_id)->withDeleted()->findAll();
+	
+	$source = intval($this->request->getPost('source'));
+	if($source) {
+		$source_user = $this->usr_model->withDeleted()->find($source);
+		if($source_user) {
+			#d($source);
+			
+			/* 
+			need to move 
+			- clubrets
+			- entries
+			- logins ??
+			*/
+			$this->data['messages'][] = ["Imported all data from {$source_user->name}", 'success'];
+			$this->data['users'] = $this->usr_model->orderby('name')->where('id <>', $user_id)->withDeleted()->findAll();
+		}
+		else {
+			$this->data['messages'][] = ["Couldn't find user {$source}", 'danger'];
+		}
+	}
+	
+	$this->data['heading'] = 'Merge user data to ' . $this->data['user']->name;
+	$this->data['breadcrumbs'][] = ["admin/users/view/{$user_id}", $this->data['user']->name];
+	$this->data['breadcrumbs'][] = ["admin/users/merge/{$user_id}", 'merge'];
+	return view('users/merge', $this->data);
+
 }
 
 }

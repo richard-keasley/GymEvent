@@ -180,7 +180,7 @@ public function import($event_id=0) {
 		'cat' => 'category (abbr)',
 		'num' => 'number',
 		'name' => 'name',
-		'club' => 'club (abbr)',
+		'club' => 'club name',
 		'dob' => 'DoB (d-M-Y)'
 	];
 	
@@ -282,6 +282,7 @@ public function import($event_id=0) {
 							$club = new \App\Entities\User($data);
 							if($mdl_clubs->insert($data)) {
 								$user_id = $mdl_clubs->db->insertID();
+								$this->data['messages'][] = ["Created club {$data['name']}", 'success'];		
 							}
 							else {
 								$errors = $mdl_clubs->errors();
