@@ -6,7 +6,7 @@ private $model = null;
 
 function __construct() {
 	$this->data['breadcrumbs'][] = 'admin';
-	$this->data['breadcrumbs'][] = 'admin/entries';
+	$this->data['breadcrumbs'][] = 'admin/events';
 	$this->mdl_entries = new \App\Models\Entries();
 	$this->data['title'] = "entries";
 	$this->data['heading'] = "Event entries - admin";
