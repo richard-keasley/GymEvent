@@ -1,6 +1,15 @@
 <?php namespace App\Libraries\Mag;
 
 class Rules {
+	
+const apparatus = [
+	'FX' => 'Floor',
+	'PH' => 'Pommels',
+	'SR' => 'Rings', 
+	'VT' => 'Vault',
+	'PB' => 'P-bars',
+	'HB' => 'High bar'
+];
 
 static function index() {
 	$retval = [];

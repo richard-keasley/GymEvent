@@ -1,7 +1,7 @@
 <?php namespace App\Libraries\Mag\Rulesets;
 
 class Fig {
-const version = '2021-12-11';
+public $version = '2021-12-11';
 
 public $title = "FIG";
 public $description = "Senior code";
