@@ -13,16 +13,38 @@ public function index() {
 	return view('mag/index', $this->data);
 }
 
-public function rules($label = null) {
-	$index = \App\Libraries\Mag\Rules::index();
-	if(empty($label)) $label = $index[0];
-	
-	
-	$this->data['breadcrumbs'][] = ["mag/rules/{$label}", "{$label} Rules"];
+public function rules($setname = null) {
+	$this->data['ruleset'] = \App\Libraries\Mag\Rules::load($setname);
+	if(!$this->data['ruleset']) {
+		throw new \RuntimeException("Can't find MAG rule set $setname", 404);
+	}
+	$this->data['breadcrumbs'][] = ["mag/rules/{$setname}", $this->data['ruleset']->title];
+	$this->data['title'] = $this->data['ruleset']->title;
+	$this->data['heading'] = $this->data['ruleset']->title;
 	return view('mag/rules', $this->data);
 }
 
 public function routine() {
+	$this->data['routine'] = [
+		'name' => 'John Doe',
+		'ruleset' => 'Fig',
+		'FX' => [
+			'elements' => [ 
+				['A', 1],
+				['B', 1],
+				['B', 2],
+				['C', 3],
+				['B', 2],
+				['B', 3],
+				['D', 1]
+			],
+			'neutral' => [0, 1]
+		]
+	];
+	
+	$this->data['ruleset'] = \App\Libraries\Mag\Rules::load($this->data['routine']['ruleset']);
+	
+	
 	$this->data['breadcrumbs'][] = ['mag/routine', "Routine sheet"];
 	return view('mag/routine', $this->data);
 }

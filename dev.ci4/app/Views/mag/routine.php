@@ -1,8 +1,8 @@
 <?php $this->extend('default');
  
 $this->section('content');?>
-<p>Please tell Richard Keasley if you spot any errors.</p>
-
+<?php d($ruleset);?>
+<?php d($routine);?>
 
 <?php $this->endSection(); 
 
