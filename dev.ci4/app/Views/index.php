@@ -12,6 +12,7 @@ $navbar = ['nav' => [
 	'events',
 	'admin',
 	'general',
+	'mag',
 	'teamtime',
 	'scoreboard',
 	['user', 'Your info']
