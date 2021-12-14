@@ -16,9 +16,11 @@ else { // new
 $attr = [
 	'id' => "clubret"
 ];
-echo form_open(base_url($action), $attr); ?>
-<input name="save" value="1" type="hidden">
-<?php 
+$hidden = [
+	'save' => 1
+];
+echo form_open(base_url($action), $attr, $hidden);
+
 $discats = [];
 $dis_opts = [];
 foreach($event->discats as $discat) {

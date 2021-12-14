@@ -25,25 +25,8 @@ public function rules($setname = null) {
 }
 
 public function routine() {
-	$data = [
-		'name' => 'John Doe',
-		'rulesetname' => 'Fig',
-		'event' => "big comp\n2 December",
-		'FX' => [
-			'elements' => [ 
-				['A', 1],
-				['B', 1],
-				['B', 2],
-				['C', 3],
-				['B', 2],
-				['B', 3],
-				['D', 1]
-			],
-			'neutral' => [0, 1]
-		]
-	];
-	$this->data['routineset'] = new \App\Libraries\Mag\Routineset($data);
-	
+	$getPost = $this->request->getPost();
+	$this->data['exeset'] = new \App\Libraries\Mag\Exeset($getPost);
 	$this->data['breadcrumbs'][] = ['mag/routine', "Routine sheet"];
 	return view('mag/routine', $this->data);
 }

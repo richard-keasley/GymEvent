@@ -14,8 +14,8 @@ echo view('includes/navbar', ['nav'=>$nav]);
 <?php
 
 $nav = [];
-foreach($index as $label) {
-	$nav[] = ["mag/rules/{$label}", $label];	
+foreach($index as $key=>$label) {
+	$nav[] = ["mag/rules/{$key}", $label];	
 }
 echo view('includes/navbar', ['nav'=>$nav]);
 
