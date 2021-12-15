@@ -2,14 +2,14 @@
  
 $this->section('content');
 
-#d($exeset); return;
-
 $action = '';
 $attr = [
 	'id' => "editform",
 	'data' => ''
 ];
-$hidden = [];
+$hidden = [
+	'saved' => $exeset->saved
+];
 echo form_open_multipart(base_url(uri_string()), $attr, $hidden); 
 
 ?>
@@ -77,6 +77,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 					'placeholder' => 'description'
 				]
 			];
+			$dismount_num =  999;
 			break;
 		case 'routine':
 		default: 
@@ -97,11 +98,14 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 					'placeholder' => 'description'
 				]
 			];
+			$dismount_num = count($exercise['elements']) - 1; 
 	}
 	foreach($exercise['elements'] as $elnum=>$element) { 
 		?>
 		<div class="input-group my-1">
-		<span class="input-group-text" style="width:3em"><?php echo $elnum+1;?></span>
+		<span class="input-group-text" style="width:3em">
+			<?php echo $elnum==$dismount_num ? 'D' : $elnum + 1; ?>
+		</span>
 		<?php
 		foreach($inputs as $col=>$input) {
 			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
@@ -133,20 +137,14 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		echo form_label(sprintf('%s (%1.1f)', $neutral['description'], $neutral['deduction']), $id, $label);
 		?>
 		</div>
-	<?php } ?>
+	<?php } 
 	
-	<ul class="list-group"><?php
-	$exeval = $exeset->exeval($exekey);
-	$exeval['D score'] = array_sum($exeval);
-	foreach($exeval as $key=>$val) {
-		printf('<li class="list-group-item"><strong>%s:</strong> %1.1f</li>', $key, $val);
+	echo view('mag/exeset/exe_eval', ['exekey'=>$exekey, 'exeset'=>$exeset]);
+	
+	
 
-	} ?>
-	</ul>
-	<?php
 	
 	
-	d($exeval);
 		
 	$items[] = [
 		'heading' => $exe_rules['name'],
@@ -161,7 +159,7 @@ echo $tabs->htm();
 <button class="btn btn-primary bi bi-printer" title="print this routine sheet" type="submit" name="view" value="print"> print</button>
 <button class="btn btn-primary bi bi-journal-arrow-down" title="save these routines to your computer so they can be altered later" type="submit" name="view" value="store"> save</button>
 <button class="btn btn-primary bi bi-journal-plus" title="make a copy of this routine sheet to use on another gymnast" type="button" name="clone"> clone</button>
-<button class="btn btn-primary bi bi-journal-check" title="re-check this routine after edits" type="submit"> update</button>
+<button class="btn btn-primary bi bi-journal-check" title="re-check this routine after edits" type="submit" name="view" value="edit"> update</button>
 </div>
 <script>
 /*

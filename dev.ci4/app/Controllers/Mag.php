@@ -26,9 +26,11 @@ public function rules($setname = null) {
 
 public function routine() {
 	$getPost = $this->request->getPost();
+	$view = $this->request->getPost('view');
+	if($view) $getPost['saved'] = date('Y-m-d H:i:s');
 	$this->data['exeset'] = new \App\Libraries\Mag\Exeset($getPost);
 	$this->data['breadcrumbs'][] = ['mag/routine', "Routine sheet"];
-	return view('mag/routine', $this->data);
+	return view('mag/exeset/edit', $this->data);
 }
 
 
