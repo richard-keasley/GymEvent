@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 :root {
-	font-size: 10pt;
+	font-size: 10.5pt;
 }
 body {
 	font-family: sans-serif;
@@ -27,9 +27,14 @@ h3 {
 	margin: 0;
 	padding: 0;
 }
+h5 {
+	font-size: 1em;
+	margin:0;
+	padding: 0;
+}
 header {
-	margin: 0 0 0.5em 0;
-	border-bottom: 1px solid #ccc;
+	margin: 0 0 0.3em 0;
+	border-bottom: 1px solid #b7561b;
 	padding: 0.5em 0;
 }
 header ul {
@@ -42,21 +47,26 @@ header ul strong {
 	margin-right: .3em;
 }
 main section {
-	border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid #b7561b;
 	padding: .2em 0;
 	margin: 0;
 	page-break-inside: avoid;
 }
 
 form {
-	margin: 0.2em 0;
+	margin: 0.2em 0 0 0;
 	font-size: 1rem;
 	color: #212529;
 	background-color: #ffc;
-	padding: 0.3em;
+	padding: 0;
 	border: 1px solid #F0E6BF;
+	border-radius: .25rem;
+	overflow: hidden;
 }
-button {
+form p {
+	margin: 0.5em;
+}
+form button {
 	float: left;
 	font-weight: 400;
 	line-height: 1.5;
@@ -68,7 +78,7 @@ button {
 	padding: .375rem .75rem;
 	font-size: 1rem;
 	border-radius: .25rem;
-	margin: 0 .5em .5em 0;
+	margin: .5em;
 }
 
 .table.table-sm {
@@ -82,6 +92,10 @@ tfoot td {
 }
 thead th {
 	text-align: left;
+}
+.alert-danger {
+	background: #edd9d9a8;
+	font-size: .9em;
 }
 .list-unstyled {
 	list-style: none;
@@ -107,6 +121,9 @@ thead th {
 .routine tbody .el1 {
 	width: 1em;
 }
+.routine tbody .el {
+	color: #b7561b;
+}
 
 .text-end {
 	text-align: right;
@@ -116,7 +133,6 @@ thead th {
 	gap: 1em;
 	align-items: flex-start;
 }
-
 
 @media print {
 	@page {
@@ -137,7 +153,7 @@ thead th {
 
 <header class="row">
 
-<div style="min-width:4cm; font-weight:bold">
+<div style="width:30%; font-weight:bold">
 <?php echo $exeset->name;?><br>
 <?php 
 $options = \App\Libraries\Mag\Rules::index();
@@ -145,11 +161,11 @@ echo $options[$exeset->rulesetname] ?? '' ;
 ?>
 </div>
 
-<pre style="min-width:9cm">
+<pre style="width:50%">
 <?php echo $exeset->event;?>
 </pre>
 
-<div style="font-size:0.8em; color:#777; font-style:italic;">
+<div class="text-end" style="width:20%; font-size:0.8em; color:#777; font-style:italic;">
 Saved: <?php 
 	$time = new \CodeIgniter\I18n\Time($exeset->saved);
 	echo $time->toLocalizedString('d MMM yyyy'); 
@@ -167,12 +183,11 @@ Rules: <?php
 foreach($exeset->exercises as $exekey=>$exercise) { 
 	$exe_rules = $exeset->ruleset->exes[$exekey] ?? [] ;
 	?>
-	<section>
-	<div class="row">
+	<section class="row">
 	
-	<h3 style="width:6cm"><?php echo $exe_rules['name'];?></h3>
+	<h3 style="width:35%"><?php echo $exe_rules['name'];?></h3>
 
-	<table style="width:8cm" class="routine">
+	<table style="width:40%" class="routine">
 	<tbody>
 	<?php
 		
@@ -202,7 +217,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	</tbody>
 	</table>
 	
-	<div>
+	<div style="width:25%">
 	<?php echo view('mag/exeset/exe_eval', ['exekey'=>$exekey, 'exeset'=>$exeset]);	?>
 	<ul style="margin-top:0.5em;" class="list-unstyled">
 	<?php 
@@ -214,7 +229,6 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	</ul>
 	</div>
 
-	</div>
 	</section>
 	<?php
 } ?>
@@ -226,9 +240,10 @@ $action = base_url('mag/routine');
 $attr = [];
 echo form_open($action, $attr, $post);
 ?>
-<p><button type="submit">edit</button> This is a printer friendly page containing the routines. You can either print it or 
+<button type="submit" title="re-edit these routines">edit</button>
+<p>Print this page or 
 <abbr title="right click, then select save as...">save it</abbr>
-to your PC for use later. Use A4 portrait for printing; you may have to play with the margins to fit it on one page. Click the 'edit' button to upload your routine for editing.</p>
+to your PC for use later. Use A4 portrait for printing; you may have to play with the margins to fit it on one page.</p>
 <?php echo form_close();?>
 </footer>
 

@@ -165,11 +165,6 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	
 	echo view('mag/exeset/exe_eval', ['exekey'=>$exekey, 'exeset'=>$exeset]);
 	
-	
-
-	
-	
-		
 	$items[] = [
 		'heading' => $exe_rules['name'],
 		'content' => ob_get_clean()
@@ -186,13 +181,17 @@ echo $tabs->htm();
 <button class="btn btn-primary bi bi-journal-check" title="re-check this routine after edits" type="submit" name="cmd" value="edit"> update</button>
 </div>
 <script>
-/*
-$('#editform').submit(function(e) { 
-	var data = $(this).serializeArray();
-	//console.log(data);
-	$('#editform [name=data]').val(JSON.stringify(data));
+$('#editform button[name=clone]').click(function() {
+	var form = $('#editform')[0];
+	var name_field = $('#editform [name=name]');
+	var name = name_field.val();
+	form.target = '_blank';
+	name_field.val('copied');
+	$('#editform').submit();
+	form.target = '_self';
+	name_field.val(name);
+	//$('#editform').submit();
 });
-*/
 </script>
 <?php
 

@@ -87,7 +87,7 @@ switch($exe_rules['method']) {
 if($errors) { ?>
 <div class="mt-3 p-1 alert-danger">
 <h5>Routine construction errors</h5>
-<ul class="alert-danger list-unstyled p-1">
+<ul class="list-unstyled">
 <?php foreach($errors as $error) printf('<li>%s</li>', $error); ?>
 </ul>
 </div>
