@@ -26,10 +26,25 @@ public function rules($setname = null) {
 
 public function routine() {
 	$getPost = $this->request->getPost();
-	$view = $this->request->getPost('view');
-	if($view) $getPost['saved'] = date('Y-m-d H:i:s');
+	$cmd = $this->request->getPost('cmd');
+		
+	if($getPost) {
+		// sanitize
+		foreach($getPost as $key=>$val) {
+			$getPost[$key] = trim(strip_tags($val));
+		}
+		if($cmd) $getPost['saved'] = date('Y-m-d H:i:s');
+	}
+	
+	
 	$this->data['exeset'] = new \App\Libraries\Mag\Exeset($getPost);
 	$this->data['breadcrumbs'][] = ['mag/routine', "Routine sheet"];
+	
+	if($cmd=='print') {
+		$getPost['cmd'] = 'edit';
+		$this->data['post'] = $getPost;
+		return view('mag/exeset/print', $this->data);
+	}
 	return view('mag/exeset/edit', $this->data);
 }
 

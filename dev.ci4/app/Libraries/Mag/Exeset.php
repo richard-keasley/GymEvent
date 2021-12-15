@@ -6,9 +6,6 @@ public $exercises = [];
 public $ruleset = null;
 
 public function __construct($post=[]) {
-	foreach($post as $key=>$val) {
-		$post[$key] = trim(strip_tags($val));
-	}
 	foreach(['name','event','rulesetname','saved'] as $key) {
 		$this->data[$key] = $post[$key] ?? '';
 	}
@@ -23,21 +20,16 @@ public function __construct($post=[]) {
 				break;
 			case 'routine':
 			default:
-				$el_count = $this->ruleset->routine['count'];
+				$el_count = count($this->ruleset->routine['short']) - 1;
 				$col_count = 3;
 		}
 		
 		$element = array_fill(0, $col_count,'');
 		$elements = array_fill(0, $el_count, $element);
-		$dismount_num = $el_count - 1; 
-		$dismount_grp = 4;
 		foreach($elements as $elnum=>$element) {
 			foreach($element as $colnum=>$default) {
 				$key = "{$exekey}_el_{$elnum}_{$colnum}";
 				$elements[$elnum][$colnum] = $post[$key] ?? $default ;
-			}
-			if($elnum!=$dismount_num && $elements[$elnum][1]==$dismount_grp) {
-				$elements[$elnum][1] = '';
 			}
 		}
 		$this->exercises[$exekey]['elements'] = $elements;

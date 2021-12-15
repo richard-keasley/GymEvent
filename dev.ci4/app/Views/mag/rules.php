@@ -7,11 +7,10 @@ $this->section('content');?>
 <section class="border m-1 p-1">
 <h4>Element values</h4>
 <ul class="list-group"><?php
-foreach($ruleset->routine['values'] as $key=>$val) {
-	printf('<li class="list-group-item"><strong>%s:</strong>  %2.1f</li>', $key, $val);
+foreach($ruleset->routine['difficulties'] as $difficulty=>$value) {
+	printf('<li class="list-group-item"><strong>%s:</strong>  %2.1f</li>', $difficulty, $value);
 }
 ?></ul>
-<p>Max elements: <?php echo $ruleset->routine['count'];?></p>
 </section>
 
 <section class="border m-1 p-1">
@@ -19,22 +18,22 @@ foreach($ruleset->routine['values'] as $key=>$val) {
 <ul class="list-group"><?php
 foreach($ruleset->routine['short'] as $count=>$penalty) {
 	printf('<li class="list-group-item"><strong>%s elements:</strong> %2.1f</li>', $count, $penalty);
-
 }
 ?></ul>
+<p>Max elements: <?php echo array_key_last($ruleset->routine['short']); ?></p>
 </section>
 
 <section class="border m-1 p-1">
 <h4>Groups</h4>
-<p>Max elements: <?php echo $ruleset->routine['max_group'];?></p>
-<p>Values:</p>
 <ul class="list-group"><?php
-foreach($ruleset->routine['group_vals'] as $group_num=>$group_val) { 
+foreach($ruleset->routine['groups'] as $group_num=>$group_val) { 
 	$label = [];
 	foreach($group_val as $dif=>$val) $label[] = "{$dif}={$val}";
 	printf('<li class="list-group-item"><strong>%s:</strong> %s.</li>', $group_num, implode(', ', $label));
 } ?>
 </ul>
+<p>Max elements: <?php echo $ruleset->routine['group_max'];?></p>
+<p>Dismount: Group <?php echo $ruleset->routine['group_dis'];?></p>
 </section>
 
 <section class="border m-1 p-1">

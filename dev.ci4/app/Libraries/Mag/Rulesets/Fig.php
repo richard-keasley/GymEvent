@@ -47,30 +47,40 @@ public $exes = [
 ];
 
 public $routine = [
-	'values' => [
-		'A' => .1,
-		'B' => .2,
-		'C' => .3,
-		'D' => .4,
-		'E' => .5,
-		'F' => .6,
-		'G' => .7,
-		'H' => .8,
-		'I' => .9
+	'difficulties' => [
+		'A' => 0.1,
+		'B' => 0.2,
+		'C' => 0.3,
+		'D' => 0.4,
+		'E' => 0.5,
+		'F' => 0.6,
+		'G' => 0.7,
+		'H' => 0.8,
+		'I' => 0.9
 	],
+	// penalties for short routine (include zeros)
 	'short' => [10, 9, 8, 7, 6, 5, 4, 3, 0, 0, 0],
-	'count' => 10,
-	'group_vals' => [
-		1 => ['A' => 0.3, 'B' => 0.5],
+	// value for each group according to difficulty
+	'groups' => [ 
+		1 => ['A' => 0.5],
 		2 => ['A' => 0.5],
 		3 => ['A' => 0.5],
 		4 => ['C' => 0.3, 'D' => 0.5 ]
 	],
-	'max_group' => 4
+	'group_max' => 4, // elements per group
+	'group_dis' => 4 // dismount group
 ];
 
 public $tariff = [
-	'count' => 1
+	'count' => 1 // number of exercises
 ];
+
+public function routine_options($propname) {
+	$options = [''];
+	foreach($this->routine[$propname] as $key=>$val) {
+		$options[$key] = $key;
+	}
+	return $options;
+}
 
 }
