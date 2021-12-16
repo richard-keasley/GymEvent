@@ -6,8 +6,7 @@ public function index() {
 	$this->data['breadcrumbs'][] = 'admin';
 	$this->data['breadcrumbs'][] = 'admin/profile';
 	$this->data['title'] = 'Profile images';
-	$this->data['head'] = 
-'<style>
+	$this->data['head'] = '<style>
 body {
 	background-image: url(/public/profile/desktop.jpg);
 	background-position: center top;

@@ -1,5 +1,5 @@
 <?php 
-echo view('includes/_head');
+echo $this->include('includes/_head');
 
 // help button
 if($help) { ?>
@@ -69,7 +69,6 @@ $this->renderSection('bottom');
 ?></main>
 
 <?php 
-echo view('includes/_footer');
-echo view('includes/js');
-echo view('includes/_foot');
- 
+echo $this->include('includes/_footer');
+echo $this->include('includes/js');
+echo $this->include('includes/_foot');

@@ -1,0 +1,41 @@
+[06-Dec-2021 11:45:01 Europe/London] PHP Fatal error:  Uncaught ErrorException: Undefined property: Config\Exceptions::$sensitiveDataInTrace in /home/gymevent/dev.ci4/system/Debug/Exceptions.php:242
+Stack trace:
+#0 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(242): CodeIgniter\Debug\Exceptions->errorHandler()
+#1 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(110): CodeIgniter\Debug\Exceptions->collectVars()
+#2 [internal function]: CodeIgniter\Debug\Exceptions->exceptionHandler()
+#3 {main}
+  thrown in /home/gymevent/dev.ci4/system/Debug/Exceptions.php on line 242
+[06-Dec-2021 11:48:54 Europe/London] PHP Fatal error:  Uncaught ErrorException: Undefined property: Config\Exceptions::$sensitiveDataInTrace in /home/gymevent/dev.ci4/system/Debug/Exceptions.php:242
+Stack trace:
+#0 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(242): CodeIgniter\Debug\Exceptions->errorHandler()
+#1 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(110): CodeIgniter\Debug\Exceptions->collectVars()
+#2 [internal function]: CodeIgniter\Debug\Exceptions->exceptionHandler()
+#3 {main}
+  thrown in /home/gymevent/dev.ci4/system/Debug/Exceptions.php on line 242
+[06-Dec-2021 12:11:30 Europe/London] PHP Fatal error:  Uncaught ErrorException: Undefined property: Config\Exceptions::$sensitiveDataInTrace in /home/gymevent/dev.ci4/system/Debug/Exceptions.php:242
+Stack trace:
+#0 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(242): CodeIgniter\Debug\Exceptions->errorHandler()
+#1 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(110): CodeIgniter\Debug\Exceptions->collectVars()
+#2 [internal function]: CodeIgniter\Debug\Exceptions->exceptionHandler()
+#3 {main}
+  thrown in /home/gymevent/dev.ci4/system/Debug/Exceptions.php on line 242
+[06-Dec-2021 14:32:36 Europe/London] PHP Fatal error:  Uncaught ErrorException: Undefined property: Config\Exceptions::$sensitiveDataInTrace in /home/gymevent/dev.ci4/system/Debug/Exceptions.php:242
+Stack trace:
+#0 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(242): CodeIgniter\Debug\Exceptions->errorHandler()
+#1 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(225): CodeIgniter\Debug\Exceptions->collectVars()
+#2 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(232): CodeIgniter\Debug\Exceptions->CodeIgniter\Debug\{closure}()
+#3 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(116): CodeIgniter\Debug\Exceptions->render()
+#4 [internal function]: CodeIgniter\Debug\Exceptions->exceptionHandler()
+#5 {main}
+  thrown in /home/gymevent/dev.ci4/system/Debug/Exceptions.php on line 242
+[06-Dec-2021 14:35:13 Europe/London] PHP Fatal error:  Uncaught ErrorException: Undefined property: Config\Exceptions::$sensitiveDataInTrace in /home/gymevent/dev.ci4/system/Debug/Exceptions.php:242
+Stack trace:
+#0 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(242): CodeIgniter\Debug\Exceptions->errorHandler()
+#1 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(225): CodeIgniter\Debug\Exceptions->collectVars()
+#2 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(232): CodeIgniter\Debug\Exceptions->CodeIgniter\Debug\{closure}()
+#3 /home/gymevent/dev.ci4/system/Debug/Exceptions.php(116): CodeIgniter\Debug\Exceptions->render()
+#4 [internal function]: CodeIgniter\Debug\Exceptions->exceptionHandler()
+#5 {main}
+  thrown in /home/gymevent/dev.ci4/system/Debug/Exceptions.php on line 242
+[10-Dec-2021 10:38:57 Europe/London] PHP Fatal error:  Cannot redeclare db_val() (previously declared in /home/gymevent/dev.ci4/app/Views/entries/export-sql.php:131) in /home/gymevent/dev.ci4/app/Views/entries/export-sql.php on line 131
+[14-Dec-2021 09:19:13 Europe/London] PHP Fatal error:  Constant expression contains invalid operations in /home/gymevent/dev.ci4/app/Libraries/Mag/Rulesets/Fig.php on line 49
