@@ -207,8 +207,13 @@ $(function() {
 		navigator.serviceWorker.register('/api/mag/exeval');
 	}
 });
+const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
 
 function get_exevals() {
+	var name = $('[name=name]').val();
+	$('h1').html(name);
+	document.title = name;
+	
 	var data = $('#editform').serializeArray();
 	$.get(api, data, function(response) {
 		try { 
@@ -223,7 +228,6 @@ function get_exevals() {
 	});
 }
 
-const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
 function update_exevals(message, message_ok=0) {
 	let htm = ''; this_ok = 0;
 	exekeys.forEach(function(exekey) {
