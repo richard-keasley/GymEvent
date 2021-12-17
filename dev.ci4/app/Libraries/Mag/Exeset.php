@@ -6,7 +6,7 @@ public $exercises = [];
 public $ruleset = null;
 
 public function __construct($post=[]) {
-	foreach(['name','event','rulesetname','saved'] as $key) {
+	foreach(['name','event','rulesetname'] as $key) {
 		$this->data[$key] = $post[$key] ?? '';
 	}
 	$this->data['saved'] = date('Y-m-d H:i:s');

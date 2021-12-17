@@ -161,10 +161,10 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		echo form_label(sprintf('%s (%1.1f)', $neutral['description'], $neutral['deduction']), $id, $label);
 		?>
 		</div>
-	<?php } 
+	<?php } ?>
+	<div id="exeval-<?php echo $exekey;?>"></div>
 	
-	echo view('mag/exeset/exe_eval', ['exekey'=>$exekey, 'exeset'=>$exeset]);
-	
+	<?php 
 	$items[] = [
 		'heading' => $exe_rules['name'],
 		'content' => ob_get_clean()
@@ -175,12 +175,14 @@ echo $tabs->htm();
 
 ?>
 <div class="toolbar">
+<button class="btn btn-primary bi bi-check-square" title="re-check this routine after edits" type="button" name="update"> update</button>
+<button class="btn btn-primary bi bi-arrow-down-square" title="save these routines to your computer so they can be altered later" type="submit" name="cmd" value="store"> save</button>
 <button class="btn btn-primary bi bi-printer" title="print this routine sheet" type="submit" name="cmd" value="print"> print</button>
-<button class="btn btn-primary bi bi-journal-arrow-down" title="save these routines to your computer so they can be altered later" type="submit" name="cmd" value="store"> save</button>
-<button class="btn btn-primary bi bi-journal-plus" title="make a copy of this routine sheet to use on another gymnast" type="button" name="clone"> clone</button>
-<button class="btn btn-primary bi bi-journal-check" title="re-check this routine after edits" type="submit" name="cmd" value="edit"> update</button>
+<button class="btn btn-primary bi bi-plus-square" title="make a copy of this routine sheet to use on another gymnast" type="button" name="clone"> clone</button>
 </div>
 <script>
+const api = '<?php echo base_url("/api/mag/exeval");?>/';
+
 $('#editform button[name=clone]').click(function() {
 	var form = $('#editform')[0];
 	var name_field = $('#editform [name=name]');
@@ -190,8 +192,53 @@ $('#editform button[name=clone]').click(function() {
 	$('#editform').submit();
 	form.target = '_self';
 	name_field.val(name);
-	//$('#editform').submit();
 });
+
+$('#editform button[name=update]').click(function() {
+	get_exevals();
+});
+$('#editform [name=rulesetname]').change(function() {
+	$('#editform').submit();
+});
+
+$(function() {
+	$('#editform button[name=update]').click();
+	if('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('/api/mag/exeval');
+	}
+});
+
+function get_exevals() {
+	var data = $('#editform').serializeArray();
+	$.get(api, data, function(response) {
+		try { 
+			update_exevals(response, 1); 
+		}
+		catch(errorThrown) { 
+			update_exevals(errorThrown);
+		}
+	})
+	.fail(function(jqXHR) {
+		update_exevals('server error');
+	});
+}
+
+const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
+function update_exevals(message, message_ok=0) {
+	let htm = ''; this_ok = 0;
+	exekeys.forEach(function(exekey) {
+		this_ok = message_ok ? typeof(message[exekey])!="undefined" : 0 ;
+		if(this_ok) {
+			htm = message[exekey];
+		}
+		else {
+			htm = message_ok ? exekey + ' missing in response' : message ;
+		}
+		if(!this_ok) htm = '<ul class="list-unstyled alert-danger"><li>API error: ' + htm + '.</li></ul>';
+		$('#exeval-'+exekey).html(htm);
+	});
+}
+
 </script>
 <?php
 

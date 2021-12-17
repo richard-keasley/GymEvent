@@ -218,7 +218,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	</table>
 	
 	<div style="width:25%">
-	<?php echo view('mag/exeset/exe_eval', ['exekey'=>$exekey, 'exeset'=>$exeset]);	?>
+	<?php echo view('mag/exeset/exeval', ['exekey'=>$exekey, 'exeset'=>$exeset]);	?>
 	<ul style="margin-top:0.5em;" class="list-unstyled">
 	<?php 
 	foreach($exercise['neutrals'] as $nkey=>$nval) { 

@@ -1,4 +1,8 @@
 <?php 
+if(empty($exekey)) { 
+	echo '<p class="alert-danger">No exercise specified</p>';
+	return;
+}
 if(empty($exeset->ruleset->exes[$exekey])) { 
 	printf('<p class="alert-danger">No rules for %s</p>', $exekey);
 	return;
@@ -47,10 +51,20 @@ switch($exe_rules['method']) {
 				$errors[] = "Enter a valid group for element {$rownum}";
 				continue;
 			}
-			// check dismount not used within routine
-			if($elnum!=$dismount_elnum && $el_group==$routine_rules['group_dis']) {
-				$errors[] = "Dismount (element {$rownum}) must be on last row";
-				continue;
+			// check dismount
+			if($elnum==$dismount_elnum) {
+				// check dismount element is in valid group
+				if(!in_array($el_group, $exe_rules['dis_groups'])) {
+					$errors[] = sprintf('Dismount must be in groups %s.', implode(', ', $exe_rules['dis_groups']));
+					continue;
+				}
+			}
+			else {
+				// check dismount group not used within routine
+				if($el_group==$routine_rules['group_dis']) {
+					$errors[] = "Dismount (element {$rownum}) must be on last row";
+					continue;
+				}
 			}
 			
 			// valid element

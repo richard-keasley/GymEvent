@@ -13,36 +13,41 @@ public $exes = [
 		'neutrals' => [
 			['deduction' => 0.3, 'description' => 'All 4 corners'],
 			['deduction' => 0.3, 'description' => 'Multiple salto']
-		]
+		],
+		'dis_groups' => [2, 3]
 	],
 	'PH' => [
 		'name' => 'Pommels',
 		'method' => 'routine',
 		'neutrals' => [
 			['deduction' => 0.3, 'description' => 'Use whole horse']
-		]
+		],
+		'dis_groups' => [4]
 	],
 	'SR' => [
 		'name' => 'Rings',
 		'method' => 'routine',
 		'neutrals' => [
 			['deduction' => 0.3, 'description' => 'Swing to handstand']
-		]
+		],
+		'dis_groups' => [4]
 	],
 	'VT' => [
 		'name' => 'Vault',
 		'method' => 'tariff',
-		'neutrals' => []
+		'neutrals' => [],
 	],
 	'PB' => [
 		'name' => 'P-bars',
 		'method' => 'routine',
-		'neutrals' => []
+		'neutrals' => [],
+		'dis_groups' => [4]
 	],
 	'HB' => [
 		'name' => 'High bar',
 		'method' => 'routine',
-		'neutrals' => []
+		'neutrals' => [],
+		'dis_groups' => [4]
 	]
 ];
 
