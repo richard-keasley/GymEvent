@@ -2,7 +2,6 @@
 
 class Fig {
 public $version = '2021-12-11';
-
 public $title = "FIG";
 public $description = "Senior code";
 
@@ -10,44 +9,49 @@ public $exes = [
 	'FX' => [
 		'name' => 'Floor',
 		'method' => 'routine',
+		'dis_groups' => [2, 3],
+		'connection' => true,
 		'neutrals' => [
 			['deduction' => 0.3, 'description' => 'All 4 corners'],
 			['deduction' => 0.3, 'description' => 'Multiple salto']
-		],
-		'dis_groups' => [2, 3]
+		]
 	],
 	'PH' => [
 		'name' => 'Pommels',
 		'method' => 'routine',
+		'dis_groups' => [4],
+		'connection' => false,
 		'neutrals' => [
 			['deduction' => 0.3, 'description' => 'Use whole horse']
-		],
-		'dis_groups' => [4]
+		]
 	],
 	'SR' => [
 		'name' => 'Rings',
 		'method' => 'routine',
+		'dis_groups' => [4],
+		'connection' => false,
 		'neutrals' => [
 			['deduction' => 0.3, 'description' => 'Swing to handstand']
-		],
-		'dis_groups' => [4]
+		]
 	],
 	'VT' => [
 		'name' => 'Vault',
 		'method' => 'tariff',
-		'neutrals' => [],
+		'neutrals' => []
 	],
 	'PB' => [
 		'name' => 'P-bars',
 		'method' => 'routine',
-		'neutrals' => [],
-		'dis_groups' => [4]
+		'dis_groups' => [4],
+		'connection' => false,
+		'neutrals' => []
 	],
 	'HB' => [
 		'name' => 'High bar',
 		'method' => 'routine',
-		'neutrals' => [],
-		'dis_groups' => [4]
+		'dis_groups' => [4],
+		'connection' => true,
+		'neutrals' => []
 	]
 ];
 

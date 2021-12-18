@@ -34,9 +34,15 @@ public function __construct($post=[]) {
 		}
 		$this->exercises[$exekey]['elements'] = $elements;
 		
+		if(!empty($exe_rules['connection'])) {
+			$key = "{$exekey}_con";
+			$val = $post[$key] ?? 0 ;
+			$this->exercises[$exekey]['connection'] = floatval($val);	
+		}
+		
 		$neutrals = [];
 		foreach(array_keys($exe_rules['neutrals']) as $nkey) {
-			$key = "{$exekey}_n_{$nkey}";
+			$key = "{$exekey}_nd_{$nkey}";
 			$neutrals[$nkey] = empty($post[$key]) ? 0  : 1;
 		}
 		$this->exercises[$exekey]['neutrals'] = $neutrals;	

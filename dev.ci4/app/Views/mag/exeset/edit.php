@@ -63,7 +63,8 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 ?></div>
 
 <?php 
-$items = [];
+$exeval_fields = ['rulesetname']; // only these fields sent to API
+$tab_items = [];
 foreach($exeset->exercises as $exekey=>$exercise) {
 	ob_start();
 	
@@ -98,14 +99,14 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 				[
 					'type' => 'select',
 					'options' => $exeset->ruleset->routine_options('difficulties'),
-					'style' => "max-width:4em",
+					'style' => "max-width:3em",
 					'class' => "form-control",
 					'placeholder' => 'val'
 				],
 				[
 					'type' => 'select',
 					'options' => $exeset->ruleset->routine_options('groups'),
-					'style' => "max-width:4em",
+					'style' => "max-width:3em",
 					'class' => "form-control",
 					'placeholder' => 'grp'
 				],
@@ -119,7 +120,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	}
 	foreach($exercise['elements'] as $elnum=>$element) { 
 		?>
-		<div class="input-group my-1">
+		<div class="input-group my-0">
 		<span class="input-group-text" style="width:3em">
 			<?php echo $elnum==$dismount_num ? 'D' : $elnum + 1; ?>
 		</span>
@@ -127,6 +128,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		foreach($inputs as $col=>$input) {
 			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
 			$input['value'] = $element[$col];
+			if($col<2) $exeval_fields[] = $input['name'];
 			switch($input['type']) {
 				case 'select': 
 					unset($input['type']);
@@ -140,11 +142,30 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		</div>
 	<?php }
 	
-	foreach($exercise['neutrals'] as $nkey=>$nval) { 
+	if(!empty($exe_rules['connection'])) { ?>
+		<div class="input-group my-1">
+		<span class="input-group-text" style="width:7em">Connection</span>
+		<?php 
+		$id = "{$exekey}_con";
+		$input = [
+			'type' => "text",
+			'class' => "form-control",
+			'name' => $id,
+			'id' => $id,
+			'value' => $exercise['connection'] ?? 0
+		];
+		$exeval_fields[] = $input['name'];
+		echo form_input($input);
 		?>
+		</div>
+	<?php } ?>
+	
+	<div class="my-2">
+	<?php foreach($exercise['neutrals'] as $nkey=>$nval) { ?>
 		<div class="form-check">
 		<?php
-		$id = "{$exekey}_n_{$nkey}";
+		$id = "{$exekey}_nd_{$nkey}";
+		$exeval_fields[] = $id;
 		$input = [
 			'type' => 'checkbox',
 			'name' => $id,
@@ -162,17 +183,20 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		?>
 		</div>
 	<?php } ?>
-	<div id="exeval-<?php echo $exekey;?>"></div>
+	</div>
+	
+	<div id="exeval-<?php echo $exekey;?>">
+	<?php echo view('mag/exeset/exeval', ['exekey'=>$exekey, 'exeset'=>$exeset]); ?>
+	</div>
 	
 	<?php 
-	$items[] = [
+	$tab_items[] = [
 		'heading' => $exe_rules['name'],
 		'content' => ob_get_clean()
 	];
 }
-$tabs = new \App\Libraries\Ui\Tabs($items);
+$tabs = new \App\Libraries\Ui\Tabs($tab_items);
 echo $tabs->htm();
-
 ?>
 <div class="toolbar">
 <button class="btn btn-primary bi bi-check-square" title="re-check this routine after edits" type="button" name="update"> update</button>
@@ -197,25 +221,40 @@ $('#editform button[name=clone]').click(function() {
 $('#editform button[name=update]').click(function() {
 	get_exevals();
 });
+
 $('#editform [name=rulesetname]').change(function() {
 	$('#editform').submit();
 });
 
 $(function() {
-	$('#editform button[name=update]').click();
 	if('serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/api/mag/exeval');
 	}
 });
 const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
+const exeval_fields = <?php echo json_encode($exeval_fields);?>;
 
 function get_exevals() {
-	var name = $('[name=name]').val();
-	$('h1').html(name);
-	document.title = name;
+	var name = $('[name=name]').val().trim();
+	if(name) { 
+		$('h1').html(name);
+		document.title = name;
+	}
 	
-	var data = $('#editform').serializeArray();
-	$.get(api, data, function(response) {
+	var exeset = {}; var el = null; var val = null;
+	exeval_fields.forEach(fld => {
+		el = $('[name='+fld+']')[0];
+		switch(el.type) {
+			case 'checkbox':
+				val = el.checked ? 1 : 0 ;
+				break;
+			default:
+				val = el.value;
+		}
+		exeset[fld] = val;
+	})
+
+	$.get(api, exeset, function(response) {
 		try { 
 			update_exevals(response, 1); 
 		}
@@ -245,9 +284,10 @@ function update_exevals(message, message_ok=0) {
 
 </script>
 <?php
-
-d($exeset);
-
 echo form_close();
+
+# d($exeset);
+# d($exeval_fields);
+
 $this->endSection(); 
 

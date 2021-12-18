@@ -102,28 +102,32 @@ thead th {
 	padding: 0;
 	margin: 0;
 }
-.routine {
+
+table {
 	border-collapse: collapse;
+}
+.routine {
 	border: 1px solid #666;
 }
-.routine thead th {
-	text-align: left;
+.routine table {
+	width: 100%;
 }
-.routine tbody td {
-	border-top: 1px solid #999;
-	border-bottom: 1px solid #999;
+.routine td {
+	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
 	padding: 0 .2em;
 	overflow: hidden;
 	white-space: nowrap;
 }
-.routine tbody .el,
-.routine tbody .el0,
-.routine tbody .el1 {
+.routine .el {
 	width: 1em;
-}
-.routine tbody .el {
 	color: #b7561b;
 }
+.routine .el0,
+.routine .el1 {
+	width: 1em;
+}
+
 
 .text-end {
 	text-align: right;
@@ -186,8 +190,9 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	<section class="row">
 	
 	<h3 style="width:35%"><?php echo $exe_rules['name'];?></h3>
-
-	<table style="width:40%" class="routine">
+	
+	<div class="routine" style="width:40%">
+	<table>
 	<tbody>
 	<?php
 		
@@ -216,6 +221,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	?>
 	</tbody>
 	</table>
+	</div>
 	
 	<div style="width:25%">
 	<?php echo view('mag/exeset/exeval', ['exekey'=>$exekey, 'exeset'=>$exeset]);	?>
