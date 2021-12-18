@@ -23,4 +23,3 @@ if($anchors) { ?>
 	} 
 	?></ul>
 <?php } 
-

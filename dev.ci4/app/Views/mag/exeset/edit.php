@@ -56,7 +56,7 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 		'class' => "form-control", 
 		'id' => "event",
 		'name' => "event",
-		'style' => "max-height:4em",
+		'style' => "height:4em",
 		'value' => $exeset->event
 	];
 	echo form_textarea($input);
@@ -204,8 +204,17 @@ echo $tabs->htm();
 <button class="btn btn-primary bi bi-printer" title="print this routine sheet" type="submit" name="cmd" value="print"> print</button>
 <button class="btn btn-primary bi bi-plus-square" title="make a copy of this routine sheet to use on another gymnast" type="button" name="clone"> clone</button>
 </div>
+
 <script>
 const api = '<?php echo base_url("/api/mag/exeval");?>/';
+const filter = <?php 
+	$arr = [];
+	foreach(\App\Libraries\Mag\Exeset::filter as $key=>$val) {
+		$arr[] = [$key, $val];
+		
+	}
+	echo json_encode($arr);
+?>;
 
 $('#editform button[name=clone]').click(function() {
 	var form = $('#editform')[0];
@@ -236,6 +245,11 @@ const exeval_fields = <?php echo json_encode($exeval_fields);?>;
 
 function get_exevals() {
 	var name = $('[name=name]').val().trim();
+	filter.forEach((element) => {
+		var search = new RegExp(element[0],"gi");
+		name = name.replace(search, element[1]);
+	});
+	
 	if(name) { 
 		$('h1').html(name);
 		document.title = name;

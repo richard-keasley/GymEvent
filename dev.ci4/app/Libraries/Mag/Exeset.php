@@ -1,11 +1,21 @@
 <?php namespace App\Libraries\Mag;
 
 class Exeset {
+const filter = [
+	'<' => '{',
+	'>' => '}',
+	'&' => '+'
+];
+
 public $data = [];
 public $exercises = [];
 public $ruleset = null;
 
 public function __construct($post=[]) {
+	// sanitize
+	foreach($post as $key=>$val) {
+		$post[$key] = strtr(trim($val), self::filter);
+	}
 	foreach(['name','event','rulesetname'] as $key) {
 		$this->data[$key] = $post[$key] ?? '';
 	}

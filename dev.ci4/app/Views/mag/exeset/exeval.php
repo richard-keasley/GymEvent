@@ -115,7 +115,7 @@ if($errors) { ?>
 $score_format = '<div class="px-2 text-end">%.1f</div>';
 $table = new \CodeIgniter\View\Table();
 $table->setTemplate(['table_open' => '<table class="table table-sm">']);
-$table->setHeading(['','']);
+$table->autoHeading = false;
 $table->setFooting(['SV', sprintf($score_format, max(10 + array_sum($score), 0))]);
 $tbody = [];
 foreach($score as $key=>$val) {

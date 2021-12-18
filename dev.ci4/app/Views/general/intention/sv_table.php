@@ -19,7 +19,7 @@ foreach($arr as $key=>$label) {
 
 $template = ['table_open' => '<table class="table table-sm">'];
 $table->setTemplate($template);
-$table->setHeading(['','']);
+$table->autoHeading = false;
 $table->setFooting(['Start value', sprintf($val_format, $total)]);
 echo $table->generate($tbody);
 ?>
