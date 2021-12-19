@@ -79,7 +79,7 @@ public $routine = [
 		3 => ['A' => 0.5],
 		4 => ['C' => 0.3, 'D' => 0.5 ]
 	],
-	'group_max' => 4, // elements per group
+	'group_max' => 5, // elements per group
 	'group_dis' => 4 // dismount group
 ];
 
