@@ -2,6 +2,3 @@
 dev.ci4/.env
 dev.ci4/system/*
 dev.ci4/writable/*
-
-# hide passwords 
-dev.ci4/app/Config/Database.php
