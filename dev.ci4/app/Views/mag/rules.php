@@ -33,7 +33,19 @@ foreach($ruleset->routine['groups'] as $group_num=>$group_val) {
 } ?>
 </ul>
 <p>Max elements: <?php echo $ruleset->routine['group_max'];?></p>
-<p>Dismount: Group <?php echo $ruleset->routine['group_dis'];?></p>
+<h4>Dismount</h4>
+<p>Group <?php echo $ruleset->routine['group_dis'];?></p>
+<ul class="list-group">
+<?php foreach($ruleset->exes as $abbr=>$exe) {
+	if(!empty($exe['dis_groups'])) { ?>
+		<li class="list-group-item">
+		<?php
+		printf('<strong>%s:</strong> %s.', $exe['name'], implode(', ', $exe['dis_groups']));
+		?>
+		</li>
+	<?php }
+}
+?></ul>
 </section>
 
 <section class="border m-1 p-1">
