@@ -1,9 +1,12 @@
 <?php namespace App\Libraries\Mag\Rulesets;
 
 class Fig {
+public $name = null;
+public $title = null;
+
 public $version = '2021-12-11';
-public $title = "FIG";
-public $description = "Senior code";
+
+public $description = 'FIG senior code';
 
 public $exes = [
 	'FX' => [

@@ -2,27 +2,26 @@
 // helper load rulesets
 
 class Rules {
+const DEF_RULESETNAME = 'Fig';
 
-static function index() {
-	$retval = [];
-	foreach(glob(self::filepath('*')) as $file) {
-		$key = basename($file, '.php');
-		$label = explode('_', $key, 2);
-		$label[0] = strtoupper($label[0]);
-		$retval[$key] = implode(' ', $label);
-	}
-	return $retval;
-}
+// ruleset basename(file) => title
+const index = [
+	self::DEF_RULESETNAME => 'FIG',
+	'Jnr' => 'FIG - junior',
+	'U12' => 'BG - under 12'
+];
 
-static function load($setname='Fig') {
-	$filepath = self::filepath($setname);
-	if(!file_exists($filepath)) $setname='Fig';
+static function load($setname=self::DEF_RULESETNAME) {
+	if(!self::exists($setname)) $setname = self::DEF_RULESETNAME;
 	$classname = "\\App\\Libraries\\Mag\\Rulesets\\{$setname}";
-	return new $classname;
+	$ruleset = new $classname;
+	$ruleset->name = $classname;
+	$ruleset->title = self::index[$setname];
+	return $ruleset;
 }
 
-static function filepath($setname='Fig') {
-	return  __DIR__ . "/Rulesets/{$setname}.php";
+static function exists($setname) {
+	return isset(self::index[$setname]);
 }
 	
 }
