@@ -12,16 +12,18 @@ public function __construct() {
 }
 	
 public function index() {
-	$this->data['index'] = \App\Libraries\Mag\Rules::index();
+	$this->data['index'] = \App\Libraries\Mag\Rules::index;
 	return view('mag/index', $this->data);
 }
 
-public function rules($setname = null) {
-	$this->data['ruleset'] = \App\Libraries\Mag\Rules::load($setname);
-	if(!$this->data['ruleset']) {
-		throw new \RuntimeException("Can't find MAG rule set $setname", 404);
+public function rules($rulesetname = null) {
+	if(!\App\Libraries\Mag\Rules::exists($rulesetname)) {
+		throw new \RuntimeException("Can't find MAG rule set $rulesetname", 404);
 	}
-	$this->data['breadcrumbs'][] = ["mag/rules/{$setname}", $this->data['ruleset']->title];
+	
+	$this->data['ruleset'] = \App\Libraries\Mag\Rules::load($rulesetname);
+	
+	$this->data['breadcrumbs'][] = ["mag/rules/{$rulesetname}", $this->data['ruleset']->title];
 	$this->data['title'] = $this->data['ruleset']->title;
 	$this->data['heading'] = $this->data['ruleset']->title;
 	return view('mag/rules', $this->data);

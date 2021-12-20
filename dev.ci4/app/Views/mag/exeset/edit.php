@@ -44,7 +44,7 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 		'class' => "form-control", 
 		'id' => "rulesetname",
 		'name' => "rulesetname",
-		'options' => \App\Libraries\Mag\Rules::index()
+		'options' => \App\Libraries\Mag\Rules::index
 	];
 	echo form_dropdown($input);
 ?></div>

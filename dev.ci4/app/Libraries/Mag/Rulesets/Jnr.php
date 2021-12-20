@@ -1,7 +1,6 @@
 <?php namespace App\Libraries\Mag\Rulesets;
 
-class Fig_junior extends Fig {
-public $title = "Junior FIG";
+class Jnr extends Fig {
 public $description = "Junior code (Under 18s)";	
 
 public function __construct() {

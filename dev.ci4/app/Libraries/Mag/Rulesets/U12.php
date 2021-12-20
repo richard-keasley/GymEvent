@@ -1,7 +1,6 @@
 <?php namespace App\Libraries\Mag\Rulesets;
 
-class Bg_under12 extends Fig {
-public $title = "BG under 12";
+class U12 extends Fig {
 public $description = "BG Junior code (Under 12s)";	
 
 public function __construct() {

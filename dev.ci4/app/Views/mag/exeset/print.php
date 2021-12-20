@@ -80,12 +80,10 @@ form button {
 	border-radius: .25rem;
 	margin: .5em;
 }
-
-.table.table-sm {
-	border-spacing: 0;
+table {
+	border-collapse: collapse;
 	border-collapse: collapse;
 }
-
 tfoot td {
 	font-weight: bold;
 	border-top: 1px solid #ddd;
@@ -93,6 +91,7 @@ tfoot td {
 thead th {
 	text-align: left;
 }
+
 .alert-danger {
 	background: #edd9d9a8;
 	font-size: .9em;
@@ -102,10 +101,18 @@ thead th {
 	padding: 0;
 	margin: 0;
 }
-
-table {
-	border-collapse: collapse;
+.row {
+	display: flex;
+	gap: 1em;
+	align-items: flex-start;
 }
+.text-end {
+	text-align: right;
+}
+.text-decoration-line-through {
+	text-decoration: line-through;
+}
+
 .routine {
 	border: 1px solid #666;
 }
@@ -126,16 +133,6 @@ table {
 .routine .el0,
 .routine .el1 {
 	width: 1em;
-}
-
-
-.text-end {
-	text-align: right;
-}
-.row {
-	display: flex;
-	gap: 1em;
-	align-items: flex-start;
 }
 
 @media print {
@@ -160,7 +157,7 @@ table {
 <div style="width:30%; font-weight:bold">
 <?php echo $exeset->name;?><br>
 <?php 
-$options = \App\Libraries\Mag\Rules::index();
+$options = \App\Libraries\Mag\Rules::index;
 echo $options[$exeset->rulesetname] ?? '' ;
 ?>
 </div>
@@ -228,9 +225,9 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	<ul style="margin-top:0.5em;" class="list-unstyled">
 	<?php 
 	foreach($exercise['neutrals'] as $nkey=>$nval) { 
-		$label = $nval ? 'yes' : 'no' ;
+		$decoration = $nval ? 'none' : 'line-through' ;
 		$neutral = $exe_rules['neutrals'][$nkey]; 
-		printf('<li>%s: %s</li>', $neutral['description'], $label);
+		printf('<li class="text-decoration-%s">%s</li>', $decoration, $neutral['description']);
 	} ?>
 	</ul>
 	</div>
