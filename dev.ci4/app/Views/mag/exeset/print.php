@@ -122,8 +122,7 @@ thead th {
 .routine td {
 	border-top: 1px solid #eee;
 	border-bottom: 1px solid #eee;
-	padding: 0 .2em;
-	overflow: hidden;
+	padding: 0 .3em;
 	white-space: nowrap;
 }
 .routine .el {
