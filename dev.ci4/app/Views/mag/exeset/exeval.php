@@ -35,7 +35,7 @@ switch($exe_rules['method']) {
 		}
 		if($exe_rules['connection']) {
 			$val = $exercise['connection'] ?? 0 ;
-			$score['Connection'] = floatval($val);
+			if($val) $score['Connection'] = floatval($val);
 		}
 		
 		$dismount_elnum = array_key_last($exercise['elements']); 
