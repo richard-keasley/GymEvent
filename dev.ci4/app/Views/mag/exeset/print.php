@@ -122,17 +122,15 @@ thead th {
 .routine td {
 	border-top: 1px solid #eee;
 	border-bottom: 1px solid #eee;
-	padding: 0 .2em;
-	overflow: hidden;
+	padding: 0 .3em;
 	white-space: nowrap;
 }
 .routine .el {
 	width: 1em;
 	color: #b7561b;
 }
-.routine .el0,
-.routine .el1 {
-	width: 1em;
+.routine .el0 {
+	width: 1.5em;
 }
 
 @media print {
@@ -202,15 +200,15 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$dismount_num = array_key_last($exercise['elements']); 
 	}
 	
-	$tbody = [];
+	$tr = [];
 	foreach($exercise['elements'] as $elnum=>$element) {
+		foreach($element as $key=>$val) $tr[$key] = $val ? $val : '' ;
 		?>
 		<tr>
 		<?php 
 		printf('<td class="el">%s</td>', $elnum==$dismount_num ? 'D' : $elnum + 1);
-		foreach($element as $key=>$val) {
-			printf('<td class="el%u">%s</td>', $key, $val ? $val : '');
-		}
+		printf('<td class="el0">%s %s</td>', $tr[0], $tr[1]);
+		printf('<td>%s</td>', $tr[2]);
 		?>
 		</tr>
 		<?php 

@@ -73,7 +73,9 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		case 'tariff':
 			$inputs = [
 				[
-					'type' => 'text',
+					'type' => "number",
+					'step' => "0.1",
+					'min' => "0",
 					'style' => "max-width:5em",
 					'class' => "form-control",
 					'placeholder' => 'tariff'
@@ -148,7 +150,9 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		<?php 
 		$id = "{$exekey}_con";
 		$input = [
-			'type' => "text",
+			'type' => "number",
+			'step' => "0.1",
+			'min' => "0",
 			'class' => "form-control",
 			'name' => $id,
 			'id' => $id,
