@@ -17,8 +17,8 @@ chdir(__DIR__);
 
 // Load our paths config file
 // This is the line that might need to be changed, depending on your folder structure.
-#$pathsPath = FCPATH . '../app/Config/Paths.php';
-$pathsPath = realpath(FCPATH . '../dev.ci4/app/Config/Paths.php');
+$pathsPath = FCPATH . '../app/Config/Paths.php';
+# $pathsPath = FCPATH . '../dev.ci4/app/Config/Paths.php';
 // ^^^ Change this if you move your application folder
 #echo $pathsPath;
 require realpath($pathsPath) ?: $pathsPath;

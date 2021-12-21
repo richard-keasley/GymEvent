@@ -16,33 +16,32 @@ $this->section('sidebar'); ?>
 <ul class="list-unstyled">
 <li class="bi bi-folder"> <?php echo $paths['ROOTPATH'];?>
 <ul class="list-unstyled ps-3">
-	<li class="bi bi-folder"> <?php echo $paths['APPPATH'];?>
+	<li class="bi bi-folder my-1"> <?php echo $paths['APPPATH'];?>
 		<ul class="list-unstyled ps-3">
 			<li class="bi bi-list"> [application folders]</li>
 			<li class="bi bi-file-code"> .htaccess</li>
 			<li class="bi bi-file-code"> Common.php</li>
 		</ul>
 	</li>
-	<li class="bi bi-folder"> <?php echo $paths['SYSTEMPATH'];?></li>
-	<li class="bi bi-folder"> <?php echo $paths['WRITEPATH'];?></li>
+	<li class="bi bi-folder my-1"> <?php echo $paths['SYSTEMPATH'];?></li>
+	<li class="bi bi-folder my-1"> <?php echo $paths['WRITEPATH'];?></li>
+	<li class="bi bi-folder my-1"> <?php echo $paths['FCPATH'];?>
+		<ul class="list-unstyled ps-3">
+			<li class="bi bi-folder"> public
+				<ul class="list-unstyled ps-3">
+					<li class="bi bi-folder"> ui</li>
+					<li class="bi bi-list"> [site downloads / etc]</li>
+				</ul>
+			</li>
+			<li class="bi bi-file-code"> .htaccess</li>
+			<li class="bi bi-file-code"> .user.ini</li>
+			<li class="bi bi-file-code"> php.ini</li>
+			<li class="bi bi-file-code"> index.php</li>
+			<li class="bi bi-file"> robots.txt</li>
+		</ul>
+	</li>
 	<li class="bi bi-file-code"> .env</li>
 </ul>
-</li>
-
-<li class="bi bi-folder mt-3"> <?php echo $paths['FCPATH'];?>
-	<ul class="list-unstyled ps-3">
-		<li class="bi bi-folder"> public
-			<ul class="list-unstyled ps-3">
-				<li class="bi bi-folder"> ui</li>
-				<li class="bi bi-list"> [site downloads / etc]</li>
-			</ul>
-		</li>
-		<li class="bi bi-file-code"> .htaccess</li>
-		<li class="bi bi-file-code"> .user.ini</li>
-		<li class="bi bi-file-code"> php.ini</li>
-		<li class="bi bi-file-code"> index.php</li>
-		<li class="bi bi-file"> robots.txt</li>
-	</ul>
 </li>
 </ul>
 <?php $this->endSection();
@@ -52,17 +51,18 @@ $this->section('content'); ?>
 
 <p>CodeIgniter sits in <?php echo $paths['ROOTPATH'];?>. This path sits outside the document root.</p>
 
-<p><?php echo $paths['SYSTEMPATH'];?> stores the files that make up the framework itself. An upgrade of CodeIgniter system will overwrite this folder. Edit nothing in this folder.</p>
+<p><?php echo $paths['SYSTEMPATH'];?> stores the files that make up the CodeIgniter framework. This folder contains a copy of CodeIgniter system. An upgrade of CodeIgniter system will overwrite this folder. Edit nothing in this folder. <strong>NB:</strong> The CodeIgniter system is not included in this distribution.</p>
 
 <p><?php echo $paths['APPPATH'];?> holds the GymEvent application. Edit files in here to alter the application's behaviour.</p>
 
 <p><?php echo $paths['WRITEPATH'];?> will be used to write cache files and logs / etc. It can be empty for a new installation, but make sure it is writeable.</p>
 
-<p><?php echo $paths['FCPATH'];?> is the document root (publicly accessible) for this domain. You may have to use a different folder name for this.</p>
+<p><?php echo $paths['FCPATH'];?> is the document root (publicly accessible) for this domain. You may have to use a different folder name for this (e.g. using primary domain on cPanel).</p>
 
 <p><?php echo path_label('FCPATH', 'public');?>
 is used for downloads and files accessible to the public. All front-end <abbr title="e.g. bootstrap, jQuery, CSS">site resources</abbr> are in 
-<?php echo path_label('FCPATH', 'public/ui');?>.</p>
+<?php echo path_label('FCPATH', 'public/ui');?>. 
+Event specific files (and installation specific files) are in <?php echo path_label('FCPATH', 'public/events');?>.</p>
 
 <p>Read about CodeIgniter's <a href="https://codeigniter.com/user_guide/concepts/structure.html">directory structure</a>.</p>
 
@@ -72,7 +72,7 @@ is used for downloads and files accessible to the public. All front-end <abbr ti
 
 <p>Ensure the php.ini files (<?php echo path_label('FCPATH', 'php.ini');?> &amp; <?php echo path_label('FCPATH', '.user.ini');?> are appropriate for the server.</p>
 
-<p>Edit the front controller (<?php echo path_label('FCPATH', 'index.php');?>) to make <code>$pathsPath</code> point to <?php echo path_label('APPPATH', 'Config/Paths.php');?>.<br>Example: <code>$pathsPath = realpath(FCPATH . '../<em>{ci4}</em>/app/Config/Paths.php');</code></p>
+<p>Edit the front controller (<?php echo path_label('FCPATH', 'index.php');?>) to make <code>$pathsPath</code> point to <?php echo path_label('APPPATH', 'Config/Paths.php');?>.<br>Example: <code>$pathsPath = FCPATH . '../<em>{ci4}</em>/app/Config/Paths.php';</code></p>
 
 <?php $this->endSection();
 

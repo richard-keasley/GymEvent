@@ -3,7 +3,7 @@
 $this->section('content'); ?>
 <div class="float-end"><?php echo view('includes/version');?></div>
 
-<h2>CodeIgniter <img src="<?php echo base_url('/public/ui/res/codeigniter.svg');?>" style="height: 1.3em;"></h2>
+<h2>CodeIgniter <img src="<?php echo base_url('/public/images/codeigniter.svg');?>" style="height: 1.3em;"></h2>
 
 <p>Base URL for this installation is <?php printf('<a href="%1$s">%1$s</a>', base_url());?>.</p>
 
@@ -25,7 +25,7 @@ $this->section('content'); ?>
 
 <h5>JavaScript helpers</h5>
 <p><mark>{ui}/{BS}/dist/js/bootstrap.bundle.min.js</mark> is included as a JS helper at the end of each page.</p>
-<p><a href="https://jquery.com/"><img src="<?php echo base_url('/public/ui/res/jquery.svg');?>" class="pe-2" style="height:1.3em;">jQuery</a> is used as well (but not jQuery-UI).</p>
+<p><a href="https://jquery.com/"><img src="<?php echo base_url('/public/images/jquery.svg');?>" class="pe-2" style="height:1.3em;">jQuery</a> is used as well (but not jQuery-UI).</p>
 
 <h3>Style</h3>
 <ul>
