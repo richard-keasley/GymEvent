@@ -1,4 +1,4 @@
-# codeigniter 4
 dev.ci4/.env
 dev.ci4/system/*
 dev.ci4/writable/*
+dev.ci4/public/events/*

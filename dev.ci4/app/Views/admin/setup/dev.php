@@ -14,17 +14,17 @@ $this->section('content'); ?>
 <h2>Front end (<abbr title="style sheets">CSS</abbr> and <abbr title="JavaScript animations">JS</abbr>) <span class="bi-bootstrap-fill" style="color:#7952b3"></span></h2>
 <p>Bootstrap is used for the front-end. Read <a href="https://getbootstrap.com/docs/5.0/getting-started/introduction/">documentation</a> on how to use Bootstrap.</p>
 
-<p>All resources for front-end are stored in <mark><?php echo FCPATH;?>public/ui/</mark> (URL: <?php echo base_url('public/ui');?>/).</p>
+<p>All resources for front-end are stored in <mark><?php echo FCPATH;?>public/</mark> (URL: <?php echo base_url('public');?>/).</p>
 
-<p>The <a href ="<?php echo base_url('/public/ui/bootstrap-icons-1.5.0/');?>">Bootstrap icons are listed</a> here <a href ="https://icons.getbootstrap.com/">(documentation on icon usage)</a>.</p>
+<p>The <a href ="<?php echo base_url('/public/bootstrap-icons-1.5.0/');?>">Bootstrap icons are listed</a> here <a href ="https://icons.getbootstrap.com/">(documentation on icon usage)</a>.</p>
 
 <h5>Style sheets</h5>
-<p>Style sheet is compiled from <mark>{ui}/scss/bootstrap.sccs</mark> into <mark>{ui}/bootstrap.ccs</mark>. Compilation requires the folder <mark>{ui}/{bootstrap}/scss/*</mark>.<p> 
-<p>Icon style sheet is <mark>{ui}/{BS-icons}/bootstrap-icons.css</mark>.</p>
-<p>Extra styles can be added to <mark>{ui}/custom.ccs</mark>.</p>
+<p>Style sheet is a compiled bootstrap style sheet <mark>/public/bootstrap.ccs</mark>.<p> 
+<p>Custom styles can be added to <mark>/public/custom.ccs</mark>.</p>
 
 <h5>JavaScript helpers</h5>
-<p><mark>{ui}/{BS}/dist/js/bootstrap.bundle.min.js</mark> is included as a JS helper at the end of each page.</p>
+<p><mark>/public/bootstrap.bundle.min.js</mark> is included as a JS helper at the end of each page. This requires <mark>/public/bootstrap.bundle.min.js.map</mark>.</p>
+
 <p><a href="https://jquery.com/"><img src="<?php echo base_url('/public/images/jquery.svg');?>" class="pe-2" style="height:1.3em;">jQuery</a> is used as well (but not jQuery-UI).</p>
 
 <h3>Style</h3>

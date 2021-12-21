@@ -61,7 +61,7 @@ $this->section('content'); ?>
 
 <p><?php echo path_label('FCPATH', 'public');?>
 is used for downloads and files accessible to the public. All front-end <abbr title="e.g. bootstrap, jQuery, CSS">site resources</abbr> are in 
-<?php echo path_label('FCPATH', 'public/ui');?>. 
+<?php echo path_label('FCPATH', 'public');?>. 
 Event specific files (and installation specific files) are in <?php echo path_label('FCPATH', 'public/events');?>.</p>
 
 <p>Read about CodeIgniter's <a href="https://codeigniter.com/user_guide/concepts/structure.html">directory structure</a>.</p>
