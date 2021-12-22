@@ -24,6 +24,7 @@ public function rules($rulesetname = null) {
 	$this->data['ruleset'] = \App\Libraries\Mag\Rules::load($rulesetname);
 	
 	$this->data['breadcrumbs'][] = ["mag/rules/{$rulesetname}", $this->data['ruleset']->title];
+	$this->data['rulesetname'] = $rulesetname;
 	$this->data['title'] = $this->data['ruleset']->title;
 	$this->data['heading'] = $this->data['ruleset']->title;
 	return view('mag/rules', $this->data);

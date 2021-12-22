@@ -71,11 +71,17 @@ foreach($ruleset->routine['groups'] as $group_num=>$group_val) {
 
 <?php $this->endSection(); 
 
-$this->section('top'); ?>
-<div class="toolbar">
-<?php echo \App\Libraries\View::back_link("mag");?>
-</div>
-<?php $this->endSection(); 
+$this->section('top'); 
+$action = base_url('mag/routine');
+$attr = ['class' => "toolbar"];
+$hidden = ['rulesetname' => $rulesetname];
+echo form_open($action, $attr, $hidden);
+echo \App\Libraries\View::back_link("mag");
+?>
+<button type="submit" title="create routine" class="btn bi-plus btn-outline-primary"></button>
+<?php
+echo form_close();
+$this->endSection(); 
 
 $this->section('bottom'); ?>
 <p>Please tell Richard Keasley if you spot any errors.</p>
