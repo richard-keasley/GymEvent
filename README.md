@@ -16,4 +16,14 @@ You may need to copy the contents of `public` to the document root for your serv
 
 `{project}/system` should contain system files from CodeIgniter.
 
-Create a database, and add the contents of the master database (not included in distribution), ask me for it.  
+Create a database. 
+
+Edit `.env` to include database connection, server name. 
+
+## Dependencies
+
+- Codeigniter v4.1.5
+- MySql
+- PHP
+
+Database is not included in distribution. Ask me for it.  
