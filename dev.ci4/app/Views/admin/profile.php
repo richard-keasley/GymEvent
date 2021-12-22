@@ -1,9 +1,10 @@
 <?php $this->extend('default');
 
 $this->section('content'); ?>
-<ul class="nav"><?php 
+<ul class="nav">
+<li><img src="/favicon.ico" title="favicon"></li>
+<?php 
 $path =  '/public/profile';
-
 foreach(glob(FCPATH . $path .'/*') as $file) {
 	$basename = basename($file);
 	if(strpos($basename, 'index.')!==0) {
@@ -11,5 +12,5 @@ foreach(glob(FCPATH . $path .'/*') as $file) {
 	}
 } 
 ?></ul>
-<p>These images are stored in <?php echo $path;?>.</p>
+<p><span class="p-1 bg-light">These images are stored in <?php echo $path;?>.</span></p>
 <?php $this->endSection(); 
