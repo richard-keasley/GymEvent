@@ -1,8 +1,0 @@
-@font-face {
-    font-family: 'PrimaryFont';
-    src: url('/public/fonts/DaysOne.woff2'); 
-}
-
-h1 {
-	font-family: 'PrimaryFont', var(--bs-font-sans-serif);
-}
