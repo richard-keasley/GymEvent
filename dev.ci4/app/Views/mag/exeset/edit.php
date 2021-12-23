@@ -12,7 +12,7 @@ $hidden = [
 ];
 echo form_open_multipart(base_url(uri_string()), $attr, $hidden); 
 ?>
-
+<section>
 <div class="row">
 <div class="col-auto">Saved: <?php 
 	$time = new \CodeIgniter\I18n\Time($exeset->saved);
@@ -61,7 +61,9 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 	];
 	echo form_textarea($input);
 ?></div>
+</section>
 
+<section>
 <?php 
 $exeval_fields = ['rulesetname']; // only these fields sent to API
 $tab_items = [];
@@ -120,10 +122,20 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			];
 			$dismount_num = array_key_last($exercise['elements']); 
 	}
-	foreach($exercise['elements'] as $elnum=>$element) { 
+	foreach($exercise['elements'] as $elnum=>$element) {
+		$start_style = 'width:3em;';
+		$end_style = '';
+		if($elnum!=0) {
+			$start_style .= ' border-top-left-radius:0;';
+			$end_style .= ' border-top-right-radius:0;';
+		}
+		if($elnum!=$dismount_num)  {
+			$start_style .= ' border-bottom-left-radius:0;';
+			$end_style .= ' border-bottom-right-radius:0;';
+		}
 		?>
 		<div class="input-group my-0">
-		<span class="input-group-text" style="width:3em">
+		<span class="input-group-text" style="<?php echo $start_style;?>">
 			<?php echo $elnum==$dismount_num ? 'D' : $elnum + 1; ?>
 		</span>
 		<?php
@@ -131,6 +143,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
 			$input['value'] = $element[$col];
 			if($col<2) $exeval_fields[] = $input['name'];
+			if($col==array_key_last($inputs)) $input['style'] = $end_style;
 			switch($input['type']) {
 				case 'select': 
 					unset($input['type']);
@@ -202,6 +215,8 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 $tabs = new \App\Libraries\Ui\Tabs($tab_items);
 echo $tabs->htm();
 ?>
+</section>
+
 <div class="toolbar">
 <button class="btn btn-primary bi bi-check-square" title="re-check this routine after edits" type="button" name="update"> update</button>
 <button class="btn btn-primary bi bi-arrow-down-square" title="save these routines to your computer so they can be altered later" type="submit" name="cmd" value="store"> save</button>
@@ -209,16 +224,42 @@ echo $tabs->htm();
 <button class="btn btn-primary bi bi-plus-square" title="make a copy of this routine sheet to use on another gymnast" type="button" name="clone"> clone</button>
 </div>
 
+<?php echo form_close();
+
+# d($exeset);
+# d($exeval_fields);
+
+$this->endSection(); 
+
+$this->section('top') ?>
+
 <script>
 const api = '<?php echo base_url("/api/mag/exeval");?>/';
 const filter = <?php 
 	$arr = [];
 	foreach(\App\Libraries\Mag\Exeset::filter as $key=>$val) {
-		$arr[] = [$key, $val];
-		
+		$arr[] = [$key, $val];	
 	}
 	echo json_encode($arr);
 ?>;
+const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
+const exeval_fields = <?php echo json_encode($exeval_fields);?>;
+
+<?php /*
+
+if('serviceWorker' in navigator) {
+	navigator.serviceWorker.register('/mag/routineSW', {scope: '/mag/'})
+	.then((reg) => {
+		// registration worked
+		console.log('Registration succeeded. Scope is ' + reg.scope);
+	}).catch((error) => {
+		// registration failed
+		console.log('Registration failed with ' + error);
+	});
+}
+*/ ?>
+
+$(function() {
 
 $('#editform button[name=clone]').click(function() {
 	var form = $('#editform')[0];
@@ -239,13 +280,7 @@ $('#editform [name=rulesetname]').change(function() {
 	$('#editform').submit();
 });
 
-$(function() {
-	if('serviceWorker' in navigator) {
-		navigator.serviceWorker.register('/api/mag/exeval');
-	}
 });
-const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
-const exeval_fields = <?php echo json_encode($exeval_fields);?>;
 
 function get_exevals() {
 	var name = $('[name=name]').val().trim();
@@ -301,11 +336,4 @@ function update_exevals(message, message_ok=0) {
 }
 
 </script>
-<?php
-echo form_close();
-
-# d($exeset);
-# d($exeval_fields);
-
-$this->endSection(); 
-
+<?php $this->endSection(); 
