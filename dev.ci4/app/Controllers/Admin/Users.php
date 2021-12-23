@@ -32,13 +32,13 @@ public function index() {
 	$update = $this->request->getPost('update');
 	if($update=='club0') {
 		$this->usr_model->where('role', 'club')->delete();
-		$this->data['messages'][] = ["clubs enabled", 'success'];
+		$this->data['messages'][] = ["clubs disabled", 'success'];
 	}
 	if($update=='club1') {
 		$this->usr_model->where('role', 'club')
 			->set('deleted_at', null)
 			->update();
-		$this->data['messages'][] = ["clubs disabled", 'success'];
+		$this->data['messages'][] = ["clubs enabled", 'success'];
 	}
 	// read
 	$filter_by = $this->request->getGet('by');

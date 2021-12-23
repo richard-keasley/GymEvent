@@ -57,7 +57,15 @@ ob_start();?>
 </div>
 <div class="row mb-3">
 	<label for="phone" class="col-sm-2 col-form-label">phone</label>
-	<div class="col-sm-10"><?php echo form_input("phone", $clubret->phone, 'class="form-control"');?></div>
+	<div class="col-sm-10"><?php 
+	$input = [
+		'name' => "phone",
+		'value' => $clubret->phone,
+		'class' => "form-control",
+		'type' => 'tel'
+	];
+	echo form_input($input);
+	?></div>
 </div>
 <div class="row mb-3">
 	<label for="other" class="col-sm-2 col-form-label">other</label>
