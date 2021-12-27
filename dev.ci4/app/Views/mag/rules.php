@@ -62,8 +62,27 @@ foreach($ruleset->routine['groups'] as $group_num=>$group_val) {
 		echo '</ul>';
 	}
 }
-?></ul>
+?>
+</ul>
 </section>
+
+<?php foreach($ruleset->exes as $abbr=>$exe) {
+	if($exe['method']=='tariff') { ?>
+	<section class="border m-1 p-1">
+	<h4><?php echo $exe['name']; ?></h4>
+	<ul class="list-group">
+		<li class="list-group-item">
+			<strong>Max tariff:</strong>
+			<?php printf('%.1f', $exe['d_max']);?>
+		</li>
+		<li class="list-group-item">
+			<strong>Exercise count:</strong>
+			<?php printf('%u', $exe['exe_count']);?>
+		</li>
+	</ul>	
+	</section>
+	<?php } 
+} ?>
 
 </div>
 
