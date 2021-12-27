@@ -22,7 +22,11 @@ $routine_elcount = 0;
 $score = [];
 switch($exe_rules['method']) {
 	case 'tariff':
+		# d($exe_rules);
 		$score['Tariff'] = floatval($exercise['elements'][0][0]);
+		if($score['Tariff']>$exe_rules['d_max']) {
+			$errors[] = "Tariff can be no higher than {$exe_rules['d_max']}";
+		}
 		break;
 	case 'routine':
 	default:
@@ -95,9 +99,8 @@ switch($exe_rules['method']) {
 }
 
 if($errors) { ?>
-<div class="mt-3 p-1 alert-danger">
-<h5>Routine construction errors</h5>
-<ul class="list-unstyled">
+<div class="mt-3 p-1 alert-danger border border-danger rounded">
+<ul class="list-unstyled m-0">
 <?php foreach($errors as $error) printf('<li>%s</li>', $error); ?>
 </ul>
 </div>
