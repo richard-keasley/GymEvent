@@ -37,10 +37,6 @@ switch($exe_rules['method']) {
 			$score["EG{$grp_key}"] = 0;
 			$group_count[$grp_key] = 0;
 		}
-		if($exe_rules['connection']) {
-			$val = $exercise['connection'] ?? 0 ;
-			if($val) $score['Connection'] = floatval($val);
-		}
 		
 		$dismount_elnum = array_key_last($exercise['elements']); 
 		foreach($exercise['elements'] as $elnum=>$element) {
@@ -95,6 +91,13 @@ switch($exe_rules['method']) {
 				$errors[] = "Too many elements in group {$grp_key}";
 			}
 		}
+		// connection 
+		if(array_sum($score) && empty($errors) && $exe_rules['connection']) {
+			$val = $exercise['connection'] ?? 0 ;
+			if($val) $score['Connection'] = floatval($val);
+		}
+		
+		
 		// end routine
 }
 
