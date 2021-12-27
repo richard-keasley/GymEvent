@@ -33,7 +33,7 @@ foreach($event->discats as $discat) {
 	$discats[$discat['name']] = $discat;
 }
 
-$tabs = new \App\Libraries\Ui\Tabs();
+$tabs = new \App\Views\Htm\Tabs();
 
 ob_start();?>
 <fieldset><legend>User details</legend>

@@ -30,6 +30,11 @@ public function rules($rulesetname = null) {
 	return view('mag/rules', $this->data);
 }
 
+public function routineSW() {
+	$this->response->setHeader('Content-Type', 'application/javascript');
+	return view('mag/exeset/sw', $this->data);
+}
+
 public function routine() {
 	$getPost = $this->request->getPost();
 	$this->data['exeset'] = new \App\Libraries\Mag\Exeset($getPost);

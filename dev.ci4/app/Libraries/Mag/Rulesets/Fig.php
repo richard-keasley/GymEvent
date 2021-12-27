@@ -40,7 +40,9 @@ public $exes = [
 	'VT' => [
 		'name' => 'Vault',
 		'method' => 'tariff',
-		'neutrals' => []
+		'neutrals' => [],
+		'exe_count' => 1,
+		'd_max' => 6
 	],
 	'PB' => [
 		'name' => 'P-bars',
@@ -84,7 +86,6 @@ public $routine = [
 ];
 
 public $tariff = [
-	'count' => 1 // number of exercises
 ];
 
 public function routine_options($propname) {

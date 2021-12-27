@@ -3,7 +3,7 @@ $appvars = new \App\Models\Appvars();
 
 $this->section('content'); 
 
-$acc = new \App\Libraries\Ui\Accordion;
+$acc = new \App\Views\Htm\Accordion;
 foreach($appvars->orderBy('id')->findAll() as $appvar) { 
 	$acc->set_item($appvar->id, view('includes/appvar', ['appvar'=>$appvar]));
 }

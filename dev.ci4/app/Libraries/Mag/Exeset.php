@@ -25,7 +25,7 @@ public function __construct($post=[]) {
 	foreach($this->ruleset->exes as $exekey=>$exe_rules) {
 		switch($exe_rules['method']) {
 			case 'tariff':
-				$el_count = $this->ruleset->tariff['count'];
+				$el_count = $exe_rules['exe_count'];
 				$col_count = 3;
 				break;
 			case 'routine':

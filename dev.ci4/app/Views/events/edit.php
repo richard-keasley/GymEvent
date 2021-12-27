@@ -15,7 +15,7 @@ $hidden = [
 ];
 echo form_open_multipart(base_url(uri_string()), $attr, $hidden); 
  
-$acc = new \App\Libraries\Ui\Accordion;
+$acc = new \App\Views\Htm\Accordion;
 
 ob_start(); // Details ?> 
 <p><label>ID:</label> <?php echo $id;?></p>

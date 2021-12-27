@@ -78,6 +78,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 					'type' => "number",
 					'step' => "0.1",
 					'min' => "0",
+					'max' => $exe_rules['d_max'],
 					'style' => "max-width:5em",
 					'class' => "form-control",
 					'placeholder' => 'tariff'
@@ -212,7 +213,8 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		'content' => ob_get_clean()
 	];
 }
-$tabs = new \App\Libraries\Ui\Tabs($tab_items);
+
+$tabs = new \App\Views\Htm\Tabs($tab_items);
 echo $tabs->htm();
 ?>
 </section>

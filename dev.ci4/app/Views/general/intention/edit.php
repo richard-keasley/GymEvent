@@ -131,13 +131,13 @@ $this->section('bottom');?>
 	
 	<?php 
 	$grouped = $intention->rules->skills->get_grouped();
-	$tabs = new \App\Libraries\Ui\Tabs();
+	$tabs = new \App\Views\Htm\Tabs();
 	
 	foreach($grouped as $grp_id=>$skillset) {
 		ob_start();
 
 		/* start difficulty accordion */
-		$acc = new \App\Libraries\Ui\Accordion([], "dif-elg{$grp_id}");
+		$acc = new \App\Views\Htm\Accordion([], "dif-elg{$grp_id}");
 		
 		foreach($skillset as $dif=>$skills) { 
 			ob_start();

@@ -1,4 +1,4 @@
-<?php namespace App\Libraries\Ui;
+<?php namespace App\Views\Htm;
 
 class Accordion {
 public $id = '';

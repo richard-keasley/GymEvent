@@ -3,7 +3,7 @@ $tt_lib = new \App\Libraries\Teamtime();
 
 $this->section('content'); 
 
-$acc = new \App\Libraries\Ui\Accordion;
+$acc = new \App\Views\Htm\Accordion;
 foreach($tt_lib::get_vars() as $appvar) {
 	$acc->set_item(substr($appvar->id, 9), view('includes/appvar', ['appvar'=>$appvar]));
 }
