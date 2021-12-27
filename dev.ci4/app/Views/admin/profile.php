@@ -12,5 +12,5 @@ foreach(glob(FCPATH . $path .'/*') as $file) {
 	}
 } 
 ?></ul>
-<p><span class="p-1 bg-light">These images are stored in <?php echo $path;?>.</span></p>
-<?php $this->endSection(); 
+
+<p><span class="p-1 bg-light bg-opacity-50">These images are stored in /public/profile.</span></p><?php $this->endSection(); 
