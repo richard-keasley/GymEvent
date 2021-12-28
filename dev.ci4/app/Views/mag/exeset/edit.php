@@ -123,6 +123,8 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			];
 			$dismount_num = array_key_last($exercise['elements']); 
 	}
+
+	$last_elnum = array_key_last($exercise['elements']); 
 	foreach($exercise['elements'] as $elnum=>$element) {
 		$start_style = 'width:3em;';
 		$end_style = '';
@@ -130,7 +132,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$start_style .= ' border-top-left-radius:0;';
 			$end_style .= ' border-top-right-radius:0;';
 		}
-		if($elnum!=$dismount_num)  {
+		if($elnum!=$last_elnum)  {
 			$start_style .= ' border-bottom-left-radius:0;';
 			$end_style .= ' border-bottom-right-radius:0;';
 		}

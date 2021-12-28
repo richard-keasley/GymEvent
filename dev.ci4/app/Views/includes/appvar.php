@@ -7,7 +7,7 @@ if(is_array($appvar->value)) {
 			$row_val = ['value' => $row_val];
 		}
 		foreach($row_val as $col_key=>$col_val) {
-			if(is_array($col_val)) $col_val = var_export($col_val, 10);
+			if(is_array($col_val)) $col_val = var_export($col_val, true);
 			$tr[$col_key] = $col_val;
 		}
 		$tbody[] = $tr;
