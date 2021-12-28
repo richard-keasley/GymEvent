@@ -1,7 +1,6 @@
 <?php namespace App\Views\Htm;
 
 class Navbar {
-public $id = '';
 public $items = [];
 public $template = [
 	'items_start' => '<ul class="nav flex-column">',

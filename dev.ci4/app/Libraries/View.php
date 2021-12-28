@@ -41,24 +41,6 @@ static function vartable($data=[]) {
 	return $htm;
 }
 
-static function breadcrumbs($data=[]) {
-	if(!$data) return '';
-	$retval = '';
-	$last = count($data) - 1;
-	foreach($data as $key=>$row) {
-		$active = $key==$last ? 'active' : '' ;
-		if(!is_array($row)) {
-			$label = basename($row);
-			if(is_numeric($label)) $label = basename(dirname($row));
-			$pos = strrpos($label, "_");
-			if($pos) $label = substr($label, $pos + 1);
-			$row = [$row, $label];
-		}
-		$retval .= sprintf('<li class="breadcrumb-item %s"><a href="%s">%s</a></li>', $active, base_url($row[0]), $row[1]);
-	}
-	return sprintf('<nav><ul class="breadcrumb">%s</ul></nav>', $retval);
-}
-
 static function back_link($href) {
 	$label = '<span class="bi bi-box-arrow-left"></span>';
 	$attr = ['class'=>"btn btn-outline-secondary", 'title'=>"close"];
