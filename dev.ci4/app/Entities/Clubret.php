@@ -198,22 +198,12 @@ public function fees($op=1) {
 	$total = array_sum(array_column($fees, 1));
 	
 	if($op=='htm') {
-		$table = [];
+		$vartable = new \App\Views\Htm\Vartable;
 		foreach($fees as $fee) {
-			$table[] = [$fee[1], $fee[0], 'money'];
+			$vartable->items[$fee[0]] = [$fee[1], 'money'];
 		}
-		$table[] = [$total, 'Total', '*money'];
-		return \App\Libraries\View::vartable($table);
-		
-		$pattern = '<div class="money">%.2f</div>';
-		foreach($fees as $key=>$fee) $fees[$key][1] = sprintf($pattern, $fee[1]);
-				
-		$table = new \CodeIgniter\View\Table();
-		#$template = ['table_open' => '<table>'];
-		#$table->setTemplate($template);
-		$table->setHeading('dis', 'fee');
-		$table->setFooting('total', sprintf($pattern, $total));
-		return $table->generate($fees);
+		$vartable->footer = [$total, 'money'];
+		return $vartable->htm();
 	}
 	return $total;
 }

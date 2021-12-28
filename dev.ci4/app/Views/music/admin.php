@@ -93,12 +93,13 @@ $this->section('sidebar'); ?>
 <section class="pt-5 mt-2 pe-3 sticky-top border-end">
 <h5>Summary</h5>
 <?php
-$tbody = [];
+$vartable = new \App\Views\Htm\Vartable;
 foreach($tracks_table as $status=>$count) {
-	if($count) $tbody[] = [$count, $status, 'int'];
+	if($count) $vartable->items[$status] = [$count, 'int'];
 }
-$tbody[] = [array_sum($tracks_table), 'Total', '*int'];
-echo \App\Libraries\View::vartable($tbody);
+$vartable->footer = [array_sum($tracks_table), 'int'];
+echo $vartable->htm();
+
 printf('<p>%s entries.</p>', $count_entries); 
 ?></section>
 <?php $this->endSection();

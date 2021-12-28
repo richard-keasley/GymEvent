@@ -4,27 +4,27 @@ $template = ['table_open' => '<table class="table compact">'];
 $table->setTemplate($template);
 
 $this->section('content'); 
-$data_keys = [
-	'id' => ['ID'],
-	'name' => ['Name'],
-	'abbr' => ['Short name'],
-	'email' => ['Email'],
-	'role' => ['Role'],
-	'deleted_at' => ['Disabled', 'time'],
-	'updated' => ['Last active', 'time']
-];
-if(\App\Libraries\Auth::check_role('superuser')) {
-	$data_keys['cookie'] = ['cookie'];	$data_keys['reset_key'] = ['Reset key'];	$data_keys['reset_time'] = ['Reset requested', 'time'];
-}
-$data = [];
-foreach($data_keys as $key=>$label) {
-	$data[] = array_merge([$user->$key], $label);
-}
 if($user->deleted_at) { ?>
 	<p class="alert-danger p-1"><span class="bi bi-x-circle"></span> User disabled</p>
 <?php } 
 
-echo \App\Libraries\View::Vartable($data);
+$vartable = new \App\Views\Htm\Vartable;
+$tbody = [
+	'ID' => [$user->id, null],
+	'Name' => [$user->name, null],
+	'Short name' => [$user->abbr, null],
+	'E-mail' => [$user->email, 'email'],
+	'Role' => [$user->role, null],
+	'Disabled' => [$user->deleted_at, 'time'],
+	'Last active' => [$user->updated, 'time']
+];
+if(\App\Libraries\Auth::check_role('superuser')) {
+	$tbody['cookie'] = [$user->cookie, null];
+	$tbody['Reset key'] = [$user->reset_key, null];
+	$tbody['Reset requested'] = [$user->reset_time, 'time'];
+}
+echo $vartable->htm($tbody);
+
 $mdl_clubrets = new \App\Models\Clubrets();
 $clubrets = $mdl_clubrets->lookup_all('user_id', $user->id);
 if($clubrets) { ?>
