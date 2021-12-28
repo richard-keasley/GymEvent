@@ -7,7 +7,8 @@ $nav = new \App\Views\Htm\Breadcrumbs;
 echo $nav->htm($breadcrumbs);
 ?>
 
-<main class="clearfix"><?php 
+<main class="clearfix">
+<?php 
 
 $this->renderSection('top');
 
@@ -26,7 +27,8 @@ else { ?>
 <?php } 
 
 $this->renderSection('bottom');
-?></main>
+?>
+</main>
 
 <?php 
 echo $this->include('includes/_footer');
