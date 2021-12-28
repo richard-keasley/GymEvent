@@ -21,6 +21,7 @@ foreach($events as $event) {
 		sprintf('%s: %s %s', $date->format('j-M-y'), $event->title, $deleted_at)
 	];
 }
-echo view('includes/navbar', ['nav'=>$nav]);
+$navbar = new \App\Views\Htm\Navbar($nav);
+echo $navbar->htm();
 	
 $this->endSection(); 

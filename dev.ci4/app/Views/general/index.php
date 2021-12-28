@@ -22,6 +22,7 @@ $nav = [
 	['general/skills/fx', 'Floor skills'],
 	['admin/general/rules/fx', 'Floor rules']
 ];
-echo view('includes/navbar', ['nav'=>$nav]);
+$navbar = new \App\Views\Htm\Navbar();
+echo $navbar->htm($nav);
 
 $this->endSection(); 

@@ -7,7 +7,7 @@ $this->section('content'); ?>
 <?php $this->endSection(); 
 
 $this->section('sidebar');
-$navbar = ['nav' => [
+$nav = [
 	['about', 'About us'],
 	'events',
 	'admin',
@@ -16,6 +16,8 @@ $navbar = ['nav' => [
 	'teamtime',
 	'scoreboard',
 	['user', 'Your info']
-]];
-echo view('includes/navbar', $navbar);
+];
+$navbar = new \App\Views\Htm\Navbar($nav);
+echo $navbar->htm();
+
 $this->endSection(); 

@@ -8,8 +8,10 @@ $this->section('sidebar');
 $nav = [
 	['mag/routine', 'Routine sheet']
 ];
-echo view('includes/navbar', ['nav'=>$nav]);
+$navbar = new \App\Views\Htm\Navbar($nav);
+echo $navbar->htm();
 ?>
+
 <h4>Rules</h4>
 <?php
 
@@ -17,6 +19,6 @@ $nav = [];
 foreach($index as $key=>$label) {
 	$nav[] = ["mag/rules/{$key}", $label];	
 }
-echo view('includes/navbar', ['nav'=>$nav]);
+echo $navbar->htm($nav);
 
 $this->endSection(); 

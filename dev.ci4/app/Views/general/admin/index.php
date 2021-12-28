@@ -9,5 +9,7 @@ $nav = [
 	['general/intention', 'Intention sheets'],
 	['admin/general/rules/fx', 'Floor rules']
 ];
-echo view('includes/navbar', ['nav'=>$nav]);
+$navbar = new \App\Views\Htm\Navbar($nav);
+echo $navbar->htm();
+
 $this->endSection(); 

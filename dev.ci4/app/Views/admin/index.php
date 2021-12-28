@@ -6,11 +6,16 @@ $this->section('content');?>
 <?php $this->endSection();
 
 $this->section('sidebar');
-$nav = [];
-foreach(['events', 'users', 'music', 'teamtime', 'general', 'profile'] as $controller) {
-	$nav[] = "admin/{$controller}";
-}
-$nav[] = 'setup';
-echo view('includes/navbar', ['nav'=>$nav]);
+$nav = [
+	'admin/events', 
+	'admin/users', 
+	'admin/music', 
+	'admin/teamtime', 
+	'admin/general', 
+	'admin/profile',
+	'setup'
+];
+$navbar = new \App\Views\Htm\Navbar($nav);
+echo $navbar->htm();
 
 $this->endSection();

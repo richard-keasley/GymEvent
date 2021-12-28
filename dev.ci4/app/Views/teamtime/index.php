@@ -6,30 +6,31 @@ $this->section('content');  ?>
 
 $this->section('sidebar'); ?>
 <h5>Displays</h5>
-<?php 
+<?php
+$navbar = new \App\Views\Htm\Navbar(); 
 $appvars = new \App\Models\Appvars();
 $displays = $appvars->get_value('teamtime.displays');
 if($displays) {
-	$navbar = ['nav'=>[]];
+	$nav = [];
 	foreach($displays as $key=>$display) {
-		if($key) $navbar['nav'][] = ["teamtime/display/{$key}", $display['title']];	
+		if($key) $nav[] = ["teamtime/display/{$key}", $display['title']];	
 	}
-	echo view('includes/navbar', $navbar);
+	echo $navbar->htm($nav);
 }
 ?>
 
 <h5>Information</h5>
 <?php 
-$navbar = ['nav' => [
+$nav = [
 	'teamtime/info/programme',
 	'teamtime/info/teams',
 	'teamtime/info/runtable',
 	'teamtime/info/images',
 	'teamtime/info/music'
-]];
-echo view('includes/navbar', $navbar);
-?>
-<?php $this->endSection();
+];
+echo $navbar->htm($nav);
+
+$this->endSection();
 
 $this->section('bottom'); ?>
 <div class="toolbar"><?php

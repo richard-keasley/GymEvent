@@ -51,6 +51,8 @@ $nav = [];
 foreach($rule_parts as $key=>$label) {
 	$nav[] = ["admin/general/edit/{$exe}/{$key}", $label];
 }
-echo view('includes/navbar', ['nav'=>$nav]);
+$navbar = new \App\Views\Htm\Navbar($nav);
+echo $navbar->htm();
+
 $this->endSection(); ?>
 

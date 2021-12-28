@@ -17,7 +17,8 @@ $nav = [];
 foreach($channels as $key=>$val) {
 	$nav[] = [ base_url("player/auto/{$key}"), $val ];
 }
-echo view('includes/navbar', ['nav'=>$nav]);
+$navbar = new \App\Views\Htm\Navbar($nav);
+echo $navbar->htm();
 ?>
 </section>
 <?php $this->endSection();
