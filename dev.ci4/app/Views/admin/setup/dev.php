@@ -7,9 +7,22 @@ $this->section('content'); ?>
 
 <p>Base URL for this installation is <?php printf('<a href="%1$s">%1$s</a>', base_url());?>.</p>
 
-<p><a href="https://codeigniter.com">CodeIgniter</a> is used for the back-end (PHP) framework.</p>
+<p><a target="ci" href="https://codeigniter.com">CodeIgniter</a> is used for the back-end (PHP) framework.</p>
 
 <p>Check the <a href="https://codeigniter4.github.io/userguide" target="_blank">User Guide</a>. CodeIgniter is a community-developed open source project, with several venues for the community members to gather and exchange ideas. View all the threads on <a href="https://forum.codeigniter.com/" target="_blank">CodeIgniter's forum</a>, or <a href="https://codeigniterchat.slack.com/"target="_blank">chat on Slack</a>!</p>
+
+<h4>Updating CodeIgniter</h4>
+<?php 
+$paths = new \Config\Paths;
+$systemDirectory = realpath($paths->systemDirectory);
+?>
+<ol>
+<li>Create a directory <code>x.x.x</code> in <code><?php echo dirname($systemDirectory);?></code>.</li>
+<li>Upload contents of the CodeIgniter <em>system</em> folder to newly created App folder.</li>
+<li>Update 'systemDirectory' in <code>\App\Config\Paths</code> to point to the new system folder.</li>
+<li>Check <a target="ci" href="https://codeigniter4.github.io/userguide/installation/upgrading.html">CodeIgniter release notes</a> and merge changes as necessary into <code>\App\Config\*</code>.</li>
+</ol>
+<p>CodeIgniter system directory is currently <code><?php echo $systemDirectory;?></code>.</p>
 
 <h2>Front end (<abbr title="style sheets">CSS</abbr> and <abbr title="JavaScript animations">JS</abbr>) <span class="bi-bootstrap-fill" style="color:#7952b3"></span></h2>
 <p>Bootstrap is used for the front-end. Read <a href="https://getbootstrap.com/docs/5.0/getting-started/introduction/">documentation</a> on how to use Bootstrap.</p>

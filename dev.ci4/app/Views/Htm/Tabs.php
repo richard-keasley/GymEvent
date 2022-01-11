@@ -5,12 +5,14 @@ public $id = '';
 public $selected = null;
 public $items = [];
 public $format = [
+	'element_start' => '<div id="%s">',
 	'headings_start' => '<nav class="nav nav-tabs" role="tablist">',
 	'headings_end' => '</nav>',
-	'panels_start' => '<div id="%s" class="tab-content">',
+	'panels_start' => '<div class="tab-content">',
 	'panel_start' => '<div class="%s" id="%s" aria-labelledby="%s" role="tabpanel">',
 	'panel_end' => '</div>',
-	'panels_end' => '</div>'
+	'panels_end' => '</div>',
+	'element_end' => '</div>'
 ];
 
 public function __construct($items=[], $id='tabs') {
@@ -34,6 +36,8 @@ if(is_null($this->selected)) $this->selected = array_key_first($this->items);
 	
 ob_start();
 
+printf($this->format['element_start'], $this->id);
+
 echo $this->format['headings_start'];
 foreach($this->items as $key=>$item) {
 	$active = $key===$this->selected;
@@ -50,7 +54,7 @@ foreach($this->items as $key=>$item) {
 }
 echo $this->format['headings_end'];
 	
-printf($this->format['panels_start'], $this->id);
+echo $this->format['panels_start'];
 foreach($this->items as $key=>$item) {
 	$active = $key===$this->selected;
 	$class = $active ? 'tab-pane active' : 'tab-pane';
@@ -60,8 +64,9 @@ foreach($this->items as $key=>$item) {
 	echo $item['content'];
 	echo $this->format['panel_end'];
 }
-
 echo $this->format['panels_end'];
+
+echo $this->format['element_end'];
 ?>
 <script>
 $(function() {
