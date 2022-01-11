@@ -210,22 +210,88 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	</div>
 	
 	<?php 
-	$tab_items[] = [
+	$tab_items[$exekey] = [
 		'heading' => $exe_rules['name'],
 		'content' => ob_get_clean()
 	];
 }
 
-$tabs = new \App\Views\Htm\Tabs($tab_items);
+$tabs = new \App\Views\Htm\Tabs($tab_items, 'exes');
 echo $tabs->htm();
 ?>
 </section>
 
 <div class="toolbar">
-<button class="btn btn-primary bi bi-check-square" title="re-check this routine after edits" type="button" name="update"> update</button>
-<button class="btn btn-primary bi bi-arrow-down-square" title="save these routines to your computer so they can be altered later" type="submit" name="cmd" value="store"> save</button>
-<button class="btn btn-primary bi bi-printer" title="print this routine sheet" type="submit" name="cmd" value="print"> print</button>
-<button class="btn btn-primary bi bi-plus-square" title="make a copy of this routine sheet to use on another gymnast" type="button" name="clone"> clone</button>
+<?php
+$buttons = [
+	[
+		'class' => "btn btn-primary bi bi-check-square",
+		'title' => "Re-check all start values after edits",
+		'type' => "button",
+		'name' => "update"
+	],
+	[
+		'class' => "btn btn-primary bi bi-arrow-down-square",
+		'title' => "Save this exercise set to your computer so the routines can be altered later",
+		'type' => "submit",
+		'name' => "cmd",
+		'value' => "store"
+	],
+	[
+		'class' => "btn btn-primary bi bi-printer",
+		'title' => "Printer friendly version of this exercise set",
+		'type' => "submit",
+		'name' => "cmd",
+		'value' => "print"
+	],
+	[
+		'class' => "btn btn-primary bi bi-plus-square",
+		'title' => "Make a copy of this exercise set to use on another gymnast",
+		'type' => "button",
+		'name' => "clone"
+	],
+	[
+		'class' => "btn btn-danger bi-trash",
+		'title' => "Clear the exercise currently visible",
+		'type' => "button",
+		'data-bs-toggle' => "modal",
+		'data-bs-target' => "#execlear"
+	]	
+];
+
+$tbody = [];
+foreach($buttons as $button) {
+	printf('<button %s></button> ', stringify_attributes($button));
+	$tbody[] = [
+		sprintf('<span class="%s"></span>', $button['class']), 
+		$button['title'] . '.'
+	];
+}
+?>
+<button type="button" title="Button help" class="btn btn-info bi-question-circle" data-bs-toggle="modal" data-bs-target="#iconhelp"></button>
+</div>
+
+<div class="modal" id="iconhelp" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+	<h5 class="modal-title">Button functions</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+<?php 
+$table = new \CodeIgniter\View\Table();
+$template = ['table_open' => '<table class="table table-sm">'];
+$table->setTemplate($template);	
+$table->autoHeading = false;
+echo $table->generate($tbody);
+?>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
 </div>
 
 <?php echo form_close();
@@ -235,6 +301,24 @@ echo $tabs->htm();
 $this->endSection(); 
 
 $this->section('top') ?>
+
+<div class="modal" id="execlear" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+	<h5 class="modal-title">Reset <span class="exename"></span></h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+	<p>Are you sure you want to clear contents from the <span class="exename"></span> exercise?</p>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="execlear()">Clear exercise</button>
+</div>
+</div>
+</div>
+</div>
 
 <script>
 const api = '<?php echo base_url("/api/mag/exeval");?>/';
@@ -247,6 +331,8 @@ const filter = <?php
 ?>;
 const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
 const exeval_fields = <?php echo json_encode($exeval_fields);?>;
+let execlearModal = null;
+let exename = null;
 
 <?php /*
 
@@ -283,15 +369,29 @@ $('#editform [name=rulesetname]').change(function() {
 	$('#editform').submit();
 });
 
+execlearModal = document.getElementById('execlear');
+execlearModal.addEventListener('show.bs.modal', function (event) {
+	exename = $('#exes .nav-tabs .active').html();
+	$('#execlear .exename').html(exename);
 });
 
+});
+
+function execlear(exekey) {
+	$('#exes .tab-pane.active select').val('');
+	$('#exes .tab-pane.active input[type=text]').val('');
+	$('#exes .tab-pane.active input[type=number]').val(0);
+	$('#exes .tab-pane.active input[type=checkbox]').prop("checked", false);
+	get_exevals();
+}
+
 function get_exevals() {
+	// work out title from gymnast's name
 	var name = $('[name=name]').val().trim();
 	filter.forEach((element) => {
-		var search = new RegExp(element[0],"gi");
+		var search = new RegExp(element[0], "gi");
 		name = name.replace(search, element[1]);
 	});
-	
 	if(name) { 
 		$('h1').html(name);
 		document.title = name;
@@ -339,4 +439,5 @@ function update_exevals(message, message_ok=0) {
 }
 
 </script>
+
 <?php $this->endSection(); 
