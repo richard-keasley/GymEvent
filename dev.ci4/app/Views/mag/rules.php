@@ -1,7 +1,11 @@
 <?php $this->extend('default');
  
 $this->section('content');?>
-<p><?php echo $ruleset->description;?></p>
+<p><?php echo $ruleset->description;?> 
+	(Updated: <?php 
+	$time = new \CodeIgniter\I18n\Time($ruleset->version);
+	echo $time->toLocalizedString('d MMM yyyy'); ?>)
+</p>
 
 <div class="d-md-flex">
 <section class="border m-1 p-1">
