@@ -185,7 +185,6 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		<div class="form-check">
 		<?php
 		$id = "{$exekey}_nd_{$nkey}";
-		$exeval_fields[] = $id;
 		$input = [
 			'type' => 'checkbox',
 			'name' => $id,
@@ -196,6 +195,8 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		$label = [
 			'class' => "form-check-label"
 		];
+		$exeval_fields[] = $input['name'];
+	
 		if($nval) $input['checked'] = 'checked';
 		echo form_input($input);
 		$neutral = $exe_rules['neutrals'][$nkey]; 
@@ -321,7 +322,7 @@ $this->section('top') ?>
 </div>
 
 <script>
-const api = '<?php echo base_url("/api/mag/exeval");?>/';
+const api = '<?php echo base_url("/api/mag/exevals");?>/';
 const filter = <?php 
 	$arr = [];
 	foreach(\App\Libraries\Mag\Exeset::filter as $key=>$val) {
@@ -385,6 +386,7 @@ function execlear(exekey) {
 	get_exevals();
 }
 
+
 function get_exevals() {
 	// work out title from gymnast's name
 	var name = $('[name=name]').val().trim();
@@ -396,7 +398,7 @@ function get_exevals() {
 		$('h1').html(name);
 		document.title = name;
 	}
-	
+		
 	var exeset = {}; var el = null; var val = null;
 	exeval_fields.forEach(fld => {
 		el = $('[name='+fld+']')[0];
@@ -408,7 +410,7 @@ function get_exevals() {
 				val = el.value;
 		}
 		exeset[fld] = val;
-	})
+	});
 
 	$.get(api, exeset, function(response) {
 		try { 

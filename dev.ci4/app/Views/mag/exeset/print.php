@@ -106,6 +106,9 @@ thead th {
 	gap: 1em;
 	align-items: flex-start;
 }
+.row > * {
+	overflow:hidden;
+}
 .text-end {
 	text-align: right;
 }
@@ -160,11 +163,11 @@ echo $options[$exeset->rulesetname] ?? '' ;
 ?>
 </div>
 
-<pre style="width:50%">
+<pre style="width:40%">
 <?php echo $exeset->event;?>
 </pre>
 
-<div class="text-end" style="width:20%; font-size:0.8em; color:#777; font-style:italic;">
+<div class="text-end" style="width:30%; font-size:0.8em; color:#777; font-style:italic;">
 Saved: <?php 
 	$time = new \CodeIgniter\I18n\Time($exeset->saved);
 	echo $time->toLocalizedString('d MMM yyyy'); 
