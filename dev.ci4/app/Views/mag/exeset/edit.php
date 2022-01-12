@@ -126,16 +126,25 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 
 	$last_elnum = array_key_last($exercise['elements']); 
 	foreach($exercise['elements'] as $elnum=>$element) {
+		$style = '';
+		if($elnum) { // not the first
+			$style .= 'border-top:0; border-top-right-radius:0; border-top-left-radius: 0;';
+		}
+		if($elnum<$last_elnum) { // not the last
+			$style .= 'border-bottom-right-radius:0; border-bottom-left-radius: 0;';
+		}
+		/*
+		
+		
 		switch($elnum) {
 			case 0:
-				$style = 'border-bottom-right-radius:0; border-bottom-left-radius: 0;';
 				break;
 			case $last_elnum:
-				$style = 'border-top:0; border-top-right-radius:0; border-top-left-radius: 0;';
 				break;
 			default:
 				$style = 'border-top:0; border-radius:0;';
 		}
+		*/
 		?>
 		<div class="input-group my-0">
 		<span class="input-group-text" style="width:3em; <?php echo $style;?>">
@@ -146,9 +155,11 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
 			$input['value'] = $element[$col];
 			$input['style'] = $style;
-						
-			if($col<2) $exeval_fields[] = $input['name'];
-			#if($col==array_key_last($inputs)) $input['style'] = $end_style;
+			if($col<2) {
+				$exeval_fields[] = $input['name'];
+				$input['style'] .= 'max-width:3em;';
+			}
+
 			switch($input['type']) {
 				case 'select': 
 					unset($input['type']);
@@ -194,15 +205,16 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			'value' => 1,
 			'class' => "form-check-input"
 		];
-		$label = [
+		if($nval) $input['checked'] = 'checked';
+		$exeval_fields[] = $input['name'];
+		$neutral = $exe_rules['neutrals'][$nkey]; 
+		
+		$attr = [
 			'class' => "form-check-label"
 		];
-		$exeval_fields[] = $input['name'];
 	
-		if($nval) $input['checked'] = 'checked';
 		echo form_input($input);
-		$neutral = $exe_rules['neutrals'][$nkey]; 
-		echo form_label(sprintf('%s (%1.1f)', $neutral['description'], $neutral['deduction']), $id, $label);
+		echo form_label(sprintf('%s (%1.1f)', $neutral['description'], $neutral['deduction']), $id, $attr);
 		?>
 		</div>
 	<?php } ?>
