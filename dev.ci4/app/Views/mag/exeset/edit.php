@@ -126,27 +126,29 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 
 	$last_elnum = array_key_last($exercise['elements']); 
 	foreach($exercise['elements'] as $elnum=>$element) {
-		$start_style = 'width:3em;';
-		$end_style = '';
-		if($elnum!=0) {
-			$start_style .= ' border-top-left-radius:0;';
-			$end_style .= ' border-top-right-radius:0;';
-		}
-		if($elnum!=$last_elnum)  {
-			$start_style .= ' border-bottom-left-radius:0;';
-			$end_style .= ' border-bottom-right-radius:0;';
+		switch($elnum) {
+			case 0:
+				$style = 'border-bottom-right-radius:0; border-bottom-left-radius: 0;';
+				break;
+			case $last_elnum:
+				$style = 'border-top:0; border-top-right-radius:0; border-top-left-radius: 0;';
+				break;
+			default:
+				$style = 'border-top:0; border-radius:0;';
 		}
 		?>
 		<div class="input-group my-0">
-		<span class="input-group-text" style="<?php echo $start_style;?>">
+		<span class="input-group-text" style="width:3em; <?php echo $style;?>">
 			<?php echo $elnum==$dismount_num ? 'D' : $elnum + 1; ?>
 		</span>
 		<?php
 		foreach($inputs as $col=>$input) {
 			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
 			$input['value'] = $element[$col];
+			$input['style'] = $style;
+						
 			if($col<2) $exeval_fields[] = $input['name'];
-			if($col==array_key_last($inputs)) $input['style'] = $end_style;
+			#if($col==array_key_last($inputs)) $input['style'] = $end_style;
 			switch($input['type']) {
 				case 'select': 
 					unset($input['type']);
