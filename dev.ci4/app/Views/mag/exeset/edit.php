@@ -426,7 +426,7 @@ function get_exevals() {
 }
 
 function update_exevals(message, message_ok=0) {
-	let htm = ''; this_ok = 0;
+	let htm = ''; let this_ok = 0;
 	exekeys.forEach(function(exekey) {
 		this_ok = message_ok ? typeof(message[exekey])!="undefined" : 0 ;
 		if(this_ok) {
