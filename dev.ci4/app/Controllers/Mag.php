@@ -58,6 +58,7 @@ public function routine() {
 		return view('mag/exeset/print', $this->data);
 		
 		default:
+		$this->data['head'] .= '<link rel="stylesheet" type="text/css" href="/public/mag/exeset-edit.css">';
 		return view('mag/exeset/edit', $this->data);
 	}
 }

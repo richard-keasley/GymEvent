@@ -76,24 +76,21 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$inputs = [
 				[
 					'type' => "number",
-					'style' => "max-width:5em;",
 					'step' => "0.1",
 					'min' => "0",
 					'max' => $exe_rules['d_max'],
-					'class' => "form-control",
+					'class' => "form-control tarrif-0",
 					'placeholder' => 'tariff'
 				],
 				[
 					'type' => 'select',
-					'style' => "max-width:4em;",
 					'options' => $exeset->ruleset->routine_options('groups'),
-					'class' => "form-control",
+					'class' => "form-control tarrif-1",
 					'placeholder' => 'grp'
 				],
 				[
 					'type' => 'text',
-					'style' => '',
-					'class' => "form-control",
+					'class' => "form-control tarrif-2",
 					'placeholder' => 'description'
 				]
 			];
@@ -104,22 +101,19 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$inputs = [
 				[
 					'type' => 'select',
-					'style' => "max-width:3em;",
 					'options' => $exeset->ruleset->routine_options('difficulties'),
-					'class' => "form-control",
+					'class' => "form-control routine-0",
 					'placeholder' => 'val'
 				],
 				[
 					'type' => 'select',
-					'style' => "max-width:3em;",
 					'options' => $exeset->ruleset->routine_options('groups'),
-					'class' => "form-control",
+					'class' => "form-control routine-1",
 					'placeholder' => 'grp'
 				],
 				[
 					'type' => 'text',
-					'style' => '',
-					'class' => "form-control",
+					'class' => "form-control routine-2",
 					'placeholder' => 'description'
 				]
 			];
@@ -128,23 +122,19 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 
 	$last_elnum = array_key_last($exercise['elements']); 
 	foreach($exercise['elements'] as $elnum=>$element) {
-		$style = '';
-		if($elnum) { // not the first
-			$style .= ' border-top:0; border-top-right-radius:0; border-top-left-radius: 0;';
-		}
-		if($elnum<$last_elnum) { // not the last
-			$style .= ' border-bottom-right-radius:0; border-bottom-left-radius: 0;';
-		}
+		$class = '';
+		if($elnum) $class .= ' not-first';
+		if($elnum<$last_elnum) $class .= ' not-last';
 		?>
 		<div class="input-group my-0">
-		<span class="input-group-text" style="width:3em; <?php echo $style;?>">
+		<span class="input-group-text elnum<?php echo $class;?>">
 			<?php echo $elnum==$dismount_num ? 'D' : $elnum + 1; ?>
 		</span>
 		<?php
 		foreach($inputs as $col=>$input) {
 			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
 			$input['value'] = $element[$col];
-			$input['style'] .= $style;
+			$input['class'] .= $class;
 			if($col<2) $exeval_fields[] = $input['name'];
 
 			switch($input['type']) {
