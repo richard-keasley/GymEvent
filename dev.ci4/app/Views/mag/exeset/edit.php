@@ -13,17 +13,6 @@ $hidden = [
 echo form_open_multipart(base_url(uri_string()), $attr, $hidden); 
 ?>
 <section>
-<div class="row">
-<div class="col-auto">Saved: <?php 
-	$time = new \CodeIgniter\I18n\Time($exeset->saved);
-	echo $time->toLocalizedString('d MMM yyyy'); 
-?></div>
-<div class="col-auto">Rules' version: <?php 
-	$time = new \CodeIgniter\I18n\Time($exeset->ruleset->version);
-	echo $time->toLocalizedString('d MMM yyyy'); 
-?></div>
-</div>
-
 <div class="input-group my-1">
 	<label class="input-group-text" for="name" style="width:7em">Name</label>
 	<?php
@@ -261,6 +250,17 @@ foreach($buttons as $button) {
 }
 ?>
 <button type="button" title="Button help" class="btn btn-info bi-question-circle" data-bs-toggle="modal" data-bs-target="#iconhelp"></button>
+</div>
+
+<div class="row text-muted small">
+<div class="col-auto">Saved: <?php 
+	$time = new \CodeIgniter\I18n\Time($exeset->saved);
+	echo $time->toLocalizedString('d MMM yyyy'); 
+?></div>
+<div class="col-auto">Rules' version: <?php 
+	$time = new \CodeIgniter\I18n\Time($exeset->ruleset->version);
+	echo $time->toLocalizedString('d MMM yyyy'); 
+?></div>
 </div>
 
 <div class="modal" id="iconhelp" tabindex="-1">
