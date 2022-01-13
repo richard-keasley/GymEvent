@@ -5,10 +5,10 @@ public $id = '';
 public $selected = null;
 public $items = [];
 public $format = [
-	'element_start' => '<div id="%s">',
+	'element_start' => '<div id="%s">', 
 	'headings_start' => '<nav class="nav nav-tabs" role="tablist">',
 	'headings_end' => '</nav>',
-	'panels_start' => '<div class="tab-content">',
+	'panels_start' => '<div class="tab-content p-1 border border-top-0">',
 	'panel_start' => '<div class="%s" id="%s" aria-labelledby="%s" role="tabpanel">',
 	'panel_end' => '</div>',
 	'panels_end' => '</div>',
