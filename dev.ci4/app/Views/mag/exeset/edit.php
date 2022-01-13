@@ -76,22 +76,23 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$inputs = [
 				[
 					'type' => "number",
+					'style' => "max-width:5em;",
 					'step' => "0.1",
 					'min' => "0",
 					'max' => $exe_rules['d_max'],
-					'style' => "max-width:5em",
 					'class' => "form-control",
 					'placeholder' => 'tariff'
 				],
 				[
 					'type' => 'select',
+					'style' => "max-width:4em;",
 					'options' => $exeset->ruleset->routine_options('groups'),
-					'style' => "max-width:4em",
 					'class' => "form-control",
 					'placeholder' => 'grp'
 				],
 				[
 					'type' => 'text',
+					'style' => '',
 					'class' => "form-control",
 					'placeholder' => 'description'
 				]
@@ -103,20 +104,21 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$inputs = [
 				[
 					'type' => 'select',
+					'style' => "max-width:3em;",
 					'options' => $exeset->ruleset->routine_options('difficulties'),
-					'style' => "max-width:3em",
 					'class' => "form-control",
 					'placeholder' => 'val'
 				],
 				[
 					'type' => 'select',
+					'style' => "max-width:3em;",
 					'options' => $exeset->ruleset->routine_options('groups'),
-					'style' => "max-width:3em",
 					'class' => "form-control",
 					'placeholder' => 'grp'
 				],
 				[
 					'type' => 'text',
+					'style' => '',
 					'class' => "form-control",
 					'placeholder' => 'description'
 				]
@@ -126,27 +128,25 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 
 	$last_elnum = array_key_last($exercise['elements']); 
 	foreach($exercise['elements'] as $elnum=>$element) {
-		$start_style = 'width:3em;';
-		$end_style = '';
-		if($elnum!=0) {
-			$start_style .= ' border-top-left-radius:0;';
-			$end_style .= ' border-top-right-radius:0;';
+		$style = '';
+		if($elnum) { // not the first
+			$style .= ' border-top:0; border-top-right-radius:0; border-top-left-radius: 0;';
 		}
-		if($elnum!=$last_elnum)  {
-			$start_style .= ' border-bottom-left-radius:0;';
-			$end_style .= ' border-bottom-right-radius:0;';
+		if($elnum<$last_elnum) { // not the last
+			$style .= ' border-bottom-right-radius:0; border-bottom-left-radius: 0;';
 		}
 		?>
 		<div class="input-group my-0">
-		<span class="input-group-text" style="<?php echo $start_style;?>">
+		<span class="input-group-text" style="width:3em; <?php echo $style;?>">
 			<?php echo $elnum==$dismount_num ? 'D' : $elnum + 1; ?>
 		</span>
 		<?php
 		foreach($inputs as $col=>$input) {
 			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
 			$input['value'] = $element[$col];
+			$input['style'] .= $style;
 			if($col<2) $exeval_fields[] = $input['name'];
-			if($col==array_key_last($inputs)) $input['style'] = $end_style;
+
 			switch($input['type']) {
 				case 'select': 
 					unset($input['type']);
@@ -185,7 +185,6 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		<div class="form-check">
 		<?php
 		$id = "{$exekey}_nd_{$nkey}";
-		$exeval_fields[] = $id;
 		$input = [
 			'type' => 'checkbox',
 			'name' => $id,
@@ -193,13 +192,16 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			'value' => 1,
 			'class' => "form-check-input"
 		];
-		$label = [
+		if($nval) $input['checked'] = 'checked';
+		$exeval_fields[] = $input['name'];
+		$neutral = $exe_rules['neutrals'][$nkey]; 
+		
+		$attr = [
 			'class' => "form-check-label"
 		];
-		if($nval) $input['checked'] = 'checked';
+	
 		echo form_input($input);
-		$neutral = $exe_rules['neutrals'][$nkey]; 
-		echo form_label(sprintf('%s (%1.1f)', $neutral['description'], $neutral['deduction']), $id, $label);
+		echo form_label(sprintf('%s (%1.1f)', $neutral['description'], $neutral['deduction']), $id, $attr);
 		?>
 		</div>
 	<?php } ?>
@@ -321,7 +323,7 @@ $this->section('top') ?>
 </div>
 
 <script>
-const api = '<?php echo base_url("/api/mag/exeval");?>/';
+const api = '<?php echo base_url("/api/mag/exevals");?>/';
 const filter = <?php 
 	$arr = [];
 	foreach(\App\Libraries\Mag\Exeset::filter as $key=>$val) {
@@ -385,6 +387,7 @@ function execlear(exekey) {
 	get_exevals();
 }
 
+
 function get_exevals() {
 	// work out title from gymnast's name
 	var name = $('[name=name]').val().trim();
@@ -396,7 +399,7 @@ function get_exevals() {
 		$('h1').html(name);
 		document.title = name;
 	}
-	
+		
 	var exeset = {}; var el = null; var val = null;
 	exeval_fields.forEach(fld => {
 		el = $('[name='+fld+']')[0];
@@ -424,7 +427,7 @@ function get_exevals() {
 }
 
 function update_exevals(message, message_ok=0) {
-	let htm = ''; this_ok = 0;
+	let htm = ''; let this_ok = 0;
 	exekeys.forEach(function(exekey) {
 		this_ok = message_ok ? typeof(message[exekey])!="undefined" : 0 ;
 		if(this_ok) {
