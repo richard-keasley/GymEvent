@@ -6,6 +6,12 @@ $table->setTemplate($template);
 $this->section('content'); 
 
 echo form_open(base_url(uri_string())); ?>
+
+<div class="toolbar">
+	<?php echo \App\Libraries\View::back_link("admin");?>
+	<button name="save" value="1" type="submit" class="btn btn-primary">save</button>
+</div>
+
 <h4>Active controllers</h4>
 <div class="row">
 
@@ -45,6 +51,7 @@ echo getlink('setup/scoreboard', 'Scoreboard');
 echo getlink('setup/php_info', 'PHP info');
 echo getlink('setup/appvars', 'App variables');
 echo getlink('setup/dev', 'Development notes');
+if($device=='development') echo getlink('setup/update', 'Updating the App');
 echo getlink('setup/install', 'Installation notes');
 ?></nav>
 
@@ -56,12 +63,7 @@ echo getlink('setup/install', 'Installation notes');
 
 </div>
 
-<div class="toolbar">
-	<?php echo \App\Libraries\View::back_link("admin");?>
-	<button name="save" value="1" type="submit" class="btn btn-primary">save</button>
-</div>
-
-</form>
-
-<?php $this->endSection(); 
+<?php 
+echo form_close();
+$this->endSection(); 
 
