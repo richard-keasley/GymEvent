@@ -1,10 +1,10 @@
 <?php $this->extend('default');
  
 $this->section('content');?>
-<p><?php echo $ruleset->description;?> 
-	(Updated: <?php 
+<p><?php echo $ruleset->description;?>. 
+	<span class="text-muted fst-italic">updated <?php 
 	$time = new \CodeIgniter\I18n\Time($ruleset->version);
-	echo $time->toLocalizedString('d MMM yyyy'); ?>)
+	echo $time->toLocalizedString('d MMM yyyy'); ?></span>
 </p>
 
 <div class="d-md-flex">
@@ -94,7 +94,8 @@ foreach($ruleset->routine['groups'] as $group_num=>$group_val) {
 
 <?php $this->endSection(); 
 
-$this->section('top'); 
+$this->section('top');
+
 $action = base_url('mag/routine');
 $attr = ['class' => "toolbar"];
 $hidden = ['rulesetname' => $rulesetname];
@@ -103,6 +104,18 @@ echo \App\Libraries\View::back_link("mag");
 ?>
 <button type="submit" title="create routine" class="btn bi-plus btn-outline-primary"></button>
 <?php
+$names = array_keys($index);
+$key = array_search($rulesetname, $names);
+if($key!==false) {
+	if(isset($names[$key - 1])) {
+		$name = $names[$key - 1];
+		printf('<a class="btn btn-outline-dark bi-arrow-left" href="/mag/rules/%s" title="%s"></a>', $name, $index[$name]);
+	}
+	if(isset($names[$key + 1])) {
+		$name = $names[$key + 1];
+		printf('<a class="btn btn-outline-dark bi-arrow-right" href="/mag/rules/%s" title="%s"></a>', $name, $index[$name]);
+	}
+}
 echo form_close();
 $this->endSection(); 
 

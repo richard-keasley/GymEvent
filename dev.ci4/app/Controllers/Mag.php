@@ -21,6 +21,7 @@ public function rules($rulesetname = null) {
 		throw new \RuntimeException("Can't find MAG rule set $rulesetname", 404);
 	}
 	
+	$this->data['index'] = \App\Libraries\Mag\Rules::index;
 	$this->data['ruleset'] = \App\Libraries\Mag\Rules::load($rulesetname);
 	
 	$this->data['breadcrumbs'][] = ["mag/rules/{$rulesetname}", $this->data['ruleset']->title];
@@ -31,6 +32,7 @@ public function rules($rulesetname = null) {
 }
 
 public function routineSW() {
+	// service worker
 	$this->response->setHeader('Content-Type', 'application/javascript');
 	return view('mag/exeset/sw', $this->data);
 }

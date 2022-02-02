@@ -1,8 +1,8 @@
 <?php namespace App\Libraries\Mag\Rulesets;
 
 class Fig {
-public $name = null;
-public $title = null;
+public $name = null; // set by constructor
+public $title = null; // set by constructor
 
 public $version = '2021-12-11';
 

@@ -74,7 +74,7 @@ public function update() {
 	$this->data['dest'] = dirname(ROOTPATH) . '/public.ci4';
 	
 	$update = new \App\Libraries\Synchdirs($this->data['source'], $this->data['dest']);
-	$update->verbose = 1;
+	# $update->verbose = 1;
 	
 	$paths = ['/app'];
 	if($this->request->getPost('cmd')=='update') {
