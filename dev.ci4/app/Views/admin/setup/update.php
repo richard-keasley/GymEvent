@@ -4,7 +4,11 @@ helper('html');
 $this->section('content'); ?>
 <h4>Outstanding updates to live version</h4>
 
-<?php  foreach($this->data['datasets'] as $dataset) { ?>
+<?php  
+$dest_roots = [];
+foreach($this->data['datasets'] as $dataset) { 
+$dest_roots[] = $dataset['dest'];
+?>
 <section>
 <div class="border">
 From: <code><?php echo $dataset['source'];?></code><br>
@@ -36,6 +40,7 @@ echo \App\Libraries\View::back_link("setup");
 </div>
 <div class="modal-body">
 	<p><strong>Careful!</strong> This will overwrite files in the live version, synchronising it with the development version. Be sure the source version is stable before updating.</p>
+	<p class="alert-light p-1">Files in the root folders (<code><?php echo implode(', ', $dest_roots);?></code>) are not updated. Update these manually if necessary; they contain some installation specific settings.</p>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

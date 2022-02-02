@@ -80,7 +80,7 @@ public function update() {
 	$commit = $this->request->getPost('cmd')=='update';
 	foreach($datasets as $key=>$dataset) {
 		$update = new \App\Libraries\Synchdirs($dataset[0], $dataset[1]);
-		# if($commit) $update->run($paths, 1);
+		if($commit) $update->run($paths, 1);
 		# $update->verbose = 1;
 		$this->data['datasets'][] = [
 			'source' => $dataset[0],
