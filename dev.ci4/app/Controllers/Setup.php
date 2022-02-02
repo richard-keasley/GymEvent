@@ -69,6 +69,26 @@ public function dev() {
 	return view('admin/setup/dev', $this->data);
 }
 
+public function update() {
+	$this->data['source'] = rtrim(ROOTPATH, DIRECTORY_SEPARATOR);
+	$this->data['dest'] = dirname(ROOTPATH) . '/public.ci4';
+	
+	$update = new \App\Libraries\Synchdirs($this->data['source'], $this->data['dest']);
+	$update->verbose = 1;
+	
+	$paths = ['/app'];
+	if($this->request->getPost('cmd')=='update') {
+		$this->data['update'] = $update->run($paths, 1);
+		$this->data['messages'][] = ['Live site updates applied', 'success'];
+	}
+	$this->data['update'] = $update->run($paths);
+
+	$this->data['title'] = 'App update state';
+	$this->data['heading'] = $this->data['title'];
+	$this->data['breadcrumbs'][] = ['setup/update', $this->data['title']];
+	return view('admin/setup/update', $this->data);
+}
+
 public function install() {
 	$this->data['title'] = 'Installation notes';
 	$this->data['heading'] = $this->data['title'];

@@ -13,17 +13,6 @@ $hidden = [
 echo form_open_multipart(base_url(uri_string()), $attr, $hidden); 
 ?>
 <section>
-<div class="row">
-<div class="col-auto">Saved: <?php 
-	$time = new \CodeIgniter\I18n\Time($exeset->saved);
-	echo $time->toLocalizedString('d MMM yyyy'); 
-?></div>
-<div class="col-auto">Rules' version: <?php 
-	$time = new \CodeIgniter\I18n\Time($exeset->ruleset->version);
-	echo $time->toLocalizedString('d MMM yyyy'); 
-?></div>
-</div>
-
 <div class="input-group my-1">
 	<label class="input-group-text" for="name" style="width:7em">Name</label>
 	<?php
@@ -79,20 +68,18 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 					'step' => "0.1",
 					'min' => "0",
 					'max' => $exe_rules['d_max'],
-					'style' => "max-width:5em",
-					'class' => "form-control",
+					'class' => "form-control tarrif-0",
 					'placeholder' => 'tariff'
 				],
 				[
 					'type' => 'select',
 					'options' => $exeset->ruleset->routine_options('groups'),
-					'style' => "max-width:4em",
-					'class' => "form-control",
+					'class' => "form-control tarrif-1",
 					'placeholder' => 'grp'
 				],
 				[
 					'type' => 'text',
-					'class' => "form-control",
+					'class' => "form-control tarrif-2",
 					'placeholder' => 'description'
 				]
 			];
@@ -104,20 +91,18 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 				[
 					'type' => 'select',
 					'options' => $exeset->ruleset->routine_options('difficulties'),
-					'style' => "max-width:3em",
-					'class' => "form-control",
+					'class' => "form-control routine-0",
 					'placeholder' => 'val'
 				],
 				[
 					'type' => 'select',
 					'options' => $exeset->ruleset->routine_options('groups'),
-					'style' => "max-width:3em",
-					'class' => "form-control",
+					'class' => "form-control routine-1",
 					'placeholder' => 'grp'
 				],
 				[
 					'type' => 'text',
-					'class' => "form-control",
+					'class' => "form-control routine-2",
 					'placeholder' => 'description'
 				]
 			];
@@ -126,39 +111,20 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 
 	$last_elnum = array_key_last($exercise['elements']); 
 	foreach($exercise['elements'] as $elnum=>$element) {
-		$style = '';
-		if($elnum) { // not the first
-			$style .= 'border-top:0; border-top-right-radius:0; border-top-left-radius: 0;';
-		}
-		if($elnum<$last_elnum) { // not the last
-			$style .= 'border-bottom-right-radius:0; border-bottom-left-radius: 0;';
-		}
-		/*
-		
-		
-		switch($elnum) {
-			case 0:
-				break;
-			case $last_elnum:
-				break;
-			default:
-				$style = 'border-top:0; border-radius:0;';
-		}
-		*/
+		$class = '';
+		if($elnum) $class .= ' not-first';
+		if($elnum<$last_elnum) $class .= ' not-last';
 		?>
 		<div class="input-group my-0">
-		<span class="input-group-text" style="width:3em; <?php echo $style;?>">
+		<span class="input-group-text elnum<?php echo $class;?>">
 			<?php echo $elnum==$dismount_num ? 'D' : $elnum + 1; ?>
 		</span>
 		<?php
 		foreach($inputs as $col=>$input) {
 			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
 			$input['value'] = $element[$col];
-			$input['style'] = $style;
-			if($col<2) {
-				$exeval_fields[] = $input['name'];
-				$input['style'] .= 'max-width:3em;';
-			}
+			$input['class'] .= $class;
+			if($col<2) $exeval_fields[] = $input['name'];
 
 			switch($input['type']) {
 				case 'select': 
@@ -284,6 +250,17 @@ foreach($buttons as $button) {
 }
 ?>
 <button type="button" title="Button help" class="btn btn-info bi-question-circle" data-bs-toggle="modal" data-bs-target="#iconhelp"></button>
+</div>
+
+<div class="row text-muted small">
+<div class="col-auto">Saved: <?php 
+	$time = new \CodeIgniter\I18n\Time($exeset->saved);
+	echo $time->toLocalizedString('d MMM yyyy'); 
+?></div>
+<div class="col-auto">Rules' version: <?php 
+	$time = new \CodeIgniter\I18n\Time($exeset->ruleset->version);
+	echo $time->toLocalizedString('d MMM yyyy'); 
+?></div>
 </div>
 
 <div class="modal" id="iconhelp" tabindex="-1">

@@ -29,7 +29,7 @@ $systemDirectory = realpath($paths->systemDirectory);
 
 <p>All resources for front-end are stored in <mark><?php echo FCPATH;?>public/</mark> (URL: <?php echo base_url('public');?>/).</p>
 
-<p>The <a href ="<?php echo base_url('/public/bootstrap-icons-1.5.0/');?>">Bootstrap icons are listed</a> here <a href ="https://icons.getbootstrap.com/">(documentation on icon usage)</a>.</p>
+<p>Read <a href ="https://icons.getbootstrap.com/">documentation on Bootstrap icons</a>.</p>
 
 <h5>Style sheets</h5>
 <p>Style sheet is a compiled bootstrap style sheet <mark>/public/bootstrap.ccs</mark>.<p> 
