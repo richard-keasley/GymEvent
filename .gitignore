@@ -5,6 +5,6 @@ dev.ci4/.env
 dev.ci4/system/*
 dev.ci4/writable/*
 
-# event downloads
-dev.ci4/public/events/*
+# event downloads / resources
+dev.ci4/public/*
 
