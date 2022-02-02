@@ -7,8 +7,9 @@ const DEF_RULESETNAME = 'Fig';
 // ruleset basename(file) => title
 const index = [
 	self::DEF_RULESETNAME => 'FIG',
-	'Jnr' => 'FIG - junior',
-	'U12' => 'BG - under 12'
+	'Jnr' => 'FIG - Junior',
+	'U14' => 'BG - Under 14',
+	'U12' => 'BG - Under 12'
 ];
 
 static function load($setname=self::DEF_RULESETNAME) {
