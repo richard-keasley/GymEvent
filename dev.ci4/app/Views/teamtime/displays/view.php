@@ -1,11 +1,11 @@
 <?php $this->extend('teamtime/displays/layout');
 
 $this->section('body'); 
-$get_images = $tt_lib::get_images();
+$images = $tt_lib::get_images();
 ?>
 <div id="display">
 <div id="images">
-<?php foreach($get_images as $key=>$image) {
+<?php foreach($images as $key=>$image) {
 	printf('<img id="image%u" class="frame" src="%s">', $key, $image);
 } ?>
 </div>
@@ -17,9 +17,9 @@ $get_images = $tt_lib::get_images();
 <script>
 const display = <?php echo json_encode($display);?>;
 const frames = <?php 
-    if($get_images) {
+    if($images) {
         $frames = [];
-        foreach(array_keys($get_images) as $key) {
+        foreach(array_keys($images) as $key) {
         	$frames[] = "image{$key}";
         	$frames[] = "info"; 
         }

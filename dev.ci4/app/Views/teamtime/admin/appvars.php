@@ -5,7 +5,9 @@ $this->section('content');
 
 $acc = new \App\Views\Htm\Accordion;
 foreach($tt_lib::get_vars() as $appvar) {
-	$acc->set_item(substr($appvar->id, 9), $appvar->htm());
+	$htm = "<p>Updated {$appvar->updated_at}</p>";
+	$htm .= $appvar->htm();
+	$acc->set_item(substr($appvar->id, 9), $htm);
 }
 echo $acc->htm();
 $this->endSection(); 

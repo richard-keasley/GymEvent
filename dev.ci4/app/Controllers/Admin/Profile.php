@@ -8,7 +8,7 @@ public function index() {
 	$this->data['title'] = 'Profile images';
 	$this->data['head'] = '<style>
 body {
-	background-image: url(/public/profile/desktop.jpg);
+	background-image: url(/app/profile/desktop.jpg);
 	background-position: center top;
 	background-size: 100%;
 	background-repeat: no-repeat;

@@ -6,12 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#600">
-<link rel="apple-touch-icon" sizes="180x180" href="/public/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/public/icons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/public/icons/favicon-16x16.png">
-<link rel="stylesheet" type="text/css" href="/public/bootstrap.css">
-<link rel="stylesheet" type="text/css" href="/public/custom.css">
-<script src="/public/jquery-3.6.0.min.js" type="text/javascript"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="/app/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/app/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/app/icons/favicon-16x16.png">
+<link rel="stylesheet" type="text/css" href="/app/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="/app/custom.css">
+<script src="/app/jquery-3.6.0.min.js" type="text/javascript"></script>
 <title><?php echo $title;?></title>
 <?php if(!empty($head)) echo $head;?>
 </head>

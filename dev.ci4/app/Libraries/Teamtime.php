@@ -94,7 +94,7 @@ static function get_images() {
 }
 
 static function timestamp($time) {
-	return $time->toLocalizedString('MMddHHmmss');
+	return $time->toLocalizedString('YYMMddHHmmss');
 }
 
 }

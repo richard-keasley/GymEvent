@@ -129,11 +129,12 @@ public function display_view($ds_id=0, $dupd_request=0, $vupd_request=0) {
 		return $this->respond(['reload' => 'display'], 200);
 	}
 	
-	$upd_check = [];
-	$get_var = $tt_lib::get_var('views');
-	$upd_check[] = $tt_lib::timestamp($get_var->updated_at);
-	$get_var = $tt_lib::get_var('runvars');
-	$upd_check[] = $tt_lib::timestamp($get_var->updated_at);
+	$views = $tt_lib::get_var('views');
+	$runvars = $tt_lib::get_var('runvars');
+	$upd_check = [
+		$tt_lib::timestamp($views->updated_at),
+		$tt_lib::timestamp($runvars->updated_at)
+	];
 	$upd_check = max($upd_check);
 	
 	if($upd_check>$vupd_request) {
@@ -152,7 +153,7 @@ public function display_view($ds_id=0, $dupd_request=0, $vupd_request=0) {
 		];
 		return $this->respond($response, 200);
 	}
-	return $this->respond(['reload'=>0], 200);
+	return $this->respond(['reload' => 0], 200);
 }
 
 }

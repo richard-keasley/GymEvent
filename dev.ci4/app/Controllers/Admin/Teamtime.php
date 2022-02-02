@@ -12,7 +12,7 @@ function index() {
 	$this->data['breadcrumbs'] = null;
 	$this->data['title'] = 'Control panel';
 	$this->data['heading'] = 'Teamtime control panel';
-	$this->data['head'] = '<link rel="stylesheet" type="text/css" href="/public/teamtime/admin.css">';
+	$this->data['head'] = '<link rel="stylesheet" type="text/css" href="/app/teamtime/admin.css">';
 	return view('teamtime/admin/index', $this->data);
 }
 

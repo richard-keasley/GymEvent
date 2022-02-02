@@ -2,15 +2,19 @@
 helper('html');
 
 $this->section('content'); ?>
-<section>
 <h4>Outstanding updates to live version</h4>
+
+<?php  foreach($this->data['datasets'] as $dataset) { ?>
+<section>
 <div class="border">
-From: <code><?php echo $source;?></code><br>
-To: <code><?php echo $dest;?></code>
+From: <code><?php echo $dataset['source'];?></code><br>
+To: <code><?php echo $dataset['dest'];?></code>
 </div> 
-<?php echo ul($update, ['class'=>'list-unstyled']);?>
+<?php echo ul($dataset['log'], ['class'=>'list-unstyled']);?>
 </section>
-<?php $this->endSection();
+<?php 
+} 
+$this->endSection();
 
 $this->section('top');
 $attr = [
@@ -31,7 +35,7 @@ echo \App\Libraries\View::back_link("setup");
 	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div class="modal-body">
-	<p><strong>Careful!</strong> This will overwrite files in the live version (<code><?php echo $dest;?></code>), synchronising it with the development version (<code><?php echo $source;?></code>) Be sure the source version is stable before updating.</p>
+	<p><strong>Careful!</strong> This will overwrite files in the live version, synchronising it with the development version. Be sure the source version is stable before updating.</p>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

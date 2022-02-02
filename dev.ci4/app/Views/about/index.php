@@ -5,7 +5,7 @@ $this->section('content'); ?>
 <nav class="nav"><?php echo $related;?></nav>
 
 <h2>Time-line for event preparation</h2>
-<img src="/public/profile/logo.png" style="width:6em; float:right">
+<img src="/app/profile/logo.png" style="width:6em; float:right">
 <ol>
 <li>Publish the rule pack and open on-line entries.</li>
 <li>Closing date<ul>
@@ -41,7 +41,7 @@ $this->section('content'); ?>
 	</ul>
 </li>
 </ol>
-<p><img src="/public/profile/image.png"></p>
+<p><img src="/app/profile/image.png"></p>
 
 <nav class="nav"><?php echo $related;?></nav>
 

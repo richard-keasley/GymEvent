@@ -3,7 +3,7 @@
 $this->section('content'); ?>
 <div class="float-end"><?php echo view('includes/version');?></div>
 
-<h2>CodeIgniter <img src="<?php echo base_url('/public/images/codeigniter.svg');?>" style="height: 1.3em;"></h2>
+<h2>CodeIgniter <img src="<?php echo base_url('/app/images/codeigniter.svg');?>" style="height: 1.3em;"></h2>
 
 <p>Base URL for this installation is <?php printf('<a href="%1$s">%1$s</a>', base_url());?>.</p>
 
@@ -32,13 +32,13 @@ $systemDirectory = realpath($paths->systemDirectory);
 <p>Read <a href ="https://icons.getbootstrap.com/">documentation on Bootstrap icons</a>.</p>
 
 <h5>Style sheets</h5>
-<p>Style sheet is a compiled bootstrap style sheet <mark>/public/bootstrap.ccs</mark>.<p> 
-<p>Custom styles can be added to <mark>/public/custom.ccs</mark>.</p>
+<p>Style sheet is a compiled bootstrap style sheet <mark>/app/bootstrap.ccs</mark>.<p> 
+<p>Custom styles can be added to <mark>/app/custom.ccs</mark>.</p>
 
 <h5>JavaScript helpers</h5>
-<p><mark>/public/bootstrap.bundle.min.js</mark> is included as a JS helper at the end of each page. This requires <mark>/public/bootstrap.bundle.min.js.map</mark>.</p>
+<p><mark>/app/bootstrap.bundle.min.js</mark> is included as a JS helper at the end of each page. This requires <mark>/app/bootstrap.bundle.min.js.map</mark>.</p>
 
-<p><a href="https://jquery.com/"><img src="<?php echo base_url('/public/images/jquery.svg');?>" class="pe-2" style="height:1.3em;">jQuery</a> is used as well (but not jQuery-UI).</p>
+<p><a href="https://jquery.com/"><img src="<?php echo base_url('/app/images/jquery.svg');?>" class="pe-2" style="height:1.3em;">jQuery</a> is used as well (but not jQuery-UI).</p>
 
 <h3>Style</h3>
 <ul>

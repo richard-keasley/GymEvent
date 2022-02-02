@@ -21,7 +21,7 @@ public function info($var_name) {
 	
 	$view = "teamtime/info/{$var_name}";
 	if(!file_exists(VIEWPATH . $view . '.php')) throw new \RuntimeException("Can't find teamtime {$var_name}", 404);
-	/* from /public/teamtime/display.css */
+	/* from /app/teamtime/display.css */
 	$this->data['head'] = '<style>
 	.runtable table {
 		border: 1px solid #226;

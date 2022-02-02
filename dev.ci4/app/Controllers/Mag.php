@@ -7,7 +7,7 @@ public function __construct() {
 	$this->data['title'] = "Men's Artistic";
 	$this->data['heading'] = "Men's Artistic";
 	$this->data['head'] = '
-<link rel="manifest" href="/public/mag/webmanifest.json">
+<link rel="manifest" href="/app/mag/webmanifest.json">
 <meta name="apple-mobile-web-app-title" content="MAG routines">';
 }
 	
@@ -60,7 +60,7 @@ public function routine() {
 		return view('mag/exeset/print', $this->data);
 		
 		default:
-		$this->data['head'] .= '<link rel="stylesheet" type="text/css" href="/public/mag/exeset-edit.css">';
+		$this->data['head'] .= '<link rel="stylesheet" type="text/css" href="/app/mag/exeset-edit.css">';
 		return view('mag/exeset/edit', $this->data);
 	}
 }

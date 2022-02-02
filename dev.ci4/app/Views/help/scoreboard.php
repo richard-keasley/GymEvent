@@ -8,7 +8,7 @@
 </ul>
 
 <h3>Instructions</h3>
-<p><a href="/public/scoreboard/instructions.pdf" target="_blank">You can down-load instructions here</a>.</p>
+<p><a href="/app/scoreboard/instructions.pdf" target="_blank">You can down-load instructions here</a>.</p>
 <p>You may need to write scores down for coaches to see as well. We suggest using a blank manual score sheet and recording all scores for each rotation on one piece of paper. This can be sent to control desk at the end of the rotation to act as a double check on the scores you have entered.</p>
 
 <h3>On the day</h3>
