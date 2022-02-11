@@ -17,5 +17,5 @@
 </ol>
 <section class="card bg-light">
 <h6 class="card-header">If you find a routine with the wrong start value</h6>
-<p class="card-body">Save the routine to your computer. Send an email to Andy Piekarski or Richard and explain in detail <em>exactly</em> what you think is wrong, attaching the routine you have saved. We will fix it as soon as we can!</p>
+<p class="card-body">Save the routine to your computer. Send an email to Richard explaining in detail <em>exactly</em> what you think is wrong; attach the routine you have saved. We will fix it as soon as we can!</p>
 </section>
