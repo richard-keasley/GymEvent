@@ -252,17 +252,6 @@ foreach($buttons as $button) {
 <button type="button" title="Button help" class="btn btn-info bi-question-circle" data-bs-toggle="modal" data-bs-target="#iconhelp"></button>
 </div>
 
-<div class="row text-muted small">
-<div class="col-auto">Saved: <?php 
-	$time = new \CodeIgniter\I18n\Time($exeset->saved);
-	echo $time->toLocalizedString('d MMM yyyy'); 
-?></div>
-<div class="col-auto">Rules' version: <?php 
-	$time = new \CodeIgniter\I18n\Time($exeset->ruleset->version);
-	echo $time->toLocalizedString('d MMM yyyy'); 
-?></div>
-</div>
-
 <div class="modal" id="iconhelp" tabindex="-1">
 <div class="modal-dialog">
 <div class="modal-content">
@@ -278,6 +267,16 @@ $table->setTemplate($template);
 $table->autoHeading = false;
 echo $table->generate($tbody);
 ?>
+<div class="row text-muted">
+<div class="col-auto">Saved: <?php 
+	$time = new \CodeIgniter\I18n\Time($exeset->saved);
+	echo $time->toLocalizedString('d MMM yyyy'); 
+?></div>
+<div class="col-auto">Rules' version: <?php 
+	$time = new \CodeIgniter\I18n\Time($exeset->ruleset->version);
+	echo $time->toLocalizedString('d MMM yyyy'); 
+?></div>
+</div>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

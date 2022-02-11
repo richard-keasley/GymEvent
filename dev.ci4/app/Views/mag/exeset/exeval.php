@@ -19,22 +19,25 @@ $errors = [];
 $routine_elcount = 0;
 
 // D score 
-$score = [];
+$dscore = [];
 switch($exe_rules['method']) {
 	case 'tariff':
 		# d($exe_rules);
-		$score['Tariff'] = floatval($exercise['elements'][0][0]);
-		if($score['Tariff']>$exe_rules['d_max']) {
+		$dscore['Tariff'] = floatval($exercise['elements'][0][0]);
+		if($dscore['Tariff']>$exe_rules['d_max']) {
 			$errors[] = "Tariff can be no higher than {$exe_rules['d_max']}";
+		}
+		if($dscore['Tariff']<0) {
+			$errors[] = "Invalid tarrif";
 		}
 		break;
 	case 'routine':
 	default:
 		$routine_rules = $exeset->ruleset->routine;
-		$score['Value'] = 0;
+		$dscore['Value'] = 0;
 		$group_count = [];
 		foreach(array_keys($routine_rules['groups']) as $grp_key) {
-			$score["EG{$grp_key}"] = 0;
+			$dscore["EG{$grp_key}"] = 0;
 			$group_count[$grp_key] = 0;
 		}
 		
@@ -76,13 +79,13 @@ switch($exe_rules['method']) {
 			// valid element
 			$routine_elcount++;
 			$group_count[$el_group]++;
-			$score['Value'] += $el_value;
+			$dscore['Value'] += $el_value;
 			// group value for this element
 			$grp_key = $elnum==$dismount_elnum ? $routine_rules['group_dis'] : $el_group ;
 			$group_vals = $routine_rules['groups'][$grp_key];
 			foreach($group_vals as $grp_diff=>$grp_worth) {
 				$grp_value = $routine_rules['difficulties'][$grp_diff];
-				if($el_value>=$grp_value) $score["EG{$grp_key}"] = $grp_worth;
+				if($el_value>=$grp_value) $dscore["EG{$grp_key}"] = $grp_worth;
 			}
 		}
 		// count elements per group
@@ -92,12 +95,10 @@ switch($exe_rules['method']) {
 			}
 		}
 		// connection 
-		if(array_sum($score) && empty($errors) && $exe_rules['connection']) {
+		if(array_sum($dscore) && $exe_rules['connection']) {
 			$val = $exercise['connection'] ?? 0 ;
-			if($val) $score['Connection'] = floatval($val);
+			if($val>0) $dscore['Connection'] = floatval($val);
 		}
-		
-		
 		// end routine
 }
 
@@ -107,40 +108,47 @@ if($errors) { ?>
 <?php foreach($errors as $error) printf('<li>%s</li>', $error); ?>
 </ul>
 </div>
-<?php }
-
-if(array_sum($score)) {
-	// neutral deductions
-	$nd = 0;
-	switch($exe_rules['method']) {
-		case 'tariff':
-			break;
-		case 'routine':
-		default:
-			$short = $routine_rules['short'][$routine_elcount] ?? 0 ;
-			$nd += $short;
-	}
-	foreach($exercise['neutrals'] as $nkey=>$nval) { 
-		if(!$nval) {
-			$neutral = $exe_rules['neutrals'][$nkey]; 
-			$nd += $neutral['deduction'];
-		}
-	}
-	if($nd) $score['ND'] = -$nd;
-	
-	// score table 
-	$start_value = array_sum($score) + 10;
-	$score_format = '<div class="px-2 text-end">%.1f</div>';
-	$table = new \CodeIgniter\View\Table();
-	$table->setTemplate(['table_open' => '<table class="table table-sm">']);
-	$table->autoHeading = false;
-	$table->setFooting(['SV', sprintf($score_format, $start_value)]);
-	$tbody = [];
-	foreach($score as $key=>$val) {
-		$tbody[] = [
-			$key, 
-			sprintf($score_format, $val)
-		];
-	} 
-	echo $table->generate($tbody);
+<?php 
+return; // no calculation for routine errors
 }
+
+$dscore_total = array_sum($dscore);
+if(!$dscore_total) return; // empty routine
+ 
+// D score table 
+$score_format = '<div class="px-2 text-end">%.1f</div>';
+$table = new \CodeIgniter\View\Table();
+$table->setTemplate(['table_open' => '<table class="table table-sm">']);
+$table->autoHeading = false;
+$table->setFooting(['D', sprintf($score_format, $dscore_total)]);
+$tbody = [];
+foreach($dscore as $key=>$val) {
+	$tbody[] = [
+		$key, 
+		sprintf($score_format, $val)
+	];
+} 
+echo $table->generate($tbody);
+
+// neutral deductions
+$nd = 0;
+switch($exe_rules['method']) {
+	case 'tariff':
+		break;
+	case 'routine':
+	default:
+		$short = $routine_rules['short'][$routine_elcount] ?? 0 ;
+		$nd += $short;
+}
+foreach($exercise['neutrals'] as $nkey=>$nval) { 
+	if(!$nval) {
+		$neutral = $exe_rules['neutrals'][$nkey]; 
+		$nd += $neutral['deduction'];
+	}
+}
+if($nd) printf('<p><strong>ND:</strong> %.1f</p>', $nd);
+
+
+# $start_value =  + 10;
+	
+	
