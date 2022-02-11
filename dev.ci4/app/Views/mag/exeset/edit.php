@@ -252,6 +252,14 @@ foreach($buttons as $button) {
 <button type="button" title="Button help" class="btn btn-info bi-question-circle" data-bs-toggle="modal" data-bs-target="#iconhelp"></button>
 </div>
 
+<?php echo form_close();
+
+# d($exeset);
+# d($exeval_fields);
+$this->endSection(); 
+
+$this->section('bottom') ?>
+
 <div class="modal" id="iconhelp" tabindex="-1">
 <div class="modal-dialog">
 <div class="modal-content">
@@ -259,6 +267,7 @@ foreach($buttons as $button) {
 	<h5 class="modal-title">Button functions</h5>
 	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
+
 <div class="modal-body">
 <?php 
 $table = new \CodeIgniter\View\Table();
@@ -267,7 +276,8 @@ $table->setTemplate($template);
 $table->autoHeading = false;
 echo $table->generate($tbody);
 ?>
-<div class="row text-muted">
+
+<section class="row text-muted">
 <div class="col-auto">Saved: <?php 
 	$time = new \CodeIgniter\I18n\Time($exeset->saved);
 	echo $time->toLocalizedString('d MMM yyyy'); 
@@ -276,7 +286,8 @@ echo $table->generate($tbody);
 	$time = new \CodeIgniter\I18n\Time($exeset->ruleset->version);
 	echo $time->toLocalizedString('d MMM yyyy'); 
 ?></div>
-</div>
+</section>
+
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -284,14 +295,6 @@ echo $table->generate($tbody);
 </div>
 </div>
 </div>
-
-<?php echo form_close();
-
-# d($exeset);
-# d($exeval_fields);
-$this->endSection(); 
-
-$this->section('top') ?>
 
 <div class="modal" id="execlear" tabindex="-1">
 <div class="modal-dialog">
