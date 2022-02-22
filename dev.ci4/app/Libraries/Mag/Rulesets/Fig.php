@@ -41,7 +41,7 @@ public $exes = [
 		'name' => 'Vault',
 		'method' => 'tariff',
 		'neutrals' => [],
-		'exe_count' => 1,
+		'exe_count' => 2,
 		'd_max' => 6
 	],
 	'PB' => [
