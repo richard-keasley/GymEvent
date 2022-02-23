@@ -13,7 +13,9 @@ public function index() {
 public function view(...$segments) {
 	if(!$segments) $segments = ['index'];
 	$stub = implode('/', $segments);
-	if(!\App\Libraries\Auth::check_path($stub)) return $this->error('Access denied');
+	
+	if(!\App\Libraries\Auth::check_role('club')) return $this->error('Access denied');
+#	if(!\App\Libraries\Auth::check_path($stub)) return $this->error('Access denied');
 			
 	$viewname = "help/{$stub}";
 	$include = VIEWPATH . "{$viewname}.php";
