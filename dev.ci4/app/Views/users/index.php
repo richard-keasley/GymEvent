@@ -58,8 +58,5 @@ foreach($users as $user) {
 	];
 }
 echo $table->generate($tbody);
-?>
-</form>
-<?php $this->endSection(); 
-
-
+echo form_close();
+$this->endSection(); 

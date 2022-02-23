@@ -92,9 +92,9 @@ foreach($inputs as $key=>$input) {
 		</div>
 	</div>
 	<?php
-} ?>
-</form>
-<?php $this->endSection(); 
+} 
+echo form_close();
+$this->endSection(); 
 
 $this->section('bottom');?>
 <div class="toolbar">

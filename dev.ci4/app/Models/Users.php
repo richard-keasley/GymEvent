@@ -49,7 +49,8 @@ public function getNew() {
 }
 
 public function delete_all($user_id) {
-	d('ToDo: cascade delete clubrets and entries');
+	$session = session();
+	$session->setFlashdata('messages', ['ToDo: cascade delete clubrets and entries']);
 }
  
 } 
