@@ -229,6 +229,18 @@ static function path_role($path) {
 		}
 	}
 	
+	if($controller=='help') { 
+		/* view used by controller /api/help */
+		switch($method) {
+			case 'admin': 
+				return 'admin';
+			case 'general':
+				return self::roles[0];
+			default:
+				return 'club';
+		}
+	}
+	
 	return self::roles[0];
 }
 
