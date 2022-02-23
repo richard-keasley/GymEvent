@@ -8,3 +8,4 @@ dev.ci4/writable/*
 # event downloads / resources
 dev.ci4/public/public/*
 
+public.ci4/.env

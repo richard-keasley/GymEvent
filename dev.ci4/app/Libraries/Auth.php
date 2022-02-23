@@ -150,6 +150,7 @@ static function path_role($path) {
 		if($controller==$role) return $role;
 		if($method==$role) return $role;
 	}
+		
 	if($controller=='user') return 'club';
 		
 	if($controller=='music') {
@@ -228,9 +229,16 @@ static function path_role($path) {
 		}
 	}
 	
+	if($controller=='help') { 
+		/* view used by controller /api/help */
+		switch($method) {
+			case 'admin': 
+				return 'admin';
+		}
+		return 'club';
+	}
+	
 	return self::roles[0];
 }
 
 } 
-
- 
