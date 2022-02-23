@@ -142,6 +142,15 @@ static function path_role($path) {
 	
 	if(!$controller) return self::roles[0]; // home page
 	
+	if($controller=='help') { 
+		/* 
+		method is view used by controller /api/help 
+		check permission to view controller attached to this view
+		*/
+		$controller = $method;
+		$method = '';
+	}
+		
 	if($controller=='setup') return self::roles[99];
 	
 	if(in_array($controller, self::$disabled)) return 'disabled';
@@ -154,8 +163,8 @@ static function path_role($path) {
 	if($controller=='user') return 'club';
 		
 	if($controller=='music') {
-		if(!$method) return 'club';
-		if($method=='view') {
+		switch($method) {
+			case 'view':
 			$events = new \App\Models\Events();
 			$event = $events->find($param1);
 			$state = $event ? $event->music : null;
@@ -167,16 +176,20 @@ static function path_role($path) {
 				default: // waiting / finished
 					return 'admin';
 			}
-		}
-		if($method=='edit') {
+			
+			case 'edit':
 			$model = new \App\Models\Entries();
 			$entry = $model->find($param1);
 			return $entry ? $entry->role($controller, 'edit') : 'none';
+			
+			default:
+				return 'club';
 		}
 	}
 				
 	if($controller=='videos') {
-		if($method=='view') {
+		switch($method) {
+			case 'view':
 			$events = new \App\Models\Events();
 			$event = $events->find($param1);
 			$state = $event ? $event->videos : null ;
@@ -188,17 +201,20 @@ static function path_role($path) {
 				default: // waiting / finished
 					return 'admin';
 			}
-		}
-		if($method=='edit') {
+			
+			case 'edit':
 			$model = new \App\Models\Entries();
 			$entry = $model->find($param1);
 			return $entry ? $entry->role($controller, 'edit') : 'none';
+			
+			default:
+			return self::roles[0];
 		}
 	}
 	
 	if($controller=='entries') {
-		if(!$method) return self::roles[0];
-		if($method=='view') {
+		switch($method) {
+			case 'view':
 			$events = new \App\Models\Events();
 			$event = $events->find($param1);
 			$clubrets = $event ? $event->clubrets : 0 ;
@@ -210,37 +226,35 @@ static function path_role($path) {
 				default: // closed
 					return self::roles[99];
 			}
+			
+			default:
+			return self::roles[0];
 		}
 	}
 	
 	if($controller=='clubrets') {
-		if(!$method) return 'club';
-		if($param2 && $param2!==$session_user) return 'admin';
-		$events = new \App\Models\Events();
-		$event = $events->find($param1);
-		$state = $event ? $event->clubrets : null;
-		switch($state) {
-			case 1: // edit
-				return "club";
-			case 2: // view
-				return 'none';
-			default: // closed
-				return 'admin';
-		}
-	}
-	
-	if($controller=='help') { 
-		/* view used by controller /api/help */
 		switch($method) {
-			case 'admin': 
-				return 'admin';
-			case 'general':
-				return self::roles[0];
+			case 'add':
+			case 'view':
+			case 'edit':
+			if($param2 && $param2!==$session_user) return 'admin';
+			$events = new \App\Models\Events();
+			$event = $events->find($param1);
+			$state = $event ? $event->clubrets : null;
+			switch($state) {
+				case 1: // edit
+					return "club";
+				case 2: // view
+					return 'none';
+				default: // closed
+					return 'admin';
+			}
+			
 			default:
-				return 'club';
+			return 'club';
 		}
 	}
-	
+		
 	return self::roles[0];
 }
 

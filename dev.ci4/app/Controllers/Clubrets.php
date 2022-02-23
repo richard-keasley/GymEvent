@@ -31,7 +31,6 @@ public function index() {
 			
 	$this->data['clubrets'] = $this->model->where('user_id', $user_id)->findAll();
 	
-	#$this->data['breadcrumbs'][] = 'admin';
 	$this->data['breadcrumbs'][] = 'clubrets';
 	return view('clubrets/index', $this->data);
 }
