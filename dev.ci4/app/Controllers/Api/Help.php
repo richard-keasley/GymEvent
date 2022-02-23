@@ -13,11 +13,10 @@ public function index() {
 public function view(...$segments) {
 	if(!$segments) $segments = ['index'];
 	$stub = implode('/', $segments);
-	
-	if(!\App\Libraries\Auth::check_role('club')) return $this->error('Access denied');
-#	if(!\App\Libraries\Auth::check_path($stub)) return $this->error('Access denied');
-			
+		
 	$viewname = "help/{$stub}";
+	if(!\App\Libraries\Auth::check_path($viewname)) return $this->error('Access denied');
+	
 	$include = VIEWPATH . "{$viewname}.php";
 	if(!file_exists($include)) return $this->error("Can't find help for {$stub}");
 	return $this->respond(view($viewname));

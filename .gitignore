@@ -10,4 +10,3 @@ dev.ci4/public/public/*
 
 # live version
 public.ci4/*
-dev.ci4/.env
