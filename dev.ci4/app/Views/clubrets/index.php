@@ -1,7 +1,8 @@
 <?php $this->extend('default');
 
 $this->section('content'); ?>
-<p>Current returns for <?php echo $user->name;?>.</p>
+<p>These are the current club returns for <?php echo $user->name;?>. 
+You may edit any of these returns before the event's closing date.</p>
 <?php $this->endSection(); 
 
 $this->section('sidebar'); ?>
