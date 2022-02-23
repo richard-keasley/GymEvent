@@ -5,8 +5,9 @@ use CodeIgniter\Entity;
 class Clubret extends Entity {
 
 public function getStaff() {
-	$db_val = json_decode($this->attributes['staff'], 1);
-	if(!$db_val) return [];
+	#d($this); die;
+	$db_val = $this->attributes['staff'] ?? '[]';
+	$db_val = json_decode($db_val, 1) ?? [];
 	$entity_val = [];
 	foreach($db_val as $db_row) {
 		if(empty($db_row['cat'])) $db_row['cat'] = '';
@@ -85,8 +86,8 @@ function errors($err_type=null) {
 }
 
 public function getParticipants() {
-	$db_val = json_decode($this->attributes['participants'], 1);
-	if(!$db_val) return [];
+	$db_val = $this->attributes['participants'] ?? '[]';
+	$db_val = json_decode($db_val, 1) ?? [];
 	$entity_val = [];
 	foreach($db_val as $row) {
 		foreach(['dis', 'cat', 'team', 'names'] as $key) {

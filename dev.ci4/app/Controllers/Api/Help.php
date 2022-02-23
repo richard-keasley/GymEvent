@@ -13,7 +13,7 @@ public function index() {
 public function view(...$segments) {
 	if(!$segments) $segments = ['index'];
 	$stub = implode('/', $segments);
-			
+		
 	$viewname = "help/{$stub}";
 	if(!\App\Libraries\Auth::check_path($viewname)) return $this->error('Access denied');
 	
