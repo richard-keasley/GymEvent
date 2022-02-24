@@ -1,22 +1,17 @@
 <?php namespace App\Views\Htm;
 
 class Filter {
-public $selector = '';
 
-public function __construct($selector='table.table tr') {
-	$this->selector = $selector;
-}
-
-public function htm() {
+static function htm($selector='table.table tr') {
 ob_start(); ?>
-<div class="my-1">
-<span class="bi-filter m-1"></span>
-<input title="filter results" id="livefilter" class="form-input">
+<div class="input-group mx-1" title="filter results">
+<span class="input-group-text bi-filter"></span>
+<input type="text" class="form-control" id="livefilter" placeholder="filter">
 <script>
 $(document).ready(function() {
 $("#livefilter").on("keyup", function() {
 	var value = $(this).val().toLowerCase();
-	$("<?php echo $this->selector;?>").filter(function() {
+	$("<?php echo $selector;?>").filter(function() {
 		$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 	});
 });

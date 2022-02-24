@@ -27,8 +27,7 @@ echo form_open(base_url(uri_string()));
 </div>
 
 <?php
-$filter = new \App\Views\Htm\Filter();
-echo $filter->htm();
+echo \App\Views\Htm\Filter::htm();
 
 $table = new \CodeIgniter\View\Table();
 $template = ['table_open' => '<table class="table">'];
