@@ -1,4 +1,6 @@
 <?php $this->extend('default');
+
+echo 'where does this appear';
  
 $this->section('content');
 
@@ -277,16 +279,10 @@ $table->autoHeading = false;
 echo $table->generate($tbody);
 ?>
 
-<section class="row text-muted">
-<div class="col-auto">Saved: <?php 
-	$time = new \CodeIgniter\I18n\Time($exeset->saved);
-	echo $time->toLocalizedString('d MMM yyyy'); 
-?></div>
-<div class="col-auto">Rules' version: <?php 
+<p class="text-muted">Rules' version: <?php 
 	$time = new \CodeIgniter\I18n\Time($exeset->ruleset->version);
 	echo $time->toLocalizedString('d MMM yyyy'); 
-?></div>
-</section>
+?></p>
 
 </div>
 <div class="modal-footer">
