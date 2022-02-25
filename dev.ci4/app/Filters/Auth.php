@@ -30,18 +30,18 @@ public function before(RequestInterface $request, $arguments = null) {
 		$name = $request->getPost('name');
 		$password = $request->getPost('password');
 		if(!\App\Libraries\Auth::login($name, $password)) {
-			$messages = ['Username or Password is wrong'];
+			$messages[] = 'Username or Password is wrong';
 		}
 		break;
 		
 		case 'new';
 		$postUser = new \App\Entities\User($request->getPost());
-		if($postUser->password2!==$postUser->password) $messages = ['Passwords do not match'];
+		if($postUser->password2!==$postUser->password) $messages[] = 'Passwords do not match';
 		if(!$messages) {
 			$postUser->role = 'club';
 			$user_id = \App\Libraries\Auth::$usr_model->insert($postUser);
 			if($user_id) {
-				$messages = [["Created new user", 'success']];
+				$messages[] = ["Created new user", 'success'];
 				\App\Libraries\Auth::loginas($user_id, 'created');
 				\App\Libraries\Auth::$lgn_model->insert(['user_id'=>$user_id]);
 			}
@@ -57,20 +57,23 @@ public function before(RequestInterface $request, $arguments = null) {
 	$allowed = \App\Libraries\Auth::check_path($path);
 	$disabled = \App\Libraries\Auth::$check_paths[$path][0]=='disabled';
 	
-	if($allowed) {
+	if($allowed && $disabled) {
 		// superuser is allowed to view disabled controllers
-		if($disabled) $messages[] = 'This service is closed';
-		if($messages) {	
-			$session = \Config\Services::session();
-			$session->setFlashdata('messages', $messages);
-		}
-		return;
+		$messages[] = ['This service is closed', 'warning'];
 	}
 	
-	/* access denied */
-	if($disabled) throw new \RuntimeException("Service unavailable", 423);
-	if(session('user_id')) throw new \RuntimeException("You do not have permission to view this page", 403);
-	throw new \RuntimeException("You need to be logged in to view this page", 401);
+	if($messages) {	
+		$session = \Config\Services::session();
+		$session->setFlashdata('messages', $messages);
+	}
+	# d($messages);
+	
+	if(!$allowed) {
+		/* access denied */
+		if($disabled) throw new \RuntimeException("Service unavailable", 423);
+		if(session('user_id')) throw new \RuntimeException("You do not have permission to view this page", 403);
+		throw new \RuntimeException("You need to be logged in to view this page", 401);
+	}
 }
 
 public function after(RequestInterface $request, ResponseInterface $response, $arguments = null) {

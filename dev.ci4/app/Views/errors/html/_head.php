@@ -10,6 +10,7 @@ if($code==423) $title = 'Locked';
 if($code==500) $title = 'Server error';
 
 if(empty($message) || $message=='(null)') $message = "Sorry! We can't do that!";
+
 $messages = [$message];
 
 include(VIEWPATH . 'includes/_head.php'); 

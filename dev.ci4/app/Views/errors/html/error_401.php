@@ -7,7 +7,6 @@ $segments = $this->request->uri->getSegments();
 $controller = isset($segments[0]) ? $segments[0] : '' ;
 $allow_new = $controller=='clubrets';
 
-helper('form');
 $attr = [
 	'id' => "existing"
 ];
@@ -39,28 +38,27 @@ $attr = [
 	'autocomplete' => "off"
 ];
 echo form_open(base_url(uri_string()), $attr);?>
-	<input type="hidden" name="tabView" value="#create">
-	<p class="form-floating">
-		<input class="form-control" type="text" name="name" value="<?php echo $postval['name'];?>" id="newname" placeholder="" required autofocus>
-		<label for="newname" title="Club name" class="form-label">Club name</label>
-	</p>
-	<p class="form-floating">
-		<input class="form-control" type="password" name="password" value="<?php echo $postval['password'];?>" id="newpassword" placeholder="" autocomplete="new-password" required>
-		<label class="form-label" for="newpassword">Password</label>
-	</p>
-	<p class="form-floating">
-		<input class="form-control" type="password" name="password2" value="<?php echo $postval['password2'];?>" id="newpassword2" placeholder="" autocomplete="new-password">
-		<label class="form-label" for="newpassword2">Repeat password</label>
-	</p>
-	<p class="form-floating">
-		<input class="form-control" type="email" name="email" value="<?php echo $postval['email'];?>" id="newemail" placeholder="">
-		<label class="form-label" for="newemail">Email</label> 
-	</p>
-	<p>
-		<button name="login" value="new" type="submit" class="btn btn-primary">Create</button>
-		<button type="button" class="btn btn-outline-secondary" onclick="tabShow('#existing')">Already got an account?</button>
-	</p>
-</form>
+<input type="hidden" name="tabView" value="#create">
+<p class="form-floating">
+	<input class="form-control" type="text" name="name" value="<?php echo $postval['name'];?>" id="newname" placeholder="" required autofocus>
+	<label for="newname" title="Club name" class="form-label">Club name</label>
+</p>
+<p class="form-floating">
+	<input class="form-control" type="password" name="password" value="<?php echo $postval['password'];?>" id="newpassword" placeholder="" autocomplete="new-password" required>
+	<label class="form-label" for="newpassword">Password</label>
+</p>
+<p class="form-floating">
+	<input class="form-control" type="password" name="password2" value="<?php echo $postval['password2'];?>" id="newpassword2" placeholder="" autocomplete="new-password">
+	<label class="form-label" for="newpassword2">Repeat password</label>
+</p>
+<p class="form-floating">
+	<input class="form-control" type="email" name="email" value="<?php echo $postval['email'];?>" id="newemail" placeholder="">
+	<label class="form-label" for="newemail">Email</label> 
+</p>
+<p>
+	<button name="login" value="new" type="submit" class="btn btn-primary">Create</button>
+	<button type="button" class="btn btn-outline-secondary" onclick="tabShow('#existing')">Already got an account?</button>
+</p>
 <script>
 tabShow('<?php echo filter_input(INPUT_POST, "tabView");?>');
 function tabShow(tabView) {
@@ -70,6 +68,8 @@ function tabShow(tabView) {
 	$(tabHide).hide();	
 }
 </script>
-<?php } ?>
+<?php 
+echo form_close();
+}
 
-<?php include __DIR__ . '/_foot.php';
+include __DIR__ . '/_foot.php';

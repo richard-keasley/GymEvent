@@ -77,6 +77,11 @@ public function view($event_id=0) {
 			$this->mdl_events->delete($event_id);
 			$this->data['messages'][] = ['Event hidden', 'danger'];
 			break;
+		case 'delete' : 
+			$success = $this->mdl_events->delete_all($event_id);
+			$this->data['messages'][] = ["Event {$event_id} deleted", 'danger'];
+			return $this->index();
+			break;
 		default:
 			$state = '';
 	}

@@ -16,6 +16,7 @@ echo \App\Libraries\View::back_link('admin/events');
 echo getlink("admin/events/edit/{$event->id}", 'edit');
 if($event->deleted_at) { ?>
 	<button type="submit" name="state" value="list" title="list this event" class="btn btn-success bi-check-circle"></button>
+	<button type="submit" name="state" value="delete" title="Delete this event" class="btn btn-danger bi-trash"></button>
 <?php } else { ?>
 	<button type="submit" name="state" value="hide" title="hide this event" class="btn btn-danger bi-x-circle"></button>
 	<?php	

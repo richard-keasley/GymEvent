@@ -50,7 +50,7 @@ public function getNew() {
 
 public function delete_all($user_id) {
 	$session = session();
-	$session->setFlashdata('messages', ['ToDo: cascade delete clubrets and entries']);
+	$session->setFlashdata('messages', ['ToDo: cascade delete user']);
 }
  
 } 

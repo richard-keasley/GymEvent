@@ -7,13 +7,15 @@ class User extends \App\Controllers\BaseController {
 function __construct() {
 	$this->usr_model = new \App\Models\Users();
 	$this->data['breadcrumbs'][] = 'user';
+	$user_id = session('user_id');
+	// compare to /admin/users/find
+	$this->data['user'] = $this->usr_model->find($user_id);
+	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
+	$this->data['user_id'] = $user_id;
+	$this->data['user_self'] = $this->data['user']->self();
 }
 
 public function index() {
-	$user_id = session('user_id');
-	$this->data['user'] = $this->usr_model->find($user_id);
-	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
-	
 	// view
 	$this->data['toolbar'] = [getlink('user/edit')];
 	
@@ -27,10 +29,6 @@ public function index() {
 
 public function edit() {
 	// compare to /admin/users/edit
-	$user_id = session('user_id');
-	$this->data['user'] = $this->usr_model->find($user_id);
-	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
-				
 	if($this->request->getPost('save')) {
 		$postUser = $this->request->getPost();
 		if($this->data['user']->self()) {
@@ -38,7 +36,7 @@ public function edit() {
 				unset($postUser[$key]);
 			}
 		}
-		$postUser['id'] = $user_id;
+		$postUser['id'] = $this->data['user_id'];
 		
 		$errors = '';
 		if($postUser['password']!=$postUser['password2']) {
@@ -59,7 +57,7 @@ public function edit() {
 			$this->data['messages'] = $errors;
 		}
 		else {
-			$this->data['user'] = $this->usr_model->find($user_id);
+			$this->data['user'] = $this->usr_model->find($this->data['user_id']);
 		}
 	}
 	// view
