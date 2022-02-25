@@ -1,6 +1,4 @@
 <?php $this->extend('default');
-
-echo 'where does this appear';
  
 $this->section('content');
 
