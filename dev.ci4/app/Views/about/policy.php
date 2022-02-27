@@ -1,7 +1,7 @@
-<?php
-$this->extend('default');
+<?php $this->extend('default');
 
-$this->section('content');?>
+$this->section('content'); 
+?>
 <p>It's necessary to hold personal data on event entrants and clubs so we can:</p>
 <ul>
 	<li>provide accurate results</li>
@@ -37,7 +37,10 @@ $this->section('content');?>
 </ol>
 <p>Please talk to Richard or Kevin if you have any concerns about this.</p>
 <p>Please remember the results sheets for an event will normally be made public.</p>
-<?php $this->endSection(); 
+
+<?php 
+echo $nav;
+$this->endSection();
 
 if(\App\Libraries\Auth::check_role('admin')) { 
 $this->section('bottom'); ?>
@@ -79,9 +82,6 @@ $this->section('bottom'); ?>
 <p>Most of the data held will be made public at the end of the event in the form of <a href="/events/">results sheets</a>. The <abbr title="Date of Birth">DoB</abbr> for entrants is probably the only data held that is not made public</p>
 <p><abbr title="General Data Protection Regulations">(GDPR)</abbr> is supposed to cover things like data leakage (e.g. us transmitting the data somewhere it can be read with no user credentials) or using data for purposes not specified or mentioned to the data owner (i.e. the gymnast or club). <abbr>GDPR</abbr> doesn't suggest prosecuting data controllers in the event of unauthorised access. In that situation, the hacker is the criminal and the data controller the victim.</p> 
 </div>
-
-
-
 
 </section>
 <?php $this->endSection(); 

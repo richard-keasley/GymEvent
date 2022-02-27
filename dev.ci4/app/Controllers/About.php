@@ -4,6 +4,12 @@ class About extends \App\Controllers\BaseController {
 	
 public function __construct() {
 	$this->data['breadcrumbs'][] = 'about';
+	$this->data['nav'] = 
+		'<nav class="nav">' . 
+		getlink('about', 'About us') .
+		getlink('about/policy', 'Data Policy') .
+		getlink('about/timeline', 'Preparations') .
+		'</nav>';
 }
 	
 public function index() {
@@ -17,6 +23,13 @@ public function policy() {
 	$this->data['title'] = 'GDPR';
 	$this->data['heading'] = 'Data Protection policy';
 	return view('about/policy', $this->data);
+}
+
+public function timeline() {
+	$this->data['breadcrumbs'][] = 'about/timeline';
+	$this->data['title'] = 'Timeline';
+	$this->data['heading'] = 'Timeline for preparations';
+	return view('about/timeline', $this->data);
 }
 
 }

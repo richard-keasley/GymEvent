@@ -11,6 +11,8 @@ $this->section('content'); ?>
 
 <p>Check the <a href="https://codeigniter4.github.io/userguide" target="_blank">User Guide</a>. CodeIgniter is a community-developed open source project, with several venues for the community members to gather and exchange ideas. View all the threads on <a href="https://forum.codeigniter.com/" target="_blank">CodeIgniter's forum</a>, or <a href="https://codeigniterchat.slack.com/"target="_blank">chat on Slack</a>!</p>
 
+<p><a href="<?php echo base_url('setup/db');?>">Read about the database sructure.</a></p>
+
 <h4>Updating CodeIgniter</h4>
 <?php 
 $paths = new \Config\Paths;

@@ -69,6 +69,14 @@ public function dev() {
 	return view('admin/setup/dev', $this->data);
 }
 
+public function db() {
+	$this->data['title'] = 'Database structure';
+	$this->data['heading'] = $this->data['title'];
+	$this->data['breadcrumbs'][] = ['setup/dev', 'development'];
+	$this->data['breadcrumbs'][] = ['setup/dev', $this->data['title']];
+	return view('admin/setup/db', $this->data);
+}
+
 public function update() {
 	$datasets = [
 		[rtrim(ROOTPATH, DIRECTORY_SEPARATOR), dirname(ROOTPATH) . '/public.ci4'],

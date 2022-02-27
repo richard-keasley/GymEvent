@@ -1,30 +1,20 @@
 <?php $this->extend('default');
-$related = getlink('about/policy', 'Data Policy');
 
-$this->section('content'); ?>
-<nav class="nav"><?php echo $related;?></nav>
+$this->section('content'); 
+echo $nav;
+?>
+<p>GymEvent is a multi-discipline system designed to be simple and use to set-up for a wide variety of events. GymEvent is run by Richard and Kevin from <a href="https://www.hawthgymnastics.co.uk/">Hawth Gymnastics</a>.</p>
+<p>We use reconditioned laptops as judge consoles. Any device will do, and we encourage users to provide their own device (be it laptop, tablet, mobile phone).</p>
+<p>The service includes:</p>
+<ul>
+<li>Event entry</li>
+<li>Music uploads and playback</li>
+<li>Judge console</li>
+<li>score display</li>
+<li>Announcer information (including team-time)</li>
+</ul>
 
-<h2>Time-line for event preparation</h2>
-<img src="/app/profile/logo.png" style="width:6em; float:right">
-<ol>
-<li>Publish the rule pack and open on-line entries.</li>
-<li>Closing date<ul>
-		<li>finalise categorisation of entries</li>
-		<li>ensure all entries are in correct category</li>
-	</ul></li>
-<li>Publish the running order<ul>
-		<li>no further alterations to gymnasts' numbers</li>
-		<li>open music service (allow at least a week for clubs to upload music)</li>
-	</ul></li>
-<li>Finalise running order<ul>
-		<li>close music service (allow a week to ensure all the music can be played)</li>
-		<li>transfer data to score board (allow a week to check it's all done)</li>
-		<li>create play-list on music player</li>
-		<li>create tables for team-time</li>
-	</ul></li>
-<li>Run the event</li>
-</ol>
-<h3>Remember</h3>
+<h4>Things to remember</h4>
 <ol>
 <li>We can open the score-board before the event to allow judges to practice</li>
 <li>We do not have score screens or amplification. Many Leisure centres / etc will already have these items available to borrow as part of the venue hire. If not, these will need to be hired in as extra. Try the following suppliers: 
@@ -43,7 +33,6 @@ $this->section('content'); ?>
 </ol>
 <p><img src="/app/profile/image.png"></p>
 
-<nav class="nav"><?php echo $related;?></nav>
-
-<?php $this->endSection();
-
+<?php 
+echo $nav;
+$this->endSection();
