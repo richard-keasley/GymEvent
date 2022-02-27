@@ -39,7 +39,7 @@ public function index() {
 		$this->lgn_model->insert(['error'=>'Reset email not found']);
 		return view($vw_index, $this->data);
 	}
-	
+			
 	// build reset key and save it
 	$key = [];
 	for($i=0; $i<3; $i++) {
@@ -52,20 +52,19 @@ public function index() {
 	$this->lgn_model->insert(['error'=>'reset requested', 'user_id'=>$user->id]);
 
 	// build message
-	// enable this line to redirect email
-	$user->email = 'richard@base-camp.org.uk';
 	$this->data['user'] = $user; 
 	$message = view('users/reset/email', $this->data);
 	
 	// send email to user
-	$config['mailType'] = 'html';
-	$email = \Config\Services::email($config);
-	$email->setFrom('website@gymevent.uk', 'Gymevent');
+	$to_email = ENVIRONMENT == 'production' ? $user->email : 'richard@base-camp.org.uk';
+	$email = \Config\Services::email();
 	$email->setSubject('Password reset');
 	$email->setMessage($message);
-	$email->setTo($user->email, $user->name);
 	$email->setBCC('richard@hawthgymnastics.co.uk');
+	$email->setTo($to_email);
+	# d($email);
 	$email->send();
+	
 	// view
 	$this->data['key'] = '';
 	return view('users/reset/reset', $this->data);

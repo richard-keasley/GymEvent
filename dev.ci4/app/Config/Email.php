@@ -9,12 +9,12 @@ class Email extends BaseConfig
 	/**
 	 * @var string
 	 */
-	public $fromEmail;
+	public $fromEmail = 'website@gymevent.uk';
 
 	/**
 	 * @var string
 	 */
-	public $fromName;
+	public $fromName = 'GymEvent';
 
 	/**
 	 * @var string
@@ -26,7 +26,7 @@ class Email extends BaseConfig
 	 *
 	 * @var string
 	 */
-	public $userAgent = 'CodeIgniter';
+	public $userAgent = 'GymEvent website';
 
 	/**
 	 * The mail sending protocol: mail, sendmail, smtp
@@ -110,7 +110,7 @@ class Email extends BaseConfig
 	 *
 	 * @var string
 	 */
-	public $mailType = 'text';
+	public $mailType = 'html';
 
 	/**
 	 * Character set (utf-8, iso-8859-1, etc.)
