@@ -36,7 +36,7 @@ public function evt_discats($event_id, $entries=1) {
 function evt_users($event_id) {
 	// list all users who have entries in event event_id
 	$sql = "SELECT DISTINCT `users`.`id`, `users`.`name`
-	 FROM `evt_disciplines`
+	FROM `evt_disciplines`
 	INNER JOIN `evt_categories` ON `evt_categories`.`discipline_id`=`evt_disciplines`.`id`
 	INNER JOIN `evt_entries` ON `evt_entries`.`category_id`=`evt_categories`.`id`
 	INNER JOIN `users` ON `evt_entries`.`user_id`=`users`.`id`
@@ -112,6 +112,8 @@ public function delete_category($category_id) {
 	$this->where('category_id', $category_id)->delete();
 	$this->entrycats->delete($category_id);
 }
+
+
 
 public function populate($event_id) {
 	// check event 

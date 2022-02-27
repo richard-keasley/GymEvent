@@ -23,7 +23,10 @@
 <?php
 $session = \Config\Services::session();
 $flashdata = $session->getFlashdata('messages');
-if($flashdata) $messages = array_merge($messages, $flashdata);
+if($flashdata) {
+	$messages = array_merge($messages, $flashdata);
+	$session->setFlashdata('messages', null);
+}
 
 if(!empty($messages)) { ?>
 <div class="messages"><?php 

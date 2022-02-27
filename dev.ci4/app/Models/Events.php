@@ -30,6 +30,19 @@ protected $validationRules = [
 public function delete_all($event_id) {
 	$session = \Config\Services::session();
 	$session->setFlashdata('messages', ["ToDo: cascade delete event"]);
+	
+	// delete clubrets
+	$model = new \App\Models\Clubrets;
+	# $model->delete_event($event_id);
+	
+	// delete entries
+	$model = new \App\Models\Entries;
+	# $model->delete_event($event_id);	
+	
+	// delete this event
+	$items = $this->onlyDeleted()->where('id', $event_id)->findAll();
+	d($items);
+	
 }
 
 }

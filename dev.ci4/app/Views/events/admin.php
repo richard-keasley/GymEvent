@@ -16,7 +16,7 @@ echo \App\Libraries\View::back_link('admin/events');
 echo getlink("admin/events/edit/{$event->id}", 'edit');
 if($event->deleted_at) { ?>
 	<button type="submit" name="state" value="list" title="list this event" class="btn btn-success bi-check-circle"></button>
-	<button type="submit" name="state" value="delete" title="Delete this event" class="btn btn-danger bi-trash"></button>
+	<button type="button" title="Delete this event" class="btn btn-danger bi-trash"data-bs-toggle="modal" data-bs-target="#delentry"></button>
 <?php } else { ?>
 	<button type="submit" name="state" value="hide" title="hide this event" class="btn btn-danger bi-x-circle"></button>
 	<?php	
@@ -84,4 +84,29 @@ foreach($entries as $dis) { ?>
 
 $this->section('bottom'); 
 echo view('entries/populate/form', ['event'=>$event]);
-$this->endSection();
+?>
+<div id="delentry" class="modal" tabindex="-1">
+<div class="modal-dialog">
+<?php
+$attr = [
+	'class' => "modal-content"
+];
+echo form_open(base_url(uri_string()), $attr);
+?>
+<div class="modal-header">
+	<h5 class="modal-title">Delete item</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+	<p>Delete this event?</p>
+	<p class="alert-primary">Be aware all related entries and club returns will also be deleted.</p>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary bi-x-circle-fill" data-bs-dismiss="modal"></button>
+	<button type="submit" name="state" value="delete" class="btn btn-danger bi-trash"></button>
+</div>
+<?php echo form_close();?>
+</div>
+</div>
+
+<?php $this->endSection();

@@ -52,4 +52,9 @@ public function lookup_all($fld_name, $fld_value) {
 	return $res ? $this->find(array_column($res, 'id')) : [];
 }
 
+public function delete_event($event_id) {
+	$items = $this->where('event_id', $event_id)->findAll();
+	d($items);
+}
+
 } 
