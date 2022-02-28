@@ -102,8 +102,9 @@ public function view($user_id=0) {
 	
 	if(!$this->data['user_self']) {
 		if($this->data['user']->deleted_at) {
-			$this->data['toolbar'][] = '<button name="enable"  value="enable" type="submit" title="enable" class="btn btn-success bi-check-circle"></button>';
-			$this->data['toolbar'][] = '<button name="enable"  value="delete" type="submit" title="delete this user and all related data" class="btn btn-danger bi-trash"></button>';
+			$this->data['toolbar'][] = '<button name="enable" value="enable" type="submit" title="enable" class="btn btn-success bi-check-circle"></button>';
+			$this->data['toolbar'][] = '<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delUser" title="Delete this user"><span class="bi bi-trash"></span></button>';
+			$this->data['show_delUser'] = true;
 		}
 		else {
 			$this->data['toolbar'][] = '<button name="enable" value="disable" type="submit" title="disable" class="btn bi-x-circle btn-danger"></button>';

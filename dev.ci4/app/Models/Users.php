@@ -49,30 +49,15 @@ public function getNew() {
 }
 
 public function delete_all($user_id) {
-	/*
-	ensure there are no entries or clubrets for this club 
-	for this to happen all related events need to be deleted 
-	warn if so 
-	*/
+	$model = new \App\Models\Clubrets;
+	$model->where('user_id', $user_id)->delete(null, true);
+	$model = new \App\Models\Entries;
+	$model->where('user_id', $user_id)->delete(null, true);
+	$this->delete($user_id, true);
+	
 	$session = session();
 	$message = [];
-	
-	$model = new \App\Models\Clubrets;
-	$records = $model->where('user_id', $user_id)->find();
-	if($records) $message[] = "returns";
-
-	$model = new \App\Models\Entries;
-	$records = $model->where('user_id', $user_id)->find();
-	d($records);
-	if($records) $message[] = "entries";
-	
-	if($message) {
-		$message = sprintf('There are %s for user %u', implode(' and ', $message), $user_id);
-		$session->setFlashdata('messages', [$message]);
-		return false;
-	}
-	
-	$session->setFlashdata('messages', ['$this->delete($user_id, true);']);
+	$session->setFlashdata('messages', ["Deleted user {$user_id}"]);
 	return true;	
 }
  

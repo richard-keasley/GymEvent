@@ -32,8 +32,15 @@ public function link($type='view', $text='') {
 }
 
 public function clubrets() {
+	$retval = [];
 	$model = new \App\Models\Clubrets;
-	return $model->where('user_id', $this->id)->findAll();
+	// only returns if event is listed
+	$sql = "SELECT `clubrets`.`id` FROM `clubrets` 
+		INNER JOIN `events` ON `clubrets`.`event_id`=`events`.`id`
+		WHERE `events`.`deleted_at` IS NULL 
+		AND `clubrets`.`user_id`='{$this->id}';";
+	$res = $model->query($sql)->getResultArray();
+	return $res ? $model->find(array_column($res, 'id')) : [] ;
 }
 
 }

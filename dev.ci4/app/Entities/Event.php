@@ -106,7 +106,13 @@ public function file($basename) {
 
 public function clubrets() {
 	$model = new \App\Models\Clubrets;
-	return $model->where('event_id', $this->id)->findAll();
+	// only returns if user is listed
+	$sql = "SELECT `clubrets`.`id` FROM `clubrets` 
+		INNER JOIN `users` ON `clubrets`.`user_id`=`users`.`id`
+		WHERE `users`.`deleted_at` IS NULL 
+		AND `clubrets`.`event_id`='{$this->id}';";
+	$res = $model->query($sql)->getResultArray();
+	return $res ? $model->find(array_column($res, 'id')) : [] ;
 }
 
 public function entries() {

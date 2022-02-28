@@ -4,7 +4,7 @@ if(empty($title)) $title= "user";
 if(empty($user_id)) $user_id= 0;
 if(empty($cmd)) $cmd = 'modalUser';
 ?>
-<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUser"  title="<?php echo $title;?>"><span class="bi bi-person"></span></button>
+<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUser" title="<?php echo $title;?>"><span class="bi bi-person"></span></button>
 
 <?php 
 $hidden = [

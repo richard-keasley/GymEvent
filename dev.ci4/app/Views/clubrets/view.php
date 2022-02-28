@@ -1,6 +1,5 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$admin = \App\Libraries\Auth::check_role('admin');
 
 $this->section('content'); ?>
 <section>
@@ -74,7 +73,7 @@ $this->section('top'); ?>
 <?php 
 echo \App\Libraries\View::back_link($back_link);
 echo getlink($clubret->url('edit'), 'edit');
-if($admin) {
+if(!empty($users)) {
 	$dialogue = [
 		'title' => 'Change user for this return',
 		'user_id' => $clubret->user_id,
@@ -93,7 +92,6 @@ if($admin) {
 
 <?php 
 # d($clubret);
-# d($admin);
 # d($event);
 
 $this->endSection(); 
