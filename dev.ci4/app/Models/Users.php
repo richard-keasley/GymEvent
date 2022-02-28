@@ -51,6 +51,11 @@ public function getNew() {
 public function delete_all($user_id) {
 	$session = session();
 	$session->setFlashdata('messages', ['ToDo: cascade delete user']);
+	/*
+	ensure there are no entries or clubrets for this club 
+	for this to happen all related events need to be deleted 
+	warn if so 
+	*/
 }
  
 } 
