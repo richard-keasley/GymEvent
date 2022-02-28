@@ -105,8 +105,8 @@ public function file($basename) {
 }
 
 public function clubrets() {
-	$mdl_clubrets = new \App\Models\Clubrets();
-	return $mdl_clubrets->lookup_all('event_id', $this->id);
+	$model = new \App\Models\Clubrets;
+	return $model->where('event_id', $this->id)->findAll();
 }
 
 public function entries() {

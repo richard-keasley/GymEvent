@@ -1,5 +1,6 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
+$admin = \App\Libraries\Auth::check_role('admin');
 
 $this->section('content'); ?>
 <section>
@@ -69,9 +70,30 @@ echo $clubret->errors('participants');
 <?php $this->endSection(); 
 
 $this->section('top'); ?>
-<div class="toolbar sticky-top"><?php 
+<div class="toolbar">
+<?php 
 echo \App\Libraries\View::back_link($back_link);
-echo getlink($clubret->url('edit'), 'edit'); 
-?></div>
+echo getlink($clubret->url('edit'), 'edit');
+if($admin) {
+	$dialogue = [
+		'title' => 'Change user for this return',
+		'user_id' => $clubret->user_id,
+		'users' => $users
+	];
+	echo view('users/dialogue', $dialogue);
+}
+?>
+</div>
+<?php if($user->deleted_at) { ?>
+<p class="alert-danger">This user is not active</p>
+<?php } ?>
+<?php if($event->deleted_at) { ?>
+<p class="alert-danger">This event is not listed</p>
+<?php } ?>
 
-<?php $this->endSection(); 
+<?php 
+# d($clubret);
+# d($admin);
+# d($event);
+
+$this->endSection(); 

@@ -231,7 +231,6 @@ echo \App\Libraries\View::back_link($back_link);
 <button name="cmd" class="btn btn-primary" value="save" type="button">save</button> 
 </div>
 
-</form>
 <script>
 let partrows = '#participants .clubent tbody tr';
 let staffrows = '#staff .clubent tbody tr';
@@ -321,4 +320,6 @@ function update_partrows() {
 }
 </script>
 
-<?php $this->endSection();
+<?php 
+echo form_close();
+$this->endSection();

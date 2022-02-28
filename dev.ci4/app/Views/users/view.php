@@ -25,28 +25,76 @@ if(\App\Libraries\Auth::check_role('superuser')) {
 }
 echo $vartable->htm($tbody);
 
-$mdl_clubrets = new \App\Models\Clubrets();
-$clubrets = $mdl_clubrets->lookup_all('user_id', $user->id);
-if($clubrets) { ?>
+ ?>
 <section><h4>Event entries</h4>
+
 <nav class="nav flex-column"><?php 
+$nav = [];
+$done = [];
+
+$clubrets = $user->clubrets();
 foreach($clubrets as $clubret) {
-	$event = $clubret->event(); ?>
-	<nav class="nav"><?php
-	if($event->clubrets==1) { // edit
-		echo getlink($clubret->url('view'), $event->title);
-	}		
-	if($event->clubrets==2) { // view	
-		echo getlink("entries/view/{$event->id}", $event->title);
-		if($event->videos) echo getlink("videos/view/{$event->id}", 'videos');
-		if($event->music) echo getlink("music/view/{$event->id}", 'music');
-	} ?>
-	</nav>
-	<?php
+	$event = $clubret->event();
+	if(!in_array($event->id, $done)) {
+		$done[] = $event->id;
+		if($event->clubrets==1) { // edit
+			$link = getlink($clubret->url('view'), $event->title);
+		}		
+		if($event->clubrets==2) { // view	
+			$link = getlink("entries/view/{$event->id}", $event->title);
+		}
+		$nav[] = ['event' => $event, 'link'=>$link];
+
+	}
+}
+
+$model = new \App\Models\Entries;
+$entries = $model->where('user_id', $user->id)->findAll();
+foreach($entries as $entry) {
+	$event = $entry->get_event();
+	if(!in_array($event->id, $done)) {
+		$done[] = $event->id;
+		$nav[] = [
+			'event' => $event,
+			'link' => getlink("entries/view/{$event->id}", $event->title)
+		];
+	}
+}
+
+d($nav);
+
+
+/*
+?>
+<nav class="nav"><?php
+if($event->clubrets==1) { // edit
+	echo getlink($clubret->url('view'), $event->title);
+}		
+if($event->clubrets==2) { // view	
+	echo getlink("entries/view/{$event->id}", $event->title);
+	if($event->videos) echo getlink("videos/view/{$event->id}", 'videos');
+	if($event->music) echo getlink("music/view/{$event->id}", 'music');
 } ?>
 </nav>
+</nav>
+
+<nav class="nav flex-column"><?php 
+# $base_url = $admin ? 'admin/events/view/%u' : 'events/view/%u' ;
+$base_url = 'events/view/%u';
+$done = [];
+foreach($entries as $entry) {
+	if(!in_array($entry->event_id, $done)) {
+		$done[] = $entry->event_id;
+		$event = $entry->get_event();
+		printf('<a class="nav-item" href="%s">%s</a>', base_url(sprintf($base_url, $event->id)), $event->title);
+	}
+}
+*/
+?>
+</nav>
+
 </section>
-<?php } ?>
+<?php  ?>
 
 <section><h4>Logins</h4>
 <?php $model = new \App\Models\Logins();

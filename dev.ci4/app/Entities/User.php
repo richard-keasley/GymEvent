@@ -31,4 +31,9 @@ public function link($type='view', $text='') {
 	return sprintf('<a href="%s">%s</a>', $href = base_url($arr), $text);
 }
 
+public function clubrets() {
+	$model = new \App\Models\Clubrets;
+	return $model->where('user_id', $this->id)->findAll();
+}
+
 }

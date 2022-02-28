@@ -65,8 +65,9 @@ public function view($user_id=0) {
 		$set_enabled = $this->request->getPost('enable');
 		if($set_enabled) {
 			switch($set_enabled) {
-				case 'delete':
-				$this->usr_model->delete_all($user_id);
+				case 'delete': 
+				$success = $this->usr_model->delete_all($user_id);
+				if($success) return redirect()->to('admin/users');
 				break;
 				case 'enable':
 				$this->data['user']->deleted_at = null;

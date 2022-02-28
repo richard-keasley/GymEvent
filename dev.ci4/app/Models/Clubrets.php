@@ -29,6 +29,7 @@ public function tidy() {
 }
 
 public function lookup($event_id, $user_id) {
+	// only returns if event and user are listed
 	$sql = "SELECT `clubrets`.`id` FROM `clubrets` 
 		INNER JOIN `events` ON `clubrets`.`event_id`=`events`.`id`
 		INNER JOIN `users` ON `clubrets`.`user_id`=`users`.`id`
@@ -39,17 +40,6 @@ public function lookup($event_id, $user_id) {
 		LIMIT 1;";
 	$res = $this->query($sql)->getResultArray();
 	return $res ? $this->find($res[0]['id']) : null;
-}
-
-public function lookup_all($fld_name, $fld_value) {
-	$sql = "SELECT `clubrets`.`id` FROM `clubrets` 
-		INNER JOIN `events` ON `clubrets`.`event_id`=`events`.`id`
-		INNER JOIN `users` ON `clubrets`.`user_id`=`users`.`id`
-		WHERE `events`.`deleted_at` IS NULL 
-			AND `users`.`deleted_at` IS NULL
-			AND `clubrets`.`{$fld_name}`='{$fld_value}';";
-	$res = $this->query($sql)->getResultArray();
-	return $res ? $this->find(array_column($res, 'id')) : [];
 }
 
 public function delete_event($event_id) {

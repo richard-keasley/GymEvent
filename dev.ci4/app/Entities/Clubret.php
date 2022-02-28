@@ -36,8 +36,8 @@ public function setStaff($arr) {
 private $_event = null;
 public function event() {
 	if(!$this->_event) {
-		$evt_model = new \App\Models\Events();
-		$this->_event = $evt_model->find($this->event_id);
+		$model = new \App\Models\Events();
+		$this->_event = $model->withDeleted()->find($this->event_id);
 	}
 	return $this->_event;
 }
@@ -45,9 +45,8 @@ public function event() {
 private $_user = null;
 public function user() {
 	if(!$this->_user) {
-		$usr_model = new \App\Models\Users();
-		$this->_user = $usr_model->find($this->user_id);
-		#if($this->_user->id==1) $this->_user = null;
+		$model = new \App\Models\Users();
+		$this->_user = $model->withDeleted()->find($this->user_id);
 	}
 	return $this->_user;
 }

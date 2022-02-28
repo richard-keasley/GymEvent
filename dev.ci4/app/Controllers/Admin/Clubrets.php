@@ -17,7 +17,8 @@ function __construct() {
 }
 	
 private function lookup($event_id, $user_id) {
-	$this->data['clubret'] = $this->mdl_clubrets->lookup($event_id, $user_id);
+	// don't use model->lookup() beacuse we want to include deleted events and users 
+	$this->data['clubret'] = $this->mdl_clubrets->where('event_id', $event_id)->where('user_id', $user_id)->first();
 	if(!$this->data['clubret']) throw new \RuntimeException("Can't find entry {$event_id}/{$user_id}", 404);
 	$this->data['user'] = $this->data['clubret']->user();
 	$this->data['event'] = $this->data['clubret']->event();
@@ -31,9 +32,43 @@ public function index() {
 
 public function view($event_id=0, $user_id=0) {
 	$this->lookup($event_id, $user_id);
+	
+	if($this->request->getPost('cmd')=='modalUser') {
+		$new_user = $this->request->getPost('user_id');
+		if($new_user!=$user_id) {
+			$clubret = $this->data['clubret'];
+			$clubret->user_id = $new_user;
+			// update clubret
+			$model = new \App\Models\Clubrets;
+			if($model->save($clubret)) { 
+				// reload 
+				$this->data['messages'][] = ["Updated entry", 'success'];
+				$session = \Config\Services::session();
+				$session->setFlashdata('messages', $this->data['messages']);
+				return redirect()->to("admin/clubrets/view/{$event_id}/{$new_user}");
+			}
+			else {
+				$this->data['messages'] = $this->model->errors();
+				$this->data['messages'][] = ["Couldn't update entry", 'danger'];
+			}
+		}
+	}
 
 	$this->data['clubret']->check();
 	
+	// only allow users who do not have returns for this event
+	$this->data['users'] = [];
+	$user_ids = [];
+	$clubrets = $this->data['event']->clubrets();
+	foreach($clubrets as $clubret) $user_ids[] = $clubret->user_id;
+	$model = new \App\Models\Users;
+	$users = $model->orderby('name')->findAll();
+	foreach($users as $user) {
+		if(!in_array($user->id, $user_ids)) {
+			$this->data['users'][] = $user;
+		}
+	}
+		
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['breadcrumbs'][] = ["admin/clubrets/event/{$event_id}", 'returns'];
 	$this->data['breadcrumbs'][] = $this->data['clubret']->breadcrumb('view', 'admin'); 
@@ -80,9 +115,7 @@ public function event($event_id=0) {
 	$this->data['messages'][] = $msg;
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title . ' - returns';
-	#$this->data['clubrets'] = $this->mdl_clubrets->where('event_id', $event_id)->findall();
-	
-	$this->data['clubrets'] = $this->mdl_clubrets->lookup_all('event_id', $event_id);
+	$this->data['clubrets'] = $this->data['event']->clubrets();
 	
 	return view('clubrets/event', $this->data);
 }
