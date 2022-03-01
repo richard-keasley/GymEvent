@@ -28,21 +28,15 @@ protected $validationRules = [
 ];
 
 public function delete_all($event_id) {
-	$session = \Config\Services::session();
-	$session->setFlashdata('messages', ["ToDo: cascade delete event"]);
-	
-	// delete clubrets
 	$model = new \App\Models\Clubrets;
-	# $model->delete_event($event_id);
-	
-	// delete entries
+	$model->where('event_id', $event_id)->delete(null, true);
 	$model = new \App\Models\Entries;
-	# $model->delete_event($event_id);	
+	$model->delete_event($event_id);
+	$this->delete($event_id, true);
 	
-	// delete this event
-	$items = $this->onlyDeleted()->where('id', $event_id)->findAll();
-	d($items);
-	
+	$session = session();
+	$session->setFlashdata('messages', ["Deleted event {$event_id}"]);
+	return true;	
 }
 
 }

@@ -67,7 +67,7 @@ public function view($user_id=0) {
 			switch($set_enabled) {
 				case 'delete': 
 				$success = $this->usr_model->delete_all($user_id);
-				if($success) return redirect()->to('admin/users');
+				if($success) return redirect()->to(base_url('admin/users'));
 				break;
 				case 'enable':
 				$this->data['user']->deleted_at = null;
