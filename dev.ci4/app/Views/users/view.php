@@ -25,7 +25,7 @@ if(\App\Libraries\Auth::check_role('superuser')) {
 }
 echo $vartable->htm($tbody);
 
- ?>
+if(!$user->deleted_at) { ?>
 <section><h4>Event entries</h4>
 <nav class="nav flex-column"><?php 
 $nav = [];
@@ -49,6 +49,7 @@ foreach($nav as $item) {
 ?>
 </nav>
 </section>
+<?php } ?>
 
 <section><h4>Logins</h4>
 <?php $model = new \App\Models\Logins();

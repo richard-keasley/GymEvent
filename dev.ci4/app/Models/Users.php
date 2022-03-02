@@ -56,6 +56,7 @@ public function delete_all($user_id) {
 	$this->delete($user_id, true);
 	
 	$session = session();
+	$message = [];
 	$session->setFlashdata('messages', ["Deleted user {$user_id}"]);
 	return true;	
 }

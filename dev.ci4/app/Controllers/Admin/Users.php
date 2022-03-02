@@ -91,16 +91,22 @@ public function view($user_id=0) {
 	}
 	
 	if($this->request->getPost('cmd')=='modalUser') {
-		$source_id = $this->request->getPost('user_id');
-		$this->data['messages'][] = "ToDo: merge data from {$source_id} to {$user_id}";
-		/* need to move 
-		- clubrets
-		- entries
-		- logins ??
-		*/
+		$source_user = $this->usr_model->find($this->request->getPost('user_id'));
+		if($source_user) {
+			$source_id = $source_user->id;
+			$model = new \App\Models\Clubrets;
+			$model->where('user_id', $source_id)->set(['user_id'=>$user_id])->update();
+			$model = new \App\Models\Entries;
+			$model->where('user_id', $source_id)->set(['user_id'=>$user_id])->update();
+			$this->usr_model->delete($source_id, true);
+			$this->data['messages'][] = "Merged data from {$source_user->name} ({$source_id}) and deleted user.";
+		}
+		else {
+			$this->data['messages'][] = "Can't find user {$source_id}";
+		}
 	}
 	
-	$exclude = [$user_id];
+	$exclude = [$user_id, session('user_id')];
 	$this->data['users_dialogue'] = [
 		'title' => 'Merge data from another user',
 		'user_id' => $this->data['user']->user_id,
@@ -111,13 +117,15 @@ public function view($user_id=0) {
 	// view
 	$this->data['heading'] = $this->data['user']->name;
 	$this->data['breadcrumbs'][] = ["admin/users/view/{$user_id}", $this->data['user']->name];
-		
-	$this->data['toolbar'] = [
-		\App\Libraries\View::back_link('admin/users'),
-		getlink("admin/users/edit/{$user_id}", 'edit'),
-		sprintf('<a href="%s/%u" class="btn btn-outline-secondary">logins</a>', base_url('admin/users/logins/user_id'), $user_id),
-		'<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUser" title="Merge data from another user"><span class="bi bi-layer-backward"></span></button>'
-	];
+	
+	if(!$this->data['user']->deleted_at) {
+		$this->data['toolbar'] = [
+			\App\Libraries\View::back_link('admin/users'),
+			getlink("admin/users/edit/{$user_id}", 'edit'),
+			sprintf('<a href="%s/%u" class="btn btn-outline-secondary">logins</a>', base_url('admin/users/logins/user_id'), $user_id),
+			'<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUser" title="Merge data from another user"><span class="bi bi-layer-backward"></span></button>'
+		];
+	}
 	
 	if(!$this->data['user_self']) {
 		if($this->data['user']->deleted_at) {
