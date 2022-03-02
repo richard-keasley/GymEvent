@@ -5,10 +5,10 @@ class Clubrets extends \App\Controllers\BaseController {
 private $model = null;
 
 function __construct() {
-	$this->mdl_clubrets = new \App\Models\Clubrets();
+	$this->model = new \App\Models\Clubrets;
 	$this->data['clubret'] = new \App\Entities\Clubret();
 	// ToDo: move this to a button
-	$tidy = $this->mdl_clubrets->tidy();
+	$tidy = $this->model->tidy();
 	if($tidy) $this->data['messages'][] = ["Tidied $tidy entries", 'warning'];
 	$this->data['title'] = "Returns";
 	$this->data['heading'] = "Event returns - admin";
@@ -18,7 +18,7 @@ function __construct() {
 	
 private function lookup($event_id, $user_id) {
 	// don't use model->lookup() beacuse we want to include deleted events and users 
-	$this->data['clubret'] = $this->mdl_clubrets->where('event_id', $event_id)->where('user_id', $user_id)->first();
+	$this->data['clubret'] = $this->model->where('event_id', $event_id)->where('user_id', $user_id)->first();
 	if(!$this->data['clubret']) throw new \RuntimeException("Can't find entry {$event_id}/{$user_id}", 404);
 	$this->data['user'] = $this->data['clubret']->user();
 	$this->data['event'] = $this->data['clubret']->event();
@@ -39,8 +39,7 @@ public function view($event_id=0, $user_id=0) {
 			$clubret = $this->data['clubret'];
 			$clubret->user_id = $new_user;
 			// update clubret
-			$model = new \App\Models\Clubrets;
-			if($model->save($clubret)) { 
+			if($this->model->save($clubret)) { 
 				// reload 
 				$this->data['messages'][] = ["Updated entry", 'success'];
 				$session = \Config\Services::session();
@@ -57,18 +56,17 @@ public function view($event_id=0, $user_id=0) {
 	$this->data['clubret']->check();
 	
 	// only allow users who do not have returns for this event
-	$this->data['users'] = [];
-	$user_ids = [];
+	$exclude = [];
 	$clubrets = $this->data['event']->clubrets();
-	foreach($clubrets as $clubret) $user_ids[] = $clubret->user_id;
+	foreach($clubrets as $clubret) $exclude[] = $clubret->user_id;
 	$model = new \App\Models\Users;
-	$users = $model->orderby('name')->findAll();
-	foreach($users as $user) {
-		if(!in_array($user->id, $user_ids)) {
-			$this->data['users'][] = $user;
-		}
-	}
-		
+	$this->data['users_dialogue'] = [
+		'title' => 'Change user for this return',
+		'user_id' => $this->data['user']->user_id,
+		'users' => $model->orderby('name')->whereNotIn('id', $exclude)->findAll(),
+		'description' => sprintf('Move this return from <em>%s</em> to selected user.', $this->data['user']->name)
+	];
+			
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['breadcrumbs'][] = ["admin/clubrets/event/{$event_id}", 'returns'];
 	$this->data['breadcrumbs'][] = $this->data['clubret']->breadcrumb('view', 'admin'); 

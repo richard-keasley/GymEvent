@@ -73,15 +73,11 @@ $this->section('top'); ?>
 <?php 
 echo \App\Libraries\View::back_link($back_link);
 echo getlink($clubret->url('edit'), 'edit');
-if(!empty($users)) {
-	$dialogue = [
-		'title' => 'Change user for this return',
-		'user_id' => $clubret->user_id,
-		'users' => $users
-	];
-	echo view('users/dialogue', $dialogue);
-}
-?>
+if(isset($users_dialogue)) { ?>
+	<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUser" title="Change user for this return"><span class="bi bi-person"></span></button>
+	<?php
+	echo view('users/dialogue', $users_dialogue);
+} ?>
 </div>
 <?php if($user->deleted_at) { ?>
 <p class="alert-danger">This user is not active</p>

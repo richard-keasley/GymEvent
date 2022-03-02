@@ -90,14 +90,33 @@ public function view($user_id=0) {
 		}
 	}
 	
+	if($this->request->getPost('cmd')=='modalUser') {
+		$source_id = $this->request->getPost('user_id');
+		$this->data['messages'][] = "ToDo: merge data from {$source_id} to {$user_id}";
+		/* need to move 
+		- clubrets
+		- entries
+		- logins ??
+		*/
+	}
+	
+	$exclude = [$user_id];
+	$this->data['users_dialogue'] = [
+		'title' => 'Merge data from another user',
+		'user_id' => $this->data['user']->user_id,
+		'users' => $this->usr_model->orderby('name')->whereNotIn('id', $exclude)->findAll(),
+		'description' => sprintf('Select user to merge from. User data will be pulled into <em>%s</em>. <span class="alert-danger">The selected user will be deleted</span>.', $this->data['user']->name)
+	];
+		
 	// view
 	$this->data['heading'] = $this->data['user']->name;
 	$this->data['breadcrumbs'][] = ["admin/users/view/{$user_id}", $this->data['user']->name];
-	
+		
 	$this->data['toolbar'] = [
 		\App\Libraries\View::back_link('admin/users'),
 		getlink("admin/users/edit/{$user_id}", 'edit'),
-		sprintf('<a href="%s/%u" class="btn btn-outline-secondary">logins</a>', base_url('admin/users/logins/user_id'), $user_id)
+		sprintf('<a href="%s/%u" class="btn btn-outline-secondary">logins</a>', base_url('admin/users/logins/user_id'), $user_id),
+		'<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUser" title="Merge data from another user"><span class="bi bi-layer-backward"></span></button>'
 	];
 	
 	if(!$this->data['user_self']) {
@@ -108,7 +127,7 @@ public function view($user_id=0) {
 		}
 		else {
 			$this->data['toolbar'][] = '<button name="enable" value="disable" type="submit" title="disable" class="btn bi-x-circle btn-danger"></button>';
-			$this->data['toolbar'][] = getlink("admin/users/merge/{$user_id}", '<span class="bi-layer-backward" title="merge"></span>');			
+			# $this->data['toolbar'][] = getlink("admin/users/merge/{$user_id}", '<span class="bi-layer-backward" title="merge"></span>');			
 		}
 		if(\App\Libraries\Auth::check_path('superuser')) { 
 			$this->data['toolbar'][] = '<button name="loginas" value="1" type="submit" class="btn btn-secondary">login as&hellip;</button>';
@@ -253,37 +272,6 @@ public function logins($filter='', $id='') {
 	if($filter) $this->data['breadcrumbs'][] = ["admin/users/logins/{$filter}/{$id}", "{$filter}={$id}"];
 	$this->data['title'] = "logins";
 	return view('users/logins', $this->data);
-}
-
-public function merge($user_id=0) {
-	$this->find($user_id);
-	$this->data['users'] = $this->usr_model->orderby('name')->where('id <>', $user_id)->withDeleted()->findAll();
-	
-	$source = intval($this->request->getPost('source'));
-	if($source) {
-		$source_user = $this->usr_model->withDeleted()->find($source);
-		if($source_user) {
-			#d($source);
-			
-			/* 
-			need to move 
-			- clubrets
-			- entries
-			- logins ??
-			*/
-			$this->data['messages'][] = ["Imported all data from {$source_user->name}", 'success'];
-			$this->data['users'] = $this->usr_model->orderby('name')->where('id <>', $user_id)->withDeleted()->findAll();
-		}
-		else {
-			$this->data['messages'][] = ["Couldn't find user {$source}", 'danger'];
-		}
-	}
-	
-	$this->data['heading'] = 'Merge user data to ' . $this->data['user']->name;
-	$this->data['breadcrumbs'][] = ["admin/users/view/{$user_id}", $this->data['user']->name];
-	$this->data['breadcrumbs'][] = ["admin/users/merge/{$user_id}", 'merge'];
-	return view('users/merge', $this->data);
-
 }
 
 }

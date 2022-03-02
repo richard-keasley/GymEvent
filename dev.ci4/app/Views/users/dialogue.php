@@ -1,12 +1,10 @@
 <?php
-if(empty($users)) return;
+if(empty($users)) $users = [];
 if(empty($title)) $title= "user";
 if(empty($user_id)) $user_id= 0;
+if(empty($description)) $description = 'Select user.';
 if(empty($cmd)) $cmd = 'modalUser';
-?>
-<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUser" title="<?php echo $title;?>"><span class="bi bi-person"></span></button>
 
-<?php 
 $hidden = [
 	'cmd' => $cmd
 ];
@@ -25,13 +23,17 @@ echo form_open(base_url(uri_string()), $attr, $hidden);
 	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div class="modal-body">
+<p><?php echo $description;?></p>
+<?php
+$filter = new \App\Views\Htm\Filter('#modalUser .modal-body .nav-item');
+echo $filter->htm();
+?>
 <ul class="nav flex-column">
 <?php foreach($users as $user) { ?>
-	<li class="nav-item">
-	<?php 
+	<li class="nav-item"><?php 
 	$selected = $user_id==$user->id ? 'btn-outline-success' : '' ;
-	printf('<button class="btn %s" type="submit" name="user_id" value="%u">%s</button>', $selected, $user->id, $user->name); ?>
-	</li>
+	printf('<button class="btn %s" type="submit" name="user_id" value="%u">%s</button>', $selected, $user->id, $user->name);
+	?></li>
 <?php } ?>
 </ul>
 </div>

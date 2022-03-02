@@ -79,6 +79,9 @@ echo form_open(base_url(uri_string()), $attr);
 echo implode(' ', $toolbar);
 echo form_close();
 
+if(isset($users_dialogue)) {
+	echo view('users/dialogue', $users_dialogue);
+} 
 $this->endSection(); 
 
 $this->section('bottom');
