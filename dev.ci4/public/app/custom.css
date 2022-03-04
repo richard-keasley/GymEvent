@@ -1,0 +1,16 @@
+@media print and all {
+	
+body {
+	background: #FFF;
+	max-width: none;
+}
+
+.container, .container-sm, .container-md, .container-lg {
+	max-width: none;
+}
+
+.toolbar, .breadcrumb, footer {
+	display: none ;
+}
+
+} 

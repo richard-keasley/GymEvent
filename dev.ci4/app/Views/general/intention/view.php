@@ -118,18 +118,18 @@ thead th {
 
 <ul class="list-unstyled"><?php 
 $li_format = '<li><strong>%s:</strong> %s</li>';
-foreach(['name'] as $key) {
+foreach(['name', 'club'] as $key) {
 	printf($li_format, $key, $intention->$key);
 } ?></ul>
 
 <ul class="list-unstyled"><?php 
-foreach(['gender', 'dob'] as $key) {
+foreach(['gender', 'level'] as $key) {
 	printf($li_format, $key, $intention->$key);
 } 
 ?></ul>
 
 <ul class="list-unstyled"><?php 
-foreach(['exercise', 'level'] as $key) {
+foreach(['exercise'] as $key) {
 	printf($li_format, $key, $intention->$key);
 } ?></ul>
 

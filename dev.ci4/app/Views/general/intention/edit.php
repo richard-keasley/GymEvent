@@ -30,8 +30,8 @@ echo form_hidden('routine', $intention->encode()); ?>
 	?>
 </div>
 <div class="input-group my-1">
-	<label class="input-group-text">DoB</label>
-	<input type="date" class="form-control" placeholder="date of birth" data-name="dob" value="<?php echo $intention->dob;?>">
+	<label class="input-group-text">Club</label>
+	<input type="text" class="form-control" placeholder="Club" data-name="club" value="<?php echo $intention->club;?>">
 </div>
 </div>
 

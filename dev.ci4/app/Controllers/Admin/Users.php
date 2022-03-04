@@ -7,6 +7,7 @@ public function __construct() {
 	$this->data['breadcrumbs'][] = 'admin';
 	$this->data['breadcrumbs'][] = 'admin/users';
 	$this->data['base_url'] = base_url(['admin', 'users']);
+	$this->data['user_self'] = false;
 }
 
 private function find($user_id) {

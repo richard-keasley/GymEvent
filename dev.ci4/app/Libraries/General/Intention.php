@@ -14,10 +14,10 @@ const filter = [
 		'flags' => FILTER_FLAG_NONE,
 		'default' => 'female'
 	],
-	'dob' => [
+	'club' => [
 		'filter' => FILTER_SANITIZE_STRING,
 		'flags' => FILTER_FLAG_NONE,
-		'default' => '2000-01-01'
+		'default' => 'club'
 	],
 	'exercise' => [
 		'filter' => FILTER_SANITIZE_STRING,

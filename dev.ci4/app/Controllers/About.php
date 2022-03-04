@@ -9,6 +9,7 @@ public function __construct() {
 		getlink('about', 'About us') .
 		getlink('about/policy', 'Data Policy') .
 		getlink('about/timeline', 'Preparations') .
+		getlink('about/hardware', 'Hardware') .
 		'</nav>';
 }
 	
@@ -30,6 +31,13 @@ public function timeline() {
 	$this->data['title'] = 'Timeline';
 	$this->data['heading'] = 'Timeline for preparations';
 	return view('about/timeline', $this->data);
+}
+
+public function hardware() {
+	$this->data['breadcrumbs'][] = 'about/hardware';
+	$this->data['title'] = 'Hardware';
+	$this->data['heading'] = 'Hardware requirements';
+	return view('about/hardware', $this->data);
 }
 
 }
