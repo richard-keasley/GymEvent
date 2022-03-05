@@ -29,7 +29,7 @@ if(\App\Libraries\Auth::check_path('admin/entries/edit')) {
 } 
 
 foreach($entries as $dis) { ?>
-	<div class="vars">
+	<section>
 	<h4><?php echo $dis->name;?></h4>
 	<?php foreach($dis->cats as $cat) {
  		$table->setHeading(['num', 'name', 'club', 'DoB']);
@@ -44,9 +44,13 @@ foreach($entries as $dis) { ?>
 			];
 		}
 		printf('<h6>%s</h6>', $cat->name);
-		echo $table->generate($tbody);
+		?>
+		<div class="table-responsive">
+		<?php echo $table->generate($tbody); ?>
+		</div>
+		<?php
 	} ?>
-	</div>
+	</section>
 <?php } 
 #d($entries);
 #d($event);
