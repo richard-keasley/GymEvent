@@ -54,7 +54,10 @@ function update_selector(dis_id) {
 </form>
 
 <?php 
-echo form_open(base_url(uri_string())); 
+$attr = [];
+$hidden = ['save'=>1];
+echo form_open(base_url(uri_string()), $attr, $hidden);
+
 $filter_cat = $filter['catid'];
 $cat_entries = [];
 foreach($entries as $dis) {
@@ -66,7 +69,7 @@ foreach($entries as $dis) {
 		}
 	}
 }
-$flds = ['category_id','num','name','dob','club'];
+$flds = ['category_id','num','name','dob','club',''];
 $table->setHeading($flds);
 $tbody=[]; $tr = [];
 $arr = empty($selector[$filter['disid']]) ? [] : $selector[$filter['disid']];
@@ -106,17 +109,19 @@ foreach($cat_entries as $entry) {
 		else {
 			$inputs[$key]['value'] = $entry->$key;
 		}
-	}
+	} 
 	$tbody[] = [
 		form_dropdown($inputs['category_id']),
 		form_input($inputs['num']),
 		form_input($inputs['name']),
 		form_input($inputs['dob']),
 		form_dropdown($inputs['user_id']),
+		sprintf('<button class="btn btn-danger bi bi-trash" type="submit" name="delrow" value="%u"></button>', $entry->id)
+
 
 	];
 }
-if(count($tbody)) echo $table->generate($tbody);
+if($tbody) echo $table->generate($tbody);
 ?>
 
 <?php if($filter['disid'] && $filter['catid']) { ?>
@@ -126,21 +131,24 @@ if(count($tbody)) echo $table->generate($tbody);
 <?php 
 $tr = [];
 foreach($inputs as $key=>$input) {
-	$input['name'] = "newrow_{$key}";
-	if(isset($input['options'])) {
-		$input['selected'] = 0;
-		$tr[$key] = form_dropdown($input);
-	}
-	else {
-		$input['value'] = '';
-		$tr[$key] = form_input($input);
+	if($key!='category_id') {
+		$input['name'] = "newrow_{$key}";
+		$input['placeholder'] = $key;
+		if(isset($input['options'])) {
+			$input['selected'] = 0;
+			$tr[$key] = form_dropdown($input);
+		}
+		else {
+			$input['value'] = '';
+			$tr[$key] = form_input($input);
+		}
 	}
 }
 $tr['last'] = '<button class="btn btn-danger bi bi-x-circle" type="button" onclick="newrow(0)"></button>';
 
-$template = ['table_open' => '<table class="table d-none">'];
+$template = ['table_open' => '<table class="table d-none bg-light">'];
 $table->setTemplate($template);
-$table->setHeading('Add entry');
+$table->autoHeading = false;
 echo $table->generate([$tr]);
 ?>
 <script>
@@ -164,11 +172,10 @@ function newrow(show) {
 <div class="toolbar">
 <?php echo \App\Libraries\View::back_link("entries/view/{$event->id}");?>
 <?php if($filter['disid'] && $filter['catid']) { ?>
-	<input type="hidden" name="save" value="1">
 	<button type="submit" class="btn btn-primary">save</button>	
 <?php } ?>
 </div>
-</form>
 
-<?php $this->endSection(); 
-
+<?php
+echo form_close();
+$this->endSection(); 

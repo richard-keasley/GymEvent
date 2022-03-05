@@ -84,6 +84,7 @@ public function edit($event_id=0) {
 			}
 			$this->mdl_entries->update($entry->id, $data);
 		}
+		
 		// look for new entry
 		foreach($col_names as $col_name) {
 			$fld_name = "newrow_{$col_name}";
@@ -94,6 +95,12 @@ public function edit($event_id=0) {
 			$data['category_id'] = $filter['catid'];
 			$this->mdl_entries->add_entry($data);
 			#d($data);
+		}
+		
+		// look for delrow
+		$delrow = $this->request->getPost('delrow');
+		if($delrow) {
+			$this->mdl_entries->delete($delrow, 1);
 		}
 		
 		// read 
