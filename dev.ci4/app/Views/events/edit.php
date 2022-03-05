@@ -27,20 +27,31 @@ ob_start(); // Details ?>
 	<label class="input-group-text">date</label>
 	<?php echo form_input("date", $event->date, 'class="form-control"', 'date');?>
 </p>
-<p><label>Description [HTML]</label> <?php echo form_textarea("description", $event->description, 'class="form-control"');?></p>
+
 <?php
+$attr = [
+	'name' => 'description',
+	'value' => $event->description
+];
+$editor = new \App\Views\Htm\Editor($attr);
+echo $editor->htm();
+
 $acc->set_item('Details', ob_get_clean());
 
-ob_start(); // Payment ?> 
-<p><label>Payment info [HTML]</label>
-<?php echo form_textarea("payment", $event->payment, 'class="form-control"'); ?>
-</p>
+ob_start(); // Payment
+$attr = [
+	'name' => 'payment',
+	'value' => $event->payment
+];
+$editor = new \App\Views\Htm\Editor($attr);
+echo $editor->htm();
+?> 
 <p>The text that explains how clubs should pay. Include bank details and any dead-lines.</p>
 <?php
 $acc->set_item('Payment', ob_get_clean());
 
 ob_start(); // disciplines / categories ?> 
-<p>Do not use spaces, commas or special characters within discipline and categories. Try to use the same abbreviations as <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#sbdis">scoreboard</button>.</p>
+<p>Do not use spaces, commas or special characters within discipline and categories. Try to use the same abbreviations as <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#sbdis">scoreboard</button>.</p>
 
 <div class="modal" id="sbdis" tabindex="-1">
 <div class="modal-dialog">
@@ -159,6 +170,7 @@ $acc->set_item('Event states', ob_get_clean());
 
 ob_start(); // Downloads
 ?>
+<p><strong>NB:</strong> Upload an image named 'logo.*' to use it as an image on the main event page.</p>
 <ul class="list-group"><?php 
 $pattern = '<li class="list-group-item">%s <button type="button" name="cmd" value="delfile" data-key="%u" class="btn btn-danger bi-trash"></button></li>';
 foreach($event->files as $key=>$filename) {
