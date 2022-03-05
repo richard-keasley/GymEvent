@@ -28,6 +28,11 @@ protected $validationRules = [
 ];
 
 public function delete_all($event_id) {
+	$event = $this->onlyDeleted()->find($event_id);
+	if(!$event) return false;
+	
+	self::delete_path(dirname($event->file_path()));
+	
 	$model = new \App\Models\Clubrets;
 	$model->where('event_id', $event_id)->delete(null, true);
 	$model = new \App\Models\Entries;
@@ -37,6 +42,23 @@ public function delete_all($event_id) {
 	$session = session();
 	$session->setFlashdata('messages', ["Deleted event {$event_id}"]);
 	return true;	
+}
+
+static function delete_path($path) {
+	if(is_dir($path)) { 
+		foreach(scandir($path) as $object) { 
+			if($object != "." && $object != "..") {
+				$object = $path. DIRECTORY_SEPARATOR .$object;
+				if(is_dir($object) && !is_link($object)) {
+					self::delete_path($object);
+				}
+				if(is_file($object)) {
+					unlink($object); 
+				}
+			} 
+		}
+		rmdir($path); 
+	} 
 }
 
 }

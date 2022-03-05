@@ -99,7 +99,7 @@ echo form_open(base_url(uri_string()), $attr);
 </div>
 <div class="modal-body">
 	<p>Delete this event?</p>
-	<p class="alert-primary">Be aware all related entries and club returns will also be deleted.</p>
+	<p class="alert-primary">Be aware all related files, music, entries and club returns will also be deleted.</p>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary bi-x-circle-fill" data-bs-dismiss="modal"></button>

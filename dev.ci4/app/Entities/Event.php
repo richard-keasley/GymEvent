@@ -285,7 +285,10 @@ public function link($type, $user_id=0) {
 		break;
 		
 		case 'player':
-		return getlink("player/view/{$this->id}", 'player');
+		if(in_array($this->music, [2])) { // view
+            return getlink("player/view/{$this->id}", 'player');
+		}
+		break;
 		
 		case 'admin':
 		return getlink("admin/events/view/{$this->id}", 'admin');	
