@@ -46,7 +46,7 @@ $attr = [
 $editor = new \App\Views\Htm\Editor($attr);
 echo $editor->htm();
 ?> 
-<p>The text that explains how clubs should pay. Include bank details and any dead-lines.</p>
+<p>This explains how clubs should pay. Include bank details and any dead-lines.</p>
 <?php
 $acc->set_item('Payment', ob_get_clean());
 
