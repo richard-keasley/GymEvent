@@ -13,6 +13,7 @@ const blank = [
 	'fs' => false,
 	'afs' => false
 ];
+
 public $list = [];
 
 function __construct($category, $composition=null) {
