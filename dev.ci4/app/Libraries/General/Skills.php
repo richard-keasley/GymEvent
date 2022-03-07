@@ -58,13 +58,15 @@ static function match($skill, $pattern) {
 			if(stripos($pattern[$key], $skill[$key])===false) return false;
 		}
 	}
-	// skill OK if it has ANY attributes in pattern
+	// skill matched if it has ANY attributes in pattern
+	$has_attribs = false;
 	foreach(self::attributes as $key) {
 		if(!empty($pattern[$key])) {
-			if($skill[$key]) return true;
+		    if($skill[$key]) return true;
+		    $has_attribs = true;
 		}
 	}
-	return false;
+	return $has_attribs ? false : true;
 } 
 
 } 
