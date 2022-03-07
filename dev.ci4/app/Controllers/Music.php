@@ -94,7 +94,7 @@ public function view($event_id=0) {
 	if(!count($cat_opts)) {
 		throw new \RuntimeException("There is no music to display", $err_status);
 	}
-
+	# d($discats);
 	// view
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb();
 	$this->data['breadcrumbs'][] = ["music/view/{$event_id}", 'music'];

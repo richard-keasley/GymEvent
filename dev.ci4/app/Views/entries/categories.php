@@ -99,7 +99,7 @@ if($dis->id==$filter['disid']) { ?>
 				default:
 					$input['value'] = $cat->$key;
 					if(is_array($input['value'])) {
-						$input['value'] = implode(' ', $input['value']);
+						$input['value'] = implode(', ', $input['value']);
 					}
 					$td = form_input($input);
 			}

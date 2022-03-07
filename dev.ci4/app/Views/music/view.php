@@ -8,9 +8,9 @@ $this->section('content');
 $track = new \App\Libraries\Track();
 $track->event_id = $event->id;
 
-#d($event);
-#d($entries);
-#d($filter, $cat_opts, $filter['cat']);
+# d($event);
+# d($entries);
+# d($filter, $cat_opts, $filter['cat']);
 
 ?>
 <form method="GET" id="selector" class="mb-2">

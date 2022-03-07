@@ -80,8 +80,9 @@ public function edit($event_id=0) {
 			foreach($col_names as $col_name) {
 				$fldname = "ent{$entry->id}_{$col_name}";
 				$fld_val = $this->request->getPost($fldname);
- 				$data[$col_name] = $fld_val;
+				$data[$col_name] = $fld_val;
 			}
+			d($data);
 			$this->mdl_entries->update($entry->id, $data);
 		}
 		
@@ -117,7 +118,7 @@ public function edit($event_id=0) {
 
 public function categories($event_id=0) {
 	$this->find($event_id);
-	$this->data['array_fields'] = ['exercises','music','videos'];
+	$array_fields = ['music', 'videos'];
 	
 	$filter = []; $flds = ['disid'];
 	foreach($flds as $fld) $filter[$fld] = $this->request->getGet($fld);
@@ -151,8 +152,13 @@ public function categories($event_id=0) {
 					}
 					else {
 						$cat_arr['id'] = $cat->id;
-						$cat_arr['music'] = csv_array($cat_arr['music']);
-						$cat_arr['videos'] = csv_array($cat_arr['videos']);
+						foreach($array_fields as $array_field) {
+							$fld_val = [];
+							foreach(explode(',', str_replace(' ', '', $cat_arr[$array_field])) as $val) {
+								if($val) $fld_val[] = $val;
+							}
+							$cat_arr[$array_field] = $fld_val;
+						}
 						$entrycat = new \App\Entities\Entrycat($cat_arr);
 						$this->mdl_entries->entrycats->save($entrycat);
 					}
@@ -173,6 +179,7 @@ public function categories($event_id=0) {
 		// read 
 		$this->find($event_id);
 	}
+	
 	// view
 	$this->data['breadcrumbs'][] = "admin/entries/categories/{$event_id}";
 	

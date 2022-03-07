@@ -5,8 +5,8 @@ use CodeIgniter\Entity;
 class EntryCat extends Entity {
 	
 protected $casts = [
-	'music' => 'csv',
-	'videos' => 'csv'
+	'music' => 'json-array',
+	'videos' => 'json-array'
 ];
 
 }

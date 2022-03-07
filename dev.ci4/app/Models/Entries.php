@@ -20,13 +20,13 @@ function __construct() {
 public function evt_discats($event_id, $entries=1) {
 	$return = [];
 	foreach($this->evt_disciplines($event_id) as $dis) {
-		$dis->cats = $this->entrycats
+		$cats = $this->entrycats
 			->where('discipline_id', $dis->id)
 			->orderBy('sort', 'ASC')
 			->findAll();
-		foreach($dis->cats as $cat_key=>$entrycat) {
+		foreach($cats as $cat_key=>$entrycat) {
 			$entrycat->entries = $entries ? $this->cat_entries($entrycat->id) : [] ;
-			$dis->cat[$cat_key] = $entrycat;
+			$dis->cats[$cat_key] = $entrycat;
 		}
 		$return[] = $dis;
 	}
