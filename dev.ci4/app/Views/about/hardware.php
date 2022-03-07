@@ -19,6 +19,8 @@ $this->section('content');
 <li>Ensure you have lots of long extension leads to reach to each judge station.</li>
 <li>You will need a machine from us to play music. Ensure you have a lead to connect the laptop to whatever PA system you are using.</li>
 <li>You may need a router if using a <abbr title="Local network">LAN</abbr> (rather than direct connection via the internet).</li>
+<li>You will need a machine from us to play music. Ensure you have a lead to connect the laptop to whatever PA system, you are using.</li>
+<li>You may need a router if using a <abbr title="Local network">LAN</abbr> (rather than direct connection via the internet.</li>
 </ul>
 
 <p><img src="/app/profile/image.png"></p>
