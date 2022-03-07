@@ -50,9 +50,14 @@ echo $editor->htm();
 <?php
 $acc->set_item('Payment', ob_get_clean());
 
-ob_start(); // disciplines / categories ?> 
-<p>Do not use spaces, commas or special characters within discipline and categories. Try to use the same abbreviations as <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#sbdis">scoreboard</button>.</p>
+ob_start(); // disciplines / categories 
 
+if($event->clubrets) { ?>
+<p>This section should only be altered while the event sate 'clubrets' is set to 'waiting'.</p>
+<?php } 
+
+else { ?> 
+<p>Do not use spaces, commas or special characters within discipline and categories. Try to use the same abbreviations as <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#sbdis">scoreboard</button>.</p>
 <div class="modal" id="sbdis" tabindex="-1">
 <div class="modal-dialog">
 <div class="modal-content">
@@ -83,6 +88,8 @@ ob_start(); // disciplines / categories ?>
 </div>
 </div>
 
+<?php } ?>
+
 <div id="discats">
 <?php 
 $tbody = [];
@@ -111,6 +118,12 @@ $input = [
 	'rows' =>5
 ]
 ];
+
+if($event->clubrets) {
+	foreach($input as $key=>$field) {
+		$input[$key]['readonly'] = "readonly";
+	}
+}
 
 foreach($discats as $key=>$discat) {
 	$input['name']['value'] = $discat['name'];
@@ -143,7 +156,16 @@ $acc->set_item('disciplines / categories', ob_get_clean());
 ob_start(); // Staff ?>
 <p>A comma separated list of all staff categories. E.g. <code>coach, judge, helper</code>. Items should not include spaces or special characters.</p>
 <?php 
-echo form_input('staffcats', implode(', ', $event->staffcats), 'class="form-control"'); 
+$input = [
+	'name' => "staffcats",
+	'value' => implode(', ', $event->staffcats),
+	'class' => "form-control"
+];
+if($event->clubrets) $input['readonly'] = "readonly";
+echo form_input($input);
+
+
+# echo form_input('staffcats', implode(', ', $event->staffcats), 'class="form-control"'); 
 $acc->set_item('Staff', ob_get_clean());
 
 ob_start(); // Event states
@@ -190,6 +212,8 @@ $acc->set_item('Downloads', ob_get_clean());
 echo $acc->htm(); 
 
 echo form_close(); 
+
+d($event);
 
 $this->endSection(); 
 
@@ -242,4 +266,3 @@ $('[name=cmd]').click(function() {
 });
 </script>
 <?php $this->endSection(); 
-
