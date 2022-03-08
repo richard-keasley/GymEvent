@@ -141,8 +141,8 @@ public function check() {
 	}
 	if($errors) $this->errors['participants'] = $errors;
 	
-	$event = $this->event();		
-	if($event->staffcats) {
+	$event = $this->event();
+	if(!empty($event->staffcats[0])) {
 		$errors = [];
 		if($this->staff) {
 			foreach($this->staff as $rowkey=>$row) {
