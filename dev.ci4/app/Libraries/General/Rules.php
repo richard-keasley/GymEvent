@@ -1,7 +1,13 @@
 <?php namespace App\Libraries\General;
 
+if(empty(Rules::$version)) {
+	$appvars = new \App\Models\Appvars();
+	$appval = $appvars->get_value("general.fx.rules");
+	Rules::$version = $appval['version'] ?? '';
+}
+
 class Rules {
-const version = '2018-02-01';
+static $version = null; // initialised above
 public $category = '';
 public $skills = [];
 public $bonuses = [];

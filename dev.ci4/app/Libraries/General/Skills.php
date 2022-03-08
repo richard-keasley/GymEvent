@@ -44,8 +44,8 @@ function get_grouped() {
 		foreach($this->list as $sk_id=>$skill) {
 			$retval[$skill['group']][$skill['difficulty']][$sk_id] = $skill;
 		}
-		ksort($retval);
-		foreach(array_keys($retval) as $grp_id) ksort($retval[$grp_id]);
+		ksort($retval); // sort groups
+		foreach(array_keys($retval) as $grp_id) ksort($retval[$grp_id]); // sort difficulty
 		$this->_grouped = $retval;
 	}
 	return $this->_grouped;

@@ -23,6 +23,38 @@ public function rules($exe='') {
 	return view("general/admin/rules/index", $this->data);
 }
 
+public function edit_rules($exe='fx') {
+	$appvar_id = "general.{$exe}.rules";
+	$appvars = new \App\Models\Appvars();
+	$this->data['fields'] = [
+		'version' => 'date'
+	];
+	
+	// update
+	if($this->request->getPost('save')) {
+		$data = [];
+		foreach($this->data['fields'] as $fldname=>$fldtype) { 
+			$data[$fldname] = $this->request->getPost($fldname);
+		}
+		$appvar = new \App\Entities\Appvar;
+		$appvar->id = $appvar_id;
+		$appvar->value = $data;
+		$appvars->save_var($appvar);
+		$this->data['messages'][] = ["Rules updated", 'success'];
+	}
+	
+	// read 
+	$this->data['data'] = $appvars->get_value($appvar_id);
+	
+	//view
+	$this->data['title'] = "{$exe} rules information";
+	$this->data['heading'] = $this->data['title'];
+	$this->data['back_link'] = "admin/general/rules/{$exe}";
+	$this->data['breadcrumbs'][] = [$this->data['back_link'], strtoupper($exe)];
+	$this->data['breadcrumbs'][] = ["admin/general/edit_rules/{$exe}/", 'rules'];
+	return view("general/admin/rules/rules_edit", $this->data);
+}
+
 public function edit($exe='', $varname='') {
 	$appvars = new \App\Models\Appvars();
 	$title = sprintf('%s %s', strtoupper($exe), $varname);
@@ -112,3 +144,4 @@ public function edit($exe='', $varname='') {
 }
 	
 }
+ 
