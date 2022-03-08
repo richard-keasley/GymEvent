@@ -23,7 +23,11 @@ public function htm() {
 	tinymce.init({
 		selector: '#<?php echo $id;?> textarea',
 		branding: false,
-		menubar: false
+		menubar: false,
+		browser_spellcheck: true,
+		plugins: 'code',
+		toolbar: 'Undo Redo | Blocks | Bold Italic | code',
+		content_css: '/app/bootstrap.css'
 	});
 	});
 	</script>
