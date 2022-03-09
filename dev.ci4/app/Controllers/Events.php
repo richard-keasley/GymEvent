@@ -7,6 +7,7 @@ private $model = null;
 public function __construct() {
 	$this->data['breadcrumbs'][] = 'events';
 	$this->model = new \App\Models\Events();
+	$this->data['events'] = $this->model->orderBy('date')->findAll();
 }
 	
 public function index() {
@@ -14,14 +15,19 @@ $this->data['body'] = <<< EOT
 <p>Select the event you are interested in.</p>
 EOT;
 	$this->data['base_url'] = base_url('events/view');
-	$this->data['events'] = $this->model->orderBy('date')->findAll();
 	return view('events/index', $this->data);
 }
 
 public function view($event_id=0) {
-	$this->data['event'] = $this->model->find($event_id);
-	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
-		
+    $this->data['event'] = null;
+    foreach($this->data['events'] as $key=>$event) {
+	    if($event->id==$event_id) {
+	        $this->data['event'] = $event;
+	        break;
+	    }
+	}
+ 	if(!$this->data['event']) throw new \RuntimeException("Can't find event {$event_id}", 404);
+ 
 	// view
 	$this->data['id'] = $event_id;
 	$this->data['title'] = $this->data['event']->title;
@@ -35,5 +41,4 @@ public function view($event_id=0) {
 	return view('events/view', $this->data);
 }
 
-// end
 }
