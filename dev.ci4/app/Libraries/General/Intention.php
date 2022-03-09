@@ -54,7 +54,7 @@ public $data = []; // as supplied by user
 static function versions() {
 	return [
 		'Rules' => \App\Libraries\General\Rules::$version,
-		'Intention' => \App\Libraries\General\Intention::version,
+		'Intention' => self::version,
 		'Updated' => date('Y-m-d')
 	];
 }

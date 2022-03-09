@@ -41,15 +41,14 @@ $this->section('content');?>
 <?php $this->endSection(); 
 
 $this->section('sidebar');
-$nav = [
-	["admin/general/edit_rules/{$exe}", 'Rules']
-];
 $rule_parts = [
+	'rules' => 'Rules',
 	'skills' => 'Skills',
 	'composition' => 'Composition',
 	'specials' => 'Special Requirements',
 	'bonuses' => 'Bonuses'
 ];
+$nav = [];
 foreach($rule_parts as $key=>$label) {
 	$nav[] = ["admin/general/edit/{$exe}/{$key}", $label];
 }

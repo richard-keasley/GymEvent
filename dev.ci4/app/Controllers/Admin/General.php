@@ -23,56 +23,27 @@ public function rules($exe='') {
 	return view("general/admin/rules/index", $this->data);
 }
 
-public function edit_rules($exe='fx') {
-	$appvar_id = "general.{$exe}.rules";
-	$appvars = new \App\Models\Appvars();
-	$this->data['fields'] = [
-		'version' => 'date'
-	];
+public function edit($exe='', $varname='') {
+	$title = sprintf('%s %s', strtoupper($exe), $varname);
 	
-	// update
-	if($this->request->getPost('save')) {
-		$data = [];
-		foreach($this->data['fields'] as $fldname=>$fldtype) { 
-			$data[$fldname] = $this->request->getPost($fldname);
-		}
-		$appvar = new \App\Entities\Appvar;
-		$appvar->id = $appvar_id;
-		$appvar->value = $data;
-		$appvars->save_var($appvar);
-		$this->data['messages'][] = ["Rules updated", 'success'];
-	}
-	
-	// read 
-	$this->data['data'] = $appvars->get_value($appvar_id);
-	
-	//view
-	$this->data['title'] = "{$exe} rules information";
-	$this->data['heading'] = $this->data['title'];
+	// all data early so can be used for both functions
+	$this->data['title'] = $title;
+	$this->data['heading'] = sprintf('General %s', $title);
 	$this->data['back_link'] = "admin/general/rules/{$exe}";
 	$this->data['breadcrumbs'][] = [$this->data['back_link'], strtoupper($exe)];
-	$this->data['breadcrumbs'][] = ["admin/general/edit_rules/{$exe}/", 'rules'];
-	return view("general/admin/rules/rules_edit", $this->data);
-}
-
-public function edit($exe='', $varname='') {
-	$appvars = new \App\Models\Appvars();
-	$title = sprintf('%s %s', strtoupper($exe), $varname);
-	switch($title) {
-		case 'FX skills':
-		case 'FX specials':
-		case 'FX bonuses':
-		case 'FX composition':
-			$var_id = "general.{$exe}.{$varname}";
-			break;
-		default:
-			$var_id = null;
+	$this->data['breadcrumbs'][] = ["admin/general/edit/{$exe}/{$varname}", $varname];
+	
+	// rules uses different file structure
+	if($varname=='rules') return $this->edit_rules($exe);
+	if(!in_array($varname, ['skills', 'specials', 'bonuses', 'composition'])) {
+		throw new \RuntimeException("Can't find table {$title}", 404);
 	}
-	if(!$var_id) throw new \RuntimeException("Can't find table {$title}", 404);
-			
+				
+	$appvars = new \App\Models\Appvars();
+	$appvar_id = "general.{$exe}.{$varname}";
 	if($this->request->getPost('save')) {
 		// update
-		switch($var_id) {
+		switch($appvar_id) {
 			case 'general.fx.skills' :
 				$blank_line = \App\Libraries\General\Skills::blank;
 				break;
@@ -116,7 +87,7 @@ public function edit($exe='', $varname='') {
 				$table[$id] = $row;
 			}
 			$appvar = new \App\Entities\Appvar;
-			$appvar->id = $var_id;
+			$appvar->id = $appvar_id;
 			$appvar->value = $table;
 			$appvars->save_var($appvar);
 			$this->data['messages'][] = ["'{$title}' updated", 'success'];
@@ -125,7 +96,7 @@ public function edit($exe='', $varname='') {
 	}
 	 
 	// read 
-	$appvar = $appvars->find($var_id);
+	$appvar = $appvars->find($appvar_id);
 	$value = $appvar ? $appvar->value : null ;
 	$textarea = [];
 	if(is_array($value)) {
@@ -135,12 +106,33 @@ public function edit($exe='', $varname='') {
 	$this->data['updated_at'] = $appvar->updated_at;
 	$this->data['value'] = $value;
 	// view
-	$this->data['title'] = $title;
-	$this->data['heading'] = sprintf('General %s', $title);
-	$this->data['back_link'] = "admin/general/rules/{$exe}";
-	$this->data['breadcrumbs'][] = [$this->data['back_link'], strtoupper($exe)];
-	$this->data['breadcrumbs'][] = ["admin/general/edit/{$exe}/{$varname}", $varname];
 	return view("general/admin/rules/edit", $this->data);
+}
+
+private function edit_rules($exe='fx') {
+	// using most data from $this->edit()
+	$appvars = new \App\Models\Appvars();
+	$appvar_id = "general.{$exe}.rules";
+	$this->data['fields'] = ['version' => 'date'];
+
+	// update
+	if($this->request->getPost('save')) {
+		$data = [];
+		foreach($this->data['fields'] as $fldname=>$fldtype) { 
+			$data[$fldname] = $this->request->getPost($fldname);
+		}
+		$appvar = new \App\Entities\Appvar;
+		$appvar->id = $appvar_id;
+		$appvar->value = $data;
+		$appvars->save_var($appvar);
+		$this->data['messages'][] = ["Rules updated", 'success'];
+	}
+	
+	// read 
+	$this->data['data'] = $appvars->get_value($appvar_id);
+	
+	//view
+	return view("general/admin/rules/rules_edit", $this->data);
 }
 	
 }
