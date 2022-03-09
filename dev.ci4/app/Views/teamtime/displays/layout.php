@@ -8,11 +8,11 @@
 <script src="/app/jquery-3.6.0.min.js" type="text/javascript"></script>
 <?php 
 if(!empty($title)) printf('<title>%s</title>', $title);
-echo view('teamtime/js');
+echo $this->include('teamtime/js');
 ?>
 </head>
 <body><?php 
 $this->renderSection('body'); 
-echo view('includes/js');
+echo $this->include('includes/js');
 ?></body>
 </html>

@@ -76,10 +76,18 @@ echo getlink($clubret->url('edit'), 'edit');
 if(isset($users_dialogue)) { ?>
 	<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUser" title="Change user for this return"><span class="bi bi-person"></span></button>
 	<?php
-	echo view('users/dialogue', $users_dialogue);
-} ?>
+	echo $this->include('includes/users/dialogue');
+}
+if(isset($modal_delete)) { ?>
+	<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal_delete" title="Delete this return"><span class="bi bi-trash"></span></button>
+	<?php 
+	echo $this->include('includes/modal_delete');
+}
+?>
 </div>
-<?php if($user->deleted_at) { ?>
+
+<?php 
+if($user->deleted_at) { ?>
 <p class="alert-danger">This user is not active</p>
 <?php } ?>
 <?php if($event->deleted_at) { ?>

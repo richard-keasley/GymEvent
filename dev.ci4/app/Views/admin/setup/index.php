@@ -51,14 +51,14 @@ echo getlink('setup/scoreboard', 'Scoreboard');
 echo getlink('setup/php_info', 'PHP info');
 echo getlink('setup/appvars', 'App variables');
 echo getlink('setup/dev', 'Development notes');
-if($device=='development') echo getlink('setup/update', 'Updating the App');
+if($device=='development') echo getlink('setup/update', 'Update the App');
 echo getlink('setup/install', 'Installation notes');
 ?></nav>
 
 </div>
 
 <div class="col-auto">
-<?php echo view('includes/version');?>
+<?php echo $this->include('includes/version');?>
 </div>
 
 </div>

@@ -66,6 +66,21 @@ public function view($event_id=0) {
 		$this->find($event_id);
 	}
 	
+	$cmd = $this->request->getPost('cmd');
+	if($cmd=='del_item') {
+		$event_id = $this->request->getPost('item_id') + 1000;
+		if($this->mdl_events->delete_all($event_id)) {
+			$this->data['messages'][] = ["Event deleted", 'success'];
+			$session = \Config\Services::session();
+			$session->setFlashdata('messages', $this->data['messages']);
+			return redirect()->to(base_url('admin/events'));
+		}
+		else {
+			$this->data['messages'] = $this->mdl_events->errors();
+			$this->data['messages'][] = "Event {$event_id} not deleted.";
+		}
+	}
+	
 	$state = $this->request->getPost('state');
 	switch($state) {
 		case 'list':
@@ -77,14 +92,16 @@ public function view($event_id=0) {
 			$this->mdl_events->delete($event_id);
 			$this->data['messages'][] = ['Event hidden', 'danger'];
 			break;
-		case 'delete': 
-			$success = $this->mdl_events->delete_all($event_id);
-			if($success) return redirect()->to(base_url('admin/events'));
-			break;
 		default:
 			$state = '';
 	}
-	if($state) $this->find($event_id);	
+	if($state) $this->find($event_id);
+	
+	$this->data['modal_delete'] = [
+		'title' => "Delete '{$this->data['event']->title}'",
+		'description' => '<p>Are you sure you want to delete this event?</p><p class="alert-primary">Be aware all related files, music, entries and club returns will also be deleted.</p>',
+		'item_id' => $event_id
+	];
 		
 	// view
 	$this->data['back_link'] = "/admin/events";

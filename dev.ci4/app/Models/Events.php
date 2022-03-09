@@ -37,11 +37,7 @@ public function delete_all($event_id) {
 	$model->where('event_id', $event_id)->delete(null, true);
 	$model = new \App\Models\Entries;
 	$model->delete_event($event_id);
-	$this->delete($event_id, true);
-	
-	$session = session();
-	$session->setFlashdata('messages', ["Deleted event {$event_id}"]);
-	return true;	
+	$this->delete($event_id, true);	
 }
 
 static function delete_path($path) {

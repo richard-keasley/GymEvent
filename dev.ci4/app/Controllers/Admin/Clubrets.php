@@ -32,6 +32,7 @@ public function index() {
 
 public function view($event_id=0, $user_id=0) {
 	$this->lookup($event_id, $user_id);
+	$back_link = "admin/clubrets/event/{$event_id}";
 	
 	if($this->request->getPost('cmd')=='modalUser') {
 		$new_user = $this->request->getPost('user_id');
@@ -41,17 +42,36 @@ public function view($event_id=0, $user_id=0) {
 			// update clubret
 			if($this->model->save($clubret)) { 
 				// reload 
-				$this->data['messages'][] = ["Updated entry", 'success'];
+				$this->data['messages'][] = ["Updated return", 'success'];
 				$session = \Config\Services::session();
 				$session->setFlashdata('messages', $this->data['messages']);
 				return redirect()->to("admin/clubrets/view/{$event_id}/{$new_user}");
 			}
 			else {
 				$this->data['messages'] = $this->model->errors();
-				$this->data['messages'][] = ["Couldn't update entry", 'danger'];
+				$this->data['messages'][] = ["Couldn't update return", 'danger'];
 			}
 		}
 	}
+
+	if($this->request->getPost('cmd')=='del_item') {
+		$item_id = $this->request->getPost('item_id');
+		if($this->model->delete($item_id)) {
+			$this->data['messages'][] = ["Return deleted", 'success'];
+			$session = \Config\Services::session();
+			$session->setFlashdata('messages', $this->data['messages']);
+			return redirect()->to($back_link);
+		}
+		else {
+			$this->data['messages'] = $this->model->errors();
+		}
+	}
+	$this->data['modal_delete'] = [
+		'title' => 'Delete this return',
+		'description' => '<p>Are you sure you want to delete this return? <span class="alert-warning">This process is irreversible.</span></p>',
+		'cmd' => "del_item",
+		'item_id' => $this->data['clubret']->id
+	];
 
 	$this->data['clubret']->check();
 	
@@ -70,7 +90,7 @@ public function view($event_id=0, $user_id=0) {
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['breadcrumbs'][] = ["admin/clubrets/event/{$event_id}", 'returns'];
 	$this->data['breadcrumbs'][] = $this->data['clubret']->breadcrumb('view', 'admin'); 
-	$this->data['back_link'] = "admin/clubrets/event/{$event_id}";
+	$this->data['back_link'] = $back_link;
 	return view('clubrets/view', $this->data);
 }
 

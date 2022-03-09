@@ -14,6 +14,7 @@ private function find($user_id) {
 	$this->data['user'] = $this->usr_model->withDeleted()->find($user_id);
 	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
 	$this->data['user_self'] = $this->data['user']->self();
+	$this->data['title'] = $this->data['user']->name;
 }
 	
 public function index() {
@@ -26,9 +27,19 @@ public function index() {
 	}
 	$id = $this->request->getPost('disable');
 	if($id) $this->usr_model->delete($id);
+	
 	// delete
-	$id = $this->request->getPost('delete');
-	if($id) $this->usr_model->delete_all($id);
+	$cmd = $this->request->getPost('cmd');
+	if($cmd=='del_user') {
+		$user_id = $this->request->getPost('item_id');
+		if($this->usr_model->delete_all($user_id)) {
+			$this->data['messages'][] = ["User {$user_id} deleted", 'success'];
+		}
+		else {
+			$this->data['messages'] = $this->usr_model->errors();
+			$this->data['messages'][] = "User {$user_id} not deleted.";
+		}
+	}
 		
 	$update = $this->request->getPost('update');
 	if($update=='club0') {
@@ -56,6 +67,14 @@ public function index() {
 		}
 	}
 	$this->data['users'] = $this->usr_model->findAll();
+	
+	// view 
+	$this->data['modal_delete'] = [
+		'cmd' => 'del_user',
+		'title' => 'Delete <span class="dataname">user</span>',
+		'description' => '<p>Delete this user and all related data (returns and entries)?</p>',
+		'item_id' => 0
+	];
 	return view('users/index', $this->data);
 }
 
@@ -63,13 +82,24 @@ public function view($user_id=0) {
 	$this->find($user_id);
 	
 	if(!$this->data['user_self']) {
+		$cmd = $this->request->getPost('cmd');
+		if($cmd=='del_user') {
+			$user_id = $this->request->getPost('item_id');
+			if($this->usr_model->delete_all($user_id)) {
+				$this->data['messages'][] = ["User {$user_id} deleted", 'success'];
+				$session = \Config\Services::session();
+				$session->setFlashdata('messages', $this->data['messages']);
+				return redirect()->to(base_url('admin/users'));
+			}
+			else {
+				$this->data['messages'] = $this->usr_model->errors();
+				$this->data['messages'][] = "User {$user_id} not deleted.";
+			}
+		}
+				
 		$set_enabled = $this->request->getPost('enable');
 		if($set_enabled) {
 			switch($set_enabled) {
-				case 'delete': 
-				$success = $this->usr_model->delete_all($user_id);
-				if($success) return redirect()->to(base_url('admin/users'));
-				break;
 				case 'enable':
 				$this->data['user']->deleted_at = null;
 				$this->usr_model->save($this->data['user']);
@@ -131,8 +161,14 @@ public function view($user_id=0) {
 	if(!$this->data['user_self']) {
 		if($this->data['user']->deleted_at) {
 			$this->data['toolbar'][] = '<button name="enable" value="enable" type="submit" title="enable" class="btn btn-success bi-check-circle"></button>';
-			$this->data['toolbar'][] = '<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delUser" title="Delete this user"><span class="bi bi-trash"></span></button>';
-			$this->data['show_delUser'] = true;
+			$this->data['toolbar'][] = '<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#del_user" title="Delete this user"><span class="bi bi-trash"></span></button>';
+			$this->data['modal_delete'] = [
+				'id' => 'del_user',
+				'title' => "Delete '{$this->data['user']->name}'",
+				'description' => '<p>Delete this user and all related data (returns and entries)?</p>',
+				'cmd' => "del_user",
+				'item_id' => $this->data['user']->id
+			];
 		}
 		else {
 			$this->data['toolbar'][] = '<button name="enable" value="disable" type="submit" title="disable" class="btn bi-x-circle btn-danger"></button>';

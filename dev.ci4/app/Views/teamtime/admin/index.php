@@ -139,7 +139,7 @@ $this->section('content');?>
 <?php $this->endSection(); 
 
 $this->section('top'); 
-echo view('teamtime/js');
+echo $this->include('teamtime/js');
 ?>
 <script>
 const music_player = '<?php echo $music_player;?>';

@@ -66,7 +66,7 @@ echo form_hidden('routine', $intention->encode()); ?>
 </div>
 
 <div class="col-auto">
-<?php echo view('general/intention/version'); ?>
+<?php echo $this->include('general/intention/version'); ?>
 </div>
 </header>
 
@@ -298,6 +298,6 @@ $('#navGroups [data-bs-toggle=tab]').on('click', function(e) {
 
 <?php 
 if(\App\Libraries\Auth::check_role('superuser')) d($intention);
-echo view('general/intention/sv_table', ['intention'=>$intention]); ?>
+echo $this->include('general/intention/sv_table');
 
-<?php $this->endSection(); 
+$this->endSection(); 

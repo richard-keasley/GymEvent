@@ -1,7 +1,7 @@
 <?php $this->extend('default');
 
 $this->section('content'); ?>
-<div class="float-end"><?php echo view('includes/version');?></div>
+<div class="float-end"><?php echo $this->include('includes/version');?></div>
 
 <h2>CodeIgniter <img src="<?php echo base_url('/app/images/codeigniter.svg');?>" style="height: 1.3em;"></h2>
 

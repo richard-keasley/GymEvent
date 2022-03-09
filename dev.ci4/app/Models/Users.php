@@ -54,10 +54,6 @@ public function delete_all($user_id) {
 	$model = new \App\Models\Entries;
 	$model->where('user_id', $user_id)->delete(null, true);
 	$this->delete($user_id, true);
-	
-	$session = session();
-	$message = [];
-	$session->setFlashdata('messages', ["Deleted user {$user_id}"]);
 	return true;	
 }
  

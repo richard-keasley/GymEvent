@@ -27,7 +27,7 @@ $attr = [
 ];
 echo form_open(base_url(uri_string()), $attr);
 echo \App\Libraries\View::back_link($back_link);
-echo view('entries/populate/button', ['event'=>$event]);
+echo $this->include('entries/populate/button');
 echo form_close();
 $this->endSection(); 
 
@@ -72,5 +72,5 @@ echo $table->generate($tbody);
 $this->endSection(); 
 
 $this->section('bottom'); 
-echo view('entries/populate/form', ['event'=>$event]);
+echo $this->include('entries/populate/form');
 $this->endSection(); 

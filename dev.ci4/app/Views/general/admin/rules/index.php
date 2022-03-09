@@ -2,7 +2,7 @@
  
 $this->section('content');?>
 <h5>Version</h5>
-<?php echo view('general/intention/version'); ?>
+<?php echo $this->include('general/intention/version'); ?>
 <p>Remember to update rules' version when you upload new rules.</p>
 <hr>
 

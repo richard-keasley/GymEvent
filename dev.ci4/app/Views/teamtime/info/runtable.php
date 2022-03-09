@@ -3,7 +3,7 @@
 $this->section('content'); ?>
 <p class="alert-warning"><strong>Warning:</strong> This page does not automatically update. Reload this page to get <em>current</em> information.</p>
 <?php 
-echo view('teamtime/displays/info/runtable');
+echo $this->include('teamtime/displays/info/runtable');
 $this->endSection(); 
 
 $this->section('top'); ?>

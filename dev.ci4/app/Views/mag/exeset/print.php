@@ -222,7 +222,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	</div>
 	
 	<div style="width:25%">
-	<?php echo view('mag/exeset/exeval', ['exekey'=>$exekey, 'exeset'=>$exeset]);	?>
+	<?php echo $this->include('mag/exeset/exeval');	?>
 	<ul style="margin-top:0.5em;" class="list-unstyled">
 	<?php 
 	foreach($exercise['neutrals'] as $nkey=>$nval) { 

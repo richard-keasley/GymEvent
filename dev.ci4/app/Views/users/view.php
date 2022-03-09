@@ -71,7 +71,6 @@ if($tbody) {
 </section>
 
 <?php $this->endSection(); 
-
 $this->section('top');
 $attr = [
 	'class' => "toolbar sticky-top"
@@ -79,41 +78,16 @@ $attr = [
 echo form_open(base_url(uri_string()), $attr);
 echo implode(' ', $toolbar);
 echo form_close();
-
-if(isset($users_dialogue)) {
-	echo view('users/dialogue', $users_dialogue);
-} 
 $this->endSection(); 
 
 $this->section('bottom');
 
-if(!empty($show_delUser)) { 
-$hidden = ['enable'=>'delete'];
-$attr = [
-	'id' => "delUser",
-	'class' => "modal fade",
-	'tabindex' => "-1",
-	'aria-hidden' => "true"
-];
-echo form_open(base_url(uri_string()), $attr, $hidden);
-?>
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-	<h5 class="modal-title">Delete user</h5>
-	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-<div class="modal-body">
-<p>Delete this user and all related data (returns and entries)?</p>
-</div>
-<div class="modal-footer">
-	<button type="submit" class="btn btn-danger">Delete</button>
-	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-</div>
-</div>
-</div>
-<?php
-echo form_close();
+if(isset($users_dialogue)) {
+	echo $this->include('includes/users/dialogue');
+}
+if(isset($modal_delete)) {
+	$cmd = 'test';
+	echo $this->include('includes/modal_delete');
 }
 
 $this->endSection(); 
