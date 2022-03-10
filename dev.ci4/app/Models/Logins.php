@@ -23,25 +23,29 @@ function block_ip($ip) {
 }
 	
 function check_ip($ip) {
-	$res = $this->where('error', 'blocked')
-		->where('ip', $ip)
-		->findAll();
-	if($res) return false; // permanently blocked
+	$ip_time = 'P7D'; // amount of time to remove records
+	$ip_errors = 5; // max number of errors allowed per IP address
 	
-	// this should be last
-	// temporarily blocked should have no effect on storage 
+	// delete old records (remove temporary blocks)
 	$dt = new \DateTime(); 
 	// check this far back (older ones deleted)
-	$dt->sub(new \DateInterval('P7D')); 
-	// this should NOT delete records where 'error'='blocked'
-	$this->where('updated <', $dt->format('Y-m-d H:i:s'))->delete();
+	$dt->sub(new \DateInterval($ip_time)); 
+	$this->where('updated <', $dt->format('Y-m-d H:i:s'))
+		->where('error <>', 'blocked')
+		->delete();
+		
+	// get login errors
+	$logins = $this->where('error >' , '')
+		->where('ip', $ip)
+		->findAll();
+	foreach($logins as $login) {
+		// permanent block
+		if($login['error']=='blocked') return false;
+	}
+	// temporary block
+	if(count($logins)>$ip_errors) return false;
 	
-	// look for temporary block
-	$sql = "SELECT COUNT(`ip`) AS 'count' FROM `{$this->table}` WHERE `error`>'' AND `ip`='{$ip}'";
-	$query = $this->query($sql);
-	$row = $query->getRow();
-	// this many errors allowed
-	return $row ? $row->count<5 : true ;
+	return true;
 }
 
 static $_ip_info = [];
