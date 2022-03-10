@@ -17,22 +17,30 @@ function beforeInsert($data) {
 
 function block_ip($ip) {
 	$request = service('request');	
-	return $request->getIPAddress()==$ip ? false: $this->insert(['ip' => $ip, 'error' => 'blocked']);
+	return $request->getIPAddress()==$ip ? 
+		false : 
+		$this->insert(['ip' => $ip, 'error' => 'blocked']) ;
 }
 	
 function check_ip($ip) {
 	$res = $this->where('error', 'blocked')
 		->where('ip', $ip)
 		->findAll();
-	if($res) return false;
+	if($res) return false; // permanently blocked
 	
+	// this should be last
+	// temporarily blocked should have no effect on storage 
 	$dt = new \DateTime(); 
-	$dt->sub(new \DateInterval('P7D'));
+	// check this far back (older ones deleted)
+	$dt->sub(new \DateInterval('P7D')); 
+	// this should NOT delete records where 'error'='blocked'
 	$this->where('updated <', $dt->format('Y-m-d H:i:s'))->delete();
 	
+	// look for temporary block
 	$sql = "SELECT COUNT(`ip`) AS 'count' FROM `{$this->table}` WHERE `error`>'' AND `ip`='{$ip}'";
 	$query = $this->query($sql);
 	$row = $query->getRow();
+	// this many errors allowed
 	return $row ? $row->count<5 : true ;
 }
 
