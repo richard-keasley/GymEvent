@@ -293,12 +293,25 @@ public function logins($filter='', $id='') {
 			$where = 'error >';
 	}
 	
+	$user_names = [];
 	$this->data['logins'] = [];
 	foreach($lgn_model->where($where, $id)->orderBy('updated')->findAll() as $login) {
-		if($filter!='user_id') {
-			$user = $this->usr_model->find($login['user_id']);
+		if($filter=='user_id') {
+			$login['user_name'] = $this->data['user']->name;
 		}
-		$login['user_name'] = $user ? $user->name : '-' ;
+		else {
+			$uid = $login['user_id'];
+			if(!isset($user_names[$uid])) {
+				if($uid) {
+					$tmp_user = $this->usr_model->find($uid);
+					$user_names[$uid] = $tmp_user ? $tmp_user->name : '???' ;
+				}
+				else {
+					$user_names[$uid] = 'none';
+				}
+			}
+			$login['user_name'] = $user_names[$uid];
+		}
 		$this->data['logins'][] = $login;
 	}
 		

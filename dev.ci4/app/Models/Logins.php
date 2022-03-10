@@ -81,8 +81,8 @@ static function ip_info($ip, $attribs=null) {
 		curl_close($ch);
 		self::$_ip_info[$ip] = $response;
 	}
-	
 	$info = self::$_ip_info[$ip];
+	
 	if($info['status']!='success') return [$info['message']];
 	if(empty($attribs)) return $info;
 
