@@ -9,17 +9,30 @@ protected $updatedField  = 'updated';
 protected $allowedFields = ['ip', 'user_id', 'error', 'updated'];
 protected $beforeInsert = ['beforeInsert'];
 
-function beforeInsert($data) {
+private $request_ip = null;
+protected function initialize() {
 	$request = service('request');	
-	$data['data']['ip'] = $request->getIPAddress();
+	$this->request_ip = $request->getIPAddress();
+}
+
+function beforeInsert($data) {
+	if(empty($data['data']['ip'])) $data['data']['ip'] = $this->request_ip;
 	return $data;
 }
 
 function block_ip($ip) {
-	$request = service('request');	
-	return $request->getIPAddress()==$ip ? 
-		false : 
-		$this->insert(['ip' => $ip, 'error' => 'blocked']) ;
+	if($this->request_ip==$ip) return false;
+	if($this->ip_blocked($ip)) return false;
+	
+	return $this->insert(['ip' => $ip, 'error' => 'blocked']) ;
+}
+
+function ip_blocked($ip) {
+	// check if block exists
+	$logins = $this->where('error' , 'blocked')
+		->where('ip', $ip)
+		->findAll(1);
+	return $logins ? true : false ;
 }
 	
 function check_ip($ip) {
@@ -33,11 +46,12 @@ function check_ip($ip) {
 	$this->where('updated <', $dt->format('Y-m-d H:i:s'))
 		->where('error <>', 'blocked')
 		->delete();
-		
+			
 	// get login errors
 	$logins = $this->where('error >' , '')
 		->where('ip', $ip)
 		->findAll();
+			
 	foreach($logins as $login) {
 		// permanent block
 		if($login['error']=='blocked') return false;
@@ -49,11 +63,9 @@ function check_ip($ip) {
 }
 
 static $_ip_info = [];
-static function ip_info($ip, $attribs=null) {
-	if(!$ip) {
-		$request = service('request');	
-		$ip = $request->getIPAddress();
-	}
+static function ip_info($ip=null, $attribs=null) {
+	if(!$ip) $ip = $this->request_ip;
+	
 	if(empty(self::$_ip_info[$ip])) {
 		$url = "http://ip-api.com/json/$ip";
 		$ch = curl_init();

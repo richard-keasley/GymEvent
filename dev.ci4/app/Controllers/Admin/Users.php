@@ -312,6 +312,9 @@ public function logins($filter='', $id='') {
 			}
 			$login['user_name'] = $user_names[$uid];
 		}
+		$login['blocked'] = $lgn_model->ip_blocked($login['ip']);
+		$login['ip_info'] = implode(', ', \App\Models\Logins::ip_info($login['ip'], ['city', 'countryCode']));
+
 		$this->data['logins'][] = $login;
 	}
 		
