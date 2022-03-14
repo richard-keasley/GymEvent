@@ -187,7 +187,10 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	</div>
 	
 	<div id="exeval-<?php echo $exekey;?>">
-	<?php echo $this->include('mag/exeset/exeval'); ?>
+	<?php 
+	$this->setData(['exekey' => $exekey]);
+	echo $this->include('mag/exeset/exeval'); 
+	?>
 	</div>
 	
 	<?php 

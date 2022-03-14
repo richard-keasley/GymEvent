@@ -108,7 +108,7 @@ static function logout() {
 }
 
 /* roles and permissions */ 
-const roles = ['-', 'club', 'admin', 99=>'superuser'];
+const roles = ['-', 'club', 'controller', 'admin', 99=>'superuser'];
 
 static public $check_paths = [];
 

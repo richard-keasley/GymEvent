@@ -78,26 +78,28 @@ public function db() {
 }
 
 public function update() {
-	$datasets = [
-		[rtrim(ROOTPATH, DIRECTORY_SEPARATOR), dirname(ROOTPATH) . '/public.ci4'],
-		[rtrim(FCPATH, DIRECTORY_SEPARATOR), dirname(ROOTPATH) . '/public_html']
+	/* [source, dest, paths] */
+	$this->data['datasets'] = [
+	[	'source' => rtrim(ROOTPATH, DIRECTORY_SEPARATOR), 
+		'dest' => dirname(ROOTPATH) . '/public.ci4',
+		'paths' => ['/app', '/system']
+	],
+	[	'source' => rtrim(FCPATH, DIRECTORY_SEPARATOR), 
+		'dest' => dirname(ROOTPATH) . '/public_html',
+		'paths' => ['/app']
+	]
 	];
-	$paths = ['/app'];
 	
-	$this->data['datasets'] = [];
 	$commit = $this->request->getPost('cmd')=='update';
-	foreach($datasets as $key=>$dataset) {
-		$update = new \App\Libraries\Synchdirs($dataset[0], $dataset[1]);
-		if($commit) $update->run($paths, 1);
+	// update
+	foreach($this->data['datasets'] as $datakey=>$dataset) {		
+		$update = new \App\Libraries\Synchdirs($dataset['source'], $dataset['dest']);
+		if($commit) $update->run($dataset['paths'], 1);
 		# $update->verbose = 1;
-		$this->data['datasets'][] = [
-			'source' => $dataset[0],
-			'dest' => $dataset[1],
-			'log' => $update->run($paths)
-		];
+		$this->data['datasets'][$datakey]['log'] = $update->run($dataset['paths']);
 	}
 	if($commit) $this->data['messages'][] = ['Live site updates applied', 'success'];
-		
+	// view	
 	$this->data['title'] = 'App update state';
 	$this->data['heading'] = $this->data['title'];
 	$this->data['breadcrumbs'][] = ['setup/update', $this->data['title']];

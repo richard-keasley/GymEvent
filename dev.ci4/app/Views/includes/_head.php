@@ -27,6 +27,8 @@ if($flashdata) {
 	$messages = array_merge($messages, $flashdata);
 	$session->setFlashdata('messages', null);
 }
+$flashdata = $session->getFlashdata('error');
+if($flashdata) $messages[] = [$flashdata, 'danger'];
 
 if(!empty($messages)) { ?>
 <div class="messages"><?php 
