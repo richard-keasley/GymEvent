@@ -28,12 +28,17 @@ static function loginas($user_id, $method='login') {
 		->first();
 	if(!$user) return false;
 	// create session and cookie
-	$_SESSION = [];
 	self::update_login($user, $method);
 	return $user->id;
 }
 
+static function clear_session() {
+	foreach(['method', 'user_id', 'user_name', 'user_role'] as $key)
+		$_SESSION[$key] = null;
+}
+
 static function update_login($user, $method='login', $cookie=null) {
+	// record successful login
 	$user->cookie = $cookie ? $cookie : md5(rand());
 	// 14400 4 hours @ 3600 sec/hr
 	set_cookie('auth', sprintf('%s-%s', $user->id, $user->cookie) , 14400);
@@ -59,7 +64,7 @@ static function check_login() {
 			self::update_login($user, 'session', $cookie);
 			return;
 		}
-		$_SESSION = [];
+		self::clear_session(); // invalid user
 	}
 	if($user_cookie) { // try cookie
 		$user_id = $user_cookie[0];
@@ -74,6 +79,7 @@ static function check_login() {
 		delete_cookie('auth');
 	}
 	// fail
+	self::clear_session();
 }  
  
 static function login($name, $password) {
@@ -104,7 +110,7 @@ static function logout() {
 	if($user_id) {
 		self::$usr_model->update($user_id, ['cookie' => '']);
 	}
-	$_SESSION = [];
+	self::clear_session();
 }
 
 /* roles and permissions */ 

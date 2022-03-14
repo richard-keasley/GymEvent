@@ -16,7 +16,7 @@ public function before(RequestInterface $request, $arguments = null) {
 	\App\Libraries\Auth::init();
 	
 	$check_ip = \App\Libraries\Auth::$lgn_model->check_ip($request->getIPAddress());
-	# if(!$check_ip) throw new \RuntimeException('Oops! Overuse injury', 423);
+	if(!$check_ip) throw new \RuntimeException('Oops! Overuse injury', 423);
 	
 	// check for login / logout
 	if($request->getPost('logout')) {
@@ -49,7 +49,7 @@ public function before(RequestInterface $request, $arguments = null) {
 				$messages = \App\Libraries\Auth::$usr_model->errors();
 			}
 		}
-		break;
+		break;	
 	}
 	
 	// check permissions
