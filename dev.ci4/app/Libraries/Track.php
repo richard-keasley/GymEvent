@@ -36,15 +36,15 @@ public function button() {
 	$attr = [
 		'name' => 'trk',
 		'value' => $this->filebase(),
-		'data-url' => $url
+		'data-url' => $url,
+		'title' => sprintf('track %s / %s', $this->entry_num, $this->exe)
 	];
 	if($url) {
 		$attr['class'] = self::BUTTON_PLAY;
-		$attr['title'] = sprintf('track %s / %s', $this->entry_num, $this->exe);
 	}
 	else {
 		$attr['class'] = self::BUTTON_MISSING;
-		$attr['title'] = 'Track missing';
+		$attr['title'] .= ': MISSING';
 	}
 	return sprintf('<button %s>%s</button>', stringify_attributes($attr), $label);
 } 
@@ -129,7 +129,7 @@ public function filebase($extension='') {
 } 
 
 public function filepath() {
-	return sprintf('%s/public/events/%u/music/', FCPATH, $this->event_id);
+	return FCPATH . sprintf('public/events/%u/music/', $this->event_id);
 } 
 
 public function urlpath() {
