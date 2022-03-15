@@ -14,7 +14,9 @@ $this->section('content'); ?>
 
 <section>
 <h2>Details</h2>
+
 <h5>Staff</h5>
+<div class="table-responsive">
 <?php 
 $template = ['table_open' => '<table class="table">'];
 $table->setTemplate($template);
@@ -35,8 +37,10 @@ if(count($tbody)) {
 }
 echo $clubret->errors('staff');
 ?>
+</div>
 
 <h5>Participants</h5>
+<div class="table-responsive">
 <?php 
 $tbody = [];
 $participants = $clubret->participants;
@@ -59,6 +63,8 @@ if(count($tbody)) {
 }
 echo $clubret->errors('participants');
 ?>
+</div>
+
 </section>
 
 <section>
