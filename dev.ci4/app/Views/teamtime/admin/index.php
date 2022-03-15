@@ -5,8 +5,8 @@ $this->section('sidebar');
 $attr = [
 	'id' => "runvars"
 ];
-
 echo form_open(base_url(uri_string()), $attr); ?>
+
 <fieldset class="collapse" id="topfields">
 
 <div class="input-group my-1">
@@ -131,14 +131,15 @@ function remote_music(state) {
 <?php } ?>
 </div>
 
-</form>
-<?php $this->endSection(); 
+<?php 
+echo form_close();
+$this->endSection(); 
 
 $this->section('content');?>
 <iframe id="displayframe" src="/teamtime/display/0"></iframe>
 <?php $this->endSection(); 
 
-$this->section('top'); 
+$this->section('bottom'); 
 echo $this->include('teamtime/js');
 ?>
 <script>
@@ -147,18 +148,20 @@ const event_id = <?php echo $event_id;?>;
 let runvars = null;	
 let $player = null;
 let playermsg = null;
+let setvar = null;
 let entry = 0;
 let exe = '';
 let url = '';
 
 function set_runvars(cmd='') {
-	var setvar = {cmd:cmd};
+	setvar = {cmd:cmd};
 	var fields = $('#runvars').serializeArray();
 	jQuery.each(fields, function(i, field) {
 		setvar[field.name] = field.value;
     });
-	var url = '<?php echo base_url("/api/teamtime/admin");?>';
-	$.post(url, { value:setvar })
+	// console.log(setvar);
+	url = '<?php echo base_url("/api/teamtime/admin");?>';
+	$.post(url, setvar)
 	.done(function(response) {
 		show_runvars(response);
 	})
