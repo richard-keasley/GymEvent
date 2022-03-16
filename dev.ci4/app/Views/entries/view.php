@@ -12,6 +12,7 @@ if(\App\Libraries\Auth::check_path('admin/entries/edit')) {
 	echo \App\Libraries\View::back_link("admin/events/view/{$event->id}");
 	echo getlink("admin/entries/edit/{$event->id}", 'edit');
 	echo getlink("admin/entries/categories/{$event->id}", 'categories');
+	echo getlink("admin/entries/clubs/{$event->id}", 'clubs');
 	echo getlink("admin/entries/import/{$event->id}", 'import');
 	echo getlink("admin/entries/export/{$event->id}", 'export');
 	?>

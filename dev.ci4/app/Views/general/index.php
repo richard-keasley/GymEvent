@@ -2,6 +2,7 @@
  
 $this->section('content');?>
 <p>Discover more about General Gymnastics in the South-east region.</p>
+<p>Please tell Kim (Brighton) or Dave (Pegasus) if you see a problem on these pages.</p>
 
 <h4>Downloads</h4>
 
@@ -19,7 +20,8 @@ $this->section('sidebar');
 $nav = [
 	['general/intention', 'Intention sheets'],
 	['general/skills/fx', 'Floor skills'],
-	['admin/general/rules/fx', 'Floor rules']
+	['general/rules/fx', 'Floor rules'],
+	['admin/general', 'Admin']
 ];
 $navbar = new \App\Views\Htm\Navbar();
 echo $navbar->htm($nav);

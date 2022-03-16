@@ -49,7 +49,7 @@ public function before(RequestInterface $request, $arguments = null) {
 				$messages = \App\Libraries\Auth::$usr_model->errors();
 			}
 		}
-		break;
+		break;	
 	}
 	
 	// check permissions

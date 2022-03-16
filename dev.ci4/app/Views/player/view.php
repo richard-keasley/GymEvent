@@ -109,4 +109,5 @@ $this->section('bottom');?>
 <div  class="toolbar">
 	<?php printf('<a href="%s" class="bi bi-gear-fill btn btn-outline-secondary" title="Setup event"></a>', base_url("player/admin/{$event->id}"));?>
 </div>
-<?php $this->endSection(); 
+<?php 
+$this->endSection(); 

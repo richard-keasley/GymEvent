@@ -43,12 +43,52 @@ public function intention() {
  
 public function skills($exe='fx') {
 	$exe = strtolower($exe);
+	$exe_title = strtoupper($exe);
 	$this->data['skills'] = new \App\Libraries\General\Skills($exe);
+	if(empty($this->data['skills']->list)) {
+		throw new \RuntimeException("Can't find exercise '{$exe_title}'", 404);
+	}
 	$this->data['back_link'] = 'general';
-	$this->data['title'] = sprintf('%s skills', strtoupper($exe));
+	$this->data['title'] = sprintf('%s skills', $exe_title);
 	$this->data['heading'] = $this->data['title'];
 	$this->data['breadcrumbs'][] = ["general/skills/{$exe}", $this->data['heading']];
 	return view('general/skills', $this->data);
+}
+
+public function rules($exe='fx') {
+	$exe = strtolower($exe);
+	$exe_title = strtoupper($exe);
+	
+	$rule_parts = ['composition', 'specials', 'bonuses'];
+	$appvars = new \App\Models\Appvars();
+		
+	$this->data['rules'] = [];
+	foreach($rule_parts as $rule_part) {
+		$appval = $appvars->get_value("general.{$exe}.{$rule_part}");
+		if($appval) {
+			foreach($appval as $key=>$row) {
+				unset($appval[$key]['id']);
+				if(empty($row['gender'])) $appval[$key]['gender'] = '<span class="text-muted fst-italic">all</span>';
+				foreach(['hold', 'flexibility', 'strength', 'fs', 'afs'] as $attr) {
+					if(isset($row[$attr])) {
+						$appval[$key][$attr] = $row[$attr] ? '<span class="text-ok bi-check"></span>' : '' ;
+					}
+				}
+				
+				
+				
+				
+				
+			}
+		}
+		$this->data['rules'][$rule_part] = $appval ?? "'{$exe_title}/{$rule_part}' not found";
+	}
+		
+	$this->data['back_link'] = 'general';
+	$this->data['title'] = sprintf('%s rules', $exe_title);
+	$this->data['heading'] = $this->data['title'];
+	$this->data['breadcrumbs'][] = ["general/skills/{$exe}", $this->data['heading']];
+	return view('general/rules', $this->data);
 }
 
 } 

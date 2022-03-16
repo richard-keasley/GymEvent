@@ -29,9 +29,11 @@ public function admin() {
 	$progtable = $get_var ? $get_var->value : null;
 	if(!$progtable) return $this->fail("No programme set");
 	
+	// get current runvars
 	$get_var = $tt_lib->get_var("runvars");
 	$runvars = $get_var ? $get_var->value : [];
-	$getPost = $this->request->getPost('value');
+	// modify runvars according to post
+	$getPost = $this->request->getPost();
 	foreach($getPost as $key=>$val) {
 		$runvars[$key] = $val;
 	}

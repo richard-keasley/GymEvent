@@ -3,27 +3,25 @@
 $this->section('content');
 echo form_open(base_url(uri_string()));
 ?>
-<div class="toolbar sticky-top">
-<div class="mb-1">
+<div class="sticky-top">
+<div class="table-responsive toolbar">
+<div>
 	<button class="btn btn-secondary" type="submit" name="update" value="club0">Disable clubs</button>
 	<button class="btn btn-secondary" type="submit" name="update" value="club1">Enable clubs</button>
 	<a class="btn btn-secondary" href="<?php echo $base_url;?>/add">Add user</a>
 	<a class="btn btn-secondary" href="<?php echo $base_url;?>/logins">Logins</a>
-</div>
-<div>
-	<?php printf('<a class="btn btn-outline-secondary" href="%s">*</a>', $base_url); ?>
-	<div class="btn-group">
-	<?php foreach(\App\Libraries\Auth::roles as $role) {
+
+	<div class="btn-group"><?php
+	printf('<a class="btn btn-outline-secondary" href="%s">*</a>', $base_url); 
+	foreach(\App\Libraries\Auth::roles as $role) {
 		printf('<a class="btn btn-outline-secondary" href="%1$s?by=role&val=%2$s">%2$s</a>', $base_url, $role);
-	} ?> 
-	</div>
-	
-	<div class="btn-group">
-	<?php foreach(['enabled', 'disabled'] as $status=>$label) {
+	} 
+	foreach(['enabled', 'disabled'] as $status=>$label) {
 		printf('<a class="btn btn-outline-secondary" href="%s?by=deleted&val=%u">%s</a>', $base_url, $status, $label);
-	} ?>
-	</div>
+	}
+	?></div>
 </div>	
+</div>
 </div>
 
 <?php

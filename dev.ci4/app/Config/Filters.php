@@ -37,8 +37,6 @@ class Filters extends BaseConfig
 			'auth',
 			'csrf' => [
 				'except' => [
-					'api/teamtime/*',
-					'api/mag/exevals/*', 
 					'general/intention',
 					'mag/routine'
 				]
