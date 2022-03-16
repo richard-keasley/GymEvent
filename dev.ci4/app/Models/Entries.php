@@ -35,18 +35,21 @@ public function evt_discats($event_id, $entries=1) {
 
 function evt_users($event_id) {
 	// list all users who have entries in event event_id
-	$sql = "SELECT DISTINCT `users`.`id`, `users`.`name`
-	FROM `evt_disciplines`
-	INNER JOIN `evt_categories` ON `evt_categories`.`discipline_id`=`evt_disciplines`.`id`
-	INNER JOIN `evt_entries` ON `evt_entries`.`category_id`=`evt_categories`.`id`
-	INNER JOIN `users` ON `evt_entries`.`user_id`=`users`.`id`
-	WHERE `evt_disciplines`.`event_id`={$event_id}";
+	$sql = "SELECT DISTINCT `users`.* 
+	FROM `users` 
+	INNER JOIN `evt_entries` ON `users`.`id`=`evt_entries`.`user_id` 
+	INNER JOIN `evt_categories` ON `evt_entries`.`category_id`= `evt_categories`.`id` 
+	INNER JOIN `evt_disciplines` ON `evt_categories`.`discipline_id`=`evt_disciplines`.`id` 
+	INNER JOIN `events` ON `evt_disciplines`.`event_id`=`events`.`id` 
+	WHERE `events`.`id`={$event_id}
+	ORDER BY `users`.`name`";
+	$query = $this->query($sql);
 	
-	$query = $this->db->query($sql);
-	$result = $query->getResult();
-	$ret = [];
-	foreach($result as $row) $ret[$row->id] = $row->name;
-	return $ret;
+	$retval = [];
+	foreach($query->getResultArray() as $row) {
+		$retval[$row['id']] = new \App\Entities\User($row);
+	}
+	return $retval;
 } 
 
 // disciplines 

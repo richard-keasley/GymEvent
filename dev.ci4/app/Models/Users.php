@@ -56,25 +56,5 @@ public function delete_all($user_id) {
 	$this->delete($user_id, true);
 	return true;	
 }
-
-public function entries($event_id) {
-	// all users entered into event
-	$event_id = intval($event_id);
-	$sql = "SELECT DISTINCT `users`.* 
-	FROM `users` 
-	INNER JOIN `evt_entries` ON `users`.`id`=`evt_entries`.`user_id` 
-	INNER JOIN `evt_categories` ON `evt_entries`.`category_id`= `evt_categories`.`id` 
-	INNER JOIN `evt_disciplines` ON `evt_categories`.`discipline_id`=`evt_disciplines`.`id` 
-	INNER JOIN `events` ON `evt_disciplines`.`event_id`=`events`.`id` 
-	WHERE `events`.`id`={$event_id}
-	ORDER BY `users`.`name`";
-	$query = $this->query($sql);
-
-	$retval = [];
-	foreach($query->getResultArray() as $row) {
-		$retval[] = new \App\Entities\User($row);
-	}
-	return $retval;
-}
  
 } 

@@ -2,7 +2,8 @@
 $tblview = new \CodeIgniter\View\Table();
 
 $this->section('content'); 
-printf('<h3>%s. %s (%s)</h3>', $entry->num, $entry->name, $entry->club());
+$username = $user->name ?? '??' ;
+printf('<h3>%s. %s (%s)</h3>', $entry->num, $entry->name, $username);
 printf('<p><em>%s</em></p>', $category->name);
 
 $exe_opts = []; $empty = null;

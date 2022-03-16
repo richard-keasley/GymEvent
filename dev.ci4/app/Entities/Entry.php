@@ -32,14 +32,6 @@ function url($controller) {
 	return '';
 }
 
-function club() {
-	$db = \Config\Database::connect();
-	$sql = "SELECT `name` FROM `users` WHERE `id`={$this->user_id}";
-	$query = $db->query($sql);
-	$result = $query->getResult();
-	return $result ? $result[0]->name : '[not found]' ;
-}
-
 function role($controller, $method) {
 	$event = $this->get_event();
 	if(!$event) return 'none';

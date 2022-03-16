@@ -96,6 +96,7 @@ public function view($event_id=0) {
 	$this->data['filter'] = $filter;
 	$this->data['cat_opts'] = $cat_opts;
 	$this->data['entries'] = $entries;
+	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
 	switch($this->data['event']->videos) {
 		case 1:
 			$this->data['messages'][] = ['Clubs may upload new videos for this event', 'info'];
@@ -170,6 +171,9 @@ public function edit($entry_id=0) {
 	$this->data['breadcrumbs'][] = $event->breadcrumb();
 	$this->data['breadcrumbs'][] = ["videos/view/{$event->id}", 'videos'];
 	$this->data['breadcrumbs'][] = $entry->breadcrumb('videos');
+	
+	$model = new \App\Models\Users;
+	$this->data['user'] = $model->find($entry->user_id);
 	
 	$this->data['heading'] = $event->title . ' - edit videos';
 	$this->data['event'] = $event;

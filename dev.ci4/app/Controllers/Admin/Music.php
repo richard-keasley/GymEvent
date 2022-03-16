@@ -79,7 +79,7 @@ public function view($event_id=0) {
 	}
 	
 	$entries_model = new \App\Models\Entries;
-	$this->data['evt_users'] = $entries_model->evt_users($event_id);
+	$this->data['users'] = $entries_model->evt_users($event_id);
 			
 	$this->data['filter'] = []; 
 	$flds = ['dis', 'cat', 'user'];

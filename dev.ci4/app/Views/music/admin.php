@@ -6,7 +6,10 @@ $table->setTemplate($template);
 $this->section('content');
 #d($event);
 #d($entries);
-#d($evt_users);
+d($users);
+
+$user_options = [0 => '-'];
+foreach($users as $id=>$user) $user_options[$id] = $user->name;
 
 $attr = [
 	'id' => "control"
@@ -59,7 +62,7 @@ foreach($entries as $dis) {
 				$tr = [
 					$entry->num,
 					$entry->name,
-					$entry->club()
+					$users[$entry->user_id]->name ?? '?'
 				];
 				$count_entries++;
 				foreach($entry->music as $exe=>$check_state) {
@@ -144,15 +147,10 @@ $(function() {
 <form name="selector" method="GET" class="row">
 <div class="col-auto"><?php 
 	$selector = []; $dis_opts = ['-'];
-	$user_opts = [];
 	foreach($entries as $dis) {
 		foreach($dis->cats as $cat) {
 			if($cat->music) {
 				$selector[$dis->id][$cat->id] = $cat->name;
-				foreach($cat->entries as $entry) {
-					$entry->club = $entry->club();
-					$user_opts[$entry->user_id] = $entry->club;
-				}
 			}
 		}
 		if(!empty($selector[$dis->id])) $dis_opts[$dis->id] = $dis->name;
@@ -164,7 +162,7 @@ $(function() {
 	<select class="form-control" name="cat"></select>
 </div>
 <div class="col-auto"><?php
-	echo form_dropdown('user', ['-'] + $evt_users, $filter['user'], 'class="form-control"');
+	echo form_dropdown('user', $user_options, $filter['user'], 'class="form-control"');
 ?></div>
 <div class="col-auto">
 	<button type="submit" class="btn btn-primary">get</button>

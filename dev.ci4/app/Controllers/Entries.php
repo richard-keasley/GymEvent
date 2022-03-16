@@ -53,6 +53,8 @@ public function view($event_id=0) {
 	$this->data['breadcrumbs'][] = $this->data['back_link'];
 	$this->data['breadcrumbs'][] = ["entries/view/{$event_id}", 'entries'];
 	
+	$this->data['users'] = $this->model->evt_users($event_id);
+	
 	if($this->data['event']->clubrets==0) $this->data['messages'][] = ['Returns have not started for this event', 'warning'];
 	if($this->data['event']->clubrets==1) $this->data['messages'][] = ['Returns for this event are still open', 'warning'];
 

@@ -3,8 +3,8 @@
 class Music extends \App\Controllers\BaseController {
 
 public function __construct() {
-	$this->mdl_entries = new \App\Models\Entries();
-	$this->mdl_events = new \App\Models\Events();
+	$this->mdl_entries = new \App\Models\Entries;
+	$this->mdl_events = new \App\Models\Events;
 	$this->data['title'] = "Music";
 	$this->data['heading'] = "Music";
 	$this->data['breadcrumbs'][] = 'events';
@@ -102,6 +102,7 @@ public function view($event_id=0) {
 	$this->data['filter'] = $filter;
 	$this->data['cat_opts'] = $cat_opts;
 	$this->data['entries'] = $entries;
+	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
 	switch($this->data['event']->music) {
 		case 1: // edit
 			$this->data['messages'][] = ['Clubs may upload new music for this event', 'info'];
@@ -199,6 +200,8 @@ public function edit($entry_id=0) {
 	$this->data['heading'] = $event->title . ' - edit music';
 	$this->data['event'] = $event;
 	$this->data['entry'] = $entry;
+	$model = new \App\Models\Users;
+	$this->data['user'] = $model->find($entry->user_id);
 	$this->data['category'] = $category;
 	return view('music/edit', $this->data);
 }

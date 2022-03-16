@@ -37,7 +37,7 @@ foreach($entries as $dis) { ?>
 				$tr = [
 					$entry->num,
 					$name,
-					$entry->club()
+					$users[$entry->user_id]->name ?? '??' ,
 				];
 				foreach($entry->videos as $exe=>$url) {
 					$video->exe = $exe;
@@ -54,4 +54,7 @@ foreach($entries as $dis) { ?>
 	</div>
 <?php } ?>
 
-<?php $this->endSection(); 
+<?php 
+
+d($users);
+$this->endSection(); 

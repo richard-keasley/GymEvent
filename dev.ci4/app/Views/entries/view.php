@@ -40,7 +40,7 @@ foreach($entries as $dis) { ?>
 			$tbody[] = [
 				'num' => $entry->num,
 				'name' => $entry->name,
-				'club' => $entry->club(),
+				'club' => $users[$entry->user_id]->name ?? '?',
 				'DoB' => date('d-M-Y', $dob)
 			];
 		}
@@ -53,6 +53,7 @@ foreach($entries as $dis) { ?>
 	} ?>
 	</section>
 <?php } 
-#d($entries);
-#d($event);
+# d($entries);
+# d($event);
+# d($users);
 $this->endSection(); 

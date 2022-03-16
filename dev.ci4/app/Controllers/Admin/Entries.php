@@ -7,7 +7,7 @@ private $model = null;
 function __construct() {
 	$this->data['breadcrumbs'][] = 'admin';
 	$this->data['breadcrumbs'][] = 'admin/events';
-	$this->mdl_entries = new \App\Models\Entries();
+	$this->mdl_entries = new \App\Models\Entries;
 	$this->data['title'] = "entries";
 	$this->data['heading'] = "Event entries - admin";
 }
@@ -54,7 +54,9 @@ public function view($event_id=0) {
 		$this->data['messages'][] = ['Event renumbered', 'success'];
 		$this->find($event_id);
 	}
-		
+	
+	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
+			
 	if($this->data['event']->clubrets==0) $this->data['messages'][] = ['Returns have not started for this event', 'warning'];
 	if($this->data['event']->clubrets==1) $this->data['messages'][] = ['Returns for this event are still open', 'warning'];
 	return view('entries/view', $this->data);
@@ -65,10 +67,8 @@ public function clubs($event_id=0) {
 	$this->data['heading'] .= ' - clubs';
 	$this->data['breadcrumbs'][] = ["admin/entries/clubs/{$event_id}", 'clubs'];
 	
-	
-	$usr_model = new \App\Models\Users;
-	$this->data['users'] = $usr_model->entries($event_id);
-	
+	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
+
 	$counts = [];
 	foreach($this->data['entries'] as $dis) { 
 		foreach($dis->cats as $cat) {
@@ -82,8 +82,8 @@ public function clubs($event_id=0) {
 	$this->data['entcount'] = array_sum($counts);
 	
 	$error = false;
-	foreach($this->data['users'] as $id=>$user) {
-		$entcount = $counts[$user->id] ?? 0 ;
+	foreach($this->data['users'] as $id=>$username) {
+		$entcount = $counts[$id] ?? 0 ;
 		if(!$entcount) $error = true;
 		$this->data['users'][$id]->entcount = $entcount;
 	}
@@ -114,7 +114,7 @@ public function edit($event_id=0) {
 				$fld_val = $this->request->getPost($fldname);
 				$data[$col_name] = $fld_val;
 			}
-			d($data);
+			# d($data);
 			$this->mdl_entries->update($entry->id, $data);
 		}
 		

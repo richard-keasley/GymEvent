@@ -6,6 +6,9 @@ $table->setTemplate($template);
 $this->section('content');
 #d($users);
 #d($filter, $entries);
+
+$user_options = [];
+foreach($users as $id=>$user) $user_options[$id] = $user->name;
 ?>
 
 <form name="selector" method="GET">
@@ -96,7 +99,7 @@ $inputs = [
 	],
 	'user_id' => [
 		'class' => 'form-control',
-		'options' => $users			
+		'options' => $user_options			
 	]
 ];
 

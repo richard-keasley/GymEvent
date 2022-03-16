@@ -34,7 +34,7 @@ foreach($entries as $dis) { ?>
 			$tr = [
 				$entry->num,
 				$entry->name,
-				$entry->club()
+				$users[$entry->user_id]->name ?? '??',
 			];
 			$track->entry_num = $entry->num;
 			foreach($entry->music as $exe=>$check_state) {
