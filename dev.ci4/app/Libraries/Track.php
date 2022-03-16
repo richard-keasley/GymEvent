@@ -37,14 +37,14 @@ public function button() {
 		'name' => 'trk',
 		'value' => $this->filebase(),
 		'data-url' => $url,
-		'title' => sprintf('track %s / %s', $this->entry_num, $this->exe)
+		'title' => sprintf('%s %s', $this->entry_num, strtoupper($this->exe))
 	];
 	if($url) {
 		$attr['class'] = self::BUTTON_PLAY;
 	}
 	else {
 		$attr['class'] = self::BUTTON_MISSING;
-		$attr['title'] .= ': MISSING';
+		$attr['title'] .= ' (missing)';
 	}
 	return sprintf('<button %s>%s</button>', stringify_attributes($attr), $label);
 } 

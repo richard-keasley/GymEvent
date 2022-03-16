@@ -60,6 +60,22 @@ public function view($event_id=0) {
 	return view('entries/view', $this->data);
 }
 
+public function clubs($event_id=0) {
+	$this->find($event_id);
+	$this->data['heading'] .= ' - clubs';
+	$this->data['breadcrumbs'][] = ["admin/entries/clubs/{$event_id}", 'clubs'];
+	
+	
+	$usr_model = new \App\Models\Users;
+	$this->data['users'] = $usr_model->entries($event_id);
+	
+	
+	
+			
+	
+	return view('entries/clubs', $this->data);
+}
+
 public function edit($event_id=0) {
 	$this->find($event_id);
 	
