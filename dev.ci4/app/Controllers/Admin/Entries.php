@@ -69,9 +69,25 @@ public function clubs($event_id=0) {
 	$usr_model = new \App\Models\Users;
 	$this->data['users'] = $usr_model->entries($event_id);
 	
+	$counts = [];
+	foreach($this->data['entries'] as $dis) { 
+		foreach($dis->cats as $cat) {
+			foreach($cat->entries as $entry) {
+				$key = $entry->user_id;
+				if(empty($counts[$key])) $counts[$key] = 0;
+				$counts[$key]++;
+			}
+		}
+	}
+	$this->data['entcount'] = array_sum($counts);
 	
-	
-			
+	$error = false;
+	foreach($this->data['users'] as $id=>$user) {
+		$entcount = $counts[$user->id] ?? 0 ;
+		if(!$entcount) $error = true;
+		$this->data['users'][$id]->entcount = $entcount;
+	}
+	if($error) $this->data['messages'][] = ['Inconsistent data', 'danger'];
 	
 	return view('entries/clubs', $this->data);
 }
@@ -409,4 +425,4 @@ public function export($event_id=0, $format='view') {
 }
 
 }
-	
+ 
