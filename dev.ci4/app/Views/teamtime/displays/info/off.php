@@ -9,5 +9,5 @@ foreach($images as $image) {
 if($index) { ?> 
 	<img src="<?php echo $index;?>">
 <?php } else { ?>
-	<div style="font-size: 20vw">please wait&hellip;</div>
+	<div style="font-size: 15vw">please wait&hellip;</div>
 <?php } 

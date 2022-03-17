@@ -21,13 +21,10 @@ if($displays) {
 
 <h5>Information</h5>
 <?php 
-$nav = [
-	'teamtime/info/programme',
-	'teamtime/info/teams',
-	'teamtime/info/runtable',
-	'teamtime/info/images',
-	'teamtime/info/music'
-];
+$nav = [];
+foreach(glob(VIEWPATH . 'teamtime/info/*.php') as $view) {
+	$nav[] = sprintf('teamtime/info/%s', basename($view, '.php'));
+}
 echo $navbar->htm($nav);
 
 $this->endSection();

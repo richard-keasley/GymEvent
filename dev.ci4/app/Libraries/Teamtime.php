@@ -77,7 +77,7 @@ static function display_view($display) {
 static function view_html($html, $return=1) {
 	$view = "teamtime/displays/info/{$html}";
 	$path = VIEWPATH . $view . '.php';
-	return file_exists($path) ? view($view) : '';
+	return file_exists($path) ? view($view) : $html;
 }
 
 static function get_images() {

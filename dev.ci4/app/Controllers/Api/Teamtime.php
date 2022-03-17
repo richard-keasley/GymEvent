@@ -146,8 +146,7 @@ public function display_view($ds_id=0, $dupd_request=0, $vupd_request=0) {
 		$view = $tt_lib::display_view($display);
 		if(!$view) return $this->fail("Can't find view for display {$ds_id}");
 		// compile HTML for this view
-		$view_html = $tt_lib::view_html($view['html']);
-		if($view_html) $view['html'] = $view_html;
+		$view['html'] = $tt_lib::view_html($view['html']);
 		$response = [
 			'reload' => 'view',
 			'updated' => $upd_check,
