@@ -4,7 +4,7 @@ class Teamtime extends \App\Controllers\BaseController {
 	
 function __construct() {
 	$this->data['breadcrumbs'][] = 'teamtime';
-	$this->data['breadcrumbs'][] = ['control/teamtime', 'admin'];
+	$this->data['breadcrumbs'][] = ['control/teamtime', 'control'];
 	$this->data['tt_lib'] = new \App\Libraries\Teamtime();
 }
 
@@ -135,6 +135,15 @@ function settings() {
 	$this->data['heading'] = 'Teamtime settings';
 	$this->data['breadcrumbs'][] = "control/teamtime/settings";
 	return view("teamtime/admin/settings", $this->data);
+}
+
+function player() {
+	// view 
+	$this->data['title'] = 'Music';
+	$this->data['heading'] = 'Teamtime music';
+	$this->data['breadcrumbs'][] = "control/teamtime/player";
+	$this->data['back_link'] = "control/teamtime";
+	return view("teamtime/admin/player", $this->data);
 }
 
 }
