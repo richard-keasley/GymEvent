@@ -131,7 +131,7 @@ echo $table->generate($tbody); ?>
 
 $this->section('top'); ?>
 <div class="toolbar sticky-top">
-	<?php echo \App\Libraries\View::back_link('admin/teamtime'); ?>
+	<?php echo \App\Libraries\View::back_link('control/teamtime'); ?>
 	<button onclick="pagesave()" type="button" class="btn btn-primary">save</button>
 </div>
 <?php $this->endSection();

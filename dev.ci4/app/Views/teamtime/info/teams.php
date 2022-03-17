@@ -18,6 +18,6 @@ foreach($get_var->value as $row) {
 $this->section('top'); ?>
 <div class="toolbar sticky-top"><?php
 	echo \App\Libraries\View::back_link($back_link); 
-	echo getlink('admin/teamtime/teams?bl=teamtime/info/teams', 'edit');
+	echo getlink('control/teamtime/teams?bl=teamtime/info/teams', 'edit');
 ?></div>
 <?php $this->endSection(); 

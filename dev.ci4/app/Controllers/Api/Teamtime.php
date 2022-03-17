@@ -18,8 +18,8 @@ public function get($varname='', $key=null) {
 	return $this->respond($response);
 }
 
-public function admin() {
-	if(!\App\Libraries\Auth::check_role('admin')) {
+public function control() {
+	if(!\App\Libraries\Auth::check_role('controller')) {
 		return $this->failUnauthorized('Permission denied');
 	}
 	

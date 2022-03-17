@@ -37,7 +37,7 @@ foreach($clubrets as $rowkey=>$clubret) {
 	$user = $clubret->user();
 	$label = $user->name;
 	$ok = $clubret->check();
-	if(!$ok) $label .= ' <span class="bi bi-x-circle text-danger" title="There are errors in this return"></span>';
+	if(!$ok) $label .= ' <span class="bi bi-exclamation-triangle-fill text-warning" title="There are errors in this return"></span>';
 	if($user->deleted_at) $label .= ' <span class="bi bi-trash text-danger" title="This user is disabled"></span>';
 	$rows[$rowkey] = getlink($clubret->url('view', 'admin'), $label);
 	$fees[$rowkey] = $clubret->fees('fees');

@@ -1,4 +1,4 @@
-<?php namespace App\Controllers;
+<?php namespace App\Controllers\Control;
 
 class Player extends \App\Controllers\BaseController {
 	
@@ -18,7 +18,7 @@ public function index() {
 	$this->data['heading'] = 'Music player';
 	$this->data['events'] = $this->mdl_events->where('music', 2)->findAll();
 	$this->data['breadcrumbs'][] = "player";
-	$this->data['base_url'] = 'player/view';
+	$this->data['base_url'] = 'control/player/view';
 	$this->data['body'] = <<<EOT
 <p>The music service for these events is set to "view". There will be no more uploads for these events.</p>
 EOT;
@@ -30,24 +30,23 @@ public function view($event_id=0) {
 		
 	$this->data['event'] = $event;
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb();
-	$this->data['breadcrumbs'][] = ["player/view/{$event_id}", 'player'];
+	$this->data['breadcrumbs'][] = ["control/player/view/{$event_id}", 'player'];
 	
 	$this->data['title'] = 'Music player';
 	$this->data['heading'] = $this->data['event']->title;
 	return view("player/view", $this->data);
 }
 
-public function admin($event_id=0) {
+public function edit($event_id=0) {
 	$event = $this->find($event_id);
-	if(\App\Libraries\Auth::check_role('admin')) {
-		$player = $this->request->getPost('player');
-		if(!is_null($player)) { //save player
-			$event->player = json_decode($player);
-			if($event->hasChanged()) {
-				$this->data['messages'][] = ["Player info saved", 'success'];
-				$this->mdl_events->save($event);
-				$event = $this->mdl_events->find($event_id);
-			}
+
+	$player = $this->request->getPost('player');
+	if(!is_null($player)) { //save player
+		$event->player = json_decode($player);
+		if($event->hasChanged()) {
+			$this->data['messages'][] = ["Player info saved", 'success'];
+			$this->mdl_events->save($event);
+			$event = $this->mdl_events->find($event_id);
 		}
 	}
 	
@@ -74,12 +73,12 @@ public function admin($event_id=0) {
 	
 	$this->data['event'] = $event;
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb();
-	$this->data['breadcrumbs'][] = ["player/view/{$event_id}", 'player'];
-	$this->data['breadcrumbs'][] = ["player/admin/{$event_id}", 'admin'];
+	$this->data['breadcrumbs'][] = ["control/player/view/{$event_id}", 'player'];
+	$this->data['breadcrumbs'][] = ["control/player/edit/{$event_id}", 'edit'];
 	
-	$this->data['title'] = 'Music player - admin';
+	$this->data['title'] = 'Music player - edit';
 	$this->data['heading'] = $this->data['event']->title;
-	return view("player/admin", $this->data);
+	return view("player/edit", $this->data);
 }
 
 public function auto($ch_id=0) {

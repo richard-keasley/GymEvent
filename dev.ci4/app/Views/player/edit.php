@@ -112,7 +112,7 @@ foreach($event_tracks as $cat) {
 
 $this->section('bottom'); ?>
 <div class="toolbar">
-	<?php echo \App\Libraries\View::back_link("player/view/{$event->id}");?>
+	<?php echo \App\Libraries\View::back_link("control/player/view/{$event->id}");?>
 	<button class="btn btn-primary" type="button" name="update">save</button>
 </div>
 </form>

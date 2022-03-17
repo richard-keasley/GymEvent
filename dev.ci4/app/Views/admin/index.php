@@ -10,7 +10,7 @@ $nav = [
 	'admin/events', 
 	'admin/users', 
 	'admin/music', 
-	'admin/teamtime', 
+	'control/teamtime', 
 	'admin/general', 
 	'admin/profile',
 	'setup'

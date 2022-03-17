@@ -50,8 +50,8 @@ foreach($users as $user) {
 	$tbody[] = [
 		sprintf('%s <a href="%s/view/%u">%s</a>',
 			$user->deleted_at ? 
-				'<span class="bi-x-circle text-danger"></span>' : 
-				'<span class="bi-check-circle text-success"></span>',
+				'<span title="user disabled" class="bi-x-circle text-danger"></span>' : 
+				'<span title="user enabled" class="bi-check-circle text-success"></span>',
 			$base_url, 
 			$user->id, 
 			$user->name

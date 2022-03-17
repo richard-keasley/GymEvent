@@ -35,7 +35,7 @@ $this->endSection();
 $this->section('bottom'); ?>
 <div class="toolbar"><?php
 echo \App\Libraries\View::back_link('');
-echo getlink('admin/teamtime', 'TT admin');
+echo getlink('control/teamtime', 'TT control');
 echo getlink('admin');
 ?></div>
 <?php $this->endSection(); 

@@ -1,10 +1,10 @@
-<?php namespace App\Controllers\Admin;
+<?php namespace App\Controllers\Control;
 
 class Teamtime extends \App\Controllers\BaseController {
 	
 function __construct() {
 	$this->data['breadcrumbs'][] = 'teamtime';
-	$this->data['breadcrumbs'][] = ['admin/teamtime', 'admin'];
+	$this->data['breadcrumbs'][] = ['control/teamtime', 'admin'];
 	$this->data['tt_lib'] = new \App\Libraries\Teamtime();
 }
 
@@ -19,7 +19,7 @@ function index() {
 function appvars() {
 	$this->data['title'] = 'Vars';
 	$this->data['heading'] = 'Teamtime variables';
-	$this->data['breadcrumbs'][] = "admin/teamtime/appvars";
+	$this->data['breadcrumbs'][] = "control/teamtime/appvars";
 	return view("teamtime/admin/appvars", $this->data);
 }
 
@@ -51,7 +51,7 @@ function programme() {
 		$this->data['messages'][] = ['Programme updated', 'success'];
 	}
 	// view
-	$this->data['breadcrumbs'][] = 'admin/teamtime/programme';
+	$this->data['breadcrumbs'][] = 'control/teamtime/programme';
 	$this->data['title'] = 'Programme';
 	$this->data['heading'] = 'Teamtime Programme';		
 	return view('teamtime/admin/programme', $this->data);
@@ -79,7 +79,7 @@ function teams() {
 		$this->data['messages'][] = ['Teams updated', 'success'];
 	}
 	// view
-	$this->data['breadcrumbs'][] = 'admin/teamtime/teams';
+	$this->data['breadcrumbs'][] = 'control/teamtime/teams';
 	$this->data['title'] = 'teams';
 	$this->data['heading'] = 'Teamtime teams';		
 	return view('teamtime/admin/teams', $this->data);
@@ -106,7 +106,7 @@ function displays() {
 		$this->data['messages'][] = ['Displays and views updated', 'success'];
 	}
 	// view
-	$this->data['breadcrumbs'][] = 'teamtime/admin/displays';
+	$this->data['breadcrumbs'][] = 'control/teamtime/displays';
 	$this->data['title'] = 'Display set-up';
 	$this->data['heading'] = 'Teamtime displays';		
 	return view('teamtime/admin/displays', $this->data);
@@ -133,7 +133,7 @@ function settings() {
 	// view 
 	$this->data['title'] = 'settings';
 	$this->data['heading'] = 'Teamtime settings';
-	$this->data['breadcrumbs'][] = "admin/teamtime/settings";
+	$this->data['breadcrumbs'][] = "control/teamtime/settings";
 	return view("teamtime/admin/settings", $this->data);
 }
 

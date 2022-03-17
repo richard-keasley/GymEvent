@@ -42,16 +42,24 @@ public function index() {
 	}
 		
 	$update = $this->request->getPost('update');
+	if($update) {
+		$roles = [''];
+		foreach(\App\Libraries\Auth::roles as $role) {
+			$roles[] = $role;
+			if($role=='club') break;
+		}
+	}
 	if($update=='club0') {
-		$this->usr_model->where('role', 'club')->delete();
+		$this->usr_model->whereIn('role', $roles)->delete();
 		$this->data['messages'][] = ["clubs disabled", 'success'];
 	}
 	if($update=='club1') {
-		$this->usr_model->where('role', 'club')
+		$this->usr_model->whereIn('role', $roles)
 			->set('deleted_at', null)
 			->update();
 		$this->data['messages'][] = ["clubs enabled", 'success'];
 	}
+	
 	// read
 	$filter_by = $this->request->getGet('by');
 	$filter_val = $this->request->getGet('val');
@@ -116,6 +124,9 @@ public function view($user_id=0) {
 				$this->data['user'] = $this->usr_model->find($user_id);
 				$message = sprintf("Logged in as %s", $this->data['user']->name);
 				$this->data['messages'][] = [$message, 'success'];
+				$session = \Config\Services::session();
+				$session->setFlashdata('messages', $this->data['messages']);
+				return redirect()->to(base_url());
 			}
 			else $this->data['messages'][] = "Couldn't login as $user_id";
 		}

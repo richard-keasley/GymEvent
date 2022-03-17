@@ -4,9 +4,9 @@ $template = ['table_open' => '<table class="table compact">'];
 $table->setTemplate($template);
 
 $this->section('content');
-#d($event);
-#d($entries);
-d($users);
+# d($event);
+# d($entries);
+# d($users);
 
 $user_options = [0 => '-'];
 foreach($users as $id=>$user) $user_options[$id] = $user->name;
@@ -133,7 +133,7 @@ echo \App\Libraries\View::back_link("admin/events/view/{$event->id}");
 </div>
 <?php 
 echo getlink("admin/entries/categories/{$event->id}", 'categories'); 
-echo getlink("player/view/{$event->id}", 'player'); 
+echo getlink("control/player/view/{$event->id}", 'player'); 
 ?>
 <script>
 $(function() {

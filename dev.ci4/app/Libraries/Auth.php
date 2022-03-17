@@ -167,6 +167,7 @@ static function path_role($path) {
 	}
 		
 	if($controller=='user') return 'club';
+	if($controller=='control') return 'controller';
 		
 	if($controller=='music') {
 		switch($method) {

@@ -14,6 +14,6 @@ $this->endSection();
 
 $this->section('bottom'); ?>
 <div class="toolbar">
-<?php echo \App\Libraries\View::back_link('admin/teamtime'); ?>
+<?php echo \App\Libraries\View::back_link('control/teamtime'); ?>
 </div>
 <?php $this->endSection(); 

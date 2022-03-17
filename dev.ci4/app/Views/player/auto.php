@@ -15,7 +15,7 @@ $this->section('sidebar'); ?>
 <?php 
 $nav = [];
 foreach($channels as $key=>$val) {
-	$nav[] = [ base_url("player/auto/{$key}"), $val ];
+	$nav[] = [ base_url("control/player/auto/{$key}"), $val ];
 }
 $navbar = new \App\Views\Htm\Navbar($nav);
 echo $navbar->htm();

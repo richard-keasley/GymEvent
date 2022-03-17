@@ -68,7 +68,7 @@ foreach($inputs as $key=>$input) { ?>
 
 $this->section('top'); ?>
 <div class="toolbar sticky-top">
-<?php echo \App\Libraries\View::back_link('admin/teamtime'); ?>
+<?php echo \App\Libraries\View::back_link('control/teamtime'); ?>
 <button class="btn btn-primary" type="submit" form="editform">save</button>
 </div>
 <?php $this->endSection(); 

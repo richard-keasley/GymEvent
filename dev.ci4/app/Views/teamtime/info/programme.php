@@ -39,6 +39,6 @@ if($key) echo '</tbody>'; // $key>0 if there was a body
 $this->section('top'); ?>
 <div class="toolbar sticky-top"><?php
 echo \App\Libraries\View::back_link($back_link); 
-echo getlink('admin/teamtime/programme?bl=teamtime/info/programme', 'edit');
+echo getlink('control/teamtime/programme?bl=teamtime/info/programme', 'edit');
 ?></div>
 <?php $this->endSection(); 

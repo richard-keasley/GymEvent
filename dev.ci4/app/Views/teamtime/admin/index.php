@@ -48,7 +48,7 @@ echo form_open(base_url(uri_string()), $attr); ?>
 	<ul class="dropdown-menu dropdown-menu-end bg-light" aria-labelledby="dropdownMenuButton1">
 	<?php
 	foreach(['displays','programme','teams','settings','appvars'] as $method) {
-		printf('<li><a class="dropdown-item" href="%s?bl=admin/teamtime">%s</a></li>', base_url("admin/teamtime/{$method}"), $method);
+		printf('<li><a class="dropdown-item" href="%s?bl=control/teamtime">%s</a></li>', base_url("control/teamtime/{$method}"), $method);
 	} 
 	?>
 	</ul> 
@@ -102,7 +102,7 @@ if($music_player=='local') { ?>
 
 if($music_player=='remote') { ?>
 <div id="remoteplayer">
-<?php echo anchor(base_url('player/auto'), 'remote player'); ?> 
+<?php echo anchor(base_url('control/player/auto'), 'remote player'); ?> 
 <button type="button" class="btn btn-sm btn-primary bi bi-play-fill" onclick="remote_music('play')"></button>
 <button type="button" class="btn btn-sm btn-primary bi bi-stop-fill" onclick="remote_music('stop')"></button>
 <p class="m-0">ready&hellip;</p>
@@ -168,7 +168,7 @@ function set_runvars(cmd='') {
 		postvar[field.name] = field.value;
     });
 	// console.log(postvar);
-	url = '<?php echo base_url("/api/teamtime/admin");?>';
+	url = '<?php echo base_url("/api/teamtime/control");?>';
 	$.post(url, postvar)
 	.done(function(response) {
 		show_runvars(response);
