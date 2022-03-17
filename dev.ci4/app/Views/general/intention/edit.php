@@ -35,7 +35,7 @@ echo form_hidden('routine', $intention->encode()); ?>
 	?>
 </div>
 <div class="input-group my-1">
-	<label class="input-group-text">level</label>
+	<label class="input-group-text">Level</label>
 	<?php 
 	$input = [
 		'data-name' => 'level',
