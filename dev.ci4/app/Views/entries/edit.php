@@ -12,7 +12,7 @@ foreach($users as $id=>$user) $user_options[$id] = $user->name;
 ?>
 
 <form name="selector" method="GET">
-<p>edit the names, number of entries, add new entries</p>
+<p>Select the discipline and category; press 'GET'. Edit entry names, numbers, DoBs and add new entries.</p>
 <div class="row">
 <div class="col-auto"><?php 
 	$selector = []; $opts = [];
@@ -59,7 +59,7 @@ function update_selector(dis_id) {
 <?php 
 $attr = [];
 $hidden = ['save'=>1];
-echo form_open(base_url(uri_string()), $attr, $hidden);
+echo form_open((string) current_url(true), $attr, $hidden);
 
 $filter_cat = $filter['catid'];
 $cat_entries = [];

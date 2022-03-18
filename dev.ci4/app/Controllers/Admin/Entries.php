@@ -2,25 +2,30 @@
 
 class Entries extends \App\Controllers\BaseController {
 	
-private $model = null;
+private $ent_model = null;
+private $evt_model = null;
+private $found = false;
 
 function __construct() {
 	$this->data['breadcrumbs'][] = 'admin';
 	$this->data['breadcrumbs'][] = 'admin/events';
-	$this->mdl_entries = new \App\Models\Entries;
+	$this->ent_model = new \App\Models\Entries;
+	$this->evt_model = new \App\Models\Events;
 	$this->data['title'] = "entries";
 	$this->data['heading'] = "Event entries - admin";
 }
 	
 private function find($event_id) {
-	$evt_model = new \App\Models\Events();
-	$this->data['event'] = $evt_model->find($event_id);
+	$this->data['event'] = $this->evt_model->find($event_id);
 	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
-	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
-	$this->data['breadcrumbs'][] = ["admin/entries/view/{$event_id}", 'entries'];
-	$this->data['entries'] = $this->mdl_entries->evt_discats($event_id);
+	$this->data['entries'] = $this->ent_model->evt_discats($event_id);
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title;
+	if(!$this->found) {
+		$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
+		$this->data['breadcrumbs'][] = ["admin/entries/view/{$event_id}", 'entries'];
+	}
+	$this->found = true;
 }
 	
 public function index() {
@@ -50,12 +55,12 @@ public function view($event_id=0) {
 	$this->data['heading'] .= ' - entries';
 	
 	if($this->request->getPost('renumber')) {
-		$this->mdl_entries->renumber($event_id);
+		$this->ent_model->renumber($event_id);
 		$this->data['messages'][] = ['Event renumbered', 'success'];
 		$this->find($event_id);
 	}
 	
-	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
+	$this->data['users'] = $this->ent_model->evt_users($event_id);
 			
 	if($this->data['event']->clubrets==0) $this->data['messages'][] = ['Returns have not started for this event', 'warning'];
 	if($this->data['event']->clubrets==1) $this->data['messages'][] = ['Returns for this event are still open', 'warning'];
@@ -67,7 +72,7 @@ public function clubs($event_id=0) {
 	$this->data['heading'] .= ' - clubs';
 	$this->data['breadcrumbs'][] = ["admin/entries/clubs/{$event_id}", 'clubs'];
 	
-	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
+	$this->data['users'] = $this->ent_model->evt_users($event_id);
 
 	$counts = [];
 	foreach($this->data['entries'] as $dis) { 
@@ -102,11 +107,12 @@ public function edit($event_id=0) {
 		$filter['disid'] = $dis->id;
 		$filter['catid'] = $dis->cats[0]->id;
 	}
+	# d($filter);
 	
 	if($this->request->getPost('save')) {
 		// update
 		$col_names = ['category_id', 'num', 'name', 'dob', 'user_id'];
-		$entries = $this->mdl_entries->cat_entries($filter['catid']);
+		$entries = $this->ent_model->cat_entries($filter['catid']);
 		$data = [];
 		foreach($entries as $entry) {
 			foreach($col_names as $col_name) {
@@ -115,10 +121,11 @@ public function edit($event_id=0) {
 				$data[$col_name] = $fld_val;
 			}
 			# d($data);
-			$this->mdl_entries->update($entry->id, $data);
+			$this->ent_model->update($entry->id, $data);
 		}
 		
 		// look for new entry
+		$data = [];
 		foreach($col_names as $col_name) {
 			$fld_name = "newrow_{$col_name}";
 			$fld_val = $this->request->getPost($fld_name);
@@ -126,14 +133,14 @@ public function edit($event_id=0) {
 		}
 		if($data['name']) {
 			$data['category_id'] = $filter['catid'];
-			$this->mdl_entries->add_entry($data);
+			$this->ent_model->add_entry($data);
 			#d($data);
 		}
 		
 		// look for delrow
 		$delrow = $this->request->getPost('delrow');
 		if($delrow) {
-			$this->mdl_entries->delete($delrow, 1);
+			$this->ent_model->delete($delrow, 1);
 		}
 		
 		// read 
@@ -143,7 +150,7 @@ public function edit($event_id=0) {
 	// view
 	$this->data['breadcrumbs'][] = "admin/entries/edit/{$event_id}";
 	
-	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
+	$this->data['users'] = $this->ent_model->evt_users($event_id);
 	$this->data['filter'] = $filter;
 	return view('entries/edit', $this->data);
 }
@@ -167,7 +174,7 @@ public function categories($event_id=0) {
 				foreach(['name', 'abbr'] as $col_name) {
 					$dis_arr[$col_name] = $this->request->getPost("dis{$dis->id}_{$col_name}");
 				}
-				$this->mdl_entries->update_discipline($dis->id, $dis_arr);
+				$this->ent_model->update_discipline($dis->id, $dis_arr);
 				foreach($dis->cats as $cat) {
 					foreach($col_names as $col_name) {
 						$fld_name = "cat{$cat->id}_{$col_name}";
@@ -176,10 +183,10 @@ public function categories($event_id=0) {
 					}
 					$empty = trim(implode('', $cat_arr)) ? 0 : 1 ;
 					if($empty) { // delete category if empty
-						$cat_entries = $this->mdl_entries->cat_entries($cat->id);
+						$cat_entries = $this->ent_model->cat_entries($cat->id);
 						// no delete when there are entries
 						if(!count($cat_entries)) {
-							$this->mdl_entries->delete_category($cat->id);
+							$this->ent_model->delete_category($cat->id);
 						}
 					}
 					else {
@@ -192,7 +199,7 @@ public function categories($event_id=0) {
 							$cat_arr[$array_field] = $fld_val;
 						}
 						$entrycat = new \App\Entities\Entrycat($cat_arr);
-						$this->mdl_entries->entrycats->save($entrycat);
+						$this->ent_model->entrycats->save($entrycat);
 					}
 				}
 				// look for new category
@@ -203,7 +210,7 @@ public function categories($event_id=0) {
 				}
 				if($cat_arr['name']) {
 					$cat_arr['discipline_id'] = $dis->id;
-					$new_id = $this->mdl_entries->entrycats->insert($cat_arr);
+					$new_id = $this->ent_model->entrycats->insert($cat_arr);
 					if($new_id) $this->data['messages'][] = ['Created new category', 'success'];
 				}
 			}
@@ -282,19 +289,19 @@ public function import($event_id=0) {
 			# throw new \Exception('not finished yet');
 			
 			// delete existing data
-			$this->mdl_entries->delete_event($event_id);
+			$this->ent_model->delete_event($event_id);
 			
 			// import new data
-			$mdl_clubs = new \App\Models\Users;
-			$current_user = $mdl_clubs->find(session('user_id'));
+			$usr_model = new \App\Models\Users;
+			$current_user = $usr_model->find(session('user_id'));
 			foreach($discat as $dis) {
 				$arr = [
 					'event_id' => $event_id, 
 					'name' => $dis['name']
 				];
-				$dis_id = $this->mdl_entries->add_discipline($arr);
+				$dis_id = $this->ent_model->add_discipline($arr);
 				if(!$dis_id) {
-					$errors = $this->mdl_entries->errors();
+					$errors = $this->ent_model->errors();
 					$errors[] = "Couldn't create discipline '{$dis['name']}'"; 
 					throw new \Exception(implode('<br>', $errors));
 				}
@@ -304,17 +311,17 @@ public function import($event_id=0) {
 						'name' => $cat['name'], 
 						'sort' => str_pad($sort, 3, '0', STR_PAD_LEFT)
 					];
-					$cat_id = $this->mdl_entries->entrycats->insert($arr);
+					$cat_id = $this->ent_model->entrycats->insert($arr);
 					if(!$cat_id) {
-						$errors = $this->mdl_entries->errors();
+						$errors = $this->ent_model->errors();
 						$errors[] = "Couldn't create category '{$cat['name']}'"; 
 						throw new \Exception(implode('<br>', $errors));
 					}
 					foreach($cat['entries'] as $entry) {
 						$entry['category_id'] = $cat_id;
 						$entry['dob'] = date('Y-m-d', strtotime($entry['dob']));
-						$club = $mdl_clubs->withDeleted()->where('name', $entry['club'])->first();
-						if(!$club) $club = $mdl_clubs->withDeleted()->where('abbr', $entry['club'])->first();
+						$club = $usr_model->withDeleted()->where('name', $entry['club'])->first();
+						if(!$club) $club = $usr_model->withDeleted()->where('abbr', $entry['club'])->first();
 						if($club) {
 							$user_id = $club->id;
 						}
@@ -326,12 +333,12 @@ public function import($event_id=0) {
 								'email' => $current_user->email
 							];
 							$club = new \App\Entities\User($data);
-							if($mdl_clubs->insert($data)) {
-								$user_id = $mdl_clubs->db->insertID();
+							if($usr_model->insert($data)) {
+								$user_id = $usr_model->db->insertID();
 								$this->data['messages'][] = ["Created club {$data['name']}", 'success'];		
 							}
 							else {
-								$errors = $mdl_clubs->errors();
+								$errors = $usr_model->errors();
 								$errors[] = "Couldn't create club '{$entry['club']}'"; 
 								throw new \Exception(implode('<br>', $errors));
 							}
@@ -342,7 +349,7 @@ public function import($event_id=0) {
 						#d($entry);
 						# d($club);
 						
-						$this->mdl_entries->add_entry($entry);
+						$this->ent_model->add_entry($entry);
 					}
 				}
 			}

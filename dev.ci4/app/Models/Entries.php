@@ -76,7 +76,10 @@ public function renumber($event_id) {
 			->orderBy('sort', 'ASC')
 			->findAll();
 		foreach($entrycats as $entrycat) {
-			$entries = $this->where('category_id', $entrycat->id)->findAll();
+			$entries = $this
+				->where('category_id', $entrycat->id)
+				->orderBy('user_id', 'ASC')
+				->findAll();
 			foreach($entries as $entry) {
 				$entry->num = $num;
 				$this->save($entry);
@@ -115,7 +118,6 @@ public function delete_category($category_id) {
 	$this->where('category_id', $category_id)->delete();
 	$this->entrycats->delete($category_id);
 }
-
 
 
 public function populate($event_id) {
