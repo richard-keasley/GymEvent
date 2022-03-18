@@ -67,18 +67,19 @@ public function rules($exe='fx') {
 		$appval = $appvars->get_value("general.{$exe}.{$rule_part}");
 		if($appval) {
 			foreach($appval as $key=>$row) {
-				unset($appval[$key]['id']);
+				# unset($appval[$key]['id']);
 				if(empty($row['gender'])) $appval[$key]['gender'] = '<span class="text-muted fst-italic">all</span>';
 				foreach(['hold', 'flexibility', 'strength', 'fs', 'afs'] as $attr) {
 					if(isset($row[$attr])) {
 						$appval[$key][$attr] = $row[$attr] ? '<span class="text-ok bi-check"></span>' : '' ;
 					}
 				}
-				
-				
-				
-				
-				
+				foreach(['A', 'B', 'C', 'D', 'E'] as $attr) {
+					if(isset($row[$attr])) {
+						if(!$row[$attr]) $appval[$key][$attr] = '-';
+					}
+				}
+
 			}
 		}
 		$this->data['rules'][$rule_part] = $appval ?? "'{$exe_title}/{$rule_part}' not found";
