@@ -1,9 +1,10 @@
 <div class="runtable"><?php 
-$get_var = \App\Libraries\Teamtime::get_var('progtable');
+$tt_lib = new \App\Libraries\Teamtime;
+$get_var = $tt_lib::get_var('progtable');
 $progtable = $get_var->value;
-$get_var = \App\Libraries\Teamtime::get_var('runvars');
+$get_var = $tt_lib::get_var('runvars');
 $runvars = $get_var->value;
-$get_var = \App\Libraries\Teamtime::get_var('settings');
+$get_var = $tt_lib::get_var('settings');
 $settings = $get_var->value;
 $run_rows = $settings['run_rows'];
 $row_count = count($run_rows);

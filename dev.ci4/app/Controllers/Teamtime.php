@@ -18,9 +18,13 @@ public function info($var_name) {
 	$this->data['heading'] = "Teamtime {$var_name}";
 	$this->data['breadcrumbs'][] = "teamtime/info/{$var_name}";
 	$this->data['back_link'] = "teamtime";
+	$this->data['var_name'] = $var_name;
 	
-	$view = "teamtime/info/{$var_name}";
-	if(!file_exists(VIEWPATH . $view . '.php')) throw new \RuntimeException("Can't find teamtime {$var_name}", 404);
+	// ToDo: move this somewhere else
+	if($var_name=='music') {
+		return view('teamtime/info/music', $this->data);
+	}
+	
 	/* from /app/teamtime/display.css */
 	$this->data['head'] = '<style>
 	.runtable table {
@@ -49,7 +53,8 @@ public function info($var_name) {
 		font-weight: bold;
 	}
 	</style>';
-	return view($view, $this->data);
+
+	return view('teamtime/info', $this->data);
 }
 
 public function display($ds_id=0) {
