@@ -52,7 +52,7 @@ $this->endSection();
 $this->section('top'); ?>
 <div class="toolbar sticky-top row">
 <div class="col-auto">
-<?php echo \App\Libraries\View::back_link($back_link); ?>
+<?php echo \App\Libraries\View::back_link('control/teamtime'); ?>
 </div>
 <div class="col-auto"><div id="player">
 <audio style="width:25em;" controls></audio> 

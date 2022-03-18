@@ -4,9 +4,10 @@ $this->section('content');
 $attr = [
 	'id' => "editform"
 ];
-echo form_open(base_url(uri_string()), $attr);?>
-<input name="save" type="hidden" value="1">
-<?php 
+$hidden = [
+	'save' => 1
+];
+echo form_open(base_url(uri_string()), $attr, $hidden);
 $evt_model = new \App\Models\Events();
 $events = $evt_model->orderBy('date')->findAll();
 $event_opts = [];
@@ -62,9 +63,10 @@ foreach($inputs as $key=>$input) { ?>
 		</div>
 	</div>
 	<?php
-} ?>
-</form>
-<?php $this->endSection(); 
+} 
+
+echo form_close();
+$this->endSection(); 
 
 $this->section('top'); ?>
 <div class="toolbar sticky-top">

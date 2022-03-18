@@ -10,10 +10,12 @@ $this->section('content');
 $attr = [
 	'id' => "editform"
 ];
-echo form_open(base_url(uri_string()), $attr);
-echo form_hidden('save', 1);
-echo form_hidden('displays', '');
-echo form_hidden('views', '');
+$hidden = [
+	'save' => 1,
+	'displays' => '',
+	'views' => ''
+];
+echo form_open(base_url(uri_string()), $attr, $hidden);
 ?>
 <section id="displays" class="mb-3">
 <h5>Displays</h5>
@@ -53,13 +55,14 @@ foreach($get_var->value as $ds_id=>$display) {
 	$inputs['tick']['value'] = $display['tick'];
 	$inputs['view']['selected'] = strval($display['view']);
 	$inputs['style']['value'] = $display['style'];
+	$view_href = base_url("/teamtime/display/{$ds_id}");
 	$tbody[] = [
 		$ds_id,
 		form_input($inputs['title']),
 		form_input($inputs['tick']),
 		form_dropdown($inputs['view']),
 		form_textarea($inputs['style']),
-		'<button name="del" type="button" class="btn bi-trash btn-danger btn-sm"></button>'
+		sprintf('<button name="del" type="button" class="btn bi-trash btn-danger btn-sm"></button> <a class="btn btn-small bi bi-eye" href="%s" title="view this display" target="displays"></a>', $view_href)
 	];
 }
 
@@ -126,8 +129,9 @@ echo $table->generate($tbody); ?>
 </div>
 <button name="add" type="button" class="btn btn-success bi-plus-square"></button>
 </section>
-</form>
-<?php $this->endSection(); 
+<?php 
+echo form_close();
+$this->endSection(); 
 
 $this->section('top'); ?>
 <div class="toolbar sticky-top">

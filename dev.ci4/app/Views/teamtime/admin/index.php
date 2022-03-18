@@ -47,9 +47,13 @@ echo form_open(base_url(uri_string()), $attr); ?>
 	<button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi bi-list"></span></button>
 	<ul class="dropdown-menu dropdown-menu-end bg-light" aria-labelledby="dropdownMenuButton1">
 	<?php
-	foreach(['displays','programme','teams','settings','appvars'] as $method) {
-		printf('<li><a class="dropdown-item" href="%s?bl=control/teamtime">%s</a></li>', base_url("control/teamtime/{$method}"), $method);
-	} 
+	$methods = get_class_methods('\\App\\Controllers\\Control\\Teamtime');
+	$exclude = ['index', '__construct', 'initController'];
+	$methods = array_diff($methods, $exclude);
+	foreach($methods as $method) {
+		$href = base_url("control/teamtime/{$method}") . '?bl=control/teamtime';
+		printf('<li><a class="dropdown-item" href="%s">%s</a></li>', $href, $method);
+	}	
 	?>
 	</ul> 
 </span>	

@@ -16,11 +16,29 @@ function index() {
 	return view('teamtime/admin/index', $this->data);
 }
 
-function appvars() {
-	$this->data['title'] = 'Vars';
-	$this->data['heading'] = 'Teamtime variables';
-	$this->data['breadcrumbs'][] = "control/teamtime/appvars";
-	return view("teamtime/admin/appvars", $this->data);
+function settings() {
+	if($this->request->getPost('save')) {
+		// update
+		$appvars = new \App\Models\Appvars();
+		$appvar = new \App\Entities\Appvar;
+		// displays
+		$value = $this->request->getPost();
+		unset($value['save']);
+		$value['run_rows'] = csv_array($value['run_rows']);
+		$value['image_path'] = '/' . trim($value['image_path'], "/\\*") . '/*' ;
+		$appvar->id = 'teamtime.settings';
+		$appvar->value = $value;
+		#d($appvar);
+		$appvars->save_var($appvar);
+		// reload
+		$this->data['tt_lib'] = new \App\Libraries\Teamtime();
+		$this->data['messages'][] = ['Settings updated', 'success'];
+	}
+	// view 
+	$this->data['title'] = 'settings';
+	$this->data['heading'] = 'Teamtime settings';
+	$this->data['breadcrumbs'][] = "control/teamtime/settings";
+	return view("teamtime/admin/settings", $this->data);
 }
 
 function programme() {
@@ -112,31 +130,6 @@ function displays() {
 	return view('teamtime/admin/displays', $this->data);
 }
 
-function settings() {
-	if($this->request->getPost('save')) {
-		// update
-		$appvars = new \App\Models\Appvars();
-		$appvar = new \App\Entities\Appvar;
-		// displays
-		$value = $this->request->getPost();
-		unset($value['save']);
-		$value['run_rows'] = csv_array($value['run_rows']);
-		$value['image_path'] = '/' . trim($value['image_path'], "/\\*") . '/*' ;
-		$appvar->id = 'teamtime.settings';
-		$appvar->value = $value;
-		#d($appvar);
-		$appvars->save_var($appvar);
-		// reload
-		$this->data['tt_lib'] = new \App\Libraries\Teamtime();
-		$this->data['messages'][] = ['Settings updated', 'success'];
-	}
-	// view 
-	$this->data['title'] = 'settings';
-	$this->data['heading'] = 'Teamtime settings';
-	$this->data['breadcrumbs'][] = "control/teamtime/settings";
-	return view("teamtime/admin/settings", $this->data);
-}
-
 function player() {
 	// view 
 	$this->data['title'] = 'Music';
@@ -144,6 +137,13 @@ function player() {
 	$this->data['breadcrumbs'][] = "control/teamtime/player";
 	$this->data['back_link'] = "control/teamtime";
 	return view("teamtime/admin/player", $this->data);
+}
+
+function appvars() {
+	$this->data['title'] = 'Vars';
+	$this->data['heading'] = 'Teamtime variables';
+	$this->data['breadcrumbs'][] = "control/teamtime/appvars";
+	return view("teamtime/admin/appvars", $this->data);
 }
 
 }
