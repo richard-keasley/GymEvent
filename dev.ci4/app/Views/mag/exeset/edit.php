@@ -412,6 +412,7 @@ function get_exevals() {
 	})
 	.fail(function(jqXHR) {
 		update_exevals('server error');
+		update_exevals(get_error(jqXHR));
 	});
 }
 
@@ -425,7 +426,7 @@ function update_exevals(message, message_ok=0) {
 		else {
 			htm = message_ok ? exekey + ' missing in response' : message ;
 		}
-		if(!this_ok) htm = '<ul class="list-unstyled alert-danger"><li>API error: ' + htm + '.</li></ul>';
+		if(!this_ok) htm = '<ul class="list-unstyled alert-danger"><li>' + htm + '</li></ul>';
 		$('#exeval-'+exekey).html(htm);
 	});
 }

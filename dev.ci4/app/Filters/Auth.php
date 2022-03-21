@@ -12,8 +12,9 @@ https://codeigniter4.github.io/userguide/incoming/filters.html
 */
 
 public function before(RequestInterface $request, $arguments = null) {
-	$messages = [];
 	\App\Libraries\Auth::init();
+	
+	$messages = [];
 	
 	$check_ip = \App\Libraries\Auth::$lgn_model->check_ip($request->getIPAddress());
 	if(!$check_ip) throw new \RuntimeException('Oops! Overuse injury', 423);
@@ -61,35 +62,34 @@ public function before(RequestInterface $request, $arguments = null) {
 		$session->setFlashdata('messages', $messages);
 	}
 	
-	if(!$allowed) {
-		/* access denied */
-		$disabled = \App\Libraries\Auth::$check_paths[$path][0]=='disabled';
-		if($disabled) {
-			$message = "Service unavailable"; 
-			$status = 423;
+	if($allowed) return;
+
+	/* access denied */
+	$disabled = \App\Libraries\Auth::check_path($path, 0)=='disabled';
+	if($disabled) {
+		$message = "Service unavailable"; 
+		$status = 423;
+	}
+	else {
+		if(session('user_id')) {
+			$message = "You do not have permission to view this page";
+			$status = 403;
 		}
 		else {
-			if(session('user_id')) {
-				$message = "You do not have permission to view this page";
-				$status = 403;
-			}
-			else {
-				$message = "You need to be logged in to view this page";
-				$status = 401;
-			}
-		}		
-		if(strpos($path, 'api/')===0) {
-			$response = new \CodeIgniter\HTTP\Response(new \Config\App());
-			$response->setContentType('application/json');
-			$response->setStatusCode($status, $message);
-			$response->setJSON(['message'=>$message, 'status'=>$status]);
-			$response->send();
+			$message = "You need to be logged in to view this page";
+			$status = 401;
 		}
-		else {
-			throw new \RuntimeException($message, $status);
-		}
+	}
+	
+	if(strpos($path, 'api/')===0) {
+		$response = new \CodeIgniter\HTTP\Response(new \Config\App());
+		$response->setContentType('application/json');
+		$response->setStatusCode($status, $message);
+		$response->setJSON(['message'=>$message, 'status'=>$status]);
+		$response->send();
 		die;
 	}
+	throw new \RuntimeException($message, $status);
 }
 
 public function after(RequestInterface $request, ResponseInterface $response, $arguments = null) {

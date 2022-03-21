@@ -116,16 +116,18 @@ static function logout() {
 /* roles and permissions */ 
 const roles = ['-', 'club', 'controller', 'admin', 99=>'superuser'];
 
-static public $check_paths = [];
 
 // can path be viewed by current user
-static function check_path($path) {
+static private $check_paths = [];
+static function check_path($path, $index=1) {
+	// $index=1 returns permission
+	// $index=0 returns role
 	if(!isset(self::$check_paths[$path])) {
 		$role = self::path_role($path);
 		$perm = self::check_role($role);
 		self::$check_paths[$path] = [$role, $perm];
 	}
-	return self::$check_paths[$path][1];
+	return self::$check_paths[$path][$index];
 }
 
 // can current user act as this role
@@ -144,7 +146,7 @@ static function path_role($path) {
 	$zones = ['user', 'admin', 'api', 'control'];
 	$zone = in_array($segments[0], $zones) ? array_shift($segments) : 'home';
 	if($zone=='api' && $segments[0]=='help') {
-		$zone = array_shift($segments); 
+		$zone = array_shift($segments); // $zone=help
 		array_shift($segments); // $segments[0] = view
 	}
 	

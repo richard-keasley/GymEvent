@@ -17,6 +17,5 @@ echo form_open(base_url(), $attr); ?>
 <div class="col"><?php echo anchor(base_url('setup/dev'), ENVIRONMENT);?></div>
 <div class="col">Page rendered in {elapsed_time} seconds</div>
 </div>
-<?php # d(\App\Libraries\Auth::$check_paths); ?>	
 </footer>
 <?php }
