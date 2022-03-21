@@ -55,24 +55,40 @@ public function before(RequestInterface $request, $arguments = null) {
 	// check permissions
 	$path = $request->uri->getPath();
 	$allowed = \App\Libraries\Auth::check_path($path);
-	$disabled = \App\Libraries\Auth::$check_paths[$path][0]=='disabled';
-	
-	if($allowed && $disabled) {
-		// superuser is allowed to view disabled controllers
-		$messages[] = ['This service is closed', 'warning'];
-	}
 	
 	if($messages) {	
 		$session = \Config\Services::session();
 		$session->setFlashdata('messages', $messages);
 	}
-	# d($messages);
 	
 	if(!$allowed) {
 		/* access denied */
-		if($disabled) throw new \RuntimeException("Service unavailable", 423);
-		if(session('user_id')) throw new \RuntimeException("You do not have permission to view this page", 403);
-		throw new \RuntimeException("You need to be logged in to view this page", 401);
+		$disabled = \App\Libraries\Auth::$check_paths[$path][0]=='disabled';
+		if($disabled) {
+			$message = "Service unavailable"; 
+			$status = 423;
+		}
+		else {
+			if(session('user_id')) {
+				$message = "You do not have permission to view this page";
+				$status = 403;
+			}
+			else {
+				$message = "You need to be logged in to view this page";
+				$status = 401;
+			}
+		}		
+		if(strpos($path, 'api/')===0) {
+			$response = new \CodeIgniter\HTTP\Response(new \Config\App());
+			$response->setContentType('application/json');
+			$response->setStatusCode($status, $message);
+			$response->setJSON(['message'=>$message, 'status'=>$status]);
+			$response->send();
+		}
+		else {
+			throw new \RuntimeException($message, $status);
+		}
+		die;
 	}
 }
 

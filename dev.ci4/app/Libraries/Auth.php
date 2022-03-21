@@ -133,42 +133,44 @@ static function check_role($role) {
 	$user_role = session('user_role');
 	$user_rank = intval(array_search($user_role, self::roles));
 	$check_rank = array_search($role, self::roles);
-	if($check_rank===false) $check_rank = 99;
+	if($check_rank===false) return false;  # $check_rank = 99;
 	return $check_rank<=$user_rank;
 }
 
 // role required to view this path
 static function path_role($path) {
-	$segments = array_pad(explode('/', $path), 4, '');
+	$segments = array_pad(explode('/', $path), 7, '');
+	
+	$zones = ['user', 'admin', 'api', 'control'];
+	$zone = in_array($segments[0], $zones) ? array_shift($segments) : 'home';
+	if($zone=='api' && $segments[0]=='help') {
+		$zone = array_shift($segments); 
+		array_shift($segments); // $segments[0] = view
+	}
+	
 	$controller = $segments[0];
 	$method = $segments[1];
 	$param1 = intval($segments[2]);
 	$param2 = intval($segments[3]);
 	$session_user = intval(session('user_id'));
 	
+	if(in_array($controller, self::$disabled)) return 'disabled';
+	
+	switch($zone) {
+		case 'admin': return 'admin';
+		case 'user':  return 'club';
+		case 'control': return 'controller';
+	}
+				
 	if(!$controller) return self::roles[0]; // home page
 	
-	if($controller=='help') { 
-		/* 
-		method is view used by controller /api/help 
-		check permission to view controller attached to this view
-		*/
-		$controller = $method;
-		$method = '';
-	}
-		
 	if($controller=='setup') return self::roles[99];
-	
-	if(in_array($controller, self::$disabled)) return 'disabled';
 	
 	foreach(self::roles as $role) {
 		if($controller==$role) return $role;
 		if($method==$role) return $role;
 	}
-		
-	if($controller=='user') return 'club';
-	if($controller=='control') return 'controller';
-		
+			
 	if($controller=='music') {
 		switch($method) {
 			case 'view':

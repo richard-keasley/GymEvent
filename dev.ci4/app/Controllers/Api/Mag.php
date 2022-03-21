@@ -5,7 +5,7 @@ use CodeIgniter\API\ResponseTrait;
 class Mag extends \App\Controllers\BaseController {
 	
 use ResponseTrait;
-	
+
 public function index() {
 	return $this->respondNoContent();
 }

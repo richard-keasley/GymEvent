@@ -9,11 +9,11 @@ public function __construct() {
 	
 public function index() {
 	$controllers = [];
-	$locked_controllers = ['setup','api'];
-	$files = glob(APPPATH . "/Controllers/*");
+	$locked_controllers = ['setup', 'basecontroller', 'home'];
+	$files = glob(APPPATH . "/Controllers/*.php");
 	foreach($files as $file) {
 		$controller = basename(strtolower($file), '.php');
-		if(!in_array($controller, ['basecontroller', 'home'])) {
+		if(!in_array($controller, $locked_controllers)) {
 			$disabled = in_array($controller, \App\Libraries\Auth::$disabled);
 			$controllers[$controller] = !$disabled;
 		}		
@@ -22,9 +22,7 @@ public function index() {
 	if($this->request->getPost('save')) {
 		$disabled = [];
 		foreach(array_keys($controllers) as $controller) {
-			$enabled = in_array($controller, $locked_controllers) ?
-				1 :
-				intval($this->request->getPost("chk_{$controller}"));
+			$enabled = intval($this->request->getPost("chk_{$controller}"));
 			if(!$enabled) $disabled[] = $controller;
 			$controllers[$controller] = $enabled;
 		}

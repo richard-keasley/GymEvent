@@ -38,9 +38,6 @@ foreach($controllers as $controller=>$enabled) { ?>
 </div>
 
 <div class="col-auto">
-<p>The following controllers can not be disabled: 
-	<code><?php echo implode('</code>, <code>', $locked_controllers); ?></code>.
-</p>
 <p>You are viewing device <code><?php echo $device;?></code>.</p>
 
 <nav class="flex-column">
@@ -53,7 +50,8 @@ echo getlink('setup/appvars', 'App variables');
 echo getlink('setup/dev', 'Development notes');
 if($device=='development') echo getlink('setup/update', 'Update the App');
 echo getlink('setup/install', 'Installation notes');
-?></nav>
+?>
+</nav>
 
 </div>
 
