@@ -148,7 +148,7 @@ foreach($intention->skills as $sk_num=>$sk_id) {
 	$bonus = $intention->rules->bonuses->get($intention->bonuses[$sk_num]);
 	// lookup skill description, group, value	
 	$tbody[] = [
-		$skill['description'],
+		sprintf('%u. %s', $sk_num + 1, $skill['description']),
 		$skill['group'],
 		$skill['difficulty'],
 		$special['description'],
