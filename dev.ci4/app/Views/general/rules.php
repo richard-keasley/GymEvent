@@ -8,13 +8,19 @@ $this->section('content'); ?>
 <?php 
 foreach($rules as $name=>$rule_part) { 
 	printf('<h3>%s</h3>', humanize($name));
-	if(is_array($rule_part)) {
+	if(is_array($rule_part)) { 
+		?>
+		<div class="table-responsive">
+		<?php
 		$heading = [];
 		foreach(array_keys(current($rule_part)) AS $val) {
 			$heading[] = humanize($val);
 		}
 		$table->setHeading($heading);
 		echo $table->generate($rule_part);
+		?>
+		</div>
+		<?php
 	}
 	else {
 		printf('<p class="alert-danger">%s</p>', $rule_part);

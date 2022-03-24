@@ -1,7 +1,7 @@
 <?php namespace App\Libraries\General;
 
 class Intention { 
-const version = '2021-05-14';
+const version = '2022-03-09';
 
 const filter = [
 	'name' => [
