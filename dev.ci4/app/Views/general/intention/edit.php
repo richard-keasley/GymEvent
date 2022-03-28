@@ -95,6 +95,7 @@ foreach($intention->skills as $sk_num=>$sk_id) {
 	$inputs['skills']['value'] = $sk_id;
 	$inputs['specials']['selected'] = strval($intention->specials[$sk_num]);
 	$inputs['bonuses']['selected'] = strval($intention->bonuses[$sk_num]);
+	$tr['num'] = $sk_num + 1;
 	foreach(['description','group','difficulty'] as $key) {
 		$tr[$key] = sprintf('<button type="button" class="p-0 w-100 btn btn-light text-start eledit" style="min-height:2em;" title="click to change this skill" data-name="%s" data-row="%u">%s</button>', $key, $sk_num, $skill[$key]);
 	}
@@ -107,7 +108,7 @@ foreach($intention->skills as $sk_num=>$sk_id) {
 
 $template = ['table_open' => '<table class="table" style="min-width:40em;">'];
 $table->setTemplate($template);
-$table->setHeading(['Skill','<abbr title="group">Grp</abbr>','<abbr title="difficulty">Dif</abbr>','<abbr title="special requirements">SRs</abbr>','Bonus']);
+$table->setHeading(['', 'Skill','<abbr title="group">Grp</abbr>','<abbr title="difficulty">Dif</abbr>','<abbr title="special requirements">SRs</abbr>','Bonus']);
 echo $table->generate($tbody);
 ?>
 </section>
