@@ -104,16 +104,30 @@ public function file($basename) {
 	return $file;	
 }
 
+private $_clubrets = null;
 public function clubrets() {
-	$model = new \App\Models\Clubrets;
-	// only returns if user is listed
-	$sql = "SELECT `clubrets`.`id` FROM `clubrets` 
-		INNER JOIN `users` ON `clubrets`.`user_id`=`users`.`id`
-		WHERE `users`.`deleted_at` IS NULL 
-		AND `clubrets`.`event_id`='{$this->id}'
-		ORDER BY `users`.`name`;";
-	$res = $model->query($sql)->getResultArray();
-	return $res ? $model->find(array_column($res, 'id')) : [] ;
+	if(is_null($this->_clubrets)) {
+		$model = new \App\Models\Clubrets;
+		// only returns if user is listed
+		$sql = "SELECT `clubrets`.`id` FROM `clubrets` 
+			INNER JOIN `users` ON `clubrets`.`user_id`=`users`.`id`
+			WHERE `users`.`deleted_at` IS NULL 
+			AND `clubrets`.`event_id`='{$this->id}'
+			ORDER BY `users`.`name`;";
+		$res = $model->query($sql)->getResultArray();
+		$this->_clubrets = [];
+		
+		if($res) {
+			$ids = array_column($res, 'id');
+			$clubrets = $model->find($ids);
+			foreach($clubrets as $clubret) {
+				$key = array_search($clubret->id, $ids);
+				$this->_clubrets[$key] = $clubret;
+			}
+			ksort($this->_clubrets);
+		}
+	}
+	return $this->_clubrets;
 }
 
 public function entries() {
@@ -201,14 +215,17 @@ public function participants() {
 		foreach($dis['cats'] as $cat) {
 			$cats = explode(' ', $cat['name']);
 			$cats = array_pad($cats, count($cat_sorts), '');
-			$sort = [];
+			$this_sort = [];
 			foreach($cat_sorts as $key=>$cat_row) {
 				$pos = array_search($cats[$key], $cat_row);
 				if($pos===false) $pos = 99;
-				$sort[] = sprintf("%03d", $pos); 
+				$this_sort[] = sprintf("%03d", $pos); 
 			}
-			$cat_sort[] = implode('-', $sort);
+			$sort_order = implode('-', $this_sort);
+			# echo "{$sort_order}: {$cat['name']}<br>";
+			$cat_sort[] = $sort_order;
 		}
+		
 		array_multisort($cat_sort, $dis['cats']);
 		$participants[$diskey]['cats'] = $dis['cats'];
 	}

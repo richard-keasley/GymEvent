@@ -45,7 +45,10 @@ foreach(['clubrets', 'videos', 'music'] as $fldname) {
 
 <section><h4>Returns</h4>
 <div class="row">
-<?php foreach($event->participants() as $dis) { ?>
+<?php 
+# d($event->participants());
+
+foreach($event->participants() as $dis) { ?>
 	<div class="col-auto">
 	<?php 
 	$tbody = []; $total = 0;
