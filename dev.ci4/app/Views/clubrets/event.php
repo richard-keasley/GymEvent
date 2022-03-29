@@ -7,13 +7,16 @@ $table->setTemplate($template);
 $this->section('content');
 foreach($event->participants() as $dis) { 
 	foreach($dis['cats'] as $cat) { 
-		$table->setHeading(['#', 'name', 'club', 'DoB']);
+		$table->setHeading(['#', 'club', 'name', 'DoB']);
 		$tbody = [];
 		foreach($cat['entries'] as $entkey=>$entry) {
-			array_unshift($entry, $entkey + 1);
-			unset($entry['user_id']);
-			$entry['dob'] = date('d-M-Y', $entry['dob']);
-			$tbody[] = $entry;
+			if(!$entry['club']) $entry['club'] = 'unknown <i class="bi bi-exclamation-triangle-fill text-warning"></i>';
+			$tbody[] = [
+				$entkey + 1,
+				$entry['club'],
+				$entry['name'],
+				date('d-M-Y', $entry['dob'])
+			];
 		}
 		printf('<h6>%s - %s</h6>', $dis['name'], $cat['name']);
 		echo $table->generate($tbody);
@@ -38,7 +41,7 @@ foreach($clubrets as $rowkey=>$clubret) {
 	$label = $user->name;
 	$ok = $clubret->check();
 	if(!$ok) $label .= ' <span class="bi bi-exclamation-triangle-fill text-warning" title="There are errors in this return"></span>';
-	if($user->deleted_at) $label .= ' <span class="bi bi-trash text-danger" title="This user is disabled"></span>';
+	if($user->deleted_at) $label .= ' <span class="bi bi-x-circle text-danger" title="This user is disabled"></span>';
 	$rows[$rowkey] = getlink($clubret->url('view', 'admin'), $label);
 	$fees[$rowkey] = $clubret->fees('fees');
 	foreach(array_keys($fees[$rowkey]) as $dis_name) {

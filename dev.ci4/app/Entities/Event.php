@@ -107,19 +107,19 @@ public function file($basename) {
 private $_clubrets = null;
 public function clubrets() {
 	if(is_null($this->_clubrets)) {
+		$this->_clubrets = [];
 		$model = new \App\Models\Clubrets;
-		// only returns if user is listed
+		// include unlisted users 
 		$sql = "SELECT `clubrets`.`id` FROM `clubrets` 
 			INNER JOIN `users` ON `clubrets`.`user_id`=`users`.`id`
-			WHERE `users`.`deleted_at` IS NULL 
-			AND `clubrets`.`event_id`='{$this->id}'
+			WHERE `clubrets`.`event_id`='{$this->id}'
 			ORDER BY `users`.`name`;";
 		$res = $model->query($sql)->getResultArray();
-		$this->_clubrets = [];
 		
 		if($res) {
 			$ids = array_column($res, 'id');
 			$clubrets = $model->find($ids);
+			// sort clubrets into same order as $res (above)
 			foreach($clubrets as $clubret) {
 				$key = array_search($clubret->id, $ids);
 				$this->_clubrets[$key] = $clubret;
@@ -151,10 +151,9 @@ public function participants() {
 	}
 
 	foreach($this->clubrets() as $clubret) {
-		$user = $mdl_users->find($clubret->user_id);
-		$club = $user ? $user->name : 0 ;
-		if(!$club) continue; // user disabled
-				
+		$user = $mdl_users->withDeleted()->find($clubret->user_id);
+		$club = $user ? $user->name : '';
+			
 		foreach($clubret->participants as $row) {
 			// get discipline
 			$dis_name = $row['dis'];
