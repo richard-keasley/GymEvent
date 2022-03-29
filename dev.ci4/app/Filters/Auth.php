@@ -19,13 +19,15 @@ public function before(RequestInterface $request, $arguments = null) {
 	$check_ip = \App\Libraries\Auth::$lgn_model->check_ip($request->getIPAddress());
 	if(!$check_ip) throw new \RuntimeException('Oops! Overuse injury', 423);
 	
-	// check for login / logout
+	// check for existing login / logout
 	if($request->getPost('logout')) {
 		\App\Libraries\Auth::logout();
 	}
 	else {
 		\App\Libraries\Auth::check_login();
 	}
+	
+	// check for new login
 	switch($request->getPost('login')) {
 		case 'login':
 		$name = $request->getPost('name');
@@ -53,6 +55,16 @@ public function before(RequestInterface $request, $arguments = null) {
 		break;	
 	}
 	
+	// check this role is enabled
+	$user_role = $_SESSION['user_role'] ?? null;
+	if($user_role) {
+		$min_role = \App\Libraries\Auth::$min_role;
+		if(!\App\Libraries\Auth::check_role($min_role)) {
+			$messages[] = "{$user_role} not allowed";
+			\App\Libraries\Auth::logout();
+		}
+	}
+		
 	// check permissions
 	$path = $request->uri->getPath();
 	$allowed = \App\Libraries\Auth::check_path($path);

@@ -12,14 +12,17 @@ static $usr_model = null;
 static $lgn_model = null;
 static $appinfo = [];
 static $disabled = [];
+static $min_role = null;
 
 static function init() {
 	self::$usr_model = new \App\Models\Users();
 	self::$lgn_model = new \App\Models\Logins();
 	
 	$appvars = new \App\Models\Appvars();
-	$disabled = $appvars->get_value('home.disabled');
-	if($disabled) self::$disabled = $disabled;
+	$appval = $appvars->get_value('home.disabled');
+	if($appval) self::$disabled = $appval;
+	$appval = $appvars->get_value('home.roles');
+	self::$min_role = $appval['min'] ?? self::roles[0];
 }
 
 static function loginas($user_id, $method='login') {
@@ -27,6 +30,7 @@ static function loginas($user_id, $method='login') {
 		->where('id', $user_id)
 		->first();
 	if(!$user) return false;
+			
 	// create session and cookie
 	self::update_login($user, $method);
 	return $user->id;
@@ -116,7 +120,6 @@ static function logout() {
 /* roles and permissions */ 
 const roles = ['-', 'club', 'controller', 'admin', 99=>'superuser'];
 
-
 // can path be viewed by current user
 static private $check_paths = [];
 static function check_path($path, $index=1) {
@@ -131,8 +134,8 @@ static function check_path($path, $index=1) {
 }
 
 // can current user act as this role
-static function check_role($role) {
-	$user_role = session('user_role');
+static function check_role($role, $user_role=null) {
+	if(is_null($user_role)) $user_role = session('user_role');
 	$user_rank = intval(array_search($user_role, self::roles));
 	$check_rank = array_search($role, self::roles);
 	if($check_rank===false) return false;  # $check_rank = 99;

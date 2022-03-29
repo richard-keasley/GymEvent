@@ -27,17 +27,36 @@ public function index() {
 			$controllers[$controller] = $enabled;
 		}
 		// update
-		$data = [
-			'id' => 'home.disabled',
-			'value' => $disabled
-		];
-		$appvar = new \App\Entities\Appvar($data);
+		$errors = null;
 		$appvars = new \App\Models\Appvars();
-		if($appvars->save_var($appvar)) {
+		if(!$errors) {
+			// min role
+			$value = [
+				'min' => $this->request->getPost('min_role')
+			];
+			$data = [
+				'id' => 'home.roles',
+				'value' => $value
+			];
+			$appvar = new \App\Entities\Appvar($data);
+			if(!$appvars->save_var($appvar)) $errors = $appvars->errors();
+		}
+		if(!$errors) {
+			// disabled controllers
+			$data = [
+				'id' => 'home.disabled',
+				'value' => $disabled
+			];
+			$appvar = new \App\Entities\Appvar($data);
+			if(!$appvars->save_var($appvar)) $errors = $appvars->errors();
+		}
+		if($errors) {
+			$this->data['messages'] = $errors;
+		}
+		else {
 			$this->data['messages'][] = ['saved info', 'success'];
 			\App\Libraries\Auth::init();
 		}
-		else $this->data['messages'] = $appvars->errors();
 	}
 
 	// view

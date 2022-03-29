@@ -6,8 +6,6 @@ echo form_open(base_url(uri_string()));
 <div class="sticky-top">
 <div class="table-responsive toolbar">
 <div>
-	<button class="btn btn-secondary" type="submit" name="update" value="club0">Disable clubs</button>
-	<button class="btn btn-secondary" type="submit" name="update" value="club1">Enable clubs</button>
 	<a class="btn btn-secondary" href="<?php echo $base_url;?>/add">Add user</a>
 	<a class="btn btn-secondary" href="<?php echo $base_url;?>/logins">Logins</a>
 

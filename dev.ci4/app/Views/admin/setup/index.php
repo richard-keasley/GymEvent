@@ -12,7 +12,7 @@ echo form_open(base_url(uri_string())); ?>
 	<button name="save" value="1" type="submit" class="btn btn-primary">save</button>
 </div>
 
-<h4>Active controllers</h4>
+<h4>Active controllers / user roles</h4>
 <div class="row">
 
 <div class="col-auto">
@@ -35,6 +35,26 @@ foreach($controllers as $controller=>$enabled) { ?>
 	?>
 	</div>
 <?php } ?>
+
+<div class="my-2 border rounded border-secondary p-1">
+<label for="min_role" class="form-label">Minimum login</label>
+<?php 
+$options = [];
+foreach(\App\Libraries\Auth::roles as $role) {
+	$options[$role] = $role;
+}
+$input = [
+	'class' => 'form-select',
+	'selected' => \App\Libraries\Auth::$min_role,
+	'title' => 'Minimum login role',
+	'name' => "min_role",
+	'id' => "min_role",
+	'options' => $options
+];
+echo form_dropdown($input);
+?>
+</div>
+
 </div>
 
 <div class="col-auto">

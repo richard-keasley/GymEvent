@@ -49,17 +49,7 @@ public function index() {
 			if($role=='club') break;
 		}
 	}
-	if($update=='club0') {
-		$this->usr_model->whereIn('role', $roles)->delete();
-		$this->data['messages'][] = ["clubs disabled", 'success'];
-	}
-	if($update=='club1') {
-		$this->usr_model->whereIn('role', $roles)
-			->set('deleted_at', null)
-			->update();
-		$this->data['messages'][] = ["clubs enabled", 'success'];
-	}
-	
+		
 	// read
 	$filter_by = $this->request->getGet('by');
 	$filter_val = $this->request->getGet('val');
@@ -77,6 +67,11 @@ public function index() {
 	$this->data['users'] = $this->usr_model->findAll();
 	
 	// view 
+	$min_role = \App\Libraries\Auth::$min_role;
+	if($min_role!=\App\Libraries\Auth::roles[0]) {
+		$this->data['messages'][] = ["Minimum login role is '{$min_role}'", 'warning'];
+	}
+	
 	$this->data['modal_delete'] = [
 		'cmd' => 'del_user',
 		'title' => 'Delete <span class="dataname">user</span>',
