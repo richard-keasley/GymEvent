@@ -38,11 +38,18 @@ $this->section('sidebar');
 $fees = []; $cols = []; $rows = [];
 foreach($clubrets as $rowkey=>$clubret) {
 	$user = $clubret->user();
-	$label = $user->name;
+	if($user) {
+		$label = $user->name;
+		if($user->deleted_at) $label .= ' <i class="bi bi-x-circle text-danger" title="This user is disabled"></i>';		
+	}
+	else $label = 'unknown <i class="bi bi-exclamation-triangle-fill text-warning"></i>';
+	
 	$ok = $clubret->check();
 	if(!$ok) $label .= ' <span class="bi bi-exclamation-triangle-fill text-warning" title="There are errors in this return"></span>';
-	if($user->deleted_at) $label .= ' <span class="bi bi-x-circle text-danger" title="This user is disabled"></span>';
+	
 	$rows[$rowkey] = getlink($clubret->url('view', 'admin'), $label);
+	if($user) $rows[$rowkey] .= ' ' . $user->link();
+	
 	$fees[$rowkey] = $clubret->fees('fees');
 	foreach(array_keys($fees[$rowkey]) as $dis_name) {
 		if(!in_array($dis_name, $cols)) $cols[] = $dis_name;

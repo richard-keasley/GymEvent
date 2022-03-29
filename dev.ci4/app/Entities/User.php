@@ -18,17 +18,9 @@ public function getAbbr() {
 		$this->attributes['abbr'];
 }
 
-public function link($type='view', $text='') {
-	switch($text) {
-		case '': $text=$type; break;
-	}
-	switch($type) {
-		case 'view': $arr = ['users', 'edit', $this->id]; break;
-		case 'edit': 
-		default: 
-			$arr = ['users', 'view', $this->id]; break;
-	}
-	return sprintf('<a href="%s">%s</a>', $href = base_url($arr), $text);
+public function link() {
+	$label = sprintf('<i class="bi bi-person text-primary" title="View user %s"></i>', $this->name);
+	return getlink("admin/users/view/{$this->id}", $label);
 }
 
 public function clubrets() {

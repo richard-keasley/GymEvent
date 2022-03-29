@@ -66,6 +66,9 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	if($this->data['device']) {
 		$this->data['heading'] .= " ({$this->data['device']})";
 	}
+	else {
+		$this->data['device'] = 'live website';
+	}
 }
 
 }

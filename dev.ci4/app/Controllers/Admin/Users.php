@@ -155,13 +155,14 @@ public function view($user_id=0) {
 	$this->data['heading'] = $this->data['user']->name;
 	$this->data['breadcrumbs'][] = ["admin/users/view/{$user_id}", $this->data['user']->name];
 	
+	$this->data['toolbar'] = [
+		\App\Libraries\View::back_link('admin/users')
+	];
+	
 	if(!$this->data['user']->deleted_at) {
-		$this->data['toolbar'] = [
-			\App\Libraries\View::back_link('admin/users'),
-			getlink("admin/users/edit/{$user_id}", 'edit'),
-			sprintf('<a href="%s/%u" class="btn btn-outline-secondary">logins</a>', base_url('admin/users/logins/user_id'), $user_id),
-			'<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUser" title="Merge data from another user"><span class="bi bi-layer-backward"></span></button>'
-		];
+		$this->data['toolbar'][] = getlink("admin/users/edit/{$user_id}", 'edit');
+		$this->data['toolbar'][] = sprintf('<a href="%s/%u" class="btn btn-outline-secondary">logins</a>', base_url('admin/users/logins/user_id'), $user_id);
+		$this->data['toolbar'][] = '<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUser" title="Merge data from another user"><span class="bi bi-layer-backward"></span></button>';
 	}
 	
 	if(!$this->data['user_self']) {
@@ -178,10 +179,9 @@ public function view($user_id=0) {
 		}
 		else {
 			$this->data['toolbar'][] = '<button name="enable" value="disable" type="submit" title="disable" class="btn bi-x-circle btn-danger"></button>';
-			# $this->data['toolbar'][] = getlink("admin/users/merge/{$user_id}", '<span class="bi-layer-backward" title="merge"></span>');			
-		}
-		if(\App\Libraries\Auth::check_path('superuser')) { 
-			$this->data['toolbar'][] = '<button name="loginas" value="1" type="submit" class="btn btn-secondary">login as&hellip;</button>';
+			if(\App\Libraries\Auth::check_path('superuser')) { 
+				$this->data['toolbar'][] = '<button name="loginas" value="1" type="submit" class="btn btn-secondary">login as&hellip;</button>';
+			}
 		}
 	}
 	return view('users/view', $this->data);

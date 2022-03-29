@@ -152,7 +152,7 @@ public function participants() {
 
 	foreach($this->clubrets() as $clubret) {
 		$user = $mdl_users->withDeleted()->find($clubret->user_id);
-		$club = $user ? $user->name : '';
+		$club = $user ? $user->abbr : '';
 			
 		foreach($clubret->participants as $row) {
 			// get discipline
