@@ -1,9 +1,9 @@
 <?php $this->extend('default');
 $downloads = [];
-$logo = '';
+$logo_img = '';
 foreach($event->files as $file) {
 	if(strpos($file, 'logo.')===0) {
-		$logo = $file;
+		$logo_img = sprintf('<img src="/public/events/%u/files/%s">', $event->id, $file);
 	}
 	else {
 		$downloads[] = $file;
@@ -14,9 +14,11 @@ $this->section('content'); ?>
 <section class="clearfix">
 <p><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></p>
 
-<?php if($logo) { 
-    printf('<img src="/public/events/%u/files/%s" style="float:right;width:15em;max-width:30%%;">', $event->id, $logo);
-} ?>
+<?php if($logo_img) { ?>
+	<div class="float-end ms-1 mb-1" style="width:45%; max-width:15em;">
+	<?php echo $logo_img; ?>
+	</div>
+<?php } ?>
 
 <div><?php echo $event->description;?></div>
 <?php if($event->clubrets<2 && $event->payment) {?>

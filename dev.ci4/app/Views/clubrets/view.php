@@ -35,9 +35,10 @@ if(count($tbody)) {
 	$table->setHeading(['#', '', 'name', 'BG', 'DoB']);
 	echo $table->generate($tbody);
 }
-echo $clubret->errors('staff');
 ?>
 </div>
+<?php echo $clubret->errors('staff'); ?>
+
 
 <h5>Participants</h5>
 <div class="table-responsive">
@@ -61,9 +62,9 @@ if(count($tbody)) {
 	$table->setHeading(['#', 'dis', 'category', 'name', 'BG', 'DoB']);
 	echo $table->generate($tbody);
 }
-echo $clubret->errors('participants');
 ?>
 </div>
+<?php echo $clubret->errors('participants'); ?>
 
 </section>
 

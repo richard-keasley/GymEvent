@@ -40,7 +40,7 @@ foreach($entries as $dis) { ?>
 			$tbody[] = [
 				'num' => $entry->num,
 				'name' => $entry->name,
-				'club' => $users[$entry->user_id]->name ?? '?',
+				'club' => $users[$entry->user_id]->abbr ?? '?',
 				'DoB' => date('d-M-Y', $dob)
 			];
 		}

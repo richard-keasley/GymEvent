@@ -232,6 +232,30 @@ public function participants() {
 	return $participants;
 }
 
+private $_staff = null;
+public function staff() {
+	if(is_null($this->_staff)) {
+		$this->_staff = [];
+		$mdl_users = new \App\Models\Users();
+		foreach($this->clubrets() as $clubret) {
+			$user = $mdl_users->withDeleted()->find($clubret->user_id);
+			$club = $user ? $user->abbr : '';
+			foreach($clubret->staff as $row) {
+				$namestring = new \App\Entities\namestring($row['name']);
+				$this->_staff[] = [
+					'club' => $club,
+					'user_id' => $clubret->user_id,
+					'cat' => $row['cat'],
+					'name' => $namestring->name,
+					'dob' => $namestring->dob,
+					'bg' => $namestring->bg
+				];
+			}
+		}
+	}
+	return $this->_staff;
+}
+
 public function link($type, $user_id=0) {
 	if($this->deleted_at) return '';
 	if(!$user_id) $user_id = intval(session('user_id'));

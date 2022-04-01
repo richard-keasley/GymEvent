@@ -213,7 +213,7 @@ echo $acc->htm();
 
 echo form_close(); 
 
-d($event);
+# d($event);
 
 $this->endSection(); 
 

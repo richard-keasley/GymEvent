@@ -22,7 +22,7 @@ $thead = ['', '0. waiting', '1. edit', '2. closed', '3. finished'];
 <?php 
 $tbody = [
 	['guest', 'nothing', 'nothing', 'nothing', 'nothing'],
-	['club', 'nothing', 'edit own', 'view own', 'nothing'],
+	['club', 'nothing', 'edit own', '<abbr title="view event entries">view all</abbr>', 'nothing'],
 	['admin', 'edit all', 'edit all', 'edit all', 'nothing']
 ];
 $table->setHeading($thead);

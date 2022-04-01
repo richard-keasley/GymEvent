@@ -79,6 +79,23 @@ $tfoot[0] = 'Total';
 $table->setHeading($thead);
 $table->setFooting($tfoot);
 echo $table->generate($tbody);
+
+echo '<h4>Staff</h4>';
+$tbody = [];
+foreach($event->staff() as $entkey=>$entry) {
+	$tbody[] = [
+		# $entkey + 1,
+		$entry['club'],
+		$entry['cat'],
+		$entry['name'],
+		$entry['bg'],
+		# date('d-M-Y', $entry['dob'])
+	];
+}
+$table->setHeading(['club', 'type', 'name', 'BG']);
+$table->setFooting([]);
+echo $table->generate($tbody);
+
 $this->endSection(); 
 
 $this->section('bottom'); 
