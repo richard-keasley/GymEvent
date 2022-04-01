@@ -1,9 +1,10 @@
 <?php $this->extend('default');
 $downloads = [];
-$logo_img = '';
+
+$logo_src = base_url('/app/profile/logo.png');
 foreach($event->files as $file) {
 	if(strpos($file, 'logo.')===0) {
-		$logo_img = sprintf('<img src="/public/events/%u/files/%s">', $event->id, $file);
+		$logo_src = sprintf('/public/events/%u/files/%s', $event->id, $file);
 	}
 	else {
 		$downloads[] = $file;
@@ -14,9 +15,9 @@ $this->section('content'); ?>
 <section class="clearfix">
 <p><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></p>
 
-<?php if($logo_img) { ?>
+<?php if($logo_src) { ?>
 	<div class="float-end ms-1 mb-1" style="width:45%; max-width:15em;">
-	<?php echo $logo_img; ?>
+	<img src="<?php echo base_url($logo_src);?>">
 	</div>
 <?php } ?>
 

@@ -68,16 +68,16 @@ public function view($event_id=0) {
 	
 	$cmd = $this->request->getPost('cmd');
 	if($cmd=='del_item') {
-		$event_id = $this->request->getPost('item_id') + 1000;
-		if($this->mdl_events->delete_all($event_id)) {
-			$this->data['messages'][] = ["Event deleted", 'success'];
+		$item_id = $this->request->getPost('item_id');
+		if($this->mdl_events->delete_all($item_id)) {
+			$this->data['messages'][] = ["Event {$item_id} deleted", 'success'];
 			$session = \Config\Services::session();
 			$session->setFlashdata('messages', $this->data['messages']);
 			return redirect()->to(base_url('admin/events'));
 		}
 		else {
 			$this->data['messages'] = $this->mdl_events->errors();
-			$this->data['messages'][] = "Event {$event_id} not deleted.";
+			$this->data['messages'][] = "Event {$item_id} not deleted.";
 		}
 	}
 	

@@ -1,6 +1,8 @@
 <?php $this->extend('default');
  
-$this->section('content');
+$this->section('content'); ?>
+<img src="<?php echo base_url('/app/profile/logo.png');?>" class="float-end" style="width:10em;">
+<?php
 echo $body;
 $this->endSection(); 
 

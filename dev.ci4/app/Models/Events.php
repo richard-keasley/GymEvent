@@ -37,7 +37,8 @@ public function delete_all($event_id) {
 	$model->where('event_id', $event_id)->delete(null, true);
 	$model = new \App\Models\Entries;
 	$model->delete_event($event_id);
-	$this->delete($event_id, true);	
+	$this->delete($event_id, true);
+	return true;
 }
 
 static function delete_path($path) {
