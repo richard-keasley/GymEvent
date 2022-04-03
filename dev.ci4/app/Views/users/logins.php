@@ -1,7 +1,4 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table compact">'];
-$table->setTemplate($template);
 
 $this->section('content');
 echo form_open(base_url(uri_string()));
@@ -22,14 +19,20 @@ foreach($logins as $login) {
 	$tbody[] = $row;
 	
 }
-if($tbody) {
+if($tbody) { ?>
+	<div class="table-responsive">
+	<?php
+	$table = new \CodeIgniter\View\Table();
+	$template = ['table_open' => '<table class="table">'];
+	$table->setTemplate($template);
 	$table->setHeading(['time', 'IP', 'location', 'user', '', '']);
 	echo $table->generate($tbody);
-}
+	?>
+	</div> 
+<?php }
 
 echo form_close();
 
 # d($logins);
 
 $this->endSection(); 
-

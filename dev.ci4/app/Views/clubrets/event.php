@@ -19,7 +19,7 @@ foreach($event->participants() as $dis) {
 			];
 		}
 		printf('<h6>%s - %s</h6>', $dis['name'], $cat['name']);
-		echo $table->generate($tbody);
+		printf('<div class="table-responsive">%s</div>', $table->generate($tbody));
 	}
 }
 $this->endSection(); 
@@ -78,7 +78,7 @@ $tfoot[0] = 'Total';
 
 $table->setHeading($thead);
 $table->setFooting($tfoot);
-echo $table->generate($tbody);
+printf('<div class="table-responsive">%s</div>', $table->generate($tbody));
 
 echo '<h4>Staff</h4>';
 $tbody = [];
@@ -94,7 +94,7 @@ foreach($event->staff() as $entkey=>$entry) {
 }
 $table->setHeading(['club', 'type', 'name', 'BG']);
 $table->setFooting([]);
-echo $table->generate($tbody);
+printf('<div class="table-responsive">%s</div>', $table->generate($tbody));
 
 $this->endSection(); 
 

@@ -4,13 +4,13 @@ class Vartable {
 public $items = [];
 public $footer = null;
 public $template = [
-	'htm_start' => '<table class="table table-sm table-borderless">',
+	'htm_start' => '<div class="table-responsive"><table class="table table-sm table-borderless">',
 	'items_start' => '<tbody>', 
 	'item' => '<tr><th class="py-1 text-end">%s</th><td>%s</td></tr>',
 	'items_end' => '</tbody>', 
 	'footer_start' => '<tfoot>',
 	'footer_end' => '</tfoot>',
-	'htm_end' => '</table>'
+	'htm_end' => '</table></div>'
 ];
 
 public function __construct($items=[]) {
