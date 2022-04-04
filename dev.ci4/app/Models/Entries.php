@@ -65,8 +65,32 @@ public function update_discipline($id, $data) {
 }
 
 /* entries */
+public function get_errors($event_id) {
+	$counts = [];
+	$errors = [];
+	$qry_dis = $this->disciplines->getWhere(['event_id'=>$event_id]);
+	foreach($qry_dis->getResult() as $dis) {
+		$entrycats = $this->entrycats
+			->where('discipline_id', $dis->id)
+			->findAll();
+		foreach($entrycats as $entrycat) {
+			$entries = $this
+				->where('category_id', $entrycat->id)
+				->findAll();
+			foreach($entries as $entry) {
+				$num = $entry->num;
+				if(isset($counts[$num])) {
+					$counts[$num]++;
+					$errors[$num] = "Number {$num} is used {$counts[$num]} times";
+				}
+				else $counts[$num] = 1;
+			}
+		}
+	}
+	return $errors;
+}
+
 public function renumber($event_id) {
-	$bld_ent = $this->db->table('evt_entries');
 	$num = 1;
 	
 	$qry_dis = $this->disciplines->orderBy('name')->getWhere(['event_id'=>$event_id]);

@@ -60,6 +60,10 @@ public function view($event_id=0, $format='full') {
 		$this->find($event_id);
 	}
 	
+	// view
+	foreach($this->ent_model->get_errors($event_id) as $error) {
+		$this->data['messages'][] = $error;
+	}
 	$this->data['users'] = $this->ent_model->evt_users($event_id);
 	$this->data['format'] = $format=='plain' ? 'plain' : 'full';
 	if($this->data['event']->clubrets==0) $this->data['messages'][] = ['Returns have not started for this event', 'warning'];
@@ -148,8 +152,10 @@ public function edit($event_id=0) {
 	}		
 	
 	// view
+	foreach($this->ent_model->get_errors($event_id) as $error) {
+		$this->data['messages'][] = $error;
+	}
 	$this->data['breadcrumbs'][] = "admin/entries/edit/{$event_id}";
-	
 	$this->data['users'] = $this->ent_model->evt_users($event_id);
 	$this->data['filter'] = $filter;
 	return view('entries/edit', $this->data);
