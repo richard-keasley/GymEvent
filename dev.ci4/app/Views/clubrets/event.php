@@ -4,10 +4,13 @@ $template = ['table_open' => '<table class="table">'];
 $table->setTemplate($template);
 #$clubret = new \App\Entities\Clubret;
 
-$this->section('content');
-foreach($event->participants() as $dis) { 
-	foreach($dis['cats'] as $cat) { 
-		$table->setHeading(['#', 'club', 'name', 'DoB']);
+$this->section('content');?>
+<div class="d-flex flex-wrap gap-3">
+<?php foreach($event->participants() as $dis) { ?>
+	<section>
+	<?php
+	foreach($dis['cats'] as $cat) { 	 
+		$table->setHeading(['', 'club', 'name', 'DoB']);
 		$tbody = [];
 		foreach($cat['entries'] as $entkey=>$entry) {
 			if(!$entry['club']) $entry['club'] = 'unknown <i class="bi bi-exclamation-triangle-fill text-warning"></i>';
@@ -18,10 +21,15 @@ foreach($event->participants() as $dis) {
 				date('d-M-Y', $entry['dob'])
 			];
 		}
-		printf('<h6>%s - %s</h6>', $dis['name'], $cat['name']);
+		printf('<h5>%s - %s</h5>', $dis['name'], $cat['name']);
 		printf('<div class="table-responsive">%s</div>', $table->generate($tbody));
+		
 	}
-}
+	?>
+	</section>
+<?php } ?>
+</div>
+<?php 
 $this->endSection(); 
 
 $this->section('top');
@@ -76,11 +84,19 @@ $tfoot[] = array_sum($tfoot);
 $thead[] = 'TOT';
 $tfoot[0] = 'Total';
 
+?>
+<h4>Payments due</h4>
+<div class="table-responsive">
+<?php
 $table->setHeading($thead);
 $table->setFooting($tfoot);
-printf('<div class="table-responsive">%s</div>', $table->generate($tbody));
+echo $table->generate($tbody);
+?>
+</div>
 
-echo '<h4>Staff</h4>';
+<h4>Staff</h4>
+<div class="table-responsive">
+<?php
 $tbody = [];
 foreach($event->staff() as $entkey=>$entry) {
 	$tbody[] = [
@@ -94,8 +110,10 @@ foreach($event->staff() as $entkey=>$entry) {
 }
 $table->setHeading(['club', 'type', 'name', 'BG']);
 $table->setFooting([]);
-printf('<div class="table-responsive">%s</div>', $table->generate($tbody));
-
+echo $table->generate($tbody);
+?>
+</div>
+<?php
 $this->endSection(); 
 
 $this->section('bottom'); 

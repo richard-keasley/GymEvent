@@ -1,6 +1,6 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table compact">'];
+$template = ['table_open' => '<table class="table table-hover">'];
 $table->setTemplate($template);
 
 $this->section('content'); 
@@ -66,7 +66,7 @@ foreach($logins as $login) {
 }
 if($tbody) {
 	$table->setHeading(array_keys($tbody[0]));
-	echo $table->generate($tbody);
+	printf('<div class="table-responsive">%s</div>', $table->generate($tbody));
 } ?>
 </section>
 

@@ -13,6 +13,12 @@ body {
 	display: none ;
 }
 
+}
+
+.toolbar > .nav-link {
+	border: 1px solid #CBB;
+	border-radius: .25rem;
+	padding: .375em .75em;
 } 
 
 .table-responsive .table td {
