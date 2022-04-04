@@ -50,7 +50,7 @@ EOT;
 	return view('events/index', $this->data);
 }
 
-public function view($event_id=0) {
+public function view($event_id=0, $format='full') {
 	$this->find($event_id);
 	$this->data['heading'] .= ' - entries';
 	
@@ -61,7 +61,7 @@ public function view($event_id=0) {
 	}
 	
 	$this->data['users'] = $this->ent_model->evt_users($event_id);
-			
+	$this->data['format'] = $format=='plain' ? 'plain' : 'full';
 	if($this->data['event']->clubrets==0) $this->data['messages'][] = ['Returns have not started for this event', 'warning'];
 	if($this->data['event']->clubrets==1) $this->data['messages'][] = ['Returns for this event are still open', 'warning'];
 	return view('entries/view', $this->data);

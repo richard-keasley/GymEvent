@@ -1,16 +1,15 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table">'];
-$table->setTemplate($template);
 
 $this->section('content');
 if(\App\Libraries\Auth::check_path('admin/entries/edit')) {
+	$link_format = $format=='plain' ? 'full' : 'plain' ;
 	$attr = [
 		'class' => "toolbar nav sticky-top"
 	];
 	echo form_open(base_url(uri_string()), $attr);
 	echo \App\Libraries\View::back_link("admin/events/view/{$event->id}");
 	echo getlink("admin/entries/edit/{$event->id}", 'edit');
+	echo getlink("admin/entries/view/{$event->id}/{$link_format}", $link_format);
 	echo getlink("admin/entries/categories/{$event->id}", 'categories');
 	echo getlink("admin/entries/clubs/{$event->id}", 'clubs');
 	echo getlink("admin/entries/import/{$event->id}", 'import');
@@ -29,20 +28,32 @@ if(\App\Libraries\Auth::check_path('admin/entries/edit')) {
 	echo form_close();
 } 
 
+$table = new \CodeIgniter\View\Table();
+$template = ['table_open' => '<table class="table">'];
+$table->setTemplate($template);
+
 foreach($entries as $dis) { ?>
 	<section>
 	<h4><?php echo $dis->name;?></h4>
 	<?php foreach($dis->cats as $cat) {
- 		$table->setHeading(['num', 'name', 'club', 'DoB']);
+		if($format=='full') {
+			$table->setHeading(['num', 'club', 'name', 'DoB']);
+		}
+		else {
+			$table->autoHeading = false;
+		}
 		$tbody = [];
 		foreach($cat->entries as $entry) {
-			$dob = strtotime($entry->dob);
-			$tbody[] = [
-				'num' => $entry->num,
-				'name' => $entry->name,
-				'club' => $users[$entry->user_id]->abbr ?? '?',
-				'DoB' => date('d-M-Y', $dob)
+			$row = [
+				$entry->num,
+				$users[$entry->user_id]->abbr ?? '?',
+				$entry->name
 			];
+			if($format=='full') {
+				$dob = strtotime($entry->dob);
+				$row[] = date('d-M-Y', $dob);
+			}
+			$tbody[] = $row;
 		}
 		printf('<h6>%s</h6>', $cat->name);
 		?>
