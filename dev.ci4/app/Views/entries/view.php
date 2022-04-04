@@ -1,6 +1,7 @@
 <?php $this->extend('default');
 
 $this->section('content');
+$format = $format ?? 'full' ;
 if(\App\Libraries\Auth::check_path('admin/entries/edit')) {
 	$link_format = $format=='plain' ? 'full' : 'plain' ;
 	$attr = [

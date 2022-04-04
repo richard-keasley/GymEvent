@@ -10,11 +10,10 @@ foreach($users as $user) {
 		$user->deleted_at ?  
 			'<span title="club disabled" class="bi-x-circle text-danger"></span>' : 
 			'<span title="club enabled" class="bi-check-circle text-success"></span>',
-		$user->name,
+		sprintf('%s <a href="%s" title="view user details" class="bi-person text-primary"></a>', $user->name, base_url("admin/users/view/{$user->id}")),
 		$user->abbr,
 		$user->email,
-		$user->entcount,
-		sprintf('<a href="%s" class="bi-eye btn btn-sm btn-outline-secondary"></a>', base_url("admin/users/view/{$user->id}"))
+		$user->entcount
 	];
 }
 $table = new \CodeIgniter\View\Table();
