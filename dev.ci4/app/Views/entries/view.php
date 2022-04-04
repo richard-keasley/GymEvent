@@ -29,6 +29,9 @@ if(\App\Libraries\Auth::check_path('admin/entries/edit')) {
 	echo form_close();
 } 
 
+?>
+<div class="d-flex flex-wrap gap-4">
+<?php 
 $table = new \CodeIgniter\View\Table();
 $template = ['table_open' => '<table class="table">'];
 $table->setTemplate($template);
@@ -56,15 +59,13 @@ foreach($entries as $dis) { ?>
 			}
 			$tbody[] = $row;
 		}
-		printf('<h6>%s</h6>', $cat->name);
-		?>
-		<div class="table-responsive">
-		<?php echo $table->generate($tbody); ?>
-		</div>
-		<?php
+		printf('<h5>%s</h5>', $cat->name);
+		printf('<div class="table-responsive">%s</div>', $table->generate($tbody)); 
 	} ?>
 	</section>
-<?php } 
+<?php } ?>
+</div>
+<?php
 # d($entries);
 # d($event);
 # d($users);

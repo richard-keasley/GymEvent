@@ -78,12 +78,18 @@ public function get_errors($event_id) {
 				->where('category_id', $entrycat->id)
 				->findAll();
 			foreach($entries as $entry) {
-				$num = $entry->num;
-				if(isset($counts[$num])) {
-					$counts[$num]++;
-					$errors[$num] = "Number {$num} is used {$counts[$num]} times";
+				$num = intval($entry->num);
+				$count = $counts[$num] ?? 0 ;
+				$count++;
+				if($num) {
+					if($count>1) {
+						$errors[$num] = "Number {$num} is used {$count} times";
+					}
 				}
-				else $counts[$num] = 1;
+				else {
+					$errors[$num] = "There are {$count} entries with no number";
+				}
+				$counts[$num] = $count;
 			}
 		}
 	}
