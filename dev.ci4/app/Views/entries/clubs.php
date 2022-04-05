@@ -10,7 +10,7 @@ foreach($users as $user) {
 		$user->deleted_at ?  
 			'<span title="club disabled" class="bi-x-circle text-danger"></span>' : 
 			'<span title="club enabled" class="bi-check-circle text-success"></span>',
-		sprintf('%s <a href="%s" title="view user details" class="bi-person text-primary"></a>', $user->name, base_url("admin/users/view/{$user->id}")),
+		$user->name .' ' . $user->link(),
 		$user->abbr,
 		$user->email,
 		$user->entcount
@@ -25,7 +25,7 @@ echo $table->generate($tbody);
 # d($tbody);
 
 # d($users);
-#d($entries);
+# d($entries);
 
 $this->endSection(); 
 

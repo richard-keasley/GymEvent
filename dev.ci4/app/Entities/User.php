@@ -19,8 +19,10 @@ public function getAbbr() {
 }
 
 public function link() {
+	$path = "admin/users/view/{$this->id}";
+	if(!\App\Libraries\Auth::check_path($path)) return '';
 	$label = sprintf('<i class="bi bi-person text-primary" title="View user %s"></i>', $this->name);
-	return getlink("admin/users/view/{$this->id}", $label);
+	return anchor(base_url($path), $label);
 }
 
 public function clubrets() {

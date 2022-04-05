@@ -4,7 +4,7 @@ $table = new \CodeIgniter\View\Table();
 $this->section('content'); ?>
 <section>
 <h2>Club</h2>
-<p><label>Club:</label> <?php echo $user->name;?></p>
+<p><label>Club:</label> <?php echo $user->name;?> <?php echo $user->link();?></p>
 <p><label>Email:</label> <?php echo $user->email;?></p>
 <p><label for="name">Contact name:</label> <?php echo $clubret->name;?></p>
 <p><label for="address">address:</label><br><span class="textarea"><?php echo $clubret->address;?></span></p>
