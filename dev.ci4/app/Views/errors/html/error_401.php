@@ -7,38 +7,41 @@ $segments = $this->request->uri->getSegments();
 $controller = isset($segments[0]) ? $segments[0] : '' ;
 $allow_new = $controller=='clubrets';
 
-$attr = [
-	'id' => "existing"
-];
-echo form_open(base_url(uri_string()), $attr);
+$attr = ['id' => "existing"];
+$hidden = ['tabView' => '#existing'];
+echo form_open(base_url(uri_string()), $attr, $hidden);
 ?>
-	<input type="hidden" name="tabView" value="#existing">
-	<p class="form-floating">
-		<input class="form-control" type="text" name="name" placeholder="user name" value="<?php echo $postval['name'];?>" required autofocus>
-		<label for="name" title="User name or club name" class="form-label">User name</label>
-	</p>
-	<p class="form-floating">
-		<input class="form-control" type="password" name="password" placeholder="Password" value="<?php echo $postval['password'];?>" required>
-		<label class="form-label" for="password">Password</label>
-	</p>
-	<p>
-		<button name="login" type="submit" value="login" class="btn btn-primary">Login</button>
-		<?php if($allow_new) { ?>
-		<button type="button" class="btn btn-outline-secondary" onclick="tabShow('#create')">Create an account</button>
-		<?php } ?>
-		<?php if($show_reset) { ?>
-		<a title="forgot your password?" class="btn btn-outline-secondary" href="<?php echo base_url('reset');?>">Reset password</a>
-		<?php } ?>
-	</p>
-</form>
+<p class="form-floating">
+	<input class="form-control" type="text" name="name" placeholder="user name" value="<?php echo $postval['name'];?>" required autofocus>
+	<label for="name" title="User name or club name" class="form-label">User name</label>
+</p>
+<p class="form-floating">
+	<input class="form-control" type="password" name="password" placeholder="Password" value="<?php echo $postval['password'];?>" required>
+	<label class="form-label" for="password">Password</label>
+</p>
+<p>
+	<button name="login" type="submit" value="login" class="btn btn-primary">Login</button>
+	<?php if($allow_new) { ?>
+	<button type="button" class="btn btn-outline-secondary" onclick="tabShow('#create')">Create an account</button>
+	<?php } ?>
+	<?php if($show_reset) { ?>
+	<a title="forgot your password?" class="btn btn-outline-secondary" href="<?php echo base_url('reset');?>">Reset password</a>
+	<?php } ?>
+</p>
+<?php 
+// #existing
+echo form_close();
 
-<?php if($allow_new) { 
+
+if($allow_new) { 
 $attr = [
 	'id' => "create",
 	'autocomplete' => "off"
 ];
-echo form_open(base_url(uri_string()), $attr);?>
-<input type="hidden" name="tabView" value="#create">
+$hidden = [
+	'tabView' => '#create'
+];
+echo form_open(base_url(uri_string()), $attr, $hidden);?>
 <p class="form-floating">
 	<input class="form-control" type="text" name="name" value="<?php echo $postval['name'];?>" id="newname" placeholder="" required autofocus>
 	<label for="newname" title="Club name" class="form-label">Club name</label>
@@ -69,6 +72,7 @@ function tabShow(tabView) {
 }
 </script>
 <?php 
+// #create
 echo form_close();
 }
 

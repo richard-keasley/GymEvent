@@ -17,7 +17,7 @@ public function before(RequestInterface $request, $arguments = null) {
 	$messages = [];
 	
 	$check_ip = \App\Libraries\Auth::$lgn_model->check_ip($request->getIPAddress());
-	if(!$check_ip) throw new \RuntimeException('Oops! Overuse injury', 423);
+	# if(!$check_ip) throw new \RuntimeException('Oops! Overuse injury', 423);
 	
 	// check for existing login / logout
 	if($request->getPost('logout')) {
@@ -30,8 +30,8 @@ public function before(RequestInterface $request, $arguments = null) {
 	// check for new login
 	switch($request->getPost('login')) {
 		case 'login':
-		$name = $request->getPost('name');
-		$password = $request->getPost('password');
+		$name = trim($request->getPost('name'));
+		$password = trim($request->getPost('password'));
 		if(!\App\Libraries\Auth::login($name, $password)) {
 			$messages[] = 'Username or Password is wrong';
 		}
@@ -39,6 +39,9 @@ public function before(RequestInterface $request, $arguments = null) {
 		
 		case 'new';
 		$postUser = new \App\Entities\User($request->getPost());
+		$postUser->name = trim($postUser->name);
+		$postUser->password = trim($postUser->password);
+		$postUser->password2 = trim($postUser->password2);
 		if($postUser->password2!==$postUser->password) $messages[] = 'Passwords do not match';
 		if(!$messages) {
 			$postUser->role = 'club';

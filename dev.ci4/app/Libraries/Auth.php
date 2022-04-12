@@ -87,24 +87,41 @@ static function check_login() {
 }  
  
 static function login($name, $password) {
-	$login = ['error' => 'invalid username'];
+	$login = [
+		'user_id' => 0,
+		'error' => 'login error'
+	];
+			
 	$user = self::$usr_model
 		->where('name', $name)
 		->first();
 	if($user) {
-		$login['error'] = 'wrong password';
-		$login['user_id'] = $user->id;
+		$login['user_id'] = $user->id ;
 		if(password_verify($password, $user->password)) {
-			if(self::loginas($user->id, 'login')) {
-				$login['error'] = '';
-				self::$lgn_model->insert($login);
-				return $user->id;
+			if(self::loginas($login['user_id'], 'login')) {
+				$login['error'] = ''; // success
+			}
+			else {
+				$login['error'] = "could not login as {$name}";
 			}
 		}
+		else {
+			$login['error'] = "wrong password";
+		}
 	}
+	else {
+		$login['error'] = "invalid username ({$name})";
+	}
+	
+	self::$lgn_model->insert($login);
+
+	if(!$login['error']) {
+		// success
+		return $login['user_id'];
+	}
+	
 	// fail
 	self::logout();
-	self::$lgn_model->insert($login);	
 	return 0;
 }
 

@@ -40,6 +40,6 @@ if($tbody) { ?>
 
 echo form_close();
 
- d($logins);
+# d($logins);
 
 $this->endSection(); 
