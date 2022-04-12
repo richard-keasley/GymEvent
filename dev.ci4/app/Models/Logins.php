@@ -36,8 +36,8 @@ function ip_blocked($ip) {
 }
 	
 function check_ip($ip) {
-	$ip_time = 'P7D'; // amount of time to remove records
-	$ip_errors = 5; // max number of errors allowed per IP address
+	$ip_time = 'P2D'; // amount of time to remove records
+	$ip_errors = 7; // max number of errors allowed per IP address
 	
 	// delete old records (remove temporary blocks)
 	$dt = new \DateTime(); 

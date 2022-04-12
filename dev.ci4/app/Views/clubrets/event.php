@@ -7,7 +7,7 @@ $table->setTemplate($template);
 $this->section('content');?>
 <div class="d-flex flex-wrap gap-3">
 <?php foreach($event->participants() as $dis) { ?>
-	<section>
+	<section class="mw-100">
 	<?php
 	foreach($dis['cats'] as $cat) { 	 
 		$table->setHeading(['', 'club', 'name', 'DoB']);
@@ -43,7 +43,11 @@ echo form_close();
 $this->endSection(); 
 
 $this->section('sidebar');
-$fees = []; $cols = []; $rows = [];
+?>
+<h4>Payments due</h4>
+<div class="table-responsive">
+<?php
+$fees = []; $cols = []; $rows = []; $count = [];
 foreach($clubrets as $rowkey=>$clubret) {
 	$user = $clubret->user();
 	if($user) {
@@ -58,36 +62,36 @@ foreach($clubrets as $rowkey=>$clubret) {
 	$rows[$rowkey] = getlink($clubret->url('view', 'admin'), $label);
 	if($user) $rows[$rowkey] .= ' ' . $user->link();
 	
-	$fees[$rowkey] = $clubret->fees('fees');
-	foreach(array_keys($fees[$rowkey]) as $dis_name) {
-		if(!in_array($dis_name, $cols)) $cols[] = $dis_name;
+	$count[$rowkey] =[];
+	foreach($clubret->participants as $participant) {
+		$dis = $participant['dis'];
+		if(empty($count[$rowkey][$dis])) $count[$rowkey][$dis] = 0;
+		$count[$rowkey][$dis]++;
+		if(!in_array($dis, $cols)) $cols[] = $dis;
 	}
+		
+	$cr_fees = $clubret->fees('fees');
+	$fees[$rowkey] = array_sum(array_column($cr_fees, 1));
 }
 
 $tbody = [];
 foreach($rows as $rowkey=>$club) {
 	$tbody[$rowkey] = [$club];
-	$rowtot = 0 ;
 	foreach($cols as $colkey) {
-		$tbody[$rowkey][$colkey] = empty($fees[$rowkey][$colkey]) ? 0 : $fees[$rowkey][$colkey][1];
-		$rowtot += $tbody[$rowkey][$colkey];
+		$tbody[$rowkey][$colkey] = $count[$rowkey][$colkey] ?? 0;
+
 	}
-	$tbody[$rowkey][] = $rowtot;
+	$tbody[$rowkey]['fees'] = sprintf('&pound;&nbsp;%.2f', $fees[$rowkey]);
 }
-$tfoot = [0=>0]; $thead = [''];
+$tfoot = [sprintf('[%u clubs]', count($tbody))]; $thead = [''];
 foreach($cols as $colkey) {
 	$arr = array_column($tbody, $colkey);
 	$tfoot[$colkey] = array_sum($arr);
 	$thead[$colkey] = $colkey;
 }
-$tfoot[] = array_sum($tfoot);
-$thead[] = 'TOT';
-$tfoot[0] = 'Total';
+$tfoot[] = sprintf('&pound;&nbsp;%.2f', array_sum($fees));
+$thead[] = '&pound;';
 
-?>
-<h4>Payments due</h4>
-<div class="table-responsive">
-<?php
 $table->setHeading($thead);
 $table->setFooting($tfoot);
 echo $table->generate($tbody);
