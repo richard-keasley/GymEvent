@@ -38,19 +38,36 @@ echo $editor->htm();
 
 $acc->set_item('Details', ob_get_clean());
 
-ob_start(); // Payment
+ob_start(); // staff 
+
 $attr = [
-	'name' => 'payment',
-	'value' => $event->payment
+	'name' => 'staff',
+	'value' => $event->staff
 ];
 $editor = new \App\Views\Htm\Editor($attr);
 echo $editor->htm();
-?> 
-<p>This explains how clubs should pay. Include bank details and any dead-lines.</p>
-<?php
-$acc->set_item('Payment', ob_get_clean());
+?>
+<p>A comma separated list of all staff categories. E.g. <code>coach, judge, helper</code>. Items should not include spaces or special characters.</p>
+<?php 
+$input = [
+	'name' => "staffcats",
+	'value' => implode(', ', $event->staffcats),
+	'class' => "form-control"
+];
+if($event->clubrets) $input['readonly'] = "readonly";
+echo form_input($input);
+
+# echo form_input('staffcats', implode(', ', $event->staffcats), 'class="form-control"'); 
+$acc->set_item('Staff', ob_get_clean());
 
 ob_start(); // disciplines / categories 
+
+$attr = [
+	'name' => 'participants',
+	'value' => $event->participants
+];
+$editor = new \App\Views\Htm\Editor($attr);
+echo $editor->htm();
 
 if($event->clubrets) { ?>
 <p>This section should only be altered while the event sate 'clubrets' is set to 'waiting'.</p>
@@ -151,22 +168,21 @@ echo form_hidden('discats', '');?>
 <button name="add" type="button" class="btn bi-plus-square btn-success" title="add row"></button>
 </div>
 <?php 
-$acc->set_item('disciplines / categories', ob_get_clean());
+$acc->set_item('Participants', ob_get_clean());
 
-ob_start(); // Staff ?>
-<p>A comma separated list of all staff categories. E.g. <code>coach, judge, helper</code>. Items should not include spaces or special characters.</p>
-<?php 
-$input = [
-	'name' => "staffcats",
-	'value' => implode(', ', $event->staffcats),
-	'class' => "form-control"
+
+ob_start(); // Payment
+$attr = [
+	'name' => 'payment',
+	'value' => $event->payment
 ];
-if($event->clubrets) $input['readonly'] = "readonly";
-echo form_input($input);
+$editor = new \App\Views\Htm\Editor($attr);
+echo $editor->htm();
+?> 
+<p>This explains how clubs should pay. Include bank details and any dead-lines.</p>
+<?php
+$acc->set_item('Payment', ob_get_clean());
 
-
-# echo form_input('staffcats', implode(', ', $event->staffcats), 'class="form-control"'); 
-$acc->set_item('Staff', ob_get_clean());
 
 ob_start(); // Event states
 $fieldnames = ['clubrets', 'music', 'videos'];
