@@ -1,7 +1,7 @@
 <?php $this->extend('default');
 
 $this->section('content');
-$format = $format ?? 'full' ;
+$format = $format ?? 'plain' ;
 if(\App\Libraries\Auth::check_path('admin/entries/edit')) {
 	$link_format = $format=='plain' ? 'full' : 'plain' ;
 	$attr = [
@@ -37,7 +37,7 @@ $template = ['table_open' => '<table class="table">'];
 $table->setTemplate($template);
 
 foreach($entries as $dis) { ?>
-	<section>
+	<section class="mw-100">
 	<h4><?php echo $dis->name;?></h4>
 	<?php foreach($dis->cats as $cat) {
 		if($format=='full') {

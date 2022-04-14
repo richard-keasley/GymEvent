@@ -11,6 +11,7 @@ $attr = ['id' => "existing"];
 $hidden = ['tabView' => '#existing'];
 echo form_open(base_url(uri_string()), $attr, $hidden);
 ?>
+<p>Your user name is your club name.</p> 
 <p class="form-floating">
 	<input class="form-control" type="text" name="name" placeholder="user name" value="<?php echo $postval['name'];?>" required autofocus>
 	<label for="name" title="User name or club name" class="form-label">User name</label>

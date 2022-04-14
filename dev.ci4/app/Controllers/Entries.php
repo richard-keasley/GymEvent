@@ -57,6 +57,8 @@ public function view($event_id=0) {
 	
 	if($this->data['event']->clubrets==0) $this->data['messages'][] = ['Returns have not started for this event', 'warning'];
 	if($this->data['event']->clubrets==1) $this->data['messages'][] = ['Returns for this event are still open', 'warning'];
+	
+	$this->data['format'] = \App\Libraries\Auth::check_role('club') ? 'full' : 'plain ';
 
 	return view('entries/view', $this->data);
 }

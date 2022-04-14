@@ -14,7 +14,7 @@ public function self() {
 
 public function getAbbr() {
 	return empty($this->attributes['abbr']) ? 
-		substr($this->attributes['name'], 0, 4) : 
+		substr($this->attributes['name'], 0, 5) : 
 		$this->attributes['abbr'];
 }
 

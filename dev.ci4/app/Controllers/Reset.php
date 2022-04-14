@@ -10,15 +10,19 @@ function __construct() {
 }
 
 private function find($key, $value) {
-	if($key=='email') {
+	switch($key) {
+		case 'email':
 		return $this->usr_model->where($key, $value)->first();
-	}
-	if($key=='key') {
+	
+		case 'key':
 		$expiry = date('Y-m-d H:i:s', time() - 1800); // 30 minutes 
 		return $this->usr_model
 			->where('reset_time >', $expiry)
 			->where('reset_key', $value)
 			->first();
+		
+		case 'id':
+		return $this->usr_model->find($value);
 	}
 	return null;
 }
@@ -28,7 +32,13 @@ public function index() {
 	
 	$this->data['title'] = 'Password reset';
 	$this->data['heading'] = 'Password reset';
+
 	$this->data['email'] = trim(strval($this->request->getPost('email')));
+	if(!$this->data['email']) {
+		$user_id = intval($this->request->getGet('user'));
+		$user = $this->find('id', $user_id);
+		if($user) $this->data['email'] = $user->email;
+	}	
 	
 	if(!$this->data['email']) return view($vw_index, $this->data);
 	if(!$this->request->getPost('reset')) return view($vw_index, $this->data);
@@ -36,7 +46,7 @@ public function index() {
 	$user = $this->find('email', $this->data['email']);
 	if(!$user) {
 		$this->data['messages'] = ["Sorry! I can't find this account"];
-		$this->lgn_model->insert(['error'=>'Reset email not found']);
+		$this->lgn_model->insert(['error' => "Reset email not found ({$this->data['email']})"]);
 		return view($vw_index, $this->data);
 	}
 			
