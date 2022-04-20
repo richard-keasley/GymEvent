@@ -3,43 +3,65 @@ $player = $event->player;
 if(!$player) $player = [\App\Entities\Event::player_row];
 
 $this->section('content');
-#d($event);
-#d($player);
-#$track = new \App\Libraries\Track;
-#$track->event_id = $event->id;
-#d($event_tracks);
+# d($event);
+# d($player);
+# $track = new \App\Libraries\Track;
+# $track->event_id = $event->id;
+# d($event_tracks);
 
 $player_tracks = []; // all tracks listed on player
-echo form_open(base_url(uri_string()));
+
+$attr = [];
+$hidden = [
+	'view' => "admin"
+];
+echo form_open(base_url(uri_string()), $attr, $hidden);
 ?>
-<input type="hidden" name="view" value="admin">
-<div id="playervar">
+<div id="playervar" style="min-width:20em;">
+
 <?php foreach($player as $round) { 
-$player_tracks[$round['exe']] = $round['entry_nums'];
+$player_tracks[strtolower($round['exe'])] = $round['entry_nums'];
 ?>
 <div class="datarow row row-fluid py-2 border-bottom">
-<div class="col" style="max-width:25em;">
-	<div class="row" >
-		<div class="col-9">
-			<input class="form-control" data-name="title" placeholder="title" value="<?php echo $round['title'];?>">
-		</div>
-		<div class="col-3">
-			<input class="form-control" data-name="exe" placeholder="exercise" value="<?php echo $round['exe'];?>">
-		</div>
-	</div>
-	<div class="mt-3">
-		<input class="form-control" data-name="description" placeholder="description" value="<?php echo $round['description'];?>">
-	</div>
+
+<div class="col-4"><?php
+	$input = [
+		'class' => "form-control",
+		'data-name' => "title",
+		'placeholder' => "title",
+		'value' => $round['title']
+	];
+	echo form_input($input);
+	
+	$input = [
+		'class' => "form-control",
+		'data-name' => "exe",
+		'placeholder' => "exercise",
+		'value' => $round['exe']
+	];
+	echo form_input($input);
+	
+	$input = [
+		'class' => "form-control",
+		'data-name' => "description",
+		'placeholder' => "description",
+		'value' => $round['description']
+	];
+	echo form_input($input);
+	
+?></div>
+
+<div class="col-6">
+	<textarea class="form-control" rows="3" data-name="entry_nums" placeholder="Exercise entry numbers"><?php echo implode(' ', $round['entry_nums']);?></textarea>
 </div>
-<div class="col">
-	<textarea class="form-control" rows="3" columns="20" data-name="entry_nums" placeholder="Exercise entry numbers"><?php echo implode(' ', $round['entry_nums']);?></textarea>
-</div>
-<div class="col-auto">
+
+<div class="col-2">
 	<div class="btn-group-vertical">
 	<button type="button" name="up" class="btn bi-arrow-up-circle btn-info"></button>
 	<button type="button" name="del" class="btn bi-trash btn-danger" title="delete"></button>
 	</div>
 </div>
+
 </div>
 <?php } ?>
 <button name="add" type="button" class="btn bi-plus-square btn-success" title="add round"></button>
@@ -82,14 +104,17 @@ $('#playervar [name=up]').click(function () {
 
 });
 </script>
+
 </div>
 
 <section>
 <h5>Missing tracks</h5>
 <?php 
+# d($player_tracks);
 foreach($event_tracks as $cat) {
 	$cat_missing = [];
 	foreach($cat['tracks'] as $exe=>$entry_nums) {
+		$exe = strtolower($exe);
 		$exe_missing = [];
 		foreach($entry_nums as $entry_num) {
 			if(empty($player_tracks[$exe])) {
