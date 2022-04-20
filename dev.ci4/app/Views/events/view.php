@@ -22,10 +22,26 @@ $this->section('content'); ?>
 <?php } ?>
 
 <div><?php echo $event->description;?></div>
-<?php if($event->clubrets<2 && $event->payment) {?>
+<?php if($event->clubrets<2 && $event->payment) { ?>
 <h4>Payment</h4>
 <div><?php echo $event->payment;?></div>
 <?php } ?>
+
+<?php if($event->clubrets==1) { ?>
+<section class="p-1 alert-secondary rounded">
+<p><strong>We are accepting entries for this event</strong></p>
+<p>If your club is interested in entering this event, you are advised to open an entry as soon as possible, even if you can not provide full details. You can continue to make edits until entries are closed. We will use the details within your return at that point (there is no "submit" button).</p>
+</section>
+<?php } ?>
+
+<?php if($event->clubrets==2) { ?>
+<section class="p-1 alert-warning rounded">
+<p><strong>Entries for this event are now closed</strong></p>
+<p>If you find an error in the entries, <em>inform the event organisers as soon as possible</em>. There is no guaranty entries can be corrected if you wait too long.</p>
+</section>
+<?php } ?>
+
+
 </section>
 
 <?php 

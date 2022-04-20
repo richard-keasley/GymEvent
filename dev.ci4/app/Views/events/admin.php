@@ -43,11 +43,10 @@ foreach(['clubrets', 'videos', 'music'] as $fldname) {
 } 
 ?></section>
 
+<?php if($event->clubrets==1) { ?>
 <section><h4>Returns</h4>
 <div class="row">
 <?php 
-# d($event->participants());
-
 foreach($event->participants() as $dis) { ?>
 	<div class="col-auto">
 	<?php 
@@ -64,17 +63,32 @@ foreach($event->participants() as $dis) { ?>
 <?php } ?>
 </div>
 </section>
+<?php } ?>
 
+<?php if($event->clubrets==2) { ?>
 <section><h4>Entries</h4> 
 <div class="row"><?php 
+
+$base_edit = "/admin/entries/edit/{$event->id}";
 foreach($entries as $dis) { ?>
 	<div class="col-auto">
 	<?php 
 	$tbody = []; $total = 0;
 	foreach($dis->cats as $cat) { 
+		$params = [
+			'disid' => $dis->id,
+			'catid' =>$cat->id
+		];
+		$href = base_url($base_edit .'?' . http_build_query($params));
+		$label = anchor($href, $cat->name, ['title' => 'Edit category']);
+
+	
+	
+	
+	
 		$count = count($cat->entries);
 		$total += $count ;
-		$tbody[] = [$cat->name, $count];
+		$tbody[] = [$label, $count];
 	}
 	$table->setHeading([$dis->name,$total]);
 	echo $table->generate($tbody);
@@ -82,11 +96,12 @@ foreach($entries as $dis) { ?>
 	</div>
 <?php } ?></div>
 </section>
+<?php } ?>
 
 <?php $this->endSection(); 
 
 $this->section('bottom'); 
 echo $this->include('entries/populate/form');
 echo $this->include('includes/modal_delete');
-
+# d($event->clubrets);
 $this->endSection();

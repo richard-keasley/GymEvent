@@ -8,3 +8,4 @@
 
 <p>The payment section will not be updated until you save the page.</p>
 
+<p>You are advised to open an entry as soon as possible and keep editing it until entries are closed. You can continue to make edits until entries are closed. We will use the details within your return at that point (there is no "submit" button).</p>
