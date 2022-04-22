@@ -2,13 +2,9 @@
 
 $this->section('content');
 
+$format = $format ?? 'plain' ;
 $can_edit = \App\Libraries\Auth::check_path('admin/entries/edit');
-if($can_edit) {
-	$format = $format ?? 'plain' ;
-}
-else {
-	$format = 'plain';
-}
+if(!$can_edit) $format = 'plain';
 
 if($can_edit) {
 	$link_format = $format=='plain' ? 'full' : 'plain' ;
@@ -44,7 +40,7 @@ $table = new \CodeIgniter\View\Table();
 $template = ['table_open' => '<table class="table">'];
 $table->setTemplate($template);
 
-$base_edit = "/admin/entries/edit/{$event->id}";
+$edit_base = base_url("/admin/entries/edit/{$event->id}");
 foreach($entries as $dis) { ?>
 	<section class="mw-100">
 	<h4><?php echo $dis->name;?></h4>
@@ -68,20 +64,27 @@ foreach($entries as $dis) { ?>
 			}
 			$tbody[] = $row;
 		}
-		if($can_edit) {
+		
+		if($format=='full') {
 			$params = [
 				'disid' => $dis->id,
 				'catid' =>$cat->id
 			];
-			$href = base_url($base_edit .'?' . http_build_query($params));
-			$label = anchor($href, $cat->name, ['title' => 'Edit category']);
+			$href = $edit_base . '?' . http_build_query($params);
+			printf('<h5>%s</h5>', anchor($href, $cat->name, ['title' => 'Edit category']));
+			if($tbody) {
+				printf('<div class="table-responsive">%s</div>', $table->generate($tbody)); 
+			}
+			else {
+				echo '<p class="alert-info">Empty category.</p>';
+			}
 		}
 		else {
-			$label = $cat->name;
+			if($tbody) {
+				printf('<h5>%s</h5>', $cat->name);
+				printf('<div class="table-responsive">%s</div>', $table->generate($tbody)); 
+			}
 		}
-				
-		printf('<h5>%s</h5>', $label);
-		printf('<div class="table-responsive">%s</div>', $table->generate($tbody)); 
 	} ?>
 	</section>
 <?php } ?>

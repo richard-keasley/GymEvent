@@ -169,7 +169,7 @@ public function populate($event_id) {
 			$cat_arr = [
 				'discipline_id' => $dis_id, 
 				'name' => $cat['name'], 
-				'sort' => $sort
+				'sort' => sprintf('%03u', $sort)
 			];
 			$cat_id = $this->entrycats->insert($cat_arr);
 			foreach($cat['entries'] as $entkey=>$entry) {

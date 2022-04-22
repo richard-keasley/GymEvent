@@ -174,7 +174,7 @@ public function categories($event_id=0) {
 	if($this->request->getPost('save')) {
 		// update
 		$dis_arr = []; $cat_arr = [];
-		$col_names = ['name', 'abbr', 'sort','exercises','music','videos'];
+		$col_names = ['name', 'abbr', 'sort', 'exercises', 'music', 'videos'];
 		foreach($this->data['entries'] as $dis) {
 			if($dis->id==$filter['disid']) {
 				foreach(['name', 'abbr'] as $col_name) {
@@ -184,10 +184,11 @@ public function categories($event_id=0) {
 				foreach($dis->cats as $cat) {
 					foreach($col_names as $col_name) {
 						$fld_name = "cat{$cat->id}_{$col_name}";
-						$fld_val = $this->request->getPost($fld_name);
+						$fld_val = trim($this->request->getPost($fld_name));
 						$cat_arr[$col_name] = $fld_val;
 					}
-					$empty = trim(implode('', $cat_arr)) ? 0 : 1 ;
+					
+					$empty = $cat_arr['name'] . $cat_arr['abbr'] .$cat_arr['sort'] ? 0 : 1; 
 					if($empty) { // delete category if empty
 						$cat_entries = $this->ent_model->cat_entries($cat->id);
 						// no delete when there are entries

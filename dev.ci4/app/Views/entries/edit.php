@@ -72,8 +72,7 @@ foreach($entries as $dis) {
 		}
 	}
 }
-$flds = ['category_id','num','name','dob','club',''];
-$table->setHeading($flds);
+$table->setHeading(['Category', 'num', 'Name', 'DoB', 'Club', '']);
 $tbody=[]; $tr = [];
 $arr = empty($selector[$filter['disid']]) ? [] : $selector[$filter['disid']];
 $cat_opts = [];
@@ -87,11 +86,12 @@ $inputs = [
 	'num' => [
 		'class' => 'form-control',
 		'type' => 'number',
-		'style' => 'max-width: 7em;'
+		'style' => 'min-width:5em; max-width:7em;'
 
 	],
 	'name' => [
-		'class' => 'form-control'
+		'class' => 'form-control',
+		'style' => 'min-width:10em;'
 	],
 	'dob'=> [
 		'class' => 'form-control',
@@ -124,10 +124,13 @@ foreach($cat_entries as $entry) {
 
 	];
 }
-if($tbody) echo $table->generate($tbody);
-?>
+if($tbody) { ?>
+<div class="table-responsive">
+<?php echo $table->generate($tbody); ?>
+</div>
+<?php } 
 
-<?php if($filter['disid'] && $filter['catid']) { ?>
+if($filter['disid'] && $filter['catid']) { ?>
 
 <div id="newrow">
 <button class="btn btn-success bi bi-plus-circle" type="button" onclick="newrow(1)"></button>

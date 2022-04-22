@@ -147,6 +147,7 @@ function delrow(el) {
 	inputs.forEach(function(input) { 
 		input.value = '';
 	});
+	tr.style.display = "none";
 }
 
 function newrow(show) {
