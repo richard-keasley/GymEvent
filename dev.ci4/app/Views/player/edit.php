@@ -20,7 +20,10 @@ echo form_open(base_url(uri_string()), $attr, $hidden);
 <div id="playervar" style="min-width:20em;">
 
 <?php foreach($player as $round) { 
-$player_tracks[strtolower($round['exe'])] = $round['entry_nums'];
+$exekey = strtolower($round['exe']);
+if(empty($player_tracks[$exekey])) $player_tracks[$exekey] = [] ;
+$player_tracks[$exekey] = array_merge($round['entry_nums'], $player_tracks[$exekey]);
+
 ?>
 <div class="datarow row row-fluid py-2 border-bottom">
 
@@ -76,7 +79,6 @@ $('[name=update]').click(function() {
 		fields.forEach(function(item, index) {
 			player_row[item] = $(datarow).find('[data-name='+item+']').val().trim();
 		});
-		player_row['entry_nums'] = player_row['entry_nums'].split(/[^\d]+/);
 		player.push(player_row);
 	});
 	$('[name=player]').val(JSON.stringify(player));
@@ -111,6 +113,7 @@ $('#playervar [name=up]').click(function () {
 <h5>Missing tracks</h5>
 <?php 
 # d($player_tracks);
+# d($event_tracks);
 foreach($event_tracks as $cat) {
 	$cat_missing = [];
 	foreach($cat['tracks'] as $exe=>$entry_nums) {

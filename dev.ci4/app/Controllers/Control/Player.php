@@ -41,8 +41,19 @@ public function edit($event_id=0) {
 	$event = $this->find($event_id);
 
 	$player = $this->request->getPost('player');
-	if(!is_null($player)) { //save player
-		$event->player = json_decode($player);
+	if(!is_null($player)) { 
+		//save player
+		$player = json_decode($player);
+		foreach($player as $round_id=>$round) {
+			$nums = [];
+			$val = $round->entry_nums ?? '';
+			foreach(preg_split('/[^\d]+/', $val) as $num) {
+				if($num) $nums[] = $num;
+			}
+			$player[$round_id]->entry_nums = $nums;
+		}
+		$event->player = $player;
+		
 		if($event->hasChanged()) {
 			$this->data['messages'][] = ["Player info saved", 'success'];
 			$this->mdl_events->save($event);

@@ -22,9 +22,12 @@ $this->section('content'); ?>
 <?php } ?>
 
 <div><?php echo $event->description;?></div>
+
 <?php if($event->clubrets<2 && $event->payment) { ?>
+<section>
 <h4>Payment</h4>
 <div><?php echo $event->payment;?></div>
+</section>
 <?php } ?>
 
 <?php if($event->clubrets==1) { ?>
@@ -37,10 +40,16 @@ $this->section('content'); ?>
 <?php if($event->clubrets==2) { ?>
 <section class="p-1 alert-warning rounded">
 <p><strong>Entries for this event are now closed</strong></p>
-<p>If you find an error in the entries, <em>inform the event organisers as soon as possible</em>. There is no guaranty entries can be corrected if you wait too long.</p>
+<p>If you find an error in the entries, <em>inform the event organisers as soon as possible</em>. There is no guarantee entries can be corrected if you wait too long.</p>
 </section>
 <?php } ?>
 
+<?php if($event->music==1) { ?>
+<section class="p-1 alert-secondary rounded">
+<p><strong>You can now upload your music</strong></p>
+<p>Please upload your music as soon as you can, give us time to check your music can be played! You can alter tracks as often as you like until the music service is closed.</p> 
+</section>
+<?php } ?>
 
 </section>
 

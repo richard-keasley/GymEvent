@@ -109,7 +109,7 @@ public function view($event_id=0) {
 			break;
 		case 2: // view
 		case 3: // finished
-			$this->data['messages'][] = ['Music for this event is now complete. If you need to change your music, place the track on a USB stick and bring it to us <strong>as soon as you possibly can</strong>.', 'danger'];
+			$this->data['messages'][] = ['Music upload for this event is now complete. If you need to change your music, place the track on a USB stick and bring it to us <strong>as soon as you possibly can</strong>.', 'danger'];
 			break;
 		default: // waiting
 			$this->data['messages'][] = ['The music service is closed for this event.', 'danger'];

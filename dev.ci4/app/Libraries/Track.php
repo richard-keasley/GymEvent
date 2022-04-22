@@ -16,10 +16,10 @@ public $exe = ''; // stored in db
 public $check_state = 0; // stored in db 
 
 // class names for buttons
-const BUTTON_PLAY = 'btn bi mx-1 btn-success bi-play-fill';
-const BUTTON_REPEAT = 'btn bi mx-1 btn-info bi-arrow-repeat';
-const BUTTON_PAUSE = 'btn bi mx-1 btn-primary bi-pause-fill';
-const BUTTON_MISSING = 'btn bi mx-1 btn-danger bi-x';
+const BUTTON_PLAY = 'btn bi m-1 btn-success bi-play-fill';
+const BUTTON_REPEAT = 'btn bi m-1 btn-info bi-arrow-repeat';
+const BUTTON_PAUSE = 'btn bi m-1 btn-primary bi-pause-fill';
+const BUTTON_MISSING = 'btn bi m-1 btn-danger bi-x';
 
 static function js_buttons() {
 	return implode("\n", [
