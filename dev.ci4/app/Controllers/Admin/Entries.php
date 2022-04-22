@@ -15,10 +15,10 @@ function __construct() {
 	$this->data['heading'] = "Event entries - admin";
 }
 	
-private function find($event_id) {
+private function find($event_id, $orderby='num') {
 	$this->data['event'] = $this->evt_model->find($event_id);
 	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
-	$this->data['entries'] = $this->ent_model->evt_discats($event_id);
+	$this->data['entries'] = $this->ent_model->evt_discats($event_id, 1, $orderby);
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title;
 	if(!$this->found) {
@@ -50,22 +50,24 @@ EOT;
 	return view('events/index', $this->data);
 }
 
-public function view($event_id=0, $format='full') {
-	$this->find($event_id);
+public function view($event_id=0, $format='plain') {
+	$orderby = $format=='dob' ? 'dob' : 'num'; 
+	
+	$this->find($event_id, $orderby);
 	$this->data['heading'] .= ' - entries';
 	
 	if($this->request->getPost('renumber')) {
 		$this->ent_model->renumber($event_id);
 		$this->data['messages'][] = ['Event renumbered', 'success'];
-		$this->find($event_id);
+		$this->find($event_id, $orderby);
 	}
 	
 	// view
 	foreach($this->ent_model->get_errors($event_id) as $error) {
 		$this->data['messages'][] = $error;
 	}
+	$this->data['format'] = $format;
 	$this->data['users'] = $this->ent_model->evt_users($event_id);
-	$this->data['format'] = $format=='plain' ? 'plain' : 'full';
 	if($this->data['event']->clubrets==0) $this->data['messages'][] = ['Returns have not started for this event', 'warning'];
 	if($this->data['event']->clubrets==1) $this->data['messages'][] = ['Returns for this event are still open', 'warning'];
 	return view('entries/view', $this->data);

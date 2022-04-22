@@ -17,7 +17,7 @@ function __construct() {
     $this->entrycats = new \App\Models\EntryCats;
 }
 
-public function evt_discats($event_id, $entries=1) {
+public function evt_discats($event_id, $entries=1, $orderby='num') {
 	$return = [];
 	foreach($this->evt_disciplines($event_id) as $dis) {
 		$cats = $this->entrycats
@@ -25,7 +25,7 @@ public function evt_discats($event_id, $entries=1) {
 			->orderBy('sort', 'ASC')
 			->findAll();
 		foreach($cats as $cat_key=>$entrycat) {
-			$entrycat->entries = $entries ? $this->cat_entries($entrycat->id) : [] ;
+			$entrycat->entries = $entries ? $this->cat_entries($entrycat->id, $orderby) : [] ;
 			$dis->cats[$cat_key] = $entrycat;
 		}
 		$return[] = $dis;
@@ -120,8 +120,8 @@ public function renumber($event_id) {
 	}
 }
 
-public function cat_entries($category_id) {
-	return $this->where('category_id', $category_id)->orderBy('num', 'ASC')->findAll();
+public function cat_entries($category_id, $orderby='num') {
+	return $this->where('category_id', $category_id)->orderBy($orderby, 'ASC')->findAll();
 }
 
 /* delete */
