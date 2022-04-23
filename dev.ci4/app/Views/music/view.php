@@ -29,12 +29,12 @@ foreach($entries as $dis) { ?>
 	<section><h4><?php echo $dis->name;?></h4>
 	<?php foreach($dis->cats as $cat) {
 		$tbody = [];
-		$thead = ['num', 'name', 'club'];
+		$thead = ['#', 'Club', 'Name'];
 		foreach($cat->entries as $key=>$entry) {
 			$tr = [
 				$entry->num,
-				$entry->name,
-				$users[$entry->user_id]->name ?? '??',
+				$users[$entry->user_id]->abbr ?? '?',
+				$entry->name
 			];
 			$track->entry_num = $entry->num;
 			foreach($entry->music as $exe=>$check_state) {
@@ -58,4 +58,3 @@ foreach($entries as $dis) { ?>
 <?php } ?>
 <?php 
 $this->endSection(); 
-

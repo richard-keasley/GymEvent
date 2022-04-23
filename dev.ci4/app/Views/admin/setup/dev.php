@@ -1,7 +1,7 @@
 <?php $this->extend('default');
 
 $this->section('content'); ?>
-<div class="float-end"><?php echo $this->include('includes/version');?></div>
+<div class="float-sm-end"><?php echo $this->include('includes/version');?></div>
 
 <h2>CodeIgniter <img src="<?php echo base_url('/app/images/codeigniter.svg');?>" style="height: 1.3em;"></h2>
 
@@ -29,7 +29,7 @@ $systemDirectory = realpath($paths->systemDirectory);
 <h2>Front end (<abbr title="style sheets">CSS</abbr> and <abbr title="JavaScript animations">JS</abbr>) <span class="bi-bootstrap-fill" style="color:#7952b3"></span></h2>
 <p>Bootstrap is used for the front-end. Read <a href="https://getbootstrap.com/docs/5.0/getting-started/introduction/">documentation</a> on how to use Bootstrap.</p>
 
-<p>All resources for front-end are stored in <mark><?php echo FCPATH;?>public/</mark> (URL: <?php echo base_url('public');?>/).</p>
+<p>All resources for front-end are stored in <code><?php echo FCPATH;?>app</code> (<?php echo base_url('app');?>).</p>
 
 <p>Read <a href ="https://icons.getbootstrap.com/">documentation on Bootstrap icons</a>.</p>
 

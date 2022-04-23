@@ -72,7 +72,7 @@ foreach($entries as $dis) {
 		}
 	}
 }
-$table->setHeading(['Category', 'num', 'Name', 'DoB', 'Club', '']);
+$table->setHeading(['Category', 'Num', 'Club', 'Name', 'DoB', '']);
 $tbody=[]; $tr = [];
 $arr = empty($selector[$filter['disid']]) ? [] : $selector[$filter['disid']];
 $cat_opts = [];
@@ -87,7 +87,10 @@ $inputs = [
 		'class' => 'form-control',
 		'type' => 'number',
 		'style' => 'min-width:5em; max-width:7em;'
-
+	],
+	'user_id' => [
+		'class' => 'form-control',
+		'options' => $user_options			
 	],
 	'name' => [
 		'class' => 'form-control',
@@ -96,10 +99,6 @@ $inputs = [
 	'dob'=> [
 		'class' => 'form-control',
 		'type' => 'date'
-	],
-	'user_id' => [
-		'class' => 'form-control',
-		'options' => $user_options			
 	]
 ];
 
@@ -116,12 +115,10 @@ foreach($cat_entries as $entry) {
 	$tbody[] = [
 		form_dropdown($inputs['category_id']),
 		form_input($inputs['num']),
+		form_dropdown($inputs['user_id']),
 		form_input($inputs['name']),
 		form_input($inputs['dob']),
-		form_dropdown($inputs['user_id']),
 		sprintf('<button class="btn btn-danger bi bi-trash" type="submit" name="delrow" value="%u"></button>', $entry->id)
-
-
 	];
 }
 if($tbody) { ?>

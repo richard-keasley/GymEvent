@@ -1,6 +1,6 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table compact">'];
+$template = ['table_open' => '<table class="table table-sm">'];
 $table->setTemplate($template);
 
 $this->section('content');
@@ -54,15 +54,15 @@ foreach($entries as $dis) {
 		if($cat->music) {
 			if($filter['cat'] && $filter['cat']!=$cat->id) continue;
 			$tbody = [];
-			$thead = ['num', 'name', 'club'];
+			$thead = ['#', 'Club', 'Name'];
 
 			foreach($cat->entries as $key=>$entry) {
 				$track->entry_num = $entry->num;
 				if($filter['user'] && $filter['user']!=$entry->user_id) continue;
 				$tr = [
 					$entry->num,
-					$entry->name,
-					$users[$entry->user_id]->name ?? '?'
+					$users[$entry->user_id]->abbr ?? '?',
+					$entry->name
 				];
 				$count_entries++;
 				foreach($entry->music as $exe=>$check_state) {
@@ -82,7 +82,7 @@ foreach($entries as $dis) {
 				$dis_title = 1;
 				printf('<h6>%s</h6>', $cat->name);
 				$table->setHeading($thead);
-				echo $table->generate($tbody);
+				printf('<div class="table-responsive">%s</div>', $table->generate($tbody));
 			}
 		}
 	}
