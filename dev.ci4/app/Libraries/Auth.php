@@ -179,6 +179,14 @@ static function path_role($path) {
 	if(in_array($controller, self::$disabled)) return 'disabled';
 	
 	switch($zone) {
+		case 'help': 
+			switch($controller) {
+				case 'admin': return 'admin';
+				case 'user':  return 'club';
+				case 'control': return 'controller';
+			}
+			if($method=='edit') return self::roles[1];
+			return self::roles[0];
 		case 'admin': return 'admin';
 		case 'user':  return 'club';
 		case 'control': return 'controller';
