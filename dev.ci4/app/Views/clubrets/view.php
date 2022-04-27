@@ -4,16 +4,17 @@ $table = new \CodeIgniter\View\Table();
 $this->section('content'); ?>
 <section>
 <h2>Club</h2>
-<p><label>Club:</label> <?php echo $user->name;?> <?php echo $user->link();?></p>
-<p><label>Email:</label> <?php echo $user->email;?></p>
-<p><label for="name">Contact name:</label> <?php echo $clubret->name;?></p>
-<p><label for="address">address:</label><br><span class="textarea"><?php echo $clubret->address;?></span></p>
-<p><label for="phone">phone:</label> <?php echo $clubret->phone;?></p>
-<p><label for="other">other info:</label><br><span class="textarea"><?php echo $clubret->other;?></span></p>
+<p><strong>Club:</strong> <?php echo $user->name;?> <?php echo $user->link();?></p>
+<p><strong>Email:</strong> <?php echo $user->email;?></p>
+<p><strong>Contact name:</strong> <?php echo $clubret->name;?></p>
+<p><strong>Address:</strong><br><span class="textarea"><?php echo $clubret->address;?></span></p>
+<p><strong>Phone:</strong> <?php echo $clubret->phone;?></p>
+<p><strong>Other info:</strong><br><span class="textarea"><?php echo $clubret->other;?></span></p>
 </section>
 
 <section>
 <h2>Details</h2>
+<p><strong>Updated:</strong> <?php echo date('d-M-Y H:i', strtotime($clubret->updated));?></p>
 
 <h5>Staff</h5>
 <div class="table-responsive">
@@ -39,13 +40,16 @@ if(count($tbody)) {
 </div>
 <?php echo $clubret->errors('staff'); ?>
 
-
 <h5>Participants</h5>
 <div class="table-responsive">
 <?php 
 $tbody = [];
 $participants = $clubret->participants;
 foreach($participants as $rowkey=>$row) {
+	$option = [];
+	if($row['opt']) $option[] = $row['opt'];
+	if($row['team']) $option[] = $row['team'];
+	$option = $option ? sprintf('(%s)', implode(', ', $option)) : '' ;
 	foreach($row['names'] as $key=>$name) {
 		$namestring = new \App\Entities\namestring($name);
 		$tbody[] = [
@@ -53,13 +57,15 @@ foreach($participants as $rowkey=>$row) {
 			$key ? '' : $row['dis'],
 			$key ? '' : implode(' ', $row['cat']),
 			$namestring->name,
+			$option,
 			$namestring->bg,
 			$namestring->htm_dob()
 		];
+		$option = '';
 	}
 }
 if(count($tbody)) {
-	$table->setHeading(['#', 'dis', 'category', 'name', 'BG', 'DoB']);
+	$table->setHeading(['#', 'dis', 'category', 'name', '', 'BG', 'DoB']);
 	echo $table->generate($tbody);
 }
 ?>
@@ -102,6 +108,7 @@ if($user->deleted_at) { ?>
 <?php } ?>
 
 <?php 
+# d($participants);
 # d($clubret);
 # d($event);
 

@@ -118,11 +118,13 @@ public function edit($event_id=0, $user_id=0) {
 			'names' => [
                 'filter' => FILTER_SANITIZE_STRING,
                 'flags'  => FILTER_FORCE_ARRAY
-			]
+			],
+			'opt' =>FILTER_SANITIZE_STRING
 		];
 		foreach($participants as $rowkey=>$participant) {
 			$participants[$rowkey] = filter_var_array($participant, $filter);
 		}
+
 		// sort participants
 		$discats = $this->data['event']->discats;
 		$sort = [[],[]];

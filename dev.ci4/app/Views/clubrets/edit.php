@@ -161,6 +161,7 @@ $inputs = [
 	'team' => [
 		'class' => 'form-control',
 		'data-field' => 'team',
+		'placeholder' => 'Team name',
 		'style' => 'min-width:8em;'
 	],
 	'names' => [
@@ -169,8 +170,19 @@ $inputs = [
 		'style' => 'min-width:20em;',
 		'cols' => 30,
 		'rows' => 1
+	],
+	'opt' => [
+		'class' => 'form-control',
+		'data-field' => 'opt',
+		'style' => 'min-width:5em;'
 	]
 ];
+
+foreach($discats as $key=>$discat) {
+	$options = [];
+	foreach($discat['opts'] as $val) $options[$val] = $val;
+	$discats[$key]['options'] = $options;
+}
 
 foreach($participants as $rowkey=>$row) {
 	$inputs['dis']['selected'] = $row['dis'];
@@ -185,7 +197,7 @@ foreach($participants as $rowkey=>$row) {
 		$inputs['cat']['data-dis'] = $discat['name'];
 		foreach($discat['cats'] as $cat_key=>$options) {
 			$inputs['cat']['options'] = $options;
-			$inputs['cat']['selected'] = isset($row['cat'][$cat_key]) ? $row['cat'][$cat_key] : '-' ;
+			$inputs['cat']['selected'] = $row['cat'][$cat_key] ?? '-' ;
 			$tr['discat'] .= form_dropdown($inputs['cat']);
 		}
 	}
@@ -193,6 +205,15 @@ foreach($participants as $rowkey=>$row) {
 	
 	$tr['team'] = form_input($inputs['team']);
 	$tr['names'] = form_textarea($inputs['names']); 
+	
+	$tr['opt'] = '';
+	$input = $inputs['opt'];
+	foreach($discats as $discat) {
+		$input['data-dis'] = $discat['name'];
+		$input['options'] = $discat['options'];
+		$input['selected'] = $row['opt'] ?? '';
+		if($input['options']) $tr['opt'] .= form_dropdown($input);
+	}
 
 	$tr['del'] = '<button name="del" type="button" class="btn bi-trash btn-danger btn-sm"></button>';
 	$tbody[] = $tr;	
@@ -211,14 +232,12 @@ $tabs->set_item('Participants', ob_get_clean(), 'participants');
 
 } 
 
-if(1) {
 ob_start(); ?>
 <div><?php echo $event->payment;?></div>
 <?php echo $clubret->fees('htm');?>
 <p><strong>NB:</strong> Save any changes to update the fees calculation.</p>
 <?php 
 $tabs->set_item('Payment', ob_get_clean(), 'payment');
-} 
 
 echo $tabs->htm();
 
@@ -274,11 +293,14 @@ $('[name=cmd]').click(function() {
 		$(this).find('[data-field=cat][data-dis='+dis+']').each(function() {
 			cat.push($(this).val());
 		});
+		var opt = $(this).find('[data-field=opt][data-dis='+dis+']').val();
+		if(typeof opt =='undefined') opt = '';
 		participants.push({
 			dis: dis,
 			cat: cat,
+			opt: opt,
 			team: $(this).find('[data-field=team]').val(), 
-			names: $(this).find('[data-field=names]').val().split("\n")
+			names: $(this).find('[data-field=names]').val().split("\n")			
 		});
 	});
 	$('[name=participants]').val(JSON.stringify(participants));
@@ -311,6 +333,11 @@ function update_partrows() {
 			if($(this).attr('data-dis')==dis) $(this).show();
 			else $(this).hide();
 		});
+		
+		$(this).find('[data-field=opt]').each(function() {
+			if($(this).attr('data-dis')==dis) $(this).show();
+			else $(this).hide();
+		});
 			
 		var n = parseInt(discats[dis]['inf'].n);
 		if(isNaN(n) || n<1) n = 1;
@@ -319,7 +346,7 @@ function update_partrows() {
 		var team = parseInt(discats[dis]['inf'].team);
 		if(isNaN(team)) team = 0;
 		if(team) $(this).find('[data-field=team]').show();
-		else $(this).find('[data-field=team]').hide();
+		else $(this).find('[data-field=team]').hide();	
 	});
 }
 </script>

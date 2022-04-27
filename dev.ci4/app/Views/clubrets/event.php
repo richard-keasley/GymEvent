@@ -2,7 +2,6 @@
 $table = new \CodeIgniter\View\Table();
 $template = ['table_open' => '<table class="table">'];
 $table->setTemplate($template);
-#$clubret = new \App\Entities\Clubret;
 
 $this->section('content');?>
 <div class="d-flex flex-wrap gap-3">
@@ -10,7 +9,7 @@ $this->section('content');?>
 	<section class="mw-100">
 	<?php
 	foreach($dis['cats'] as $cat) { 	 
-		$table->setHeading(['', 'club', 'name', 'DoB']);
+		$table->setHeading(['', 'club', 'name', 'DoB', '']);
 		$tbody = [];
 		foreach($cat['entries'] as $entkey=>$entry) {
 			if(!$entry['club']) $entry['club'] = 'unknown <i class="bi bi-exclamation-triangle-fill text-warning"></i>';
@@ -18,18 +17,19 @@ $this->section('content');?>
 				$entkey + 1,
 				$entry['club'],
 				$entry['name'],
-				date('d-M-Y', $entry['dob'])
+				date('d-M-Y', $entry['dob']),
+				$entry['opt']
 			];
 		}
 		printf('<h5>%s - %s</h5>', $dis['name'], $cat['name']);
 		printf('<div class="table-responsive">%s</div>', $table->generate($tbody));
-		
 	}
 	?>
 	</section>
 <?php } ?>
 </div>
 <?php 
+# d($event->participants());
 $this->endSection(); 
 
 $this->section('top');

@@ -141,7 +141,10 @@ public function edit($event_id=0) {
 					if($val) $cats[] = $val;
 				}
 				$discat['cats'] = $cats;
-							
+				
+				$discat['opts'] = trim($discat['opts']);
+				$discat['opts'] = $discat['opts'] ? explode("\n", $discat['opts']) : [];
+		
 				$discats[] = $discat;
 			}
 		}

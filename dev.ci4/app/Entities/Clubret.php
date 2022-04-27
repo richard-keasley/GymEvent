@@ -87,16 +87,17 @@ function errors($err_type=null) {
 public function getParticipants() {
 	$db_val = $this->attributes['participants'] ?? '[]';
 	$db_val = json_decode($db_val, 1) ?? [];
-	$entity_val = [];
+	$entity_val = []; $arr = [];
 	foreach($db_val as $row) {
-		foreach(['dis', 'cat', 'team', 'names'] as $key) {
+		foreach(['dis', 'cat', 'team', 'names', 'opt'] as $key) {
 			if(empty($row[$key])) $row[$key]='';
 		}
 		$entity_val[] = [
 			'dis' => $row['dis'],
 			'cat' => csv_array($row['cat']),
 			'team' => $row['team'],
-			'names' => explode("\n", $row['names'])
+			'names' => explode("\n", $row['names']),
+			'opt' => $row['opt']
 		];
 	}
 	return $entity_val;
@@ -195,6 +196,7 @@ public function fees($op=1) {
 		$fees[$dis][1] += $fee;
 	}
 	if($op=='fees') return $fees;
+	
 	$total = array_sum(array_column($fees, 1));
 	
 	if($op=='htm') {

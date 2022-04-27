@@ -133,6 +133,12 @@ $input = [
 	'class' => 'form-control',
 	'cols' => 30,
 	'rows' =>5
+],
+'opts' => [
+	'name' => 'opts',
+	'class' => 'form-control',
+	'cols' => 5,
+	'rows' =>5
 ]
 ];
 
@@ -149,27 +155,29 @@ foreach($discats as $key=>$discat) {
 	foreach($discat['inf'] as $key=>$val) $value[] = "{$key} = {$val}";
 	$input['inf']['value'] = implode("\n", $value);
 		
-	$rows = [];
-	foreach($discat['cats'] as $row) $rows[] = implode(', ', $row);
-	$input['cats']['value'] = implode("\n", $rows);
+	$value = [];
+	foreach($discat['cats'] as $row) $value[] = implode(', ', $row);
+	$input['cats']['value'] = implode("\n", $value);
+	
+	$input['opts']['value'] = implode("\n", $discat['opts']);
 		
 	$tbody[] = [
 		form_input($input['name']),
 		form_textarea($input['inf']),
 		form_textarea($input['cats']),
+		form_textarea($input['opts']),
 		'<button type="button" name="del" class="btn bi-trash btn-danger" title="delete"></button>'
 	];
 }
 $template = ['table_open' => '<table class="discats">'];
 $table->setTemplate($template);
-$table->setHeading('dis','inf','cats','');
+$table->setHeading('dis', 'inf', 'cats', 'options', '');
 echo $table->generate($tbody);
 echo form_hidden('discats', '');?>
 <button name="add" type="button" class="btn bi-plus-square btn-success" title="add row"></button>
 </div>
 <?php 
 $acc->set_item('Participants', ob_get_clean());
-
 
 ob_start(); // Payment
 $attr = [
@@ -229,7 +237,7 @@ echo $acc->htm();
 
 echo form_close(); 
 
-# d($event);
+# d($event->discats);
 
 $this->endSection(); 
 
@@ -266,7 +274,8 @@ $('[name=cmd]').click(function() {
 		var discat = {
 			name: $(this).find('[name=name]').val(),
 			inf:  $(this).find('[name=inf]').val(),
-			cats: $(this).find('[name=cats]').val()
+			cats: $(this).find('[name=cats]').val(),
+			opts: $(this).find('[name=opts]').val()
 		};	
 		discats.push(discat);
 	});

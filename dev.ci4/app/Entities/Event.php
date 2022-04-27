@@ -16,6 +16,7 @@ public function getDiscats() {
 		if(empty($db_row['name'])) $db_row['name'] = '';
 		if(empty($db_row['inf']) || !is_array($db_row['inf'])) $db_row['inf'] = [];
 		if(empty($db_row['cats']) || !is_array($db_row['cats'])) $db_row['cats'] = [];
+		if(empty($db_row['opts']) || !is_array($db_row['opts'])) $db_row['opts'] = [];
 		$entity_val[] = $db_row;
 	}
 	return $entity_val;
@@ -182,7 +183,8 @@ public function participants() {
 				'name' => $name,
 				'dob' => min($arr['dob']),
 				'user_id' => $clubret->user_id,
-				'club' => $club
+				'club' => $club,
+				'opt' => $row['opt']
 			];
 
 			// get category
