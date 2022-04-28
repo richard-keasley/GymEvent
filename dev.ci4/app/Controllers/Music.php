@@ -144,7 +144,7 @@ public function edit($entry_id=0) {
 		}
 		if(!$error) {
 			$filesize = $file->getSizeByUnit('mb');
-			$max_filesize = \App\Libraries\Track::max_filesize;
+			$max_filesize = \App\Libraries\Track::$max_filesize;
 			if($filesize > $max_filesize) $error = "Upload too large ($filesize MB). Please ensure uploaded tracks are less than $max_filesize MB.";
 		}
 		if(!$error) {
@@ -183,16 +183,6 @@ public function edit($entry_id=0) {
 	}
 
 	// view
-	$this_url = $this->request->uri->__toString();
-	$back_link = $this->request->getPost('back_link');
-	if(!$back_link || $back_link==$this_url) {
-		$back_link = session('_ci_previous_url');
-	}
-	if(!$back_link || $back_link==$this_url) {
-		$back_link = base_url("music/view/{$event->id}");
-	}
-	$this->data['back_link'] = $back_link;	
-	
 	$this->data['breadcrumbs'][] = $event->breadcrumb();
 	$this->data['breadcrumbs'][] = ["music/view/{$event->id}", 'music'];
 	$this->data['breadcrumbs'][] = $entry->breadcrumb('music');

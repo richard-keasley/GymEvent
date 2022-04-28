@@ -19,7 +19,7 @@ define('VIEWPATH', APPPATH . 'Views/');
 function getlink($path, $label='') {
 	$path = trim($path, '/');
 	if(!\App\Libraries\Auth::check_path($path)) return '';
-		
+	
 	$attr = [
 		'class' => 'nav-link'
 	];
@@ -35,6 +35,11 @@ function getlink($path, $label='') {
 		$label = '<span class="bi bi-box-arrow-left"></span>';
 		$attr['class'] = 'btn btn-outline-secondary';
 		$attr['title'] = "close";
+	}		
+	if($label=='admin') {
+		$label = '<span class="bi bi-gear"></span>';
+		$attr['class'] = 'btn btn-outline-secondary';
+		$attr['title'] = "admin";
 	}		
 	foreach(['/edit', '/add'] as $method) {
 		if(strpos($path, $method)!==false) {

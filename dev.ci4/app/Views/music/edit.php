@@ -26,9 +26,9 @@ $tblview->setTemplate($template);
 $tblview->setHeading($exe_opts);
 echo $tblview->generate($tbody);
 
-echo form_open_multipart(base_url(uri_string()));
-echo form_hidden('back_link', $back_link);
-echo form_hidden('upload', 1);
+$attr = ['id' => "upload"];
+$hidden = ['upload' => 1];
+echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 ?>
 <fieldset><legend>Upload new track</legend>
 <div class="mb-3 row">
@@ -43,19 +43,25 @@ echo form_hidden('upload', 1);
 	<button class="btn btn-primary" type="submit" id="btnupload">upload</button>
 </div>
 </div>
-<p>Ensure music is in a supported format (<?php echo implode(', ', \App\Libraries\Track::exts_allowed);?>) and smaller than <?php echo formatBytes(\App\Libraries\Track::max_filesize);?>.</p>
+<p>Ensure music is in a supported format (<?php echo implode(', ', \App\Libraries\Track::exts_allowed);?>)
+and smaller than <?php echo formatBytes(\App\Libraries\Track::$max_filesize);?>.</p>
 </fieldset>
 
 <script>
-var uploadButton =  document.querySelector('#btnupload');
-uploadButton.addEventListener("click", function() {
-	this.disabled = true;
-	this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" ></span> wait&hellip;';
+$('#upload').submit(function() {
+	$('#upload [type=submit]')
+		.attr('disabled', 'disabled')
+		.html('<span class="spinner-border spinner-border-sm" role="status"></span> wait');
 });
-//*/
 </script>
+<?php echo form_close();?>
+
 <div class="toolbar"><?php
-echo \App\Libraries\View::back_link($back_link);
+echo \App\Libraries\View::back_link("/music/view/{$event->id}");
+echo getlink("/admin/music/view/{$event->id}", 'admin');
 ?></div>
-</form>
-<?php $this->endSection(); 
+
+<?php 
+# d($event);
+
+$this->endSection(); 
