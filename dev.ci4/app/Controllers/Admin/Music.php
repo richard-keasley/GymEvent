@@ -31,11 +31,15 @@ public function view($event_id=0) {
 	$this->data['event'] = $events_model->find($event_id);
 	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
 	
+	
+	d($this->request->getPost());
+
 	if($this->request->getPost('set_state')) {
 		$data = [
 			'id' => $event_id,
 			'music' => intval($this->request->getPost('music'))
 		];
+		d($data);
 		$events_model->save($data);
 		$this->data['event'] = $events_model->find($event_id);
 	}
@@ -82,7 +86,7 @@ public function view($event_id=0) {
 	$this->data['users'] = $entries_model->evt_users($event_id);
 			
 	$this->data['filter'] = []; 
-	$flds = ['dis', 'cat', 'user'];
+	$flds = ['dis', 'cat', 'user', 'status'];
 	foreach($flds as $fld) $this->data['filter'][$fld] = $this->request->getGet($fld);
 		
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');

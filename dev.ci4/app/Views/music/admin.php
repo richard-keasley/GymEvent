@@ -10,12 +10,11 @@ $this->section('content');
 
 $user_options = [0 => '-'];
 foreach($users as $id=>$user) $user_options[$id] = $user->name;
+$self = base_url(sprintf('/%s?%s', uri_string(), http_build_query($filter)));
 
-$attr = [
-	'id' => "control"
-];
-echo form_open(base_url(uri_string()), $attr); ?>
-<input type="hidden" name="method" value="set_check">
+$attr = ['id' => "control"];
+$hidden = ['method' => "set_check"];
+echo form_open($self, $attr, $hidden); ?>
 <div class="toolbar nav row sticky-top">
 	<div class="col-auto"><div class="input-group">	
 		<button class="btn btn-warning" type="submit" name="val" value="0">unchecked</button>
@@ -64,16 +63,25 @@ foreach($entries as $dis) {
 					$users[$entry->user_id]->abbr ?? '?',
 					$entry->name
 				];
-				$count_entries++;
+				
+				$show_entry = 0; $ent_tracks = [];
 				foreach($entry->music as $exe=>$check_state) {
 					$track->exe = $exe;
 					$track->check_state = $check_state;
-					$tracks_table[$track->status()] ++;
-					$tr[] = $track->view(['checkbox']);
+					$ent_tracks[] = $track;
 					if(!$key) $thead[] = $track->exe;	
+					if(!$filter['status'] || $filter['status']==$track->status()) $show_entry = 1;
 				}
-				$tr[] = getlink($entry->url('music'), '<span class="bi bi-pencil"></span>');
-				$tbody[] = $tr;
+				
+				if($show_entry) {
+					$count_entries++;
+					foreach($ent_tracks as $track) {
+						$tr[] = $track->view(['checkbox']);
+						$tracks_table[$track->status()] ++;
+					}
+					$tr[] = getlink($entry->url('music'), '<span class="bi bi-pencil"></span>');
+					$tbody[] = $tr;
+				}
 			}
 			$thead[] = '' ;		
 				
@@ -107,13 +115,14 @@ printf('<p>%s entries.</p>', $count_entries);
 ?></section>
 <?php $this->endSection();
 
-$this->section('top'); 
+$this->section('top');
+
 $attr = [
 	'id' => "frmstate",
 	'class' => 'toolbar'
 ];
-echo form_open(base_url(uri_string()), $attr);
-echo form_hidden('set_state', 1);
+$hidden = ['set_state' => 1];
+echo form_open($self, $attr, $hidden);
 echo \App\Libraries\View::back_link("admin/events/view/{$event->id}");
 ?>
 <div class="btn-group">
@@ -142,7 +151,8 @@ $(function() {
 	});
 });
 </script>
-</form>
+<?php echo form_close();
+?>
 
 <form name="selector" method="GET" class="row">
 <div class="col-auto"><?php 
@@ -163,6 +173,13 @@ $(function() {
 </div>
 <div class="col-auto"><?php
 	echo form_dropdown('user', $user_options, $filter['user'], 'class="form-control"');
+?></div>
+<div class="col-auto"><?php
+	$status_options = ['-'];
+	foreach($tracks_table as $status=>$count) {
+		$status_options[$status] = $status;
+	}
+	echo form_dropdown('status', $status_options, $filter['status'], 'class="form-control"');
 ?></div>
 <div class="col-auto">
 	<button type="submit" class="btn btn-primary">get</button>
@@ -196,4 +213,6 @@ function update_selector(dis_id) {
 </script> 
 </form> 
 
-<?php $this->endSection();
+<?php 
+# d($filter);
+$this->endSection();

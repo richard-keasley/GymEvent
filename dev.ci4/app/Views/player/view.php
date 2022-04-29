@@ -71,10 +71,12 @@ $player.on("error", function(e) {
 </div>
 
 <?php 
-$pattern = $track->filepath() .  '*';
-$glob = glob($pattern); 
+$pattern = $track->filepath() . '*';
 $notlisted = [];
-foreach($glob as $filepath) $notlisted[] = basename($filepath);
+foreach(glob($pattern) as $filepath) {
+	$val = basename($filepath);
+	if(strpos($val, 'index')!==0) $notlisted[] = $val;
+}
 
 foreach($event->player as $round_key=>$round) { 
 $round_num = $round_key + 1;
@@ -85,15 +87,18 @@ $track->exe = $round['exe'];
 	<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $id;?>"><?php printf('%u. %s / %s', $round_num, $round['title'], $round['exe']);?></button>
   	<div class="collapse card card-body show" id="<?php echo $id;?>">
 		<?php if($round['description']) printf('<p>%s</p>', $round['description']);?>
-		<div class="playlist"><?php foreach($round['entry_nums'] as $entry_num) {
+		<div class="playlist">
+		<?php foreach($round['entry_nums'] as $entry_num) {
 			$track->entry_num = $entry_num;
 			echo $track->button();
 			$filekey = array_search($track->filename(), $notlisted);
 			if($filekey!==false) unset($notlisted[$filekey]);
-		} ?></div>
+		} ?>
+		</div>
 	</div>
 </div>
-<?php } 
+<?php }
+ 
 if($notlisted) { ?>
 <div class="border my-1 p-1 alert-danger">
 <h6>Tracks saved, but not listed</h6>

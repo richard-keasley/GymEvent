@@ -31,7 +31,7 @@ $this->section('content'); ?>
 <?php } ?>
 
 <?php if($event->clubrets==1) { ?>
-<section class="p-1 alert-secondary rounded">
+<section class="p-1 alert-success rounded">
 <p><strong>We are accepting entries for this event</strong></p>
 <p>If your club is interested in entering this event, you are advised to open an entry as soon as possible, even if you can not provide full details. You can continue to make edits until entries are closed. We will use the details within your return at that point (there is no "submit" button).</p>
 </section>
@@ -45,7 +45,7 @@ $this->section('content'); ?>
 <?php } ?>
 
 <?php if($event->music==1) { ?>
-<section class="p-1 alert-secondary rounded">
+<section class="p-1 alert-success rounded">
 <p><strong>You can now upload your music</strong></p>
 <p>Please upload your music as soon as you can, give us time to check your music can be played! You can alter tracks as often as you like until the music service is closed.</p> 
 </section>

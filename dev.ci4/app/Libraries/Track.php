@@ -3,11 +3,14 @@
 // read-only information on music field in entries table
 // field format is array of exe=>check_state
 
+// initialise
+Track::$max_filesize = Track::ini_size(ini_get('upload_max_filesize'));
+
 class Track { 
 
 const type_allowed = 'audio';
 const exts_allowed = ['wav','aac','aif','aiff','m4a','mp2','mp3','wma'];
-const max_filesize = 3143000; // max upload size [B]
+static $max_filesize = 0; // max upload size [B]
 
 // need these to work out file path
 public $event_id = 0; 
@@ -28,6 +31,14 @@ static function js_buttons() {
 		"const BUTTON_PAUSE = '" . self::BUTTON_PAUSE . "';",
 		"const BUTTON_MISSING = '" . self::BUTTON_MISSING . "';"
 	]);
+}
+
+static function ini_size($ini_size) {
+	$suffix = strtoupper(substr($ini_size, -1));
+	$suffixes = ['K', 'M', 'G', 'T', 'P'];
+	$key = array_search($suffix, $suffixes);
+	$ret = $key===false ? $ini_size : substr($ini_size, 0, -1) * pow(1024, $key + 1);
+	return (int) $ret;
 }
 
 public function button() {
