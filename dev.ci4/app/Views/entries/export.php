@@ -8,7 +8,7 @@ if($export) {
 	$template = ['table_open' => '<table class="table table-border"	>'];
 	$table->setTemplate($template);
 	$table->setHeading(array_keys($export[0]));
-	echo $table->generate($export);
+	printf('<div class="table-responsive">%s</div>', $table->generate($export));
 }
 
 $this->endSection(); 

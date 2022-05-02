@@ -5,7 +5,7 @@ class Entries extends Model {
 
 protected $table      = 'evt_entries';
 protected $primaryKey = 'id';
-protected $allowedFields = ['num', 'category_id', 'name', 'dob', 'music', 'videos', 'user_id'];
+protected $allowedFields = ['num', 'category_id', 'user_id', 'name', 'dob', 'music', 'videos', 'runorder'];
 protected $returnType   = 'App\Entities\Entry';
 
 protected $disciplines = null;

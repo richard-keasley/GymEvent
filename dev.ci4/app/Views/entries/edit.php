@@ -1,14 +1,19 @@
 <?php $this->extend('default');
+
+$this->section('content');
 $table = new \CodeIgniter\View\Table();
 $template = ['table_open' => '<table class="table">'];
 $table->setTemplate($template);
 
-$this->section('content');
-#d($users);
-#d($filter, $entries);
+$self = base_url(sprintf('/%s?%s', uri_string(), http_build_query($filter)));
+foreach($users as $id=>$user) $user_options[$id] = $user->name;
+
+# d($users);
+# d($filter);
+# d($entries);
+# d($self);
 
 $user_options = [];
-foreach($users as $id=>$user) $user_options[$id] = $user->name;
 ?>
 
 <form name="selector" method="GET">
@@ -59,7 +64,7 @@ function update_selector(dis_id) {
 <?php 
 $attr = [];
 $hidden = ['save'=>1];
-echo form_open((string) current_url(true), $attr, $hidden);
+echo form_open($self, $attr, $hidden);
 
 $filter_cat = $filter['catid'];
 $cat_entries = [];
@@ -72,7 +77,7 @@ foreach($entries as $dis) {
 		}
 	}
 }
-$table->setHeading(['Category', 'Num', 'Club', 'Name', 'DoB', '']);
+$table->setHeading(['Category', 'Num', 'Club', 'Name', 'DoB', 'Run order', '']);
 $tbody=[]; $tr = [];
 $arr = empty($selector[$filter['disid']]) ? [] : $selector[$filter['disid']];
 $cat_opts = [];
@@ -90,7 +95,8 @@ $inputs = [
 	],
 	'user_id' => [
 		'class' => 'form-control',
-		'options' => $user_options			
+		'options' => $user_options,
+		'style' => "min-width:5em;"
 	],
 	'name' => [
 		'class' => 'form-control',
@@ -102,7 +108,8 @@ $inputs = [
 	]
 ];
 
-foreach($cat_entries as $entry) {
+$runorder = [];
+foreach($cat_entries as $entry) {		
 	foreach($inputs as $key=>$input) {
 		$inputs[$key]['name'] = "ent{$entry->id}_$key";
 		if(isset($input['options'])) {
@@ -111,13 +118,26 @@ foreach($cat_entries as $entry) {
 		else {
 			$inputs[$key]['value'] = $entry->$key;
 		}
-	} 
+	}
+	
+	foreach($entry->runorder as $key=>$val) {
+		if(!$val) $val = ''; // allow placeholder to show
+		$input = [
+			'class' => 'form-control',
+			'value' => $val,
+			'name' => "ent{$entry->id}_run_{$key}",
+			'placeholder' => $key
+		];
+		$runorder[$key] = form_input($input);
+	}
+		
 	$tbody[] = [
 		form_dropdown($inputs['category_id']),
 		form_input($inputs['num']),
 		form_dropdown($inputs['user_id']),
 		form_input($inputs['name']),
 		form_input($inputs['dob']),
+		sprintf('<div style="width:9em" class="input-group">%s</div>', implode(' ', $runorder)),
 		sprintf('<button class="btn btn-danger bi bi-trash" type="submit" name="delrow" value="%u"></button>', $entry->id)
 	];
 }

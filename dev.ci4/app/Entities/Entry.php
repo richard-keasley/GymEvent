@@ -131,5 +131,24 @@ public function updateMusic() {
 	$this->model->update($this->id, $data);
 }
 
+public function getRunorder() {
+	$db_val = json_decode($this->attributes['runorder'], 1);
+	if(!$db_val) $db_val = [];
+	$entity_val = [
+		'rnd' => 0,
+		'rot' => 0,
+		'exe' => ''
+	];
+	foreach($entity_val as $key=>$default) {
+		$entity_val[$key] = $db_val[$key] ?? $default;
+	}
+	return $entity_val;
 }
 
+public function setRunorder($entity_val) {
+	$db_val = json_encode($entity_val);
+	$this->attributes['runorder'] = $db_val;
+	return $db_val;
+}
+
+}

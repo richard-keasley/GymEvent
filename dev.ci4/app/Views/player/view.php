@@ -84,8 +84,8 @@ $id = sprintf('round%u', $round_key);
 $track->exe = $round['exe'];
 ?>
 <div class="border my-1">
-	<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $id;?>"><?php printf('%u. %s / %s', $round_num, $round['title'], $round['exe']);?></button>
-  	<div class="collapse card card-body show" id="<?php echo $id;?>">
+	<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $id;?>"><?php printf('%s / %s', $round['title'], $round['exe']);?></button>
+  	<div class="collapse card card-body hide" id="<?php echo $id;?>">
 		<?php if($round['description']) printf('<p>%s</p>', $round['description']);?>
 		<div class="playlist">
 		<?php foreach($round['entry_nums'] as $entry_num) {

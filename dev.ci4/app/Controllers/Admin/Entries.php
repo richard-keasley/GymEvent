@@ -114,7 +114,7 @@ public function edit($event_id=0) {
 		$filter['catid'] = $dis->cats[0]->id;
 	}
 	# d($filter);
-	
+		
 	if($this->request->getPost('save')) {
 		// update
 		$col_names = ['category_id', 'num', 'name', 'dob', 'user_id'];
@@ -126,6 +126,14 @@ public function edit($event_id=0) {
 				$fld_val = $this->request->getPost($fldname);
 				$data[$col_name] = $fld_val;
 			}
+			$runorder = [];
+			foreach($entry->runorder as $key=>$val) {
+				$fldname = "ent{$entry->id}_run_{$key}";
+				$fld_val = $this->request->getPost($fldname);
+				$runorder[$key] = $fld_val;
+			}
+			$data['runorder'] = json_encode($runorder);
+			
 			# d($data);
 			$this->ent_model->update($entry->id, $data);
 		}
@@ -407,11 +415,16 @@ public function export($event_id=0, $format='view') {
 			$row['cat_setid'] = $cat->exercises;
 			
 			foreach($cat->entries as $entry) {
-				$row['entry_club_name'] = $this->data['users'][$entry->user_id]->name;
-				$row['entry_club_shortName'] = $this->data['users'][$entry->user_id]->abbr;
+				$row['entry_club_name'] = $this->data['users'][$entry->user_id]->name ?? '??';
+				$row['entry_club_shortName'] = $this->data['users'][$entry->user_id]->abbr ?? '?';
 				$row['entry_number'] = $entry->num;
 				$row['entry_title'] = $entry->name;
 				$row['entry_DoB'] = $entry->dob;
+				// running order
+				foreach($entry->runorder as $key=>$val) {
+					$row["run_{$key}"] = $val;
+				}
+								
 				$this->data['export'][] = $row;
 			}		
 			// end cat 

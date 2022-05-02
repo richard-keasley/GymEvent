@@ -17,10 +17,11 @@ if(empty($this->sections['sidebar'])) {
 } 
 else { ?>
 <div class="row">
-	<div class="col-auto">
+	<div class="col-sm-auto">
 	<?php $this->renderSection('sidebar'); ?>
 	</div>
-	<div class="col" style="min-width: 15em;">
+
+	<div class="col-sm" style="min-width: 15em;">
 	<?php $this->renderSection('content'); ?>
 	</div>
 </div>

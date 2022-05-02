@@ -119,7 +119,7 @@ $this->section('top');
 
 $attr = [
 	'id' => "frmstate",
-	'class' => 'toolbar'
+	'class' => 'toolbar table-responsive'
 ];
 $hidden = ['set_state' => 1];
 echo form_open($self, $attr, $hidden);
