@@ -59,6 +59,9 @@ foreach($entries as $dis) { ?>
 				$dob = strtotime($entry->dob);
 				$row[] = date('d-M-Y', $dob);
 			}
+			if($format=='full') {
+				$row[] = implode(', ', $entry->runorder);
+			}
 			$tbody[] = $row;
 		}
 		
@@ -70,7 +73,9 @@ foreach($entries as $dis) { ?>
 			}
 		}
 		else {
-			$table->setHeading(['num', 'club', 'name', 'DoB']);
+			$heading = ['num', 'club', 'name', 'DoB'];
+			if($format=='full') $heading[] = 'Run order';
+			$table->setHeading($heading);
 			$params = [
 				'disid' => $dis->id,
 				'catid' =>$cat->id
