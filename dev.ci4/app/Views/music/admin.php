@@ -115,35 +115,47 @@ printf('<p>%s entries.</p>', $count_entries);
 ?></section>
 <?php $this->endSection();
 
-$this->section('top');
-
-$attr = [
-	'id' => "frmstate",
-	'class' => 'toolbar table-responsive'
-];
-$hidden = ['set_state' => 1];
-echo form_open($self, $attr, $hidden);
-echo \App\Libraries\View::back_link("admin/events/view/{$event->id}");
-?>
-<div class="btn-group">
-	<label class="input-group-text">Set music state for this event</label>
-	<?php 
-	$colours = \App\Entities\Event::state_colours;
-	$input = ['class' => 'btn-check'];
-	$input['name'] = 'music';
-	foreach(\App\Entities\Event::state_labels as $state=>$state_label) {
-		$input['id'] = "music_{$state_label}";
-		$input['checked'] = $event->music==$state;
-		$input['value'] = $state;
-		echo form_radio($input);
-		printf('<label class="btn btn-outline-%s" for="%s">%s</label>', $colours[$state], $input['id'], $state_label);
-	} 
-	?>
-</div>
+$this->section('top'); ?>
+<div class="toolbar">
+<?php echo \App\Libraries\View::back_link("admin/events/view/{$event->id}"); ?>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#state_modeal">Music state</button>
 <?php 
 echo getlink("admin/entries/categories/{$event->id}", 'categories'); 
 echo getlink("control/player/view/{$event->id}", 'player'); 
 ?>
+</div>
+
+<div class="modal fade" id="state_modeal" tabindex="-1">
+<div class="modal-dialog">
+<?php
+$attr = [
+	'id' => "frmstate",
+	'class' => 'modal-content'
+];
+$hidden = ['set_state' => 1];
+echo form_open($self, $attr, $hidden);
+?>
+<div class="modal-header">
+<h5 class="modal-title" id="exampleModalLabel">Event music state</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+<p>Set music state for this event.</p>
+<div>
+<?php 
+$colours = \App\Entities\Event::state_colours;
+$input = ['class' => 'btn-check'];
+$input['name'] = 'music';
+foreach(\App\Entities\Event::state_labels as $state=>$state_label) {
+	$input['id'] = "music_{$state_label}";
+	$input['checked'] = $event->music==$state;
+	$input['value'] = $state;
+	echo form_radio($input);
+	printf('<label class="btn btn-outline-%s" for="%s">%s</label>', $colours[$state], $input['id'], $state_label);
+} 
+?>
+</div>
 <script>
 $(function() {
 	$('#frmstate [name=music]').click(function(){
@@ -151,8 +163,14 @@ $(function() {
 	});
 });
 </script>
-<?php echo form_close();
-?>
+</div>
+
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+<?php echo form_close();?>
+</div>
+</div>
 
 <form name="selector" method="GET" class="row">
 <div class="col-auto"><?php 

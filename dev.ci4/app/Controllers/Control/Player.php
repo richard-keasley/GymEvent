@@ -65,11 +65,20 @@ public function edit($event_id=0) {
 	
 	// all tracks needed for this event
 	$entries = [];
+	
+	$scoreboard = new \App\ThirdParty\scoreboard;
+	$exeset_names = [];
+	foreach($scoreboard->get_exesets() as $exeset) {
+		$exeset_names[$exeset['SetId']] = $exeset['Name'];
+	}
+	
 	foreach($event->entries() as $dis_key=>$dis) {
 		foreach($dis->cats as $cat_key=>$cat) {
 			foreach($cat->music as $exe) {
 				$cat_entry = [
-					'title' => "{$dis->name} {$cat->name}", 
+					'dis' => $dis->abbr,
+					'cat' => $cat->abbr,
+					'exeset' => $exeset_names[$cat->exercises] ?? '', 
 					'exe' => $exe,
 					'entries' => []
 				];
@@ -86,9 +95,39 @@ public function edit($event_id=0) {
 	$this->data['entries'] = $entries;
 	
 	if($cmd=='rebuild') {
-		d($event->player);
-		d($entries);
-
+		$player = []; $sort_arr = [];
+		foreach($entries as $cat) {
+			$cat_description = sprintf('%s-%s', $cat['dis'], $cat['cat']);
+			foreach($cat['entries'] as $cat_entry) {
+				$sort = sprintf('%s-%s-%s', $cat_entry['runorder'], $cat['exe'], $cat['exeset']); 
+				$key = array_search($sort, $sort_arr);
+				if($key===false) {
+					$key = count($sort_arr);
+					$sort_arr[] = $sort;
+					$player[] = [
+						'exe' => strtoupper($cat['exe']),
+						'title' => sprintf('%s/%s %s', $cat_entry['runorder'], $cat['exe'], $cat['exeset']),
+						'description' => [],
+						'entry_nums' => []
+					];
+				}
+				if(!in_array($cat_description, $player[$key]['description'])) {
+					$player[$key]['description'][] = $cat_description;
+				}
+				$player[$key]['entry_nums'][] = $cat_entry['num'];
+			}
+		}
+		foreach($player as $key=>$row) {
+			$player[$key]['description'] = implode(", ", $row['description']);
+		}
+		array_multisort($sort_arr, $player);
+		
+		$event->player = $player;
+		if($event->hasChanged()) {
+			$this->data['messages'][] = ["Player info re-built", 'success'];
+			$this->mdl_events->save($event);
+			$event = $this->mdl_events->find($event_id);
+		}
 	}
 	
 	$this->data['event'] = $event;

@@ -130,7 +130,7 @@ foreach($entries as $cat) {
 		if(!$check) $exe_missing[] = $entry['num'];
 	}
 	if($exe_missing) {
-		printf('<p><strong>%s - %s</strong><br>%s</p>', $cat['title'], $cat['exe'], implode(' ', $exe_missing));
+		printf('<p><strong>%s %s - %s</strong><br>%s</p>', $cat['dis'], $cat['cat'], $cat['exe'], implode(' ', $exe_missing));
 	}	
 } 
 ?>
