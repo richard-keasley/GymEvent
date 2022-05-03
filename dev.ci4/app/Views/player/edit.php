@@ -9,22 +9,17 @@ $this->section('content');
 # $track->event_id = $event->id;
 # d($event_tracks);
 
-$player_tracks = []; // all tracks listed on player
-
-$attr = [];
+$attr = ['id'=>'editform'];
 $hidden = [
-	'view' => "admin"
+	'view' => "admin",
+	'player' => "",
+	'cmd' => 'update'
 ];
 echo form_open(base_url(uri_string()), $attr, $hidden);
 ?>
 <div id="playervar" style="min-width:20em;">
 
-<?php foreach($player as $round) { 
-$exekey = strtolower($round['exe']);
-if(empty($player_tracks[$exekey])) $player_tracks[$exekey] = [] ;
-$player_tracks[$exekey] = array_merge($round['entry_nums'], $player_tracks[$exekey]);
-
-?>
+<?php foreach($player as $round) { ?>
 <div class="datarow row row-fluid py-2 border-bottom">
 
 <div class="col-4"><?php
@@ -67,11 +62,11 @@ $player_tracks[$exekey] = array_merge($round['entry_nums'], $player_tracks[$exek
 
 </div>
 <?php } ?>
+
 <button name="add" type="button" class="btn bi-plus-square btn-success" title="add round"></button>
-<input type="hidden" name="player" value="">
 <script>
 const fields = ['exe','title','description','entry_nums'];
-$(function(){
+$(function() {
 $('[name=update]').click(function() {
 	var player = []; 
 	$('#playervar .datarow').each(function() {
@@ -82,7 +77,7 @@ $('[name=update]').click(function() {
 		player.push(player_row);
 	});
 	$('[name=player]').val(JSON.stringify(player));
-	$(this).closest('form').submit();
+	$('#editform').submit();
 });
 
 $('#playervar [name=add]').click(function() {
@@ -112,36 +107,70 @@ $('#playervar [name=up]').click(function () {
 <section>
 <h5>Unlisted tracks</h5>
 <?php 
+// all tracks listed on player
+$player_tracks = []; 
+foreach($player as $round) {
+	$exekey = strtolower($round['exe']);
+	if(empty($player_tracks[$exekey])) $player_tracks[$exekey] = [] ;
+	$player_tracks[$exekey] = array_merge($round['entry_nums'], $player_tracks[$exekey]);
+}
 # d($player_tracks);
-# d($event_tracks);
-foreach($event_tracks as $cat) {
-	$cat_missing = [];
-	foreach($cat['tracks'] as $exe=>$entry_nums) {
-		$exe = strtolower($exe);
-		$exe_missing = [];
-		foreach($entry_nums as $entry_num) {
-			if(empty($player_tracks[$exe])) {
-				$check = 0;
-			}
-			else {
-				$check = in_array($entry_num, $player_tracks[$exe]);
-			}
-			if(!$check) $exe_missing[] = $entry_num;
+# d($entries);
+
+foreach($entries as $cat) {
+	$exe = strtolower($cat['exe']);
+	$exe_missing = [];
+	foreach($cat['entries'] as $entry) {
+		if(empty($player_tracks[$exe])) {
+			$check = 0;
 		}
-		if($exe_missing) $cat_missing[] = sprintf('%s : %s', $exe, implode(' ', $exe_missing));
+		else {
+			$check = in_array($entry['num'], $player_tracks[$exe]);
+		}
+		if(!$check) $exe_missing[] = $entry['num'];
 	}
-	if($cat_missing) {
-		printf('<p><strong>%s</strong><br>%s</p>', $cat['title'], implode('<br>', $cat_missing));
-	}
+	if($exe_missing) {
+		printf('<p><strong>%s - %s</strong><br>%s</p>', $cat['title'], $cat['exe'], implode(' ', $exe_missing));
+	}	
 } 
 ?>
 </section>
-<?php $this->endSection(); 
+<?php 
+echo form_close();
+$this->endSection(); 
 
 $this->section('bottom'); ?>
 <div class="toolbar">
 	<?php echo \App\Libraries\View::back_link("control/player/view/{$event->id}");?>
 	<button class="btn btn-primary" type="button" name="update">save</button>
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rebuild">rebuild</button>
 </div>
-</form>
+
+<div class="modal fade" id="rebuild" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog">
+<?php 
+$attr = ['class' => "modal-content"];
+$hidden = ['cmd'=>'rebuild'];
+echo form_open(base_url(uri_string()), $attr, $hidden);
+?>
+
+<div class="modal-header">
+<h5 class="modal-title" id="exampleModalLabel">Rebuild play track list</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+<p>Clear all entries from the player and re-build from running order?</p>
+</div>
+
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+<button type="submit" class="btn btn-primary">Rebuild</button>
+</div>
+
+<?php echo form_close();?>
+</div>
+</div>
+
+
 <?php $this->endSection(); 

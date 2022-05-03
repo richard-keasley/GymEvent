@@ -39,10 +39,12 @@ public function view($event_id=0) {
 
 public function edit($event_id=0) {
 	$event = $this->find($event_id);
+	
+	$cmd = $this->request->getPost('cmd');
 
-	$player = $this->request->getPost('player');
-	if(!is_null($player)) { 
+	if($cmd=='update') { 
 		//save player
+		$player = $this->request->getPost('player');
 		$player = json_decode($player);
 		foreach($player as $round_id=>$round) {
 			$nums = [];
@@ -62,25 +64,32 @@ public function edit($event_id=0) {
 	}
 	
 	// all tracks needed for this event
-	$event_tracks = []; 
+	$entries = [];
 	foreach($event->entries() as $dis_key=>$dis) {
 		foreach($dis->cats as $cat_key=>$cat) {
-			$tracks = [];
 			foreach($cat->music as $exe) {
-				foreach($cat->entries as $entry) {
-					$tracks[$exe][] = $entry->num;
-				}
-			}
-			if($tracks) {
-				$key = sprintf('%03u-%03u', $dis_key, $cat_key); 
-				$event_tracks[$key] = [
+				$cat_entry = [
 					'title' => "{$dis->name} {$cat->name}", 
-					'tracks' => $tracks
+					'exe' => $exe,
+					'entries' => []
 				];
+				foreach($cat->entries as $entry) {
+					$cat_entry['entries'][] = [
+						'num' => $entry->num,
+						'runorder' => implode('/', $entry->runorder)
+					];
+				}
+				$entries[] = $cat_entry;
 			}
 		}	
 	}
-	$this->data['event_tracks'] = $event_tracks;
+	$this->data['entries'] = $entries;
+	
+	if($cmd=='rebuild') {
+		d($event->player);
+		d($entries);
+
+	}
 	
 	$this->data['event'] = $event;
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb();
