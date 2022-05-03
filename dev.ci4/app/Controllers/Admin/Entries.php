@@ -134,8 +134,14 @@ public function edit($event_id=0) {
 			}
 			$data['runorder'] = json_encode($runorder);
 			
-			# d($data);
-			$this->ent_model->update($entry->id, $data);
+			# d($data['name']);
+			
+			if($data['name']=='#delrow') {
+				$this->ent_model->delete($entry->id, 1);
+			}
+			else {
+				$this->ent_model->update($entry->id, $data);
+			}
 		}
 		
 		// look for new entry
@@ -151,15 +157,31 @@ public function edit($event_id=0) {
 			#d($data);
 		}
 		
-		// look for delrow
-		$delrow = $this->request->getPost('delrow');
-		if($delrow) {
-			$this->ent_model->delete($delrow, 1);
-		}
-		
 		// read 
 		$this->find($event_id);
-	}		
+	}
+	
+	if($this->request->getPost('runorder')) {
+		// select which entries to update
+		$ent_ids = [];
+		foreach($this->data['entries'] as $dis) {
+			foreach($dis->cats as $cat) {
+				if($cat->id===$filter['catid']) {
+					foreach($cat->entries as $cat_entry) {
+						$ent_ids[] = $cat_entry->id;
+					}
+				}
+			}
+		}
+		if($ent_ids) {
+			$runorder = $this->request->getPost();
+			unset($runorder['runorder']);
+			$data = ['runorder' => json_encode($runorder)];
+			$this->ent_model->update($ent_ids, $data);
+		}
+		// read 
+		$this->find($event_id);
+	}
 	
 	// view
 	foreach($this->ent_model->get_errors($event_id) as $error) {
@@ -198,8 +220,7 @@ public function categories($event_id=0) {
 						$cat_arr[$col_name] = $fld_val;
 					}
 					
-					$empty = $cat_arr['name'] . $cat_arr['abbr'] .$cat_arr['sort'] ? 0 : 1; 
-					if($empty) { // delete category if empty
+					if($cat_arr['name']=='#delrow') {
 						$cat_entries = $this->ent_model->cat_entries($cat->id);
 						// no delete when there are entries
 						if(!count($cat_entries)) {

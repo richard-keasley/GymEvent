@@ -135,8 +135,8 @@ public function getRunorder() {
 	$db_val = json_decode($this->attributes['runorder'], 1);
 	if(!$db_val) $db_val = [];
 	$entity_val = [
-		'rnd' => 0,
-		'rot' => 0,
+		'rnd' => '',
+		'rot' => '',
 		'exe' => ''
 	];
 	foreach($entity_val as $key=>$default) {

@@ -1,19 +1,26 @@
 <?php $this->extend('default');
-
-$this->section('content');
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table">'];
-$table->setTemplate($template);
 
 $self = base_url(sprintf('/%s?%s', uri_string(), http_build_query($filter)));
+$user_options = [];
 foreach($users as $id=>$user) $user_options[$id] = $user->name;
 
+// select which entries to show
+$cat_entries = [];
+foreach($this->data['entries'] as $dis) {
+	foreach($dis->cats as $cat) {
+		if($cat->id===$filter['catid']) {
+			$cat_entries = $cat->entries;
+		}
+	}
+}
+
+$this->section('content');
 # d($users);
 # d($filter);
 # d($entries);
 # d($self);
 
-$user_options = [];
 ?>
 
 <form name="selector" method="GET">
@@ -33,6 +40,7 @@ $user_options = [];
 </div>
 <div class="col-auto"><select class="form-control" name="catid"></select></div>
 <div class="col-auto"><button type="submit" class="btn btn-primary">get</button></div>
+<div class="col-auto"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#runorder">Run order</button></div>
 </div>
 <script>
 const selector = <?php echo json_encode($selector);?>;
@@ -66,18 +74,6 @@ $attr = [];
 $hidden = ['save'=>1];
 echo form_open($self, $attr, $hidden);
 
-$filter_cat = $filter['catid'];
-$cat_entries = [];
-foreach($entries as $dis) {
-	if($dis->id==$filter['disid']) {
-		foreach($dis->cats as $cat) {
-			if($cat->id===$filter_cat) {
-				$cat_entries = $cat->entries;
-			}
-		}
-	}
-}
-$table->setHeading(['Category', 'Num', 'Club', 'Name', 'DoB', 'Run order', '']);
 $tbody=[]; $tr = [];
 $arr = empty($selector[$filter['disid']]) ? [] : $selector[$filter['disid']];
 $cat_opts = [];
@@ -108,7 +104,7 @@ $inputs = [
 	]
 ];
 
-$runorder = [];
+$runorder = []; $run_inputs = [];
 foreach($cat_entries as $entry) {		
 	foreach($inputs as $key=>$input) {
 		$inputs[$key]['name'] = "ent{$entry->id}_$key";
@@ -121,14 +117,14 @@ foreach($cat_entries as $entry) {
 	}
 	
 	foreach($entry->runorder as $key=>$val) {
-		if(!$val) $val = ''; // allow placeholder to show
+		$runorder[$key] = $val ?? ''; // allow placeholder to show
 		$input = [
 			'class' => 'form-control',
-			'value' => $val,
+			'value' => $runorder[$key],
 			'name' => "ent{$entry->id}_run_{$key}",
 			'placeholder' => $key
 		];
-		$runorder[$key] = form_input($input);
+		$run_inputs[$key] = form_input($input);
 	}
 		
 	$tbody[] = [
@@ -137,14 +133,28 @@ foreach($cat_entries as $entry) {
 		form_dropdown($inputs['user_id']),
 		form_input($inputs['name']),
 		form_input($inputs['dob']),
-		sprintf('<div style="width:9em" class="input-group">%s</div>', implode(' ', $runorder)),
-		sprintf('<button class="btn btn-danger bi bi-trash" type="submit" name="delrow" value="%u"></button>', $entry->id)
+		sprintf('<div style="width:9em" class="input-group">%s</div>', implode(' ', $run_inputs)),
+		sprintf('<button class="btn btn-sm btn-danger bi bi-trash" type="button" onClick="delrow(this)"></button>', $entry->id)
 	];
 }
-if($tbody) { ?>
-<div class="table-responsive">
-<?php echo $table->generate($tbody); ?>
-</div>
+
+if($tbody) {
+$template = [
+	'table_open' => '<div class="table-responsive"><table class="table">',
+	'table_close' => '</table></div>'
+];
+$table->setTemplate($template);
+$table->setHeading(['Category', 'Num', 'Club', 'Name', 'DoB', 'Run order', '']);
+echo $table->generate($tbody); ?>
+<script>
+function delrow(el) {
+	var tr = el.parentElement.parentElement;
+	tr.querySelectorAll('input').forEach(function(input) { 
+		input.value = '#delrow';
+	});
+	tr.style.display = "none";
+}
+</script>
 <?php } 
 
 if($filter['disid'] && $filter['catid']) { ?>
@@ -201,4 +211,56 @@ function newrow(show) {
 
 <?php
 echo form_close();
+?>
+
+<div class="modal fade" id="runorder">
+<div class="modal-dialog modal-sm">
+<?php 
+$attr = [
+	'class' => "modal-content"
+];
+$hidden = ['runorder' => 1];
+echo form_open($self, $attr, $hidden); 
+?>
+<div class="modal-header">
+	<h5 class="modal-title" id="exampleModalLabel">Running order</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+<?php 
+$fields = $runorder ?? [];
+if($fields) { ?>
+	<p>Set global running order parameters for this category.</p>
+	<?php
+	$input = [
+		'class' => 'form-control'
+	];
+	foreach(array_keys($fields) as $key) { 
+		$input['name'] = $key;
+		?>
+		<div class="row my-1">
+		<div class="col-4 text-end"><label class="form-label">
+			<?php echo $key;?>
+		</label></div>
+		<div class="col-8">
+		<?php echo form_input($input); ?>
+		</div>
+		</div>
+	<?php }
+} else { ?>
+	<p class="alert-warning p-1">No running order parameters are available. Is this an empty category?"</p>
+<?php } ?>
+</div>
+
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+	<button type="submit" class="btn btn-primary">Update</button>
+</div>
+
+<?php echo form_close();?>
+</div>
+</div>
+
+<?php
 $this->endSection(); 

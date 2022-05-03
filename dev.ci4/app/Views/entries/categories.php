@@ -143,9 +143,8 @@ echo $table->generate([$tr]);
 <script>
 function delrow(el) {
 	var tr = el.parentElement.parentElement;
-	var inputs = tr.querySelectorAll('input');
-	inputs.forEach(function(input) { 
-		input.value = '';
+	tr.querySelectorAll('input').forEach(function(input) { 
+		input.value = '#delrow';
 	});
 	tr.style.display = "none";
 }
