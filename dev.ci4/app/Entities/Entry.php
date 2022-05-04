@@ -132,10 +132,10 @@ public function updateMusic() {
 }
 
 public function getRunorder() {
-	$db_val = json_decode($this->attributes['runorder'], 1);
+	$db_val = json_decode($this->attributes['runorder'], 1) ?? [];
 	$entity_val = [
-		'rnd' => (int) $db_val['rnd'] ?? 0,
-		'rot' => (int) $db_val['rot'] ?? 0
+		'rnd' => intval($db_val['rnd'] ?? 0),
+		'rot' => intval($db_val['rot'] ?? 0)
 	];
 	return $entity_val;
 }
