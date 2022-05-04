@@ -104,7 +104,7 @@ $inputs = [
 	]
 ];
 
-$runorder = []; $run_inputs = [];
+$run_inputs = [];
 foreach($cat_entries as $entry) {		
 	foreach($inputs as $key=>$input) {
 		$inputs[$key]['name'] = "ent{$entry->id}_$key";
@@ -117,10 +117,10 @@ foreach($cat_entries as $entry) {
 	}
 	
 	foreach($entry->runorder as $key=>$val) {
-		$runorder[$key] = $val ?? ''; // allow placeholder to show
+		$value = $val ? $val : ''; // allow placeholder to show
 		$input = [
 			'class' => 'form-control',
-			'value' => $runorder[$key],
+			'value' => $value,
 			'name' => "ent{$entry->id}_run_{$key}",
 			'placeholder' => $key
 		];
@@ -229,7 +229,7 @@ echo form_open($self, $attr, $hidden);
 
 <div class="modal-body">
 <?php 
-$fields = $runorder ?? [];
+$fields = $run_inputs ?? [];
 if($fields) { ?>
 	<p>Set global running order parameters for this category.</p>
 	<?php

@@ -74,18 +74,21 @@ public function edit($event_id=0) {
 	
 	foreach($event->entries() as $dis_key=>$dis) {
 		foreach($dis->cats as $cat_key=>$cat) {
+			$cat_entry = [
+				'dis' => $dis->abbr,
+				'cat' => $cat->abbr,
+				'exeset' => $exeset_names[$cat->exercises] ?? '', 
+			];
+			
 			foreach($cat->music as $exe) {
-				$cat_entry = [
-					'dis' => $dis->abbr,
-					'cat' => $cat->abbr,
-					'exeset' => $exeset_names[$cat->exercises] ?? '', 
-					'exe' => $exe,
-					'entries' => []
-				];
+				$cat_entry['exe'] = $exe;
+				$cat_entry['entries'] = [];
 				foreach($cat->entries as $entry) {
+					$ent_group = $entry->get_rundata('group');
 					$cat_entry['entries'][] = [
 						'num' => $entry->num,
-						'runorder' => implode('/', $entry->runorder)
+						'group' => $entry->get_rundata('group'),
+						'order' => $entry->get_rundata('order')
 					];
 				}
 				$entries[] = $cat_entry;
@@ -99,14 +102,14 @@ public function edit($event_id=0) {
 		foreach($entries as $cat) {
 			$cat_description = sprintf('%s-%s', $cat['dis'], $cat['cat']);
 			foreach($cat['entries'] as $cat_entry) {
-				$sort = sprintf('%s-%s-%s', $cat_entry['runorder'], $cat['exe'], $cat['exeset']); 
-				$key = array_search($sort, $sort_arr);
+				$key = array_search($cat_entry['order'], $sort_arr);
 				if($key===false) {
 					$key = count($sort_arr);
-					$sort_arr[] = $sort;
+					$sort_arr[] = $cat_entry['order'];
+					$exe = strtoupper($cat['exe']);
 					$player[] = [
-						'exe' => strtoupper($cat['exe']),
-						'title' => sprintf('%s/%s %s', $cat_entry['runorder'], $cat['exe'], $cat['exeset']),
+						'exe' => $exe,
+						'title' => sprintf('%s %s', $cat_entry['group'], $cat['exeset']),
 						'description' => [],
 						'entry_nums' => []
 					];

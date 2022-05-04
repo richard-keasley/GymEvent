@@ -60,7 +60,7 @@ foreach($entries as $dis) { ?>
 				$row[] = date('d-M-Y', $dob);
 			}
 			if($format=='full') {
-				$row[] = implode(', ', $entry->runorder);
+				$row[] = $entry->get_rundata('group');
 			}
 			$tbody[] = $row;
 		}

@@ -442,10 +442,10 @@ public function export($event_id=0, $format='view') {
 				$row['entry_title'] = $entry->name;
 				$row['entry_DoB'] = $entry->dob;
 				// running order
-				foreach($entry->runorder as $key=>$val) {
+				foreach($entry->get_rundata('export') as $key=>$val) {
 					$row["run_{$key}"] = $val;
 				}
-								
+											
 				$this->data['export'][] = $row;
 			}		
 			// end cat 

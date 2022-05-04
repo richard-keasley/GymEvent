@@ -142,7 +142,8 @@ echo form_open($self, $attr, $hidden);
 
 <div class="modal-body">
 <p>Set music state for this event.</p>
-<div>
+<div class="input-group">
+<span class="input-group-text">state</span>
 <?php 
 $colours = \App\Entities\Event::state_colours;
 $input = ['class' => 'btn-check'];

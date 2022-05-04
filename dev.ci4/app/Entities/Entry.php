@@ -133,16 +133,51 @@ public function updateMusic() {
 
 public function getRunorder() {
 	$db_val = json_decode($this->attributes['runorder'], 1);
-	if(!$db_val) $db_val = [];
 	$entity_val = [
-		'rnd' => '',
-		'rot' => '',
-		'exe' => ''
+		'rnd' => (int) $db_val['rnd'] ?? 0,
+		'rot' => (int) $db_val['rot'] ?? 0
 	];
-	foreach($entity_val as $key=>$default) {
-		$entity_val[$key] = $db_val[$key] ?? $default;
-	}
 	return $entity_val;
+}
+
+private $_rundata = null;
+public function get_rundata($datakey=null) {
+	if($this->_rundata===null) {
+		$scoreboard = new \App\ThirdParty\scoreboard;
+		$runorder = $this->runorder;		
+		$cat = $this->get_category();
+						
+		$exe = [];
+		$exeset_id = $cat->exercises ?? 0;
+		foreach($scoreboard->get_exesets() as $sb_exeset) {
+			if($sb_exeset['SetId']==$exeset_id) {
+				$sb_exes = $sb_exeset['children'];
+				$sb_sort = array_column($sb_exes, 'Order');
+				array_multisort($sb_sort, $sb_exes);
+				$key = $runorder['rot'] - 1;
+				if(isset($sb_exes[$key])) $exe = $sb_exes[$key];
+			}
+		}
+		
+		// order is by running order, exercise order, exercise id
+		// this makes a unique key for each rotation / exercise
+		$arr = $runorder;
+		$arr[] = $exe['Order'] ?? 999;
+		$arr[] = $exe['ExerciseId'] ?? 999;
+		$order = '';
+		foreach($arr as $val) $order .= sprintf('%03d', $val);
+				
+		$export = $runorder;
+		$export['exe'] = $exe['ShortName'] ?? '?' ;
+				
+		$this->_rundata = [
+			'order' => $order,
+			'exe' => $exe,
+			'group' => implode('.', $runorder),
+			'export' => $export
+		];
+	}
+	return $this->_rundata[$datakey] ?? $this->_rundata;
 }
 
 public function setRunorder($entity_val) {
