@@ -100,7 +100,7 @@ public function edit($event_id=0) {
 	if($cmd=='rebuild') {
 		$player = []; $sort_arr = [];
 		foreach($entries as $cat) {
-			$cat_description = sprintf('%s-%s', $cat['dis'], $cat['cat']);
+			$cat_description = "{$cat['dis']}:{$cat['cat']}";
 			foreach($cat['entries'] as $cat_entry) {
 				$key = array_search($cat_entry['order'], $sort_arr);
 				if($key===false) {
@@ -109,7 +109,7 @@ public function edit($event_id=0) {
 					$exe = strtoupper($cat['exe']);
 					$player[] = [
 						'exe' => $exe,
-						'title' => sprintf('%s %s', $cat_entry['group'], $cat['exeset']),
+						'title' => "{$cat_entry['group']} {$cat['exeset']}",
 						'description' => [],
 						'entry_nums' => []
 					];
