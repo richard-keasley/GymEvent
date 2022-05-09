@@ -74,8 +74,13 @@ $player.on("error", function(e) {
 $pattern = $track->filepath() . '*';
 $notlisted = [];
 foreach(glob($pattern) as $filepath) {
-	$val = basename($filepath);
-	if(strpos($val, 'index')!==0) $notlisted[] = $val;
+	$fi = pathinfo($filepath);
+	$filename = $fi['filename'] ?? '' ;
+	$extension = $fi['extension'] ?? 'invalid' ;
+	if($filename && in_array($extension, \App\Libraries\Track::exts_allowed)) {
+		$notlisted[] = "{$filename}.{$extension}";
+		# d([$filename, $extension]);
+	}
 }
 
 foreach($event->player as $round_key=>$round) { 
