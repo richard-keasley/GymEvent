@@ -53,10 +53,9 @@ public function view($event_id=0) {
 		$this->data['event'] = $this->mdl_events->find($event_id);
 	}
 	
-	$method = $this->request->getPost('method');
-	if(in_array($method, ['set_check', 'delete'])) {
+	if($this->request->getPost('cmd')=='update') {
 		$getPost = $this->request->getPost();
-		$value = $this->request->getPost('val');
+		$post_val = $getPost['val'] ?? 0 ;
 		$entries = $this->data['event']->entries();
 		$track = new \App\Libraries\Track;
 		$track->event_id = $this->data['event']->id;
@@ -69,17 +68,7 @@ public function view($event_id=0) {
 						$track->exe = $exe;
 						$search = "trk_{$track->filebase()}";
 						if(isset($getPost[$search])) {
-							if($getPost['method']=='set_check') {
-								$ent_music[$exe] = $getPost['val'];
-							}
-							if($getPost['method']=='delete') {
-								// clear existing uploads
-								$count = 0;
-								foreach($track->filename(1) as $filename) {
-									if(unlink($filename)) $count++;
-								}
-								if($count) $this->data['messages'][] = ["Existing track deleted", 'warning'];
-							}
+							$ent_music[$exe] = $post_val;
 						}
 					}
 					$entry->music = $ent_music;

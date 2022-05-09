@@ -17,7 +17,7 @@ public function before(RequestInterface $request, $arguments = null) {
 	$messages = [];
 	
 	$check_ip = \App\Libraries\Auth::$lgn_model->check_ip($request->getIPAddress());
-	# if(!$check_ip) throw new \RuntimeException('Oops! Overuse injury', 423);
+	if(!$check_ip) throw new \RuntimeException('Oops! Overuse injury', 423);
 	
 	// check for existing login / logout
 	if($request->getPost('logout')) {

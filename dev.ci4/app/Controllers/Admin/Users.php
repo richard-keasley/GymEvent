@@ -190,6 +190,8 @@ public function view($user_id=0) {
 public function edit($user_id=0) {
 	// compare to /user/edit
 	$this->find($user_id);
+	
+	d($this->data['user']->role);
 
 	if(!\App\Libraries\Auth::check_role($this->data['user']->role)) throw new \RuntimeException("You can not edit this user", 403);
 		
@@ -318,7 +320,7 @@ public function logins($filter='', $id='') {
 			}
 			$login['user_name'] = $user_names[$uid];
 		}
-		$login['blocked'] = $lgn_model->ip_blocked($login['ip']);
+		$login['check_ip'] = $lgn_model->check_ip($login['ip']);
 		$login['ip_info'] = implode(', ', \App\Models\Logins::ip_info($login['ip'], ['city', 'countryCode']));
 
 		$this->data['logins'][] = $login;

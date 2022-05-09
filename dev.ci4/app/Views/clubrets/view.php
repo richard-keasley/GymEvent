@@ -1,5 +1,10 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
+$template = [
+	'table_open' => '<div class="table-responsive"><table class="table">',
+	'table_close' => '</table></div>'
+];
+$table->setTemplate($template);
 
 $this->section('content'); ?>
 <section>
@@ -17,31 +22,26 @@ $this->section('content'); ?>
 <p><strong>Updated:</strong> <?php echo date('d-M-Y H:i', strtotime($clubret->updated));?></p>
 
 <h5>Staff</h5>
-<div class="table-responsive">
 <?php 
-$template = ['table_open' => '<table class="table">'];
-$table->setTemplate($template);
 $tbody = []; 
 foreach($clubret->staff as $rowkey=>$row) {
 	$namestring = new \App\Entities\namestring($row['name']);
 	$tbody[] = [
 		$rowkey + 1,
-		$row['cat'],
+		humanize($row['cat']),
 		$namestring->name,
 		$namestring->bg,
 		$namestring->htm_dob()
 	];
 }
-if(count($tbody)) {
+if($tbody) {
 	$table->setHeading(['#', '', 'name', 'BG', 'DoB']);
 	echo $table->generate($tbody);
 }
+echo $clubret->errors('staff'); 
 ?>
-</div>
-<?php echo $clubret->errors('staff'); ?>
 
 <h5>Participants</h5>
-<div class="table-responsive">
 <?php 
 $tbody = [];
 $participants = $clubret->participants;
@@ -64,14 +64,11 @@ foreach($participants as $rowkey=>$row) {
 		$option = '';
 	}
 }
-if(count($tbody)) {
+if($tbody) {
 	$table->setHeading(['#', 'dis', 'category', 'name', '', 'BG', 'DoB']);
 	echo $table->generate($tbody);
 }
-?>
-</div>
-<?php echo $clubret->errors('participants'); ?>
-
+echo $clubret->errors('participants'); ?>
 </section>
 
 <section>

@@ -1,4 +1,10 @@
 <?php $this->extend('default');
+$table = new \CodeIgniter\View\Table();
+$template = [
+	'table_open' => '<div class="table-responsive"><table class="table table-bordered">',
+	'table_close' => '</table></div>'
+];
+$table->setTemplate($template);
 
 $this->section('content'); ?>
 <div class="toolbar">
@@ -23,7 +29,7 @@ foreach($entries as $dis) {
 			if(!isset($tbody[$user_id])) {
 				$user = $users[$user_id] ?? null;
 				if($user) {
-					$club = $user->name . ' ' . $user->link();
+					$club = anchor("/admin/music/view/{$event->id}?user={$user_id}", $user->name) . ' ' . $user->link() ;
 					if($user->email) {
 						$club .= sprintf(' <a href="mailto:%1$s" title="%1$s"><span class="bi-envelope"><span></a>', $user->email);
 					}
@@ -52,11 +58,8 @@ foreach($entries as $dis) {
 array_multisort($orderby, $tbody);
 
 if($tbody) {
-	$table = new \CodeIgniter\View\Table();
-	$template = ['table_open' => '<table class="table table-bordered">'];
-	$table->setTemplate($template);
 	$tfoot = ['club' => count($tbody)];
-	$thead = ['club' => 'Club'];
+	$thead = ['club' => '<div style="width:10em;">Club</div>'];
 	foreach($state_labels as $key) { 
 		$thead[$key] = sprintf('<div style="width:4em;overflow:hidden;">%s</div>', $key);
 		$tfoot[$key] = array_sum( array_column($tbody, $key));

@@ -52,14 +52,19 @@ foreach($nav as $item) {
 <?php } ?>
 
 <section><h4>Logins</h4>
-<?php $model = new \App\Models\Logins();
+<?php 
+$model = new \App\Models\Logins();
 $logins = $model->where('user_id', $user->id)->orderBy('updated')->findAll();
 $tbody = [];
 foreach($logins as $login) {
 	$ip_info = \App\Models\Logins::ip_info($login['ip'], ['city', 'countryCode']);
+	$IP = $login['ip'];
+	$ip_check = $model->check_ip($login['ip']);
+	if(!$ip_check) $IP .= ' <i title="blocked" class="bi-x-circle text-danger"></i>';
+	
 	$tbody[] = [
 		'time' => date('d M y H:i', strtotime($login['updated'])),
-		'IP' => $login['ip'],
+		'IP' => $IP,
 		'location' => implode(', ', $ip_info),
 		'result' => $login['error'] ? sprintf('<span class="bg-danger text-light px-1">%s</span>', $login['error']) : '<span class="text-success">OK</span>'
 	];
