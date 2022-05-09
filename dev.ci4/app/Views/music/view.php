@@ -10,11 +10,14 @@ $track->event_id = $event->id;
 
 # d($event);
 # d($entries);
-# d($filter, $cat_opts, $filter['cat']);
+# d($filter, $cat_opts);
 
 ?>
-<form method="GET" id="selector" class="mb-2">
-<?php echo form_dropdown('cat', $cat_opts, $filter['cat'], 'class="form-control"');?>
+<form method="GET" id="selector" class="mb-2 toolbar">
+<?php 
+echo getlink("admin/music/view/{$event->id}", 'admin');
+echo form_dropdown('cat', $cat_opts, $filter['cat'], 'class="form-control"');
+?>
 <script>
 $(function() {
 	$('[name=cat]').change(function(){$('#selector').submit();});

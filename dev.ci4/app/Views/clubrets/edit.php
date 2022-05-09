@@ -92,7 +92,7 @@ if(!$staff) { // provide one blank entry
 }
 
 $options = [];
-foreach($event->staffcats as $val) $options[$val] = $val;
+foreach($event->staffcats as $val) $options[$val] = humanize($val);
 $inputs = [
 	'cat' => [
 		'options' => $options, 

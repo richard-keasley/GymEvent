@@ -122,6 +122,7 @@ $this->section('top'); ?>
 <?php 
 echo getlink("admin/entries/categories/{$event->id}", 'categories'); 
 echo getlink("control/player/view/{$event->id}", 'player'); 
+echo getlink("admin/music/clubs/{$event->id}", 'clubs'); 
 ?>
 </div>
 
