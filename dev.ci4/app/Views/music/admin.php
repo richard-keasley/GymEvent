@@ -13,30 +13,17 @@ foreach($users as $id=>$user) $user_options[$id] = $user->name;
 $self = base_url(sprintf('/%s?%s', uri_string(), http_build_query($filter)));
 
 $attr = ['id' => "control"];
-$hidden = ['method' => "set_check"];
-echo form_open($self, $attr, $hidden); ?>
+$hidden = ['cmd' => "update"];
+echo form_open($self, $attr, $hidden); 
+?>
 <div class="toolbar nav row sticky-top">
-	<div class="col-auto"><div class="input-group">	
+	<div class="col-sm-auto">Set track</div>
+	<div class="col-sm-auto"><div class="input-group">
 		<button class="btn btn-warning" type="submit" name="val" value="0">unchecked</button>
 		<button class="btn btn-success" type="submit" name="val" value="1">checked</button>
 		<button class="btn btn-info" type="submit" name="val" value="2">withdrawn</button>
-	</div></div>		
-
-	<div class="col-auto">
-		<button class="btn btn-danger" type="button" name="delete">delete</button>
-	</div>
+	</div></div>
 </div>
-<script>
-$(function() {
-
-$('#control [name=delete]').click(function(){
-	if(!confirm('Are you sure you want to delete the current entries?')) return;
-	$('#control [name=method]').val('delete');
-	$('#control').submit();
-});
-
-});
-</script>
 
 <?php
 $count_entries = 0;
@@ -95,9 +82,8 @@ foreach($entries as $dis) {
 		}
 	}
 }
-?>
-</form>
-<?php
+echo form_close();
+
 $this->endSection();
 
 $this->section('sidebar'); ?>
@@ -116,7 +102,7 @@ printf('<p>%s entries.</p>', $count_entries);
 <?php $this->endSection();
 
 $this->section('top'); ?>
-<div class="toolbar">
+<div class="toolbar flex-wrap">
 <?php echo \App\Libraries\View::back_link("admin/events/view/{$event->id}"); ?>
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#state_modeal">Music state</button>
 <?php 
@@ -124,54 +110,6 @@ echo getlink("admin/entries/categories/{$event->id}", 'categories');
 echo getlink("control/player/view/{$event->id}", 'player'); 
 echo getlink("admin/music/clubs/{$event->id}", 'clubs'); 
 ?>
-</div>
-
-<div class="modal fade" id="state_modeal" tabindex="-1">
-<div class="modal-dialog">
-<?php
-$attr = [
-	'id' => "frmstate",
-	'class' => 'modal-content'
-];
-$hidden = ['set_state' => 1];
-echo form_open($self, $attr, $hidden);
-?>
-<div class="modal-header">
-<h5 class="modal-title" id="exampleModalLabel">Event music state</h5>
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-
-<div class="modal-body">
-<p>Set music state for this event.</p>
-<div class="input-group">
-<span class="input-group-text">state</span>
-<?php 
-$colours = \App\Entities\Event::state_colours;
-$input = ['class' => 'btn-check'];
-$input['name'] = 'music';
-foreach(\App\Entities\Event::state_labels as $state=>$state_label) {
-	$input['id'] = "music_{$state_label}";
-	$input['checked'] = $event->music==$state;
-	$input['value'] = $state;
-	echo form_radio($input);
-	printf('<label class="btn btn-outline-%s" for="%s">%s</label>', $colours[$state], $input['id'], $state_label);
-} 
-?>
-</div>
-<script>
-$(function() {
-	$('#frmstate [name=music]').click(function(){
-		$('#frmstate').submit();
-	});
-});
-</script>
-</div>
-
-<div class="modal-footer">
-<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-</div>
-<?php echo form_close();?>
-</div>
 </div>
 
 <form name="selector" method="GET" class="row">
@@ -232,6 +170,58 @@ function update_selector(dis_id) {
 }
 </script> 
 </form> 
+
+<?php $this->endSection();
+
+$this->section('bottom'); ?>
+<div class="modal fade" id="state_modeal" tabindex="-1">
+<div class="modal-dialog">
+<?php
+$attr = [
+	'id' => "frmstate",
+	'class' => 'modal-content'
+];
+$hidden = ['set_state' => 1];
+echo form_open($self, $attr, $hidden);
+?>
+<div class="modal-header">
+<h5 class="modal-title" id="exampleModalLabel">Event music state</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+<p>Set music state for this event.</p>
+<div class="input-group">
+<span class="input-group-text">state</span>
+<?php 
+$colours = \App\Entities\Event::state_colours;
+$input = ['class' => 'btn-check'];
+$input['name'] = 'music';
+foreach(\App\Entities\Event::state_labels as $state=>$state_label) {
+	$input['id'] = "music_{$state_label}";
+	$input['checked'] = $event->music==$state;
+	$input['value'] = $state;
+	echo form_radio($input);
+	printf('<label class="btn btn-outline-%s" for="%s">%s</label>', $colours[$state], $input['id'], $state_label);
+} 
+?>
+</div>
+<script>
+$(function() {
+	$('#frmstate [name=music]').click(function(){
+		$('#frmstate').submit();
+	});
+});
+</script>
+</div>
+
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+<?php echo form_close();?>
+</div>
+</div>
+
 
 <?php 
 # d($filter);

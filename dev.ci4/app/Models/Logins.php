@@ -21,51 +21,51 @@ function beforeInsert($data) {
 }
 
 function block_ip($ip) {
+	// can't block self
 	if($this->request_ip==$ip) return false;
-	if($this->ip_blocked($ip)) return false;
-	
-	return $this->insert(['ip' => $ip, 'error' => 'blocked']) ;
-}
-
-function ip_blocked($ip) {
 	// check if block exists
 	$logins = $this->where('error' , 'blocked')
 		->where('ip', $ip)
 		->findAll(1);
-	return $logins ? true : false ;
+	if($logins) return false;	
+	return $this->insert(['ip' => $ip, 'error' => 'blocked']) ;
 }
-	
+
+const ip_time = 'P2D'; // amount of time to remove records
+const ip_errors = 7; // max number of errors allowed per IP address
+private $_ip_checks = [];
 function check_ip($ip) {
-	$ip_time = 'P2D'; // amount of time to remove records
-	$ip_errors = 7; // max number of errors allowed per IP address
-	
-	// delete old records (remove temporary blocks)
-	$dt = new \DateTime(); 
-	// check this far back (older ones deleted)
-	$dt->sub(new \DateInterval($ip_time)); 
-	$this->where('updated <', $dt->format('Y-m-d H:i:s'))
-		->where('error <>', 'blocked')
-		->delete();
-			
-	// get login errors
-	$logins = $this->where('error >' , '')
-		->where('ip', $ip)
-		->findAll();
-			
-	foreach($logins as $login) {
-		// permanent block
-		if($login['error']=='blocked') return false;
+	if(!isset($this->_ip_checks[$ip])) {
+		// delete old records (remove temporary blocks)
+		$dt = new \DateTime(); 
+		// check this far back (older ones deleted)
+		$dt->sub(new \DateInterval(self::ip_time)); 
+		$this->where('updated <', $dt->format('Y-m-d H:i:s'))
+			->where('error <>', 'blocked')
+			->delete();
+				
+		// get login errors
+		$logins = $this->where('error >' , '')
+			->where('ip', $ip)
+			->findAll();
+				
+		$retval = true;
+		
+		// temporary block
+		if(count($logins)>self::ip_errors) $retval = false;
+		else {
+			foreach($logins as $login) {
+				// permanent block
+				if($login['error']=='blocked') $retval = false;
+			}
+		}
+		$this->_ip_checks[$ip] = $retval;
 	}
-	// temporary block
-	if(count($logins)>$ip_errors) return false;
-	
-	return true;
+	return $this->_ip_checks[$ip];
 }
 
 static $_ip_info = [];
-static function ip_info($ip=null, $attribs=null) {
-	if(!$ip) $ip = $this->request_ip;
-	
+static function ip_info($ip, $attribs=null) {
 	if(empty(self::$_ip_info[$ip])) {
 		$url = "http://ip-api.com/json/$ip";
 		$ch = curl_init();

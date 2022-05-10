@@ -1,6 +1,9 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table">'];
+$template = [
+	'table_open' => '<div class="table-responsive"><table class="table">',
+	'table_close' => '</table></div>'
+];
 $table->setTemplate($template);
 
 $this->section('content');?>
@@ -22,7 +25,7 @@ $this->section('content');?>
 			];
 		}
 		printf('<h5>%s - %s</h5>', $dis['name'], $cat['name']);
-		printf('<div class="table-responsive">%s</div>', $table->generate($tbody));
+		echo $table->generate($tbody);
 	}
 	?>
 	</section>
@@ -45,7 +48,6 @@ $this->endSection();
 $this->section('sidebar');
 ?>
 <h4>Payments due</h4>
-<div class="table-responsive">
 <?php
 $fees = []; $cols = []; $rows = []; $count = [];
 foreach($clubrets as $rowkey=>$clubret) {
@@ -62,7 +64,7 @@ foreach($clubrets as $rowkey=>$clubret) {
 	$rows[$rowkey] = getlink($clubret->url('view', 'admin'), $label);
 	if($user) $rows[$rowkey] .= ' ' . $user->link();
 	
-	$count[$rowkey] =[];
+	$count[$rowkey] = [];
 	foreach($clubret->participants as $participant) {
 		$dis = $participant['dis'];
 		if(empty($count[$rowkey][$dis])) $count[$rowkey][$dis] = 0;
@@ -96,17 +98,15 @@ $table->setHeading($thead);
 $table->setFooting($tfoot);
 echo $table->generate($tbody);
 ?>
-</div>
 
 <h4>Staff</h4>
-<div class="table-responsive">
 <?php
 $tbody = [];
 foreach($event->staff() as $entkey=>$entry) {
 	$tbody[] = [
 		# $entkey + 1,
 		$entry['club'],
-		$entry['cat'],
+		humanize($entry['cat']),
 		$entry['name'],
 		$entry['bg'],
 		# date('d-M-Y', $entry['dob'])
@@ -115,9 +115,7 @@ foreach($event->staff() as $entkey=>$entry) {
 $table->setHeading(['club', 'type', 'name', 'BG']);
 $table->setFooting([]);
 echo $table->generate($tbody);
-?>
-</div>
-<?php
+
 $this->endSection(); 
 
 $this->section('bottom'); 
