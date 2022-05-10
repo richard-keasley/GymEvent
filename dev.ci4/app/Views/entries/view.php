@@ -40,8 +40,7 @@ if($can_edit) {
 <div class="d-flex flex-wrap gap-4">
 <?php 
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table">'];
-$table->setTemplate($template);
+$table->setTemplate(\App\Libraries\Table::templates['default']);
 
 $edit_base = base_url("/admin/entries/edit/{$event->id}");
 foreach($entries as $dis) { ?>

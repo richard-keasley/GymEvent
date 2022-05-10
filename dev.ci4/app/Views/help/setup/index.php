@@ -10,8 +10,7 @@ while($row = $csv->fgetcsv()) {
 $csv = null;
 
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table border">'];
-$table->setTemplate($template);
+$table->setTemplate(\App\Libraries\Table::templates['bordered']);
 echo $table->generate($tbody);
 ?>
 <div class="row">

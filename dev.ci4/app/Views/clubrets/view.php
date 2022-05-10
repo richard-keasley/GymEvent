@@ -1,10 +1,6 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$template = [
-	'table_open' => '<div class="table-responsive"><table class="table">',
-	'table_close' => '</table></div>'
-];
-$table->setTemplate($template);
+$table->setTemplate(\App\Libraries\Table::templates['responsive']);
 
 $this->section('content'); ?>
 <section>

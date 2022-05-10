@@ -5,12 +5,13 @@ $this->section('content');
 $attr = [
 	'id' => "editform"
 ];
-echo form_open(base_url(uri_string()), $attr); ?>
+$hidden = [
+	'links' => '',
+	'save' => 1
+];
+echo form_open(base_url(uri_string()), $attr, $hidden); ?>
 <h4>Create scoreboard links</h4>
-<div class="table-responsive">
 <?php 
-echo form_hidden('links');
-echo form_hidden('save', 1);
 
 if(!$links) $links = [['label'=>'', 'url' =>'']];
 
@@ -29,7 +30,6 @@ $inputs = [
 	]
 ];
 
-
 $tbody = [];
 foreach($links as $link) {
 	$inputs['label']['value'] = $link['label'];
@@ -40,12 +40,10 @@ foreach($links as $link) {
 		'<button name="del" type="button" class="btn bi-trash btn-danger btn-sm"></button>'
 	];
 }
-$template = ['table_open' => '<table class="table data">'];
-$table->setTemplate($template);
+$table->setTemplate(\App\Libraries\Table::templates['responsive']);
 $table->setHeading(['label', 'url', '']);
 echo $table->generate($tbody);
 ?>
-</div>
 <button name="add" type="button" class="btn btn-success bi-plus-square"></button>
 
 <div class="toolbar">
@@ -53,14 +51,14 @@ echo $table->generate($tbody);
 	<button type="button" onclick="pagesave()" class="btn btn-primary">save</button>
 </div>
 
-</form>
-
-<?php $this->endSection(); 
+<?php 
+echo form_close();
+$this->endSection(); 
 
 $this->section('bottom');?>
 <script>
-const link_vars = ['label','url'];
-const link_rows = '#editform .data tbody tr';
+const link_vars = ['label', 'url'];
+const link_rows = '#editform tbody tr';
 
 $(function() {
 

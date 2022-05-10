@@ -1,7 +1,4 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table">'];
-$table->setTemplate($template);
 
 $this->section('content');
 $tbody = [];
@@ -17,8 +14,7 @@ foreach($users as $user) {
 	];
 }
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table">'];
-$table->setTemplate($template);
+$table->setTemplate(\App\Libraries\Table::templates['default']);
 $table->autoHeading = false;
 $table->setFooting(['', count($users) . ' clubs', '','', $entcount, '']);
 echo $table->generate($tbody);

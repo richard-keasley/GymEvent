@@ -16,8 +16,7 @@ echo $textarea;
 <section class="mt-3 table-responsive">
 <?php 
 if($value) {
-	$template = ['table_open' => '<table class="table table-bordered border-primary">'];
-	$table->setTemplate($template);
+	$table->setTemplate(\App\Libraries\Table::templates['primary']);
 	$table->setHeading(array_keys(current($value)));
 	foreach($value as $row_key=>$row) {
 		foreach($row as $key=>$val) {

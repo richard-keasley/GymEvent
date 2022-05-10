@@ -139,11 +139,7 @@ foreach($cat_entries as $entry) {
 }
 
 if($tbody) {
-$template = [
-	'table_open' => '<div class="table-responsive"><table class="table">',
-	'table_close' => '</table></div>'
-];
-$table->setTemplate($template);
+$table->setTemplate(\App\Libraries\Table::templates['responsive']);
 $table->setHeading(['Category', 'Num', 'Club', 'Name', 'DoB', 'Run order', '']);
 echo $table->generate($tbody); ?>
 <script>

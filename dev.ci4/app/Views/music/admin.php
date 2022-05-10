@@ -1,7 +1,4 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table table-sm">'];
-$table->setTemplate($template);
 
 $this->section('content');
 # d($event);
@@ -32,6 +29,9 @@ foreach(['missing', 'unchecked', 'ok', 'archived', 'withdrawn'] as $key) $tracks
 
 $track = new \App\Libraries\Track;
 $track->event_id = $event->id;
+
+$table = new \CodeIgniter\View\Table();
+$table->setTemplate(\App\Libraries\Table::templates['responsive']);
 
 foreach($entries as $dis) {
 	if($filter['dis'] && $filter['dis']!=$dis->id) continue;
@@ -77,7 +77,7 @@ foreach($entries as $dis) {
 				$dis_title = 1;
 				printf('<h6>%s</h6>', $cat->name);
 				$table->setHeading($thead);
-				printf('<div class="table-responsive">%s</div>', $table->generate($tbody));
+				echo $table->generate($tbody);
 			}
 		}
 	}
@@ -221,7 +221,6 @@ $(function() {
 <?php echo form_close();?>
 </div>
 </div>
-
 
 <?php 
 # d($filter);

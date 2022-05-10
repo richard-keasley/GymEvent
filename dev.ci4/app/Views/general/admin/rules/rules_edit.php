@@ -30,8 +30,7 @@ foreach($fields as $fldname=>$fldtype) { ?>
 <?php 
 echo form_close();
 
-d($data);
-d($fields);
-
+# d($data);
+# d($fields);
 
 $this->endSection();

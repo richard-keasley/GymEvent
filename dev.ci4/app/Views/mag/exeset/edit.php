@@ -274,8 +274,7 @@ $this->section('bottom') ?>
 <div class="modal-body">
 <?php 
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table table-sm">'];
-$table->setTemplate($template);	
+$table->setTemplate(\App\Libraries\Table::templates['small']);	
 $table->autoHeading = false;
 echo $table->generate($tbody);
 ?>

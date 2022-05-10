@@ -1,7 +1,6 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table compact">'];
-$table->setTemplate($template);
+$table->setTemplate(\App\Libraries\Table::templates['small']);
 
 $this->section('top'); ?>
 <h5><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></h5>

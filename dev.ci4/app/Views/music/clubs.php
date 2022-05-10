@@ -1,10 +1,6 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$template = [
-	'table_open' => '<div class="table-responsive"><table class="table table-bordered">',
-	'table_close' => '</table></div>'
-];
-$table->setTemplate($template);
+$table->setTemplate(\App\Libraries\Table::templates['bordered']);
 
 $this->section('content'); ?>
 <div class="toolbar">

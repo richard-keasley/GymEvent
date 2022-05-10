@@ -42,8 +42,7 @@ else {
 }
 
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table">'];
-$table->setTemplate($template);
+$table->setTemplate(\App\Libraries\Table::templates['default']);
 $tbody=[];
 
 $row = []; $tr = [];

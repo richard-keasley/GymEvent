@@ -1,7 +1,4 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table table-sm">'];
-$table->setTemplate($template);
 
 $this->section('content'); 
 
@@ -84,4 +81,3 @@ echo getlink('setup/install', 'Installation notes');
 <?php 
 echo form_close();
 $this->endSection(); 
-

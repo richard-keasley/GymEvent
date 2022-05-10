@@ -1,6 +1,6 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$table->setTemplate(['table_open' => '<table class="clubent table">']);
+$table->setTemplate(\App\Libraries\Table::templates['responsive']);
 
 $this->section('content'); 
 #d($event->discats);
@@ -80,9 +80,8 @@ ob_start();?>
 <div id="staff">
 <p>Staff details should be entered as: <span class="alert-primary">Name1, Name2, BG number, <abbr title="Date of birth as dd/mm/yy">DoB</abbr></span>.</p>
 <p>Each piece of information is separated by a comma. Place place each staff member in a separate box. Try copying and pasting the information directly from <a href="https://www.british-gymnastics.org/gymnet/clubs/members" target="bg">BG GymNet</a>.</p>
-<?php echo $event->staff; ?>
-<div class="table-responsive">
-<?php
+<?php echo $event->staff; 
+
 $staff = $clubret->staff;
 #d($staff);
 if(!$staff) { // provide one blank entry 
@@ -119,11 +118,10 @@ foreach($staff as $rowkey=>$row) {
 	];
 }
 
-$table->setHeading(['','category','name','']);
-echo $table->generate($tbody);
+$table->setHeading(['', 'category', 'name', '']);
+printf('<div class="clubent">%s</div>', $table->generate($tbody));
 echo form_hidden('staff', json_encode($staff));
 ?>
-</div>
 <button name="add" type="button" class="btn btn-success bi-person-plus-fill"></button>
 <?php echo $clubret->errors('staff'); ?>
 </div>
@@ -136,9 +134,9 @@ ob_start();	?>
 <div id="participants">
 <p>Gymnasts' details should be entered as: <span class="alert-primary">Name1, Name2, BG number, <abbr title="Date of birth as dd/mm/yy">DoB</abbr></span>. Each piece of information is separated by a comma.</p>
 <p>Place each gymnast on one separate line. If your entry comprises multiple gymnasts (e.g. Acro and Team-gym), place all gymnasts in that entry in the same box.<br>Try copying and pasting the information directly from <a href="https://www.british-gymnastics.org/gymnet/clubs/members" target="bg">BG GymNet</a>.</p>
-<?php echo $event->participants; ?>
-<div class="table-responsive">
-<?php
+<?php 
+echo $event->participants; 
+
 $tbody = []; $tr = []; 
 $participants = $clubret->participants;
 if(!$participants) { // provide one blank participant 
@@ -220,10 +218,9 @@ foreach($participants as $rowkey=>$row) {
 }
 
 $table->setHeading(['','category','',"Gymnasts' details",'']);
-echo $table->generate($tbody);
+printf('<div class="clubent">%s</div>', $table->generate($tbody));
 echo form_hidden('participants', json_encode($participants));
 ?>
-</div>
 <button name="add" type="button" class="btn btn-success bi-person-plus-fill"></button>
 <?php echo $clubret->errors('participants');?>
 </div>

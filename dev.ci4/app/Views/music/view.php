@@ -1,7 +1,6 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table compact">'];
-$table->setTemplate($template);
+$table->setTemplate(\App\Libraries\Table::templates['default']);
 
 $this->section('content'); 
 

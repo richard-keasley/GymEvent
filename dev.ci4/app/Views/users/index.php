@@ -27,8 +27,7 @@ $filter = new \App\Views\Htm\Filter;
 echo $filter->htm();
 
 $table = new \CodeIgniter\View\Table();
-$template = ['table_open' => '<table class="table">'];
-$table->setTemplate($template);
+$table->setTemplate(\App\Libraries\Table::templates['default']);
 
 $thead = ['Name', 'role', ''];
 $table->setHeading($thead);

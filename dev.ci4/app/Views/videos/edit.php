@@ -1,5 +1,5 @@
 <?php $this->extend('default');
-$tblview = new \CodeIgniter\View\Table;
+$table = new \CodeIgniter\View\Table;
 $video = new \App\Libraries\Video;
 $video->event_id = $event->id;
 $video->entry_num = $entry->num;
@@ -21,10 +21,9 @@ foreach($entry->videos as $exe=>$url) {
 	$exe_opts[$exe] = $exe;
 }
 $tbody[] = $tr;
-$template = ['table_open' => '<table class="table">'];
-$tblview->setTemplate($template);
-$tblview->setHeading($exe_opts);
-echo $tblview->generate($tbody);
+$table->setTemplate(\App\Libraries\Table::templates['default']);
+$table->setHeading($exe_opts);
+echo $table->generate($tbody);
 ?>
 <p>Remember; videos you post here will be viewable by everyone who has the link. Please be careful about what you are sharing!</p> 
 

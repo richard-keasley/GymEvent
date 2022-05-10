@@ -1,5 +1,4 @@
 <?php $this->extend('default');
-$tblview = new \CodeIgniter\View\Table();
 
 $this->section('content'); 
 $username = $user->name ?? '??' ;
@@ -21,10 +20,10 @@ foreach($entry->music as $exe=>$check_state) {
 }
 $tbody[] = $tr;
 
-$template = ['table_open' => '<table class="table">'];
-$tblview->setTemplate($template);
-$tblview->setHeading($exe_opts);
-echo $tblview->generate($tbody);
+$table = new \CodeIgniter\View\Table();
+$table->setTemplate(\App\Libraries\Table::templates['default']);
+$table->setHeading($exe_opts);
+echo $table->generate($tbody);
 
 $attr = ['id' => "upload"];
 $hidden = ['upload' => 1];

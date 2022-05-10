@@ -298,7 +298,7 @@ $('#navGroups [data-bs-toggle=tab]').on('click', function(e) {
 </script>
 
 <?php 
-if(\App\Libraries\Auth::check_role('superuser')) d($intention);
+# d($intention);
 echo $this->include('general/intention/sv_table');
 
 $this->endSection(); 

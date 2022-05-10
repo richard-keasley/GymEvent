@@ -12,7 +12,7 @@ $tbody = [
 	['TinyMCE', '6.0.0']
 ];
 $table = new \CodeIgniter\View\Table();
-$table->setTemplate(['table_open' => '<table class="table table-sm">']);
+$table->setTemplate(\App\Libraries\Table::templates['small']);
 echo $table->generate($tbody);
 ?>
 </div>
