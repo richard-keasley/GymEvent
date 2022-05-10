@@ -153,6 +153,7 @@ static function check_path($path, $index=1) {
 // can current user act as this role
 static function check_role($role, $user_role=null) {
 	if(is_null($user_role)) $user_role = session('user_role');
+	if(!$role) return true; // no role specified
 	$user_rank = intval(array_search($user_role, self::roles));
 	$check_rank = array_search($role, self::roles);
 	if($check_rank===false) return false;  # $check_rank = 99;

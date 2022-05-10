@@ -1,6 +1,6 @@
 <?php if(!empty($_SESSION['user_id'])) { 
 $attr = [
-	'class' => "alert-light border rounded my-3 p-2"
+	'class' => "alert-light border rounded my-3 p-2 d-print-none"
 ];
 echo form_open(base_url(), $attr); ?>
 <button class="btn btn-secondary" type="submit" name="logout" value="1">Logout</button>

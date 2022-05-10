@@ -17,6 +17,7 @@ $hidden = [
 ];
 echo form_open(base_url(uri_string()), $attr, $hidden);
 ?>
+<div class="table-responsive">
 <div id="playervar" style="min-width:20em;">
 
 <?php foreach($player as $round) { ?>
@@ -102,6 +103,7 @@ $('#playervar [name=up]').click(function () {
 });
 </script>
 
+</div>
 </div>
 
 <section>
