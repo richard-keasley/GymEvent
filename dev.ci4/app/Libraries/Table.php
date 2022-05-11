@@ -14,10 +14,6 @@ const templates = [
 	'table_close' => '</table></div>'
 ],
 'bordered' => [
-	'table_open' => '<div class="table-responsive"><table class="table table-bordered">',
-	'table_close' => '</table></div>'
-],
-'primary' => [
 	'table_open' => '<div class="table-responsive"><table class="table table-bordered border-primary">',
 	'table_close' => '</table></div>'
 ]

@@ -1,6 +1,4 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['bordered']);
 
 $this->section('content'); ?>
 <div class="toolbar">
@@ -54,15 +52,21 @@ foreach($entries as $dis) {
 array_multisort($orderby, $tbody);
 
 if($tbody) {
-	$tfoot = ['club' => count($tbody)];
+	$track_count = 0;
+	$tfoot = ['club' => count($tbody) . ' clubs'];
 	$thead = ['club' => '<div style="width:10em;">Club</div>'];
 	foreach($state_labels as $key) { 
 		$thead[$key] = sprintf('<div style="width:4em;overflow:hidden;">%s</div>', $key);
-		$tfoot[$key] = array_sum( array_column($tbody, $key));
+		$column = array_column($tbody, $key);
+		$sum = array_sum($column);
+		$track_count += $sum;
+		$tfoot[$key] = $sum ? sprintf('%u / %u', $sum, count(array_filter($column))) : '' ;
 		foreach($tbody as $rowkey=>$row) {
 			if(!$row[$key]) $tbody[$rowkey][$key] = '';
 		}
 	}
+	$tfoot['club'] = sprintf('%u tracks / %u clubs', $track_count, count($tbody));
+	$table = new \CodeIgniter\View\Table(\App\Libraries\Table::templates['bordered']);
 	$table->setFooting($tfoot);
 	$table->setHeading($thead);
 	

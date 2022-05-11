@@ -1,5 +1,4 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
 
 $this->section('content'); 
 $attr = [
@@ -16,7 +15,7 @@ echo $textarea;
 <section class="mt-3 table-responsive">
 <?php 
 if($value) {
-	$table->setTemplate(\App\Libraries\Table::templates['primary']);
+	$table = new \CodeIgniter\View\Table(\App\Libraries\Table::templates['bordered']);
 	$table->setHeading(array_keys(current($value)));
 	foreach($value as $row_key=>$row) {
 		foreach($row as $key=>$val) {
@@ -37,5 +36,3 @@ $this->section('top'); ?>
 	<button form="editform" class="btn btn-primary" type="submit" name="save" value="1">save</button>
 </div>
 <?php $this->endSection(); 
-
- 

@@ -1,6 +1,6 @@
 <?php $this->extend('default');
 $table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['primary']);
+$table->setTemplate(\App\Libraries\Table::templates['bordered']);
 
 $this->section('content'); ?>
 <p>Please tell Kim (Brighton) or Dave (Pegasus) if you see a problem on these pages.</p>
