@@ -42,36 +42,42 @@ public function index() {
 	
 	if(!$this->data['email']) return view($vw_index, $this->data);
 	if(!$this->request->getPost('reset')) return view($vw_index, $this->data);
-
+	
+	// lookup user
 	$user = $this->find('email', $this->data['email']);
 	if(!$user) {
-		$this->data['messages'] = ["Sorry! I can't find this account"];
+		// no accounts use this email address
+		$this->data['messages'] = ["Sorry! I don't know this email address!"];
 		$this->lgn_model->insert(['error' => "Reset email not found ({$this->data['email']})"]);
 		return view($vw_index, $this->data);
 	}
-			
-	// build reset key and save it
-	$key = [];
+	
+	// build reset key 
+	$reset_key = [];
 	for($i=0; $i<3; $i++) {
 		$bytes = random_bytes(2);
-		$key[] = bin2hex($bytes);
+		$reset_key[] = bin2hex($bytes);
 	}
-	$user->reset_key = strtoupper(implode('-', $key));
-	$user->reset_time = date('Y-m-d H:i:s');
+	$reset_key = strtoupper(implode('-', $reset_key));
+	$reset_time = date('Y-m-d H:i:s');
+	
+	// add reset key to user
+	$user->reset_key = $reset_key;
+	$user->reset_time = $reset_time;
 	$this->usr_model->save($user);
 	$this->lgn_model->insert(['error'=>'reset requested', 'user_id'=>$user->id]);
 
 	// build message
 	$this->data['user'] = $user; 
 	$message = view('users/reset/email', $this->data);
-	
+	$email_to = ENVIRONMENT == 'production' ? $user->email : 'richard@base-camp.org.uk';
+
 	// send email to user
-	$to_email = ENVIRONMENT == 'production' ? $user->email : 'richard@base-camp.org.uk';
 	$email = \Config\Services::email();
 	$email->setSubject('Password reset');
 	$email->setMessage($message);
 	$email->setBCC('richard@hawthgymnastics.co.uk');
-	$email->setTo($to_email);
+	$email->setTo($email_to);
 	# d($email);
 	$email->send();
 	

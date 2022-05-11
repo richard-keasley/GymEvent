@@ -54,6 +54,8 @@ static function item_td($item) {
 		case 'date' : 
 			return $value ? date('d M Y', strtotime($value)) : '' ;
 			break;
+		case 'email': 
+			return $value ? mailto($value) : '' ;
 		case 'bool':
 			return $value ? 'yes' : 'no' ;
 			break;

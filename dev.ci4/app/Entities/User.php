@@ -13,9 +13,8 @@ public function self() {
 }
 
 public function getAbbr() {
-	return empty($this->attributes['abbr']) ? 
-		substr($this->attributes['name'], 0, 5) : 
-		$this->attributes['abbr'];
+	$val = $this->attributes['abbr'] ? $this->attributes['abbr'] : $this->attributes['name'];
+	return substr($val, 0, 5);
 }
 
 public function link() {

@@ -14,7 +14,7 @@ protected $beforeInsert = ['clean_save'];
 
 protected $validationRules = [
 	'name'  => 'required|min_length[5]|is_unique[users.name,id,{id}]',
-	'email' => 'valid_email',
+	'email' => 'valid_email|is_unique[users.email,id,{id}]',
 	'password' => 'required|min_length[6]'
 ];
 
@@ -23,7 +23,8 @@ protected $validationMessages = [
 		'is_unique' => 'That user name has already been used.'
 	],
 	'email' => [
-		'valid_email' => 'Please enter a valid email address'
+		'valid_email' => 'Please enter a valid email address',
+		'is_unique' => 'That email address has already been used.'
 	],
 	'password' => [
 		'min_length' => 'Password is not complex enough'

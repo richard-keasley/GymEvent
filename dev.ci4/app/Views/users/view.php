@@ -19,7 +19,7 @@ $tbody = [
 	'Last active' => [$user->updated, 'time']
 ];
 if(\App\Libraries\Auth::check_role('superuser')) {
-	$tbody['cookie'] = [$user->cookie, null];
+#	$tbody['cookie'] = [$user->cookie, null];
 	$tbody['Reset key'] = [$user->reset_key, null];
 	$tbody['Reset requested'] = [$user->reset_time, 'time'];
 }

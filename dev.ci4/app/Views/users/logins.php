@@ -17,27 +17,20 @@ foreach($logins as $login) {
 	$IP = $login['ip'];
 	if(!$login['check_ip']) $IP .= ' <i title="blocked" class="bi-x-circle text-danger"></i>';
 	
-	$row = [
+	$tbody[] = [
 		date('d M y H:i', strtotime($login['updated'])),
 		sprintf('<a href="%s/logins/ip/%s">%s</a>', $base_url, $login['ip'], $IP),
 		$login['ip_info'],
 		$user_link,
-		$login['error'] ? sprintf('<span class="bg-danger text-light px-1">%s</span>', $login['error']) : '<span class="text-success">OK</span>',
+		$login['error'] ? sprintf('<div class="alert-danger p-1">%s</div>', $login['error']) : '<span class="text-success">OK</span>',
 		'btns' => 
 			sprintf('<button class="bi btn btn-danger bi-trash" name="del" value="%u" type="submit"></button>', $login['id']) .
 			sprintf(' <button class="bi btn btn-danger bi-shield-exclamation" name="block" value="%s" type="submit"></button>', $login['ip'])
-	];
-		
-	$tbody[] = $row;
-	
+	];	
 }
+
 if($tbody) { 
-	$table = new \CodeIgniter\View\Table();
-	$template = [
-		'table_open' => '<div class="table-responsive"><table class="table">',
-		'table_close' => '</table></div>'
-	];
-	$table->setTemplate($template);
+	$table = new \CodeIgniter\View\Table(\App\Libraries\Table::templates['responsive']);
 	$table->setHeading(['time', 'IP', 'location', 'user', '', '']);
 	echo $table->generate($tbody);
 }

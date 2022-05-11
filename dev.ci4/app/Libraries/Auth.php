@@ -112,17 +112,21 @@ static function login($name, $password) {
 	else {
 		$login['error'] = "invalid username ({$name})";
 	}
-	
-	self::$lgn_model->insert($login);
 
-	if(!$login['error']) {
+	if($login['error']) {
+		// fail
+		self::logout();
+		$request = service('request');
+		$login['error'] .= '<br>' . $request->uri->getPath();
+		$user_id = 0;
+	}
+	else {
 		// success
-		return $login['user_id'];
+		$user_id = $login['user_id'];
 	}
 	
-	// fail
-	self::logout();
-	return 0;
+	self::$lgn_model->insert($login);
+	return $user_id;
 }
 
 static function logout() {

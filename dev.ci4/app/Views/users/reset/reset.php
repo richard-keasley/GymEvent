@@ -4,10 +4,12 @@ $this->section('content');
 $attr = [
 	'autocomplete' => "off"
 ];
-echo form_open(base_url('reset/reset'), $attr);
+$hidden = [
+	'reset' => 1
+];
+echo form_open(base_url('reset/reset'), $attr, $hidden);
 ?>
 <p>Enter the 'reset key' (emailed to you) and your new password. The reset key is valid for 20 minutes.</p>
-<input type="hidden" name="reset" value="1">
 <div class="mb-3">
 	<label class="col-form-label">Reset key</label>
 	<input name="key" class="form-control" value="<?php echo $key;?>">
@@ -20,4 +22,7 @@ echo form_open(base_url('reset/reset'), $attr);
 	<button class="btn btn-primary" type="submit">reset</button>
 </div>
 </form>
-<?php $this->endSection(); 
+<?php 
+
+# d($user);
+$this->endSection(); 

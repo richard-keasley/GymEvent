@@ -190,8 +190,6 @@ public function view($user_id=0) {
 public function edit($user_id=0) {
 	// compare to /user/edit
 	$this->find($user_id);
-	
-	d($this->data['user']->role);
 
 	if(!\App\Libraries\Auth::check_role($this->data['user']->role)) throw new \RuntimeException("You can not edit this user", 403);
 		
