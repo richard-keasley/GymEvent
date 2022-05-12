@@ -43,7 +43,7 @@ foreach($entries as $dis) {
 						if($user) {
 							$club = anchor("/admin/music/view/{$event->id}?user={$user_id}", $user->name) . ' ' . $user->link() ;
 							if($user->email) {
-								$club .= sprintf(' <a href="mailto:%1$s" title="%1$s"><span class="bi-envelope"><span></a>', $user->email);
+								$club .= ' ' . mailto("{$user->email}?subject={$event->title} - music upload", '<i class="bi-envelope"><i>', ['title' => $user->email]);
 							}
 							$orderby[$user_id] = $user->name;
 							$tbody[$user_id]['club'] = $club;
