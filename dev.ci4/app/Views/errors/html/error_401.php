@@ -33,6 +33,13 @@ echo form_open(base_url(uri_string()), $attr, $hidden);
 // #existing
 echo form_close();
 
+if($show_reset) { ?>
+<div class="bg-light p-2 border border-danger rounded">
+<p>Please ensure you enter the username you supplied when creating your account. Repeated attempts to login with the wrong username password will result in an over-use injury.</p>
+<p>Once you are logged in, you can alter your username and password using the links at the bottom of the screen.</p>
+<p>Please contact Richard if you are having problems logging in.</p>
+</div>
+<?php } 
 
 if($allow_new) { 
 $attr = [

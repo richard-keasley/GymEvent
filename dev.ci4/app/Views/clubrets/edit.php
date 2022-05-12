@@ -178,7 +178,7 @@ $inputs = [
 
 foreach($discats as $key=>$discat) {
 	$options = [];
-	foreach($discat['opts'] as $val) $options[$val] = $val;
+	foreach($discat['opts'] as $val) $options[$val] = humanize($val);
 	$discats[$key]['options'] = $options;
 }
 

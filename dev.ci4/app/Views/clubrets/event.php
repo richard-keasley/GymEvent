@@ -17,7 +17,7 @@ $this->section('content');?>
 				$entry['club'],
 				$entry['name'],
 				date('d-M-Y', $entry['dob']),
-				$entry['opt']
+				humanize($entry['opt'])
 			];
 		}
 		printf('<h5>%s - %s</h5>', $dis['name'], $cat['name']);

@@ -16,6 +16,8 @@ $track->event_id = $event->id;
 $tbody = []; $orderby = []; 
 $state_labels = ['missing', 'unchecked', 'ok', 'archived', 'withdrawn'];
 
+# d($filter);
+
 foreach($entries as $dis) {
 	foreach($dis->cats as $cat) {
 		foreach($cat->entries as $entry) {
@@ -43,8 +45,10 @@ foreach($entries as $dis) {
 				$track->exe = $exe;
 				$track->check_state = $check_state;
 				$column = $track->status();
-				$count = $tbody[$user_id][$column] ?? 0;
-				$tbody[$user_id][$column] = $count + 1;
+				if(!$filter || $column==$filter) {
+					$count = $tbody[$user_id][$column] ?? 0;
+					$tbody[$user_id][$column] = $count + 1;
+				}
 			}
 		}
 	}
@@ -53,10 +57,20 @@ array_multisort($orderby, $tbody);
 
 if($tbody) {
 	$track_count = 0;
+	$base_url = base_url("/admin/music/clubs/{$event->id}");
 	$tfoot = ['club' => count($tbody) . ' clubs'];
-	$thead = ['club' => '<div style="width:10em;">Club</div>'];
-	foreach($state_labels as $key) { 
-		$thead[$key] = sprintf('<div style="width:4em;overflow:hidden;">%s</div>', $key);
+	$attr = [
+		'style' => "width:10em;",
+		'class' => "d-block overflow-hidden"
+	];
+	$thead = ['club' => anchor($base_url, 'club', $attr)];
+	// used for state header
+	$attr = [
+		'style' => "width:4em;",
+		'class' => "d-block overflow-hidden"
+	];
+	foreach($state_labels as $key) {
+		$thead[$key] = anchor("{$base_url}?state={$key}", $key, $attr);
 		$column = array_column($tbody, $key);
 		$sum = array_sum($column);
 		$track_count += $sum;

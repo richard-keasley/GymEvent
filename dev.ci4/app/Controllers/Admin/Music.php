@@ -96,7 +96,7 @@ public function clubs($event_id=0) {
 	
 	$this->data['breadcrumbs'][] = ["admin/music/clubs/{$event_id}", 'clubs'];
 	
-	
+	$this->data['filter'] = $this->request->getGet('state');
 	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
 	$this->data['entries'] = $this->data['event']->entries();
 	$this->data['title'] = $this->data['event']->title;
