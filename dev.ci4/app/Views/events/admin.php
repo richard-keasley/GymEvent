@@ -20,12 +20,21 @@ if($event->deleted_at) { ?>
 	<button type="submit" name="state" value="hide" title="hide this event" class="btn btn-danger bi-x-circle"></button>
 	<?php	
 	echo getlink("events/view/{$event->id}", '<span class="bi-eye" title="customer view of this event"></span>');
-	echo getlink("admin/clubrets/event/{$event->id}", 'returns');
-	echo getlink("admin/entries/view/{$event->id}", 'entries');
-	echo getlink("admin/music/view/{$event->id}", 'music');
-	echo getlink("videos/view/{$event->id}", 'videos');
-	echo getlink("admin/entries/export/{$event->id}", 'export');
-	echo $this->include('entries/populate/button');
+	if(in_array($event->clubrets, [1, 2, 3])) {
+		echo getlink("admin/clubrets/event/{$event->id}", 'returns');
+	}
+	if(in_array($event->clubrets, [2, 3])) {
+		echo getlink("admin/entries/view/{$event->id}", 'entries');
+		echo $this->include('entries/populate/button');
+		echo getlink("admin/entries/export/{$event->id}", 'export');
+	}
+	if(in_array($event->music, [1, 2])) {
+		echo getlink("admin/music/view/{$event->id}", 'music');
+	}
+	if(in_array($event->videos, [1, 2])) {
+		echo getlink("videos/view/{$event->id}", 'videos');
+	}
+
 } 
 
 echo form_close();
@@ -81,10 +90,6 @@ foreach($entries as $dis) { ?>
 		$href = base_url($base_edit .'?' . http_build_query($params));
 		$label = anchor($href, $cat->name, ['title' => 'Edit category']);
 
-	
-	
-	
-	
 		$count = count($cat->entries);
 		$total += $count ;
 		$tbody[] = [$label, $count];
@@ -103,4 +108,5 @@ $this->section('bottom');
 echo $this->include('entries/populate/form');
 echo $this->include('includes/modal_delete');
 # d($event->clubrets);
+# d($event);
 $this->endSection();

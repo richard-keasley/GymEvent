@@ -106,7 +106,7 @@ $this->section('top'); ?>
 <?php echo \App\Libraries\View::back_link("admin/events/view/{$event->id}"); ?>
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#state_modeal">Music state</button>
 <?php 
-echo getlink("admin/entries/categories/{$event->id}", 'categories'); 
+# echo getlink("admin/entries/categories/{$event->id}", 'categories'); 
 echo getlink("control/player/view/{$event->id}", 'player'); 
 echo getlink("admin/music/clubs/{$event->id}", 'clubs'); 
 ?>

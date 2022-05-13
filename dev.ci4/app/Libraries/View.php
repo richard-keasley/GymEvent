@@ -9,7 +9,7 @@ static function back_link($href) {
 } 
 
 static function download($filename) {
-	switch(pathinfo($filename, PATHINFO_EXTENSION)) {
+	switch(strtolower(pathinfo($filename, PATHINFO_EXTENSION))) {
 		case 'pdf': 
 			$icon = '-pdf'; break;
 		case 'docx':

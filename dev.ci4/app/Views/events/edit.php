@@ -113,7 +113,7 @@ $tbody = [];
 $discats = $event->discats;
 if(!$discats) { // provide one blank row 
 	$discats = [[
-		'name'=>'', 'inf' => [], 'cats' => [] 
+		'name'=>'', 'inf' => [], 'cats' => [], 'opts' => [] 
 	]];
 }
 
