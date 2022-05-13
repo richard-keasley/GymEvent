@@ -135,12 +135,8 @@ public function edit($entry_id=0) {
 		if(!$file) $error = 'No file selected';
 		if(!$error && !$file->isValid()) $error = $file->getErrorString();
 		if(!$error) {
-			#$mimetype = explode('/', $file->getMimeType());
-			#d($file->getMimeType());
-			#$type = empty($mimetype[0]) ? 'null' : $mimetype[0]  ;
-			#if($type!=\App\Libraries\Track::type_allowed) $error = "{$type} files are not allowed";
-			$extension = $file->guessExtension();
-			if(!in_array($extension, \App\Libraries\Track::exts_allowed)) $error = "$extension files are not allowed";
+			$extension = $file->getExtension();
+			if(!in_array($extension, \App\Libraries\Track::exts_allowed)) $error = "{$extension} files are not allowed";
 		}
 		if(!$error) {
 			$filesize = $file->getSizeByUnit('mb');
