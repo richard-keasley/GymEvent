@@ -11,8 +11,7 @@ $tbody = [
 	['jQuery', '3.6.0'],
 	['TinyMCE', '6.0.0']
 ];
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['small']);
+$table = \App\Views\Htm\Table::load('small');
 echo $table->generate($tbody);
 ?>
 </div>

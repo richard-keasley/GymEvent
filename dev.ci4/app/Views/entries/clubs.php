@@ -13,10 +13,10 @@ foreach($users as $user) {
 		$user->entcount
 	];
 }
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['default']);
+
+$table = \App\Views\Htm\Table::load('responsive');
 $table->autoHeading = false;
-$table->setFooting(['', count($users) . ' clubs', '','', $entcount, '']);
+$table->setFooting(['', count($users) . ' clubs', '', '', $entcount]);
 echo $table->generate($tbody);
 # d($tbody);
 

@@ -9,8 +9,7 @@ while($row = $csv->fgetcsv()) {
 }
 $csv = null;
 
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['bordered']);
+$table = \App\Views\Htm\Table::load('bordered');
 echo $table->generate($tbody);
 ?>
 <div class="row">

@@ -1,5 +1,4 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
 
 $this->section('content'); 
 $attr = [
@@ -40,7 +39,8 @@ foreach($links as $link) {
 		'<button name="del" type="button" class="btn bi-trash btn-danger btn-sm"></button>'
 	];
 }
-$table->setTemplate(\App\Libraries\Table::templates['responsive']);
+
+$table = \App\Views\Htm\Table::load('responsive');
 $table->setHeading(['label', 'url', '']);
 echo $table->generate($tbody);
 ?>

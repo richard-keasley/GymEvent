@@ -1,5 +1,4 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
 
 $self = base_url(sprintf('/%s?%s', uri_string(), http_build_query($filter)));
 $user_options = [];
@@ -139,7 +138,7 @@ foreach($cat_entries as $entry) {
 }
 
 if($tbody) {
-$table->setTemplate(\App\Libraries\Table::templates['responsive']);
+$table = \App\Views\Htm\Table::load('responsive');
 $table->setHeading(['Category', 'Num', 'Club', 'Name', 'DoB', 'Run order', '']);
 echo $table->generate($tbody); ?>
 <script>
@@ -176,7 +175,7 @@ foreach($inputs as $key=>$input) {
 $tr['last'] = '<button class="btn btn-danger bi bi-x-circle" type="button" onclick="newrow(0)"></button>';
 
 $template = ['table_open' => '<table class="table d-none bg-light">'];
-$table->setTemplate($template);
+$table = new \CodeIgniter\View\Table($template);
 $table->autoHeading = false;
 echo $table->generate([$tr]);
 ?>

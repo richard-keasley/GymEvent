@@ -1,5 +1,4 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
 helper('inflector');
 
 $this->section('content'); 
@@ -170,7 +169,7 @@ foreach($discats as $key=>$discat) {
 	];
 }
 $template = ['table_open' => '<table class="discats">'];
-$table->setTemplate($template);
+$table = new \CodeIgniter\View\Table($template);
 $table->setHeading('dis', 'inf', 'cats', 'options', '');
 echo $table->generate($tbody);
 echo form_hidden('discats', '');?>

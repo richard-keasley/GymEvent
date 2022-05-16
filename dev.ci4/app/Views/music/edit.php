@@ -20,8 +20,7 @@ foreach($entry->music as $exe=>$check_state) {
 }
 $tbody[] = $tr;
 
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['default']);
+$table = \App\Views\Htm\Table::load('default');
 $table->setHeading($exe_opts);
 echo $table->generate($tbody);
 

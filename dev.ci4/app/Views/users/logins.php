@@ -30,7 +30,7 @@ foreach($logins as $login) {
 }
 
 if($tbody) { 
-	$table = new \CodeIgniter\View\Table(\App\Libraries\Table::templates['responsive']);
+	$table = \App\Views\Htm\Table::load('responsive');
 	$table->setHeading(['time', 'IP', 'location', 'user', '', '']);
 	echo $table->generate($tbody);
 }

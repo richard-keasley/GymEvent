@@ -1,7 +1,6 @@
-<?php namespace App\Libraries;
+<?php namespace App\Views\Htm;
 
 class Table {
-	
 const templates = [
 'default' => [
 	'table_open' => '<table class="table">'
@@ -17,7 +16,10 @@ const templates = [
 	'table_open' => '<div class="table-responsive"><table class="table table-bordered border-primary">',
 	'table_close' => '</table></div>'
 ]
+];
 
-]; 
-
+static function load($tkey = 'default') {
+	return new \CodeIgniter\View\Table(self::templates[$tkey]);
+}
+	
 }

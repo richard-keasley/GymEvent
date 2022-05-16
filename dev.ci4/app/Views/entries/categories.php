@@ -41,8 +41,6 @@ else {
 	}
 }
 
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['default']);
 $tbody=[];
 
 $row = []; $tr = [];
@@ -111,11 +109,11 @@ if($dis->id==$filter['disid']) { ?>
 	}
 } 
 } 
+
+$table = \App\Views\Htm\Table::load('responsive');
 $table->setHeading(['category','abbr','sort','exercise<br>set','music','videos','count']);
-?>
-<div class="table-responsive"><?php
 echo $table->generate($tbody);
-?></div>
+?>
 
 <div id="newrow">
 <button class="btn btn-success bi bi-plus-circle" type="button" onclick="newrow(1)"></button>

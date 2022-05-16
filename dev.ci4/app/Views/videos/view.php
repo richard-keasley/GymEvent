@@ -1,6 +1,5 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['default']);
+$table = \App\Views\Htm\Table::load('default');
 $video = new \App\Libraries\Video;
 $video->event_id = $event->id;
 

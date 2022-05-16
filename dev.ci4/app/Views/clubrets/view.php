@@ -1,6 +1,5 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['responsive']);
+$table = \App\Views\Htm\Table::load('responsive');
 
 $this->section('content'); ?>
 <section>
@@ -43,7 +42,7 @@ $tbody = [];
 $participants = $clubret->participants;
 foreach($participants as $rowkey=>$row) {
 	$option = [];
-	if($row['opt']) $option[] = $row['opt'];
+	if($row['opt']) $option[] = humanize($row['opt']);
 	if($row['team']) $option[] = $row['team'];
 	$option = $option ? sprintf('(%s)', implode(', ', $option)) : '' ;
 	foreach($row['names'] as $key=>$name) {

@@ -30,8 +30,7 @@ foreach(\App\Libraries\Track::state_labels as $key) $tracks_table[$key] = 0;
 $track = new \App\Libraries\Track;
 $track->event_id = $event->id;
 
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['responsive']);
+$table = \App\Views\Htm\Table::load('responsive');
 
 foreach($entries as $dis) {
 	if($filter['dis'] && $filter['dis']!=$dis->id) continue;

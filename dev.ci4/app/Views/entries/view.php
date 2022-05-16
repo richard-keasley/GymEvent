@@ -13,7 +13,7 @@ if($can_edit) {
 	echo form_open(base_url(uri_string()), $attr);
 	echo \App\Libraries\View::back_link("admin/events/view/{$event->id}");
 	echo getlink("admin/entries/edit/{$event->id}", 'edit');
-	foreach(['plain','full','dob'] as $link_format) {
+	foreach(['plain', 'full', 'dob'] as $link_format) {
 		if($format!=$link_format) {
 			echo getlink("admin/entries/view/{$event->id}/{$link_format}", $link_format);
 		}
@@ -39,10 +39,17 @@ if($can_edit) {
 ?>
 <div class="d-flex flex-wrap gap-4">
 <?php 
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['default']);
+$table = \App\Views\Htm\Table::load('responsive');
 
 $edit_base = base_url("/admin/entries/edit/{$event->id}");
+$heading = ['num', 'club', 'name'];
+if(in_array($format, ['full', 'dob'])) {
+	$heading[] = 'DoB';
+}
+if(in_array($format, ['full'])) {
+	$heading[] = 'run';
+}
+
 foreach($entries as $dis) { ?>
 	<section class="mw-100">
 	<h4><?php echo $dis->name;?></h4>
@@ -54,11 +61,11 @@ foreach($entries as $dis) { ?>
 				$users[$entry->user_id]->abbr ?? '?',
 				$entry->name
 			];
-			if($format!='plain') {
+			if(in_array('DoB', $heading)) {
 				$dob = strtotime($entry->dob);
 				$row[] = date('d-M-Y', $dob);
 			}
-			if($format=='full') {
+			if(in_array('run', $heading)) {
 				$row[] = $entry->get_rundata('group');
 			}
 			$tbody[] = $row;
@@ -68,13 +75,10 @@ foreach($entries as $dis) { ?>
 			if($tbody) {
 				$table->autoHeading = false;
 				printf('<h5>%s</h5>', $cat->name);
-				printf('<div class="table-responsive">%s</div>', $table->generate($tbody)); 
+				echo $table->generate($tbody); 
 			}
 		}
 		else {
-			$heading = ['num', 'club', 'name', 'DoB'];
-			if($format=='full') $heading[] = 'Run order';
-			$table->setHeading($heading);
 			$params = [
 				'disid' => $dis->id,
 				'catid' =>$cat->id
@@ -82,7 +86,8 @@ foreach($entries as $dis) { ?>
 			$href = $edit_base . '?' . http_build_query($params);
 			printf('<h5>%s</h5>', anchor($href, $cat->name, ['title' => 'Edit category']));
 			if($tbody) {
-				printf('<div class="table-responsive">%s</div>', $table->generate($tbody)); 
+				$table->setHeading($heading);
+				echo $table->generate($tbody); 
 			}
 			else {
 				echo '<p class="alert-info">Empty category.</p>';

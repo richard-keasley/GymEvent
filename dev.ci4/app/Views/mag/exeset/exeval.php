@@ -117,8 +117,7 @@ if(!$dscore_total) return; // empty routine
  
 // D score table 
 $score_format = '<div class="px-2 text-end">%.1f</div>';
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['small']);	
+$table = \App\Views\Htm\Table::load('small');
 $table->autoHeading = false;
 $table->setFooting(['D', sprintf($score_format, $dscore_total)]);
 $tbody = [];

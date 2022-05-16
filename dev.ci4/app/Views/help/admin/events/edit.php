@@ -13,8 +13,7 @@
 <?php 
 // compare to help\setup\index
 
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['default']);
+$table = \App\Views\Htm\Table::load('default');
 $thead = ['', '0. waiting', '1. edit', '2. closed', '3. finished'];
 ?>
 <h5>Clubret states</h5>

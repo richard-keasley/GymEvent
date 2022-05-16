@@ -1,6 +1,5 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['responsive']);
+$table = \App\Views\Htm\Table::load('responsive');
 
 $this->section('content');?>
 <div class="d-flex flex-wrap gap-3">

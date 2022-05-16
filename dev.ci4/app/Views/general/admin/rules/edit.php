@@ -15,7 +15,7 @@ echo $textarea;
 <section class="mt-3 table-responsive">
 <?php 
 if($value) {
-	$table = new \CodeIgniter\View\Table(\App\Libraries\Table::templates['bordered']);
+	$table = \App\Views\Htm\Table::load('bordered');
 	$table->setHeading(array_keys(current($value)));
 	foreach($value as $row_key=>$row) {
 		foreach($row as $key=>$val) {

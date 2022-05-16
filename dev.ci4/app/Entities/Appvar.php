@@ -23,8 +23,8 @@ public function htm() {
 	}
 	if(!$tbody) return '';
 	
-	$table = new \CodeIgniter\View\Table();
-	$table->setTemplate(['table_open' => '<table class="table table-sm table-bordered">']);
+	$template = ['table_open' => '<table class="table table-sm table-bordered">'];
+	$table = new \CodeIgniter\View\Table($template);
 	$headings = array_keys($tbody[0]);
 	$headings[0] = '';
 	$table->setHeading($headings);

@@ -1,7 +1,6 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
 $template = ['table_open' => '<table class="table table-hover">'];
-$table->setTemplate($template);
+$table = new \CodeIgniter\View\Table($template);
 
 $this->section('content'); 
 if($user->deleted_at) { ?>

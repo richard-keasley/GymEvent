@@ -1,5 +1,4 @@
 <?php $this->extend('default');
-$table = new \CodeIgniter\View\Table;
 $video = new \App\Libraries\Video;
 $video->event_id = $event->id;
 $video->entry_num = $entry->num;
@@ -21,7 +20,8 @@ foreach($entry->videos as $exe=>$url) {
 	$exe_opts[$exe] = $exe;
 }
 $tbody[] = $tr;
-$table->setTemplate(\App\Libraries\Table::templates['default']);
+
+$table = \App\Views\Htm\Table::load('default');
 $table->setHeading($exe_opts);
 echo $table->generate($tbody);
 ?>

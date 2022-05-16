@@ -1,7 +1,6 @@
 <section class="my-3 row justify-content-start">
 <div class="col-auto">
 <?php
-$table = new \CodeIgniter\View\Table();
 $sv_table = $intention->sv_table();
 
 $val_format = '<div class="text-end">%1.1f</div>';
@@ -17,7 +16,7 @@ foreach($arr as $key=>$label) {
 	$tbody[] = [$label, sprintf($val_format, $sum)];
 }
 
-$table->setTemplate(\App\Libraries\Table::templates['small']);
+$table = \App\Views\Htm\Table::load('small');
 $table->autoHeading = false;
 $table->setFooting(['Start value', sprintf($val_format, $total)]);
 echo $table->generate($tbody);

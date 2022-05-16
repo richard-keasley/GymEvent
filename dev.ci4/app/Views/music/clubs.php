@@ -92,7 +92,7 @@ if($tbody) {
 	}
 	$tfoot['club'] = sprintf('%u tracks / %u clubs', $track_count, count($tbody));
 	
-	$table = new \CodeIgniter\View\Table(\App\Libraries\Table::templates['bordered']);
+	$table = \App\Views\Htm\Table::load('bordered');
 	$table->setFooting($tfoot);
 	$table->setHeading($thead);
 	echo $table->generate($tbody);

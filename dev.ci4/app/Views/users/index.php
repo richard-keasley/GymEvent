@@ -26,8 +26,7 @@ echo form_open(base_url(uri_string()));
 $filter = new \App\Views\Htm\Filter;
 echo $filter->htm();
 
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['default']);
+$table = \App\Views\Htm\Table::load('default');
 
 $thead = ['Name', 'role', ''];
 $table->setHeading($thead);

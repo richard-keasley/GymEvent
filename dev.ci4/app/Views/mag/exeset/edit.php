@@ -273,8 +273,7 @@ $this->section('bottom') ?>
 
 <div class="modal-body">
 <?php 
-$table = new \CodeIgniter\View\Table();
-$table->setTemplate(\App\Libraries\Table::templates['small']);	
+$table = \App\Views\Htm\Table::load('small');
 $table->autoHeading = false;
 echo $table->generate($tbody);
 ?>

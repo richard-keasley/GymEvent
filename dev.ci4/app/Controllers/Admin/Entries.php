@@ -51,7 +51,10 @@ EOT;
 }
 
 public function view($event_id=0, $format='plain') {
-	$orderby = $format=='dob' ? 'dob' : 'num'; 
+	switch($format) {
+		case 'dob': $orderby = 'dob'; break;
+		default: $orderby = 'num';
+	}
 	
 	$this->find($event_id, $orderby);
 	$this->data['heading'] .= ' - entries';
@@ -467,9 +470,13 @@ public function export($event_id=0, $format='view') {
 		case 'sql':
 			return $this->response->download("{$title}.sql.txt", view('entries/export-sql', $this->data));
 			
+		case 'run':
 		case 'view':
 		default:
 			$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
+			$suffix = $format=='run' ? 'run order' : 'export';
+			$this->data['heading'] .= " - {$suffix}";
+			$this->data['format'] = $format;
 			return view('entries/export', $this->data);
 	}
 }
