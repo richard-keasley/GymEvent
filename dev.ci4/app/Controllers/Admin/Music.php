@@ -96,7 +96,11 @@ public function clubs($event_id=0) {
 	
 	$this->data['breadcrumbs'][] = ["admin/music/clubs/{$event_id}", 'clubs'];
 	
-	$this->data['filter'] = $this->request->getGet('state');
+	$status = $this->request->getGet('status');
+	if(!isset(\App\Libraries\Track::state_labels[$status])) $status = 0;
+	$this->data['state_labels'] = $status ? [$status] : \App\Libraries\Track::state_labels;
+	$this->data['status'] = $status;
+		
 	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
 	$this->data['entries'] = $this->data['event']->entries();
 	$this->data['title'] = $this->data['event']->title;

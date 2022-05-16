@@ -25,7 +25,7 @@ echo form_open($self, $attr, $hidden);
 <?php
 $count_entries = 0;
 $tracks_table = [];
-foreach(['missing', 'unchecked', 'ok', 'archived', 'withdrawn'] as $key) $tracks_table[$key] = 0;
+foreach(\App\Libraries\Track::state_labels as $key) $tracks_table[$key] = 0;
 
 $track = new \App\Libraries\Track;
 $track->event_id = $event->id;

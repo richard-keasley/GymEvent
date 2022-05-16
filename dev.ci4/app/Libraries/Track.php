@@ -105,7 +105,15 @@ public function view($opts=[]) {
 	return sprintf('<span class="track">%s</span>', implode(' ', $ret));
 } 
 
+const state_labels = [
+	'missing' => 'missing', 
+	'unchecked' => 'unchecked', 
+	'ok' => 'ok', 
+	'archived' => 'archived', 
+	'withdrawn' => 'withdrawn'
+];
 public function status() {
+	// returns a state_label
 	switch($this->check_state) {
 		case 1: // ok
 			return $this->filename() ? 'ok' : 'archived' ;
