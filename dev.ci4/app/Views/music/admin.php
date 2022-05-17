@@ -14,12 +14,12 @@ $hidden = ['cmd' => "update"];
 echo form_open($self, $attr, $hidden); 
 ?>
 <div class="toolbar nav row sticky-top">
-	<div class="col-sm-auto">Set track</div>
-	<div class="col-sm-auto"><div class="input-group">
-		<button class="btn btn-warning" type="submit" name="val" value="0">unchecked</button>
-		<button class="btn btn-success" type="submit" name="val" value="1">checked</button>
-		<button class="btn btn-info" type="submit" name="val" value="2">withdrawn</button>
-	</div></div>
+	<div class="input-group">
+		<div class="input-group-text">Set track</div>
+		<button class="btn btn-warning" type="submit" name="val" value="0" title="unchecked"><i class="px-1 bi-question-square"></i></button>
+		<button class="btn btn-success" type="submit" name="val" value="1" title="checked"><i class="px-1 bi-check-square"></i></button>
+		<button class="btn btn-info" type="submit" name="val" value="2" title="withdrawn"><i class="px-1 bi-x-square"></i></button>
+	</div>
 </div>
 
 <?php

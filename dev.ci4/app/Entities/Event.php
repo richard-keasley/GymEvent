@@ -329,7 +329,13 @@ public function link($type, $user_id=0) {
 		
 		case 'player':
 		if(in_array($this->music, [2])) { // view
-            return getlink("control/player/view/{$this->id}", 'player');
+			$href = base_url("control/player/view/{$this->id}");
+			$label = "player";
+			$attr = [
+				'class' => 'nav-link', 
+				'title' => "View music player"
+			];
+			return anchor($href, $label, $attr);            
 		}
 		break;
 		

@@ -43,7 +43,7 @@ function role($controller, $method) {
 		case 'music-view-2':
 		case 'videos-edit-1':
 		case 'videos-view-1':
-			$user_id = intval(session('user_id'));
+			$user_id = intval(session('user_id'));			
 			return $user_id===$this->user_id ? 'club' : 'admin' ;
 		case 'videos-view-2':
 			return '-';

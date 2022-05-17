@@ -18,12 +18,16 @@ echo form_dropdown('cat', $cat_opts, $filter['cat'], 'class="form-control"');
 ?>
 <script>
 $(function() {
-	$('[name=cat]').change(function(){$('#selector').submit();});
+	$('#selector [name=cat]').change(function(){
+		$('#selector').submit();
+	});
 });
 </script>
 </form>
 
+<?php if($event->music<2) { ?>
 <p>Click on <span class="text-primary"><span class="bi bi-pencil"></span> edit</span> to upload new tracks for each entry.</p>
+<?php } ?>
 
 <?php
 foreach($entries as $dis) { ?>
