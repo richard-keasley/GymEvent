@@ -13,11 +13,16 @@ if($can_edit) {
 	echo form_open(base_url(uri_string()), $attr);
 	echo \App\Libraries\View::back_link("admin/events/view/{$event->id}");
 	echo getlink("admin/entries/edit/{$event->id}", 'edit');
-	foreach(['plain', 'full', 'dob'] as $link_format) {
-		if($format!=$link_format) {
-			echo getlink("admin/entries/view/{$event->id}/{$link_format}", $link_format);
-		}
+	if($format=='dob') {
+		$suffix = 'plain'; $label = '<del>DoB</del>';
 	}
+	else {
+		$suffix = 'dob'; $label = 'DoB';
+	}
+	$attr = ['class'=>"nav-link"];
+	$url = "admin/entries/view/{$event->id}";
+	echo anchor("admin/entries/view/{$event->id}/{$suffix}", $label, $attr);
+	
 	echo getlink("admin/entries/categories/{$event->id}", 'categories');
 	echo getlink("admin/entries/clubs/{$event->id}", 'clubs');
 	echo getlink("admin/entries/import/{$event->id}", 'import');
@@ -43,12 +48,7 @@ $table = \App\Views\Htm\Table::load('responsive');
 
 $edit_base = base_url("/admin/entries/edit/{$event->id}");
 $heading = ['num', 'club', 'name'];
-if(in_array($format, ['full', 'dob'])) {
-	$heading[] = 'DoB';
-}
-if(in_array($format, ['full'])) {
-	$heading[] = 'run';
-}
+if($format=='dob') $heading[] = 'DoB';
 
 foreach($entries as $dis) { ?>
 	<section class="mw-100">
@@ -71,20 +71,25 @@ foreach($entries as $dis) { ?>
 			$tbody[] = $row;
 		}
 		
-		if($format=='plain') {
-			if($tbody) {
-				$table->autoHeading = false;
-				printf('<h5>%s</h5>', $cat->name);
-				echo $table->generate($tbody); 
-			}
-		}
-		else {
+		if($can_edit) {
 			$params = [
 				'disid' => $dis->id,
 				'catid' =>$cat->id
 			];
 			$href = $edit_base . '?' . http_build_query($params);
 			printf('<h5>%s</h5>', anchor($href, $cat->name, ['title' => 'Edit category']));
+		}
+		else {
+			printf('<h5>%s</h5>', $cat->name);
+		}
+		
+		if($format=='plain') {
+			if($tbody) {
+				$table->autoHeading = false;
+				echo $table->generate($tbody); 
+			}
+		}
+		else {
 			if($tbody) {
 				$table->setHeading($heading);
 				echo $table->generate($tbody); 

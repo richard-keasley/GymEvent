@@ -6,41 +6,37 @@ $table = \App\Views\Htm\Table::load('bordered');
 
 if($export) {
 	if($format=='run') {
-		$tables = []; $sortby = [];
-		$newrow = [];
-		foreach($export as $entry) {
+		// sort by running order, number
+		$sortby = []; $tbody = []; $rowsort = [];
+		foreach($export as $row) {
 			$runorder = [];
-			foreach($entry as $key=>$val) {
+			foreach($row as $key=>$val) {
 				if(strpos($key, 'run_')===0) {
 					$runorder[] = $val;
+					$rowsort[$key] = str_pad($val, 3, ' ', STR_PAD_LEFT);
 				}
 			}
-			$runsort = implode('_', $runorder);
-			if(!isset($tables[$runsort])) {
-				$tables[$runsort]['title'] = implode(', ', $runorder);
-				$tables[$runsort]['tbody'] = [];
-			}
-			
-			$tables[$runsort]['tbody'][] = [
-				'dis' => $entry['dis_abbr'],
-				'cat' => $entry['cat_abbr'],
-				'club' => $entry['entry_club_shortName'],
-				'num' => $entry['entry_number'],
-				'name' => $entry['entry_title']
-				
+			$rowsort['entry_number'] = str_pad($row['entry_number'], 3, ' ', STR_PAD_LEFT);
+			$sortby[] = implode('', $rowsort);
+			$tbody[] = [
+				'runorder' => implode(', ', $runorder),
+				'dis' => $row['dis_abbr'],
+				'cat' => $row['cat_abbr'],
+				'num' => $row['entry_number'],
+				'club' => $row['entry_club_shortName'],
+				'name' => $row['entry_title']
 			];
 		}
-		ksort($tables);
-		foreach($tables as $runtable) {
-			echo "<h3>{$runtable['title']}</h3>";
-			$table->setHeading(array_keys($runtable['tbody'][0]));
-			echo $table->generate($runtable['tbody']);
-		}
+		array_multisort($sortby, $tbody);
+
+		$headings = ['runorder', 'dis', 'cat'];
+		$cattable = new \App\Views\Htm\Cattable($headings);
+		echo $cattable->htm($tbody);
+		
 	}
 	else {
-		$tbody = $export;
-		$table->setHeading(array_keys($tbody[0]));
-		echo $table->generate($tbody);
+		$table->setHeading(array_keys($export[0]));
+		echo $table->generate($export);
 	}
 }
 
