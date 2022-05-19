@@ -1,43 +1,50 @@
 <?php namespace App\Views\Htm;
 
 class Cattable {
+private $table = null; 
+
 public $data = [];
-public $headings = [];
+public $headings = []; // data columns to convert to HTM headings
+public $table_header = false; // include table header
+public $template_name = 'bordered'; // table template
 
 public function __construct($headings=[]) {
 	$this->headings = $headings;
 }
 
 public function htm($data = false) {
-	ob_start();
-
-	$table = \App\Views\Htm\Table::load('bordered');
-
 	if(!$data) $data = $this->data;
 	if(!$data) return;
+
+	$this->table = \App\Views\Htm\Table::load($this->template_name);
 	
-	d($this->headings);
-	d($data);
-	
-	$tbody = []; $this_row = [];
-			
+	// HTM heading
 	$headings = []; $formats = [];
 	foreach($this->headings as $key=>$fldname) {
 		$headings[$fldname] = '';
 		$lvl = $key + 3;
 		$formats[$fldname] = "<h{$lvl}>%s</h{$lvl}>";
 	}
-	
-	/*
-	$thead = [];
-	foreach(array_keys(current($data)) as $fldname) {
-		if(!isset($headings[$fldname])) {
-			$thead[] = $fldname;
+
+	// table header
+	if($this->table_header) {
+		$thead = [];
+		foreach(array_keys(current($data)) as $fldname) {
+			if(!isset($headings[$fldname])) {
+				$thead[] = $fldname;
+			}
 		}
 	}
-	*/
+	else $thead = false;
 	
-	$table_cats = '';
+	ob_start();
+	
+	# d($this->headings);
+	# d($thead);
+	# d($data);
+	
+	$tbody = []; $this_row = [];
+	$table_cats = ''; // HTM heading
 	foreach($data as $row) {
 		foreach($row as $fldname=>$val) {
 			if(isset($headings[$fldname])) {
@@ -53,27 +60,30 @@ public function htm($data = false) {
 			}
 		}
 		if($table_cats) {
-			if($tbody) {
-				# $table->setHeading($thead);
-				$table->autoHeading = false;
-				echo $table->generate($tbody);
-			}
+			echo $this->generate($tbody, $thead);
 			$tbody = [];
 			echo $table_cats;
 			$table_cats = '';
 			
 		}
 		$tbody[] = $this_row;
-		
-	}
-	if($tbody) {
-		# $table->setHeading($thead);
-		$table->autoHeading = false;
-		echo $table->generate($tbody);
 	}
 	
+	echo $this->generate($tbody, $thead);
+		
 	return ob_get_clean();
 }
 
+private function generate($tbody, $thead) {
+	if(!$tbody) return '';
+	
+	if($thead) {
+		$this->table->setHeading($thead);
+	}
+	else {
+		$this->table->autoHeading = false;
+	}
+	return $this->table->generate($tbody);
+}
 
 }
