@@ -32,7 +32,7 @@ function block_ip($ip) {
 }
 
 const ip_time = 'P2D'; // amount of time to remove records
-const ip_errors = 7; // max number of errors allowed per IP address
+const ip_errors = 6; // max number of errors allowed per IP address
 private $_ip_checks = [];
 function check_ip($ip) {
 	if(!isset($this->_ip_checks[$ip])) {
@@ -59,7 +59,13 @@ function check_ip($ip) {
 				if($login['error']=='blocked') $retval = false;
 			}
 		}
+		
+		// reserved addresses
+		if(strpos($ip, '127.')===0) $retval = true;
+		if(strpos($ip, '86.')===0) $retval = true;
+			
 		$this->_ip_checks[$ip] = $retval;
+		# d($this->_ip_checks);
 	}
 	return $this->_ip_checks[$ip];
 }

@@ -328,7 +328,7 @@ public function link($type, $user_id=0) {
 		break;
 		
 		case 'player':
-		if(in_array($this->music, [2])) { // view
+		if(in_array($this->music, [2, 3])) { // view, finished
 			$href = base_url("control/player/view/{$this->id}");
 			$label = "player";
 			$attr = [

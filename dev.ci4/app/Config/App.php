@@ -2,8 +2,21 @@
 
 use CodeIgniter\Config\BaseConfig;
 
-class App extends BaseConfig
-{
+class App extends BaseConfig {
+
+public function __construct() {
+	parent::__construct();
+	
+	if(!getenv('app.baseURL')) {
+		// nothing set, work it out 
+		$host = $_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR'];
+		$https = $_SERVER['HTTPS'] ?? false;
+		$scheme = $https ? 'https' : 'http' ;
+		$this->baseURL = "{$scheme}://{$host}/";
+	}
+}
+
+
 	public $device = '';
 
 	/*
@@ -22,7 +35,7 @@ class App extends BaseConfig
 	| environments.
 	|
 	*/
-	public $baseURL = 'https://www.gymevent.uk/';
+	public $baseURL = '';
 
 	/*
 	|--------------------------------------------------------------------------

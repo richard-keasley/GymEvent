@@ -22,9 +22,11 @@ if($event->deleted_at) { ?>
 	if(in_array($event->clubrets, [1, 2, 3])) {
 		echo getlink("admin/clubrets/event/{$event->id}", 'returns');
 	}
+	if(in_array($event->clubrets, [2])) {
+		echo $this->include('entries/populate/button');
+	}
 	if(in_array($event->clubrets, [2, 3])) {
 		echo getlink("admin/entries/view/{$event->id}", 'entries');
-		echo $this->include('entries/populate/button');
 		echo getlink("admin/entries/export/{$event->id}", 'export');
 	}
 	if(in_array($event->music, [1, 2])) {
@@ -33,7 +35,6 @@ if($event->deleted_at) { ?>
 	if(in_array($event->videos, [1, 2])) {
 		echo getlink("videos/view/{$event->id}", 'videos');
 	}
-
 } 
 
 echo form_close();

@@ -1,5 +1,7 @@
 <?php include __DIR__ . '/_head.php';
-foreach(['name', 'email', 'password', 'password2', 'login'] as $key) $postval[$key] = trim(filter_input(INPUT_POST, $key));
+foreach(['name', 'email', 'password', 'password2', 'login'] as $key) {
+	$postval[$key] = trim(strval(filter_input(INPUT_POST, $key)));
+}
 $show_reset = ($postval['name'] || $postval['password']) && \App\Libraries\Auth::check_path('reset');
 
 // new users only for club returns
