@@ -21,13 +21,15 @@ use scoreboard;
 
 -- INSERT clubs
 <?php foreach($users as $user) {
-	$map = [
-		'Name' => $user->name,
-		'ShortName' => $user->abbr
-	];
-	printf("INSERT INTO clubs (%s)\n", db_keys($map));
-	printf("  SELECT * FROM (SELECT %s) as tmp\n", db_vals($map));
-	printf("  WHERE NOT EXISTS (SELECT 1 FROM `clubs` WHERE `Name`=%s);\n", db_val($user->name));
+	if($user) {
+		$map = [
+			'Name' => $user->name,
+			'ShortName' => $user->abbr
+		];
+		printf("INSERT INTO clubs (%s)\n", db_keys($map));
+		printf("  SELECT * FROM (SELECT %s) as tmp\n", db_vals($map));
+		printf("  WHERE NOT EXISTS (SELECT 1 FROM `clubs` WHERE `Name`=%s);\n", db_val($user->name));
+	}
 } ?>
 
 -- SET Club IDs
@@ -111,7 +113,7 @@ foreach($entries as $dis) {
 			$entry_map['entrynumber'] = $entry->num;
 			$entry_map['entrytitle'] = $entry->name;
 			$entry_map['DoB'] = $entry->dob;
-			$entry_map['ClubId'] = $clubvars[$entry->user_id];
+			$entry_map['ClubId'] = $clubvars[$entry->user_id] ?? 0;
 			printf("  (%s)%s\n", db_vals($entry_map), $key==$last ? ';' : ',');
 		}		
 		echo "\n";// end cat 

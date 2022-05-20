@@ -413,72 +413,76 @@ public function import($event_id=0) {
 
 public function export($event_id=0, $format='view') {
 	$this->find($event_id);
-	
+	$file_title = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $this->data['event']->title));
+
+	// build user table
 	$usr_model = new \App\Models\Users();
 	$this->data['users'] = [];
 	foreach($this->data['entries'] as $dis) { 
 		foreach($dis->cats as $cat) { 
 			foreach($cat->entries as $entry) {
 				$user_id = $entry->user_id;
-				if(empty($this->data['users'][$user_id])) {
+				if($user_id && empty($this->data['users'][$user_id])) {
 					$this->data['users'][$user_id] = $usr_model->withDeleted()->find($user_id);
 				}
 			}	
 		}
 	}
 	
+	if($format=='scoretable') {
+		$response  = view('entries/export-scoretable', $this->data);
+		# return '<pre>' . $response . '</pre>';
+		return $this->response->download("{$file_title}.csv", $response);
+	}
+	
+	if($format=='sql') {
+		$response  = view('entries/export-sql', $this->data);
+		# return '<pre>' . $response . '</pre>';
+		return $this->response->download("{$file_title}.sql.txt", $response);
+	}		
+					
 	$this->data['export'] = []; $row = [];
 	foreach($this->data['entries'] as $dis) { 
-		$row['dis_name'] = $dis->name;
-		$row['dis_abbr'] = $dis->abbr;
-		
+		$row['dis'] = [
+			'name' => $dis->name,
+			'abbr' => $dis->abbr
+		];
 		foreach($dis->cats as $cat) { 
-			$row['cat_name'] = $cat->name;
-			$row['cat_abbr'] = $cat->abbr;
-			$row['cat_order'] = $cat->sort;
-			$row['cat_setid'] = $cat->exercises;
-			
+			$row['cat'] = [
+				'name' => $cat->name,
+				'abbr' => $cat->abbr,
+				'sort' => $cat->sort,
+				'setid' => $cat->exercises
+			];
 			foreach($cat->entries as $entry) {
-				$row['entry_club_name'] = $this->data['users'][$entry->user_id]->name ?? '??';
-				$row['entry_club_shortName'] = $this->data['users'][$entry->user_id]->abbr ?? '?';
-				$row['entry_number'] = $entry->num;
-				$row['entry_title'] = $entry->name;
-				$row['entry_DoB'] = $entry->dob;
-				// running order
-				foreach($entry->get_rundata('export') as $key=>$val) {
-					$row["run_{$key}"] = $val;
-				}
-											
+				$row['entry'] = [
+					'club' => [
+						'name' => $this->data['users'][$entry->user_id]->name ?? '??',
+						'abbr' => $this->data['users'][$entry->user_id]->abbr ?? '?'
+					],
+					'num' => $entry->num,
+					'name' => $entry->name,
+					'dob' => $entry->dob
+				];
+				$row['run'] = $entry->get_rundata('export');
+				
 				$this->data['export'][] = $row;
 			}		
 			// end cat 
 		} // end dis  
 	} // end entries
 	
-	$title = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $this->data['event']->title));
-	switch($format) {
-		case 'csv':
-			ob_start();
-			$fp =  fopen('php://output', 'w');
-			if($this->data['export']) {
-				fputcsv($fp, array_keys($this->data['export'][0]));
-				foreach ($this->data['export'] as $row) fputcsv($fp, $row);
-			}
-			fclose($fp);
-			return $this->response->download("{$title}.csv", ob_get_clean());
-			
-		case 'sql':
-			return $this->response->download("{$title}.sql.txt", view('entries/export-sql', $this->data));
-			
-		case 'run':
-		case 'view':
-		default:
-			$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
-			$suffix = $format=='run' ? 'run order' : 'export';
-			$this->data['heading'] .= " - {$suffix}";
-			$this->data['format'] = $format;
-			return view('entries/export', $this->data);
+	if($format=='csv') {
+		$response  = view('entries/export-csv', $this->data);
+		# return '<pre>' . $response . '</pre>';
+		return $this->response->download("{$file_title}.csv", $response);
 	}
+		
+	$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
+	$suffix = $format=='run' ? 'run order' : 'export';
+	$this->data['heading'] .= " - {$suffix}";
+	$this->data['format'] = $format;
+	return view('entries/export', $this->data);	
 }
 
 }
