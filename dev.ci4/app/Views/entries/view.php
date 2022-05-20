@@ -47,8 +47,8 @@ if($can_edit) {
 $table = \App\Views\Htm\Table::load('responsive');
 
 $edit_base = base_url("/admin/entries/edit/{$event->id}");
-$heading = ['num', 'club', 'name'];
-if($format=='dob') $heading[] = 'DoB';
+$thead = ['num', 'club', 'name'];
+if($format=='dob') $thead[] = 'DoB';
 
 foreach($entries as $dis) { ?>
 	<section class="mw-100">
@@ -61,42 +61,33 @@ foreach($entries as $dis) { ?>
 				$users[$entry->user_id]->abbr ?? '?',
 				$entry->name
 			];
-			if(in_array('DoB', $heading)) {
+			if(in_array('DoB', $thead)) {
 				$dob = strtotime($entry->dob);
 				$row[] = date('d-M-Y', $dob);
 			}
-			if(in_array('run', $heading)) {
+			if(in_array('run', $thead)) {
 				$row[] = $entry->get_rundata('group');
 			}
 			$tbody[] = $row;
 		}
-		
-		if($can_edit) {
-			$params = [
-				'disid' => $dis->id,
-				'catid' =>$cat->id
-			];
-			$href = $edit_base . '?' . http_build_query($params);
-			printf('<h5>%s</h5>', anchor($href, $cat->name, ['title' => 'Edit category']));
+				
+		if($tbody) {
+			$heading = $cat->name;
+			if($can_edit) {
+				$params = [
+					'disid' => $dis->id,
+					'catid' =>$cat->id
+				];
+				$href = $edit_base . '?' . http_build_query($params);
+				$heading = anchor($href, $heading, ['title' => 'Edit category']);
+			}
+			echo "<h5>{$heading}</h5>";
+					
+			$table->autoHeading = false;
+			echo $table->generate($tbody); 
 		}
 		else {
-			printf('<h5>%s</h5>', $cat->name);
-		}
-		
-		if($format=='plain') {
-			if($tbody) {
-				$table->autoHeading = false;
-				echo $table->generate($tbody); 
-			}
-		}
-		else {
-			if($tbody) {
-				$table->setHeading($heading);
-				echo $table->generate($tbody); 
-			}
-			else {
-				echo '<p class="alert-info">Empty category.</p>';
-			}
+			echo '<p class="alert-info">Empty category.</p>';
 		}
 	} ?>
 	</section>
