@@ -62,7 +62,7 @@ function check_ip($ip) {
 		
 		// reserved addresses
 		if(strpos($ip, '127.')===0) $retval = true;
-		if(strpos($ip, '86.')===0) $retval = true;
+		# if(strpos($ip, '86.')===0) $retval = true;
 			
 		$this->_ip_checks[$ip] = $retval;
 		# d($this->_ip_checks);
