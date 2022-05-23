@@ -70,6 +70,7 @@ $player.on("error", function(e) {
 </script>
 </div>
 
+<div class="accordion">
 <?php 
 $pattern = $track->filepath() . '*';
 $notlisted = [];
@@ -84,27 +85,33 @@ foreach(glob($pattern) as $filepath) {
 }
 
 foreach($event->player as $round_key=>$round) { 
-$round_num = $round_key + 1;
-$id = sprintf('round%u', $round_key);
+$panel_id = sprintf('round%u', $round_key);
 $track->exe = $round['exe'];
 ?>
-<div class="border my-1">
-	<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $id;?>"><?php printf('%s / %s', $round['title'], $round['exe']);?></button>
-  	<div class="collapse card card-body hide" id="<?php echo $id;?>">
-		<?php if($round['description']) printf('<p>%s</p>', $round['description']);?>
-		<div class="playlist">
-		<?php foreach($round['entry_nums'] as $entry_num) {
-			$track->entry_num = $entry_num;
-			echo $track->button();
-			$filekey = array_search($track->filename(), $notlisted);
-			if($filekey!==false) unset($notlisted[$filekey]);
-		} ?>
-		</div>
+<div class="accordion-item">
+
+<div class="accordion-header">
+	<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $panel_id;?>"><?php printf('%s / %s', $round['title'], $round['exe']);?></button>
+</div>
+  
+<div class="accordion-collapse collapse p-3" id="<?php echo $panel_id;?>">
+	<?php if($round['description']) printf('<p>%s</p>', $round['description']);?>
+	<div class="playlist">
+	<?php foreach($round['entry_nums'] as $entry_num) {
+		$track->entry_num = $entry_num;
+		echo $track->button();
+		$filekey = array_search($track->filename(), $notlisted);
+		if($filekey!==false) unset($notlisted[$filekey]);
+	} ?>
 	</div>
 </div>
+
+</div>
 <?php }
- 
-if($notlisted) { ?>
+?>
+</div>
+
+<?php if($notlisted) { ?>
 <div class="border my-1 p-1 alert-danger">
 <h6>Tracks saved, but not listed</h6>
 <?php foreach($notlisted as $filename) { 
@@ -116,8 +123,9 @@ if($notlisted) { ?>
 <?php $this->endSection(); 
 
 $this->section('bottom');?>
-<div  class="toolbar">
+<div class="toolbar">
 	<?php printf('<a href="%s" class="bi bi-gear-fill btn btn-outline-secondary" title="Setup event"></a>', base_url("control/player/edit/{$event->id}"));?>
 </div>
+
 <?php 
 $this->endSection(); 
