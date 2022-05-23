@@ -10,45 +10,49 @@ $hidden = [
 ];
 echo form_open(base_url(uri_string()), $attr, $hidden); ?>
 <h4>Create scoreboard links</h4>
+<p>These links appear on the scoreboard information pages.</p>
 <?php 
-
-if(!$links) $links = [['label'=>'', 'url' =>'']];
-
 $inputs = [
-	'label'=> [
-		'type' => 'text',
-		'data-field' => 'label',
+	[
+		'type' => 'url',
 		'class' => 'form-control',
-		'style' => 'min-width:6em'
+		'style' => 'min-width:10em'
 	],
-	'url' => [
+	[
 		'type' => 'text',
-		'data-field' => 'url',
 		'class' => 'form-control',
-		'style' => 'min-width:10em;'
+		'style' => 'min-width:6em;'
 	]
 ];
 
-$tbody = [];
+if(!$links) $links = [[]];
+$tbody = []; $trow = [];
 foreach($links as $link) {
-	$inputs['label']['value'] = $link['label'];
-	$inputs['url']['value'] = $link['url'];
-	$tbody[] = [
-		form_input($inputs['label']),
-		form_input($inputs['url']),
-		'<button name="del" type="button" class="btn bi-trash btn-danger btn-sm"></button>'
-	];
+	foreach($inputs as $key=>$input) {
+		$inputs[$key]['value'] = $link[$key] ?? '';
+		$trow[$key] = form_input($inputs[$key]);
+	}
+	$trow['cmd'] = '<button name="del" type="button" class="btn bi-trash btn-danger btn-sm"></button>';
+		
+	$tbody[] = $trow;	
 }
 
 $table = \App\Views\Htm\Table::load('responsive');
-$table->setHeading(['label', 'url', '']);
+$table->setHeading(['url', 'label', '']);
 echo $table->generate($tbody);
+
 ?>
 <button name="add" type="button" class="btn btn-success bi-plus-square"></button>
 
 <div class="toolbar">
 	<?php echo \App\Libraries\View::back_link("setup");?>
 	<button type="button" onclick="pagesave()" class="btn btn-primary">save</button>
+	<?php 
+	$attr = [
+		'class' => "nav-link",
+		'title' =>"view scoreboard"
+	];
+	echo anchor(base_url('/scoreboard'), 'view', $attr);?>
 </div>
 
 <?php 
@@ -57,7 +61,6 @@ $this->endSection();
 
 $this->section('bottom');?>
 <script>
-const link_vars = ['label', 'url'];
 const link_rows = '#editform tbody tr';
 
 $(function() {
@@ -78,15 +81,17 @@ $('#editform [name=add]').click(function() {
 });
 
 function pagesave() {
-	var appvar = [];
+	let appvar = [];
+	let datarow = [];
+		
 	$(link_rows).each(function() {
-		var data = {};
-		for(idx in link_vars)	{
-			var item = link_vars[idx];
-			data[item] = $(this).find('[data-field='+item+']').val();
-		};
-		appvar.push(data);
+		datarow = [];
+		$(this).find('input').each(function() {
+			datarow.push(this.value);
+		});
+		appvar.push(datarow);
 	});
+	// console.log(appvar);
 	$('[name=links]').val(JSON.stringify(appvar));
 	$('#editform').submit();
 };

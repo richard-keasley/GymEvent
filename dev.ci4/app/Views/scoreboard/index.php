@@ -8,21 +8,16 @@ $this->section('content'); ?>
 <p>The registration system enables event organisers to tick off gymnasts as they arrive at the venue and log withdrawn entries. This updates the judges and announcer as to who is present.</p>
 <p>The announcer's screen has the same lists of entries per round / rotation as the judges. These lists also update with judges' actions (selecting an entry to judge, entry can start routine, judge started entering scores, score value). This means the announcer is kept up to date with every aspect of the event as it happens.</p>
 <p>We can switch on the scoreboard before the day so judges can familiarise themselves with the system.</p>
-<?php 
-$this->endSection();
+
+<p class="toolbar"><?php 
+echo \App\Libraries\View::back_link("/");
+echo getlink('/setup/scoreboard', 'admin');
+?></div>
+
+<?php $this->endSection();
  
-// start links
-$appvars = new \App\Models\Appvars();
-$links = $appvars->get_value('scoreboard.links');
 if($links) {
-	$this->section('sidebar'); ?>
-	<ul class="nav flex-column">
-	<?php foreach($links as $link) { ?>
-		<li class="nav-item">
-		<?php printf('<a href="%s" class="nav-link">%s</a>', $link['url'], $link['label']); ?>
-		</li>
-	<?php } ?>
-	</ul>
-	<?php 
+	$this->section('sidebar');
+	echo $links->htm();
 	$this->endSection(); 
-} // end links
+}

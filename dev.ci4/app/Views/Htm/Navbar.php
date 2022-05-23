@@ -19,18 +19,25 @@ public function htm($items = false) {
 	$retval = $this->template['items_start'];
 	foreach($this->items as $item) {
 		if(is_array($item)) {
-			$href = trim($item[0], '/');
-			$label = $item[1];
+			$href = $item[0] ?? '' ;
+			$label = $item[1] ?? '';
 		}
 		else {
-			$href = trim($item, '/');
-			$label = ucfirst(basename($href));
+			$href = $item;
+			$label = '';
 		}
-		if($href=='home') $href = '/';
-		if($href && \App\Libraries\Auth::check_path($href)) {
-			$retval .= $this->template['item_start'] . 
-				anchor(base_url($href), $label, $this->template['a_attr']) . 
-				$this->template['item_end'] ;
+		$href = trim($href, '/');
+		if($href) {
+			if(!$label) $label = ucfirst(basename($href));
+			if(!parse_url($href, PHP_URL_SCHEME)) {
+				if($href=='home') $href = '/';
+				$href = \App\Libraries\Auth::check_path($href) ? base_url($href) : null;
+			}
+			if($href) {
+				$retval .= $this->template['item_start'] . 
+					anchor($href, $label, $this->template['a_attr']) . 
+					$this->template['item_end'] ;
+			}
 		}
 	}
 	$retval .= $this->template['items_end'];
@@ -38,4 +45,3 @@ public function htm($items = false) {
 }
 
 }
-

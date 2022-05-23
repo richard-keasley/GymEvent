@@ -139,7 +139,7 @@ public function scoreboard() {
 		$post = $this->request->getPost('links');
 		$post = $post ? json_decode($post, 1): [] ;
 		foreach($post as $link) {
-			if(!empty($link['url']) && !empty($link['label'])) {
+			if(!empty($link[0]) && !empty($link[1])) {
 				$links[] = $link;
 			}
 		}
@@ -153,7 +153,7 @@ public function scoreboard() {
 	$this->data['title'] = 'Setup scoreboard';
 	$this->data['heading'] = $this->data['title'];
 	$this->data['breadcrumbs'][] = ['setup/scoreboard', $this->data['title']];
-	return view('admin/setup/scoreboard', $this->data);
+	return view('scoreboard/setup', $this->data);
 }
 
 }
