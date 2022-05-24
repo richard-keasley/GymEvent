@@ -43,6 +43,7 @@ public function htm($data = false) {
 	# d($thead);
 	# d($data);
 	
+	echo '<section class="cattable">';
 	$tbody = []; $this_row = [];
 	$table_cats = ''; // HTM heading
 	foreach($data as $row) {
@@ -70,7 +71,7 @@ public function htm($data = false) {
 	}
 	
 	echo $this->generate($tbody, $thead);
-		
+	echo '</section>';
 	return ob_get_clean();
 }
 

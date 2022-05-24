@@ -2,20 +2,22 @@
 
 $this->section('content');
 
-$table = \App\Views\Htm\Table::load('bordered');
-
 if($export) {
 	switch($format) {
 		case 'run':
-		// sort by running order, number
-		$sortby = []; $tbody = []; $rowsort = [];
+		$pad_length = []; $table_sort = []; $tbody = [];
 		foreach($export as $row) {
-			foreach($row['run'] as $key=>$val) {
-				$rowsort["run.{$key}"] = str_pad($val, 3, ' ', STR_PAD_LEFT);
-			}
-			$rowsort['entry.num'] = str_pad($row['entry']['num'], 3, ' ', STR_PAD_LEFT);
-			$sortby[] = implode('', $rowsort);
-						
+			// sort by running order, discipline, category, number
+			$rowsort = [
+				$row['run'],
+				$row['dis']['abbr'],
+				$row['cat']['sort'],
+				$row['entry']['num']
+			];
+			$rowsort = array_flatten_with_dots($rowsort);
+			$table_sort[] = $rowsort;
+			$pad_length[] = max(array_map('strlen', $rowsort));
+										
 			$tbody[] = [
 				'runorder' => implode(', ', $row['run']),
 				'dis' => $row['dis']['abbr'],
@@ -25,7 +27,18 @@ if($export) {
 				'name' => $row['entry']['name']
 			];
 		}
-		# d($sortby);
+
+		$pad_length = max($pad_length);
+		$pad_char = " ";
+		$sortby = [];
+		foreach($table_sort as $row) {
+			$string = '';
+			foreach($row as $val) {
+				$string .= str_pad($val, $pad_length, $pad_char, STR_PAD_LEFT);	
+			}
+			$sortby[] = $string;
+		}
+		# d($table_sort, $pad_length, $sortby);
 		array_multisort($sortby, $tbody);
 
 		$headings = ['runorder', 'dis', 'cat'];
@@ -36,6 +49,7 @@ if($export) {
 		default:
 		$tbody = [];
 		foreach($export as $row) $tbody[] = array_flatten_with_dots($row);
+		$table = \App\Views\Htm\Table::load('bordered');
 		$table->setHeading(array_keys($tbody[0]));
 		echo $table->generate($tbody);
 	}
