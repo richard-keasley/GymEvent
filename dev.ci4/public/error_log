@@ -1,0 +1,37 @@
+[03-May-2022 21:43:29 Europe/London] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 91828224 bytes) in /home/gymevent/dev.ci4/system/4.1.9/ThirdParty/Kint/Kint.php on line 596
+[03-May-2022 21:43:40 Europe/London] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 91828224 bytes) in /home/gymevent/dev.ci4/system/4.1.9/ThirdParty/Kint/Kint.php on line 596
+[09-May-2022 12:11:32 Europe/London] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in /home/gymevent/dev.ci4/system/4.1.9/ThirdParty/Kint/Parser/Parser.php on line 492
+[09-May-2022 12:11:40 Europe/London] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in /home/gymevent/dev.ci4/system/4.1.9/ThirdParty/Kint/Parser/Parser.php on line 492
+[09-May-2022 12:12:54 Europe/London] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 61308928 bytes) in /home/gymevent/dev.ci4/system/4.1.9/ThirdParty/Kint/Kint.php on line 596
+[09-May-2022 12:14:25 Europe/London] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 79114240 bytes) in /home/gymevent/dev.ci4/system/4.1.9/ThirdParty/Kint/Kint.php on line 596
+[09-May-2022 12:14:41 Europe/London] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 79114240 bytes) in /home/gymevent/dev.ci4/system/4.1.9/ThirdParty/Kint/Kint.php on line 596
+[16-May-2022 09:28:18 Europe/London] PHP Fatal error:  Cannot use isset() on the result of an expression (you can use "null !== expression" instead) in /home/gymevent/dev.ci4/app/Controllers/Admin/Music.php on line 100
+[19-May-2022 22:34:32 Europe/London] PHP Fatal error:  Uncaught Error: Call to undefined function Config\d() in /home/gymevent/dev.ci4/app/Config/App.php:8
+Stack trace:
+#0 /home/gymevent/dev.ci4/system/4.1.9/Config/Factories.php(110): Config\App->__construct()
+#1 /home/gymevent/dev.ci4/system/4.1.9/Common.php(198): CodeIgniter\Config\Factories::__callStatic()
+#2 /home/gymevent/dev.ci4/system/4.1.9/Config/Services.php(137): config()
+#3 /home/gymevent/dev.ci4/system/4.1.9/Config/BaseService.php(189): CodeIgniter\Config\Services::codeigniter()
+#4 /home/gymevent/dev.ci4/system/4.1.9/Config/Services.php(134): CodeIgniter\Config\BaseService::getSharedInstance()
+#5 /home/gymevent/dev.ci4/system/4.1.9/bootstrap.php(145): CodeIgniter\Config\Services::codeigniter()
+#6 /home/gymevent/dev.ci4/public/index.php(30): require('/home/gymevent/...')
+#7 {main}
+  thrown in /home/gymevent/dev.ci4/app/Config/App.php on line 8
+[19-May-2022 22:34:45 Europe/London] PHP Fatal error:  Uncaught Error: Call to undefined function Config\d() in /home/gymevent/dev.ci4/app/Config/App.php:8
+Stack trace:
+#0 /home/gymevent/dev.ci4/system/4.1.9/Config/Factories.php(110): Config\App->__construct()
+#1 /home/gymevent/dev.ci4/system/4.1.9/Common.php(198): CodeIgniter\Config\Factories::__callStatic()
+#2 /home/gymevent/dev.ci4/system/4.1.9/Config/Services.php(137): config()
+#3 /home/gymevent/dev.ci4/system/4.1.9/Config/BaseService.php(189): CodeIgniter\Config\Services::codeigniter()
+#4 /home/gymevent/dev.ci4/system/4.1.9/Config/Services.php(134): CodeIgniter\Config\BaseService::getSharedInstance()
+#5 /home/gymevent/dev.ci4/system/4.1.9/bootstrap.php(145): CodeIgniter\Config\Services::codeigniter()
+#6 /home/gymevent/dev.ci4/public/index.php(30): require('/home/gymevent/...')
+#7 {main}
+  thrown in /home/gymevent/dev.ci4/app/Config/App.php on line 8
+[19-May-2022 22:35:44 Europe/London] PHP Fatal error:  Uncaught ErrorException: Cannot modify header information - headers already sent by (output started at /home/gymevent/dev.ci4/app/Config/Events.php:32) in /home/gymevent/dev.ci4/system/4.1.9/Debug/Exceptions.php:112
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler()
+#1 /home/gymevent/dev.ci4/system/4.1.9/Debug/Exceptions.php(112): header()
+#2 [internal function]: CodeIgniter\Debug\Exceptions->exceptionHandler()
+#3 {main}
+  thrown in /home/gymevent/dev.ci4/system/4.1.9/Debug/Exceptions.php on line 112

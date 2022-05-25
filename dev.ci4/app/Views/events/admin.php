@@ -29,12 +29,9 @@ if($event->deleted_at) { ?>
 		echo getlink("admin/entries/view/{$event->id}", 'entries');
 		echo getlink("admin/entries/export/{$event->id}", 'export');
 	}
-	if(in_array($event->music, [1, 2])) {
-		echo getlink("admin/music/view/{$event->id}", 'music');
-	}
-	if(in_array($event->videos, [1, 2])) {
-		echo getlink("videos/view/{$event->id}", 'videos');
-	}
+	echo $event->link('music');
+	echo $event->link('player');
+	echo $event->link('videos');
 } 
 
 echo form_close();

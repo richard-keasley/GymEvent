@@ -62,7 +62,45 @@ public function edit($event_id=0) {
 			$event = $this->mdl_events->find($event_id);
 		}
 	}
-	
+	if($cmd=='upload') {
+		$file = $this->request->getFile('file');
+		$exe = $this->request->getPost('exe');
+		$num = intval($this->request->getPost('num'));
+		$error = '';
+		
+		if(!$error && !$file) $error = 'No file selected';
+		if(!$error && !$exe) $error = 'No exercise entered';
+		if(!$error && !$num) $error = 'No entry number entered';
+		
+		if(!$error && !$file->isValid()) $error = $file->getErrorString();
+		if(!$error) {
+			$extension = $file->getExtension();
+			if(!in_array($extension, \App\Libraries\Track::exts_allowed)) $error = "{$extension} files are not allowed";
+		}
+		if(!$error) {
+			$track = new \App\Libraries\Track();
+			$track->event_id = $event->id; 
+			$track->entry_num = $num; 
+			$track->exe = $exe; 
+			$track->check_state = 0; // unchecked
+
+			// clear existing uploads
+			$count = 0;
+			foreach($track->filename(1) as $filename) {
+				if(unlink($filename)) $count++;
+			}
+			if($count) $this->data['messages'][] = ["Existing track deleted", 'warning'];
+			// store new upload
+			$filepath = $track->filepath();
+			$filename = $track->filebase($extension);
+			if(!$file->move($filepath, $filename)) $error = $file->getErrorString();
+		}
+		// all done 
+		if($error) $this->data['messages'][] = $error;
+		else $this->data['messages'][] = ["Upload added", 'success'];
+		#d($file);
+	}
+		
 	// all tracks needed for this event
 	$entries = [];
 	

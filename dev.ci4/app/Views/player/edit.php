@@ -145,7 +145,8 @@ $this->section('bottom'); ?>
 <div class="toolbar">
 	<?php echo \App\Libraries\View::back_link("control/player/view/{$event->id}");?>
 	<button class="btn btn-primary" type="button" name="update">save</button>
-	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rebuild">rebuild</button>
+	<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#upload" title="upload new track"><i class="bi bi-upload"></i></button>
+	<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#rebuild" title="rebuild play list"><i class="bi bi-arrow-repeat"></i></button>
 </div>
 
 <div class="modal fade" id="rebuild" tabindex="-1" aria-hidden="true">
@@ -175,4 +176,64 @@ echo form_open(base_url(uri_string()), $attr, $hidden);
 </div>
 
 
+<div class="modal fade" id="upload" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog">
+<?php 
+$attr = ['class' => "modal-content"];
+$hidden = ['cmd'=>'upload'];
+echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
+?>
+
+<div class="modal-header">
+<h5 class="modal-title" id="exampleModalLabel">Upload a new track</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+<p class="alert-warning p-1">Be aware you will overwrite any existing tracks for this entry / exercise.</p>
+<div class="my-1"><div class="input-group">
+	<label class="input-group-text">Exercise</label> 
+	<?php 
+	$input = [
+		'name' => 'exe',
+		'type' => 'text',
+		'class' => "form-control"
+	];
+	echo form_input($input);
+	?>
+</div></div>
+<div class="my-1"><div class="input-group">
+	<label class="input-group-text">Number</label> 
+	<?php 
+	$input = [
+		'name' => 'num',
+		'type' => 'number',
+		'class' => "form-control"
+	];
+	echo form_input($input);
+	?>
+</div></div>
+<div class="my-1">
+	<?php 
+	$input = [
+		'name' => 'file',
+		'type' => 'file',
+		'class' => "form-control"
+	];
+	echo form_input($input);
+	?>
+</div>
+<p>Ensure music is in a supported format (<?php echo implode(', ', \App\Libraries\Track::exts_allowed);?>)
+and smaller than <?php echo formatBytes(\App\Libraries\Track::$max_filesize);?>.</p>
+<p>You should ensure any newly uploaded tracks can be played.</p>
+</div>
+
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+<button type="submit" class="btn btn-primary">Upload</button>
+</div>
+
+<?php echo form_close();?>
+</div>
+</div>
 <?php $this->endSection(); 

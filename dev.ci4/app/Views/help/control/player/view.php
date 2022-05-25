@@ -1,17 +1,29 @@
 <p>The media player should play most formats. Click a track to start playing.</p>
-<p>If the browser won't play the track, you can <em>sometimes</em> play the track on your local machine if you download it. For example: the browser will not play Windows Media files (<code>.wma</code>), but any Windows machine will be able to play these tracks if they are downloaded.</p>
+<p>If the browser won't play the track, you can <em>sometimes</em> play the track on your local machine if you download it. For example: the browser will not play Windows Media files (<code>.wma</code>), but any Windows machine will be able to play these tracks once they are downloaded.</p>
 
 <h3>Finding tracks</h3>
 <?php
+$event_id = intval(basename(previous_url()));
+$track_type = 'mp3';
+
 $track = new \App\Libraries\Track;
-$track->event_id = 999;
+$track->event_id = $event_id ?? 999;
 $track->exe = 'FX';
 $track->entry_num = 21;
 
-$filebase = $track->filebase('*');
-$urlpath = $track->urlpath();
-?>
-<p>Example for event id <code>999</code>, exercise <code>FX</code>, entry number <code>21</code>.</p>
+$filebase = $track->filebase($track_type);
 
-<p>Music files are stored in <code><?php echo $urlpath;?></code>.</p>
-<p>This track is named <code><?php echo $filebase;?></code>.</p>
+?>
+<p>Example for 
+	event id <code><?php echo $track->event_id;?></code>, 
+	exercise <code><?php echo $track->exe;?></code>, 
+	entry number <code><?php echo $track->entry_num;?></code>,
+	<abbr title="the file extension for the track">music type</abbr> <code><?php echo $track_type;?></code>.
+</p>
+<ul>
+<li>This track is named <code><?php echo $filebase;?></code></li>
+<li>Event's music folder is <code><?php echo $track->filepath();?></code></li>
+<li>This track's URL is <code><?php echo base_url() . $track->urlpath() . $filebase;?></code></li>
+</ul>
+
+<p>Use this information to manually add tracks to the play list.</p>

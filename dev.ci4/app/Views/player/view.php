@@ -29,9 +29,16 @@ $('button[name=trk]').click(function() {
 		active_tab.classList.remove('bg-success');
 		active_tab.classList.remove('text-light');
 	}
-	active_tab = this.parentElement.parentElement.parentElement.querySelector('.accordion-button');
-	active_tab.classList.add('bg-success');
-	active_tab.classList.add('text-light');
+
+	var acc_item = this.parentElement.parentElement.parentElement.parentElement;
+	if(acc_item.className=='accordion-item') {
+		active_tab = acc_item.querySelector('.accordion-button');
+		active_tab.classList.add('bg-success');
+		active_tab.classList.add('text-light');
+	}
+	else {
+		active_tab = 0;
+	}
 	
 	if(play_button) {
 		play_button.className = BUTTON_REPEAT;
@@ -85,8 +92,9 @@ foreach(glob($pattern) as $filepath) {
 }
 
 foreach($event->player as $round_key=>$round) { 
-$panel_id = sprintf('round%u', $round_key);
+$panel_id = sprintf('acc-panel%u', $round_key);
 $track->exe = $round['exe'];
+
 ?>
 <div class="accordion-item">
 
@@ -94,7 +102,8 @@ $track->exe = $round['exe'];
 	<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $panel_id;?>"><?php printf('%s / %s', $round['title'], $round['exe']);?></button>
 </div>
   
-<div class="accordion-collapse collapse p-3" id="<?php echo $panel_id;?>">
+<div class="accordion-collapse collapse" id="<?php echo $panel_id;?>">
+	<div class="accordion-body">
 	<?php if($round['description']) printf('<p>%s</p>', $round['description']);?>
 	<div class="playlist">
 	<?php foreach($round['entry_nums'] as $entry_num) {
@@ -103,6 +112,7 @@ $track->exe = $round['exe'];
 		$filekey = array_search($track->filename(), $notlisted);
 		if($filekey!==false) unset($notlisted[$filekey]);
 	} ?>
+	</div>
 	</div>
 </div>
 
@@ -114,10 +124,12 @@ $track->exe = $round['exe'];
 <?php if($notlisted) { ?>
 <div class="border my-1 p-1 alert-danger">
 <h6>Tracks saved, but not listed</h6>
+<div class="playlist">
 <?php foreach($notlisted as $filename) { 
 	$track->setFilename($filename);
 	echo $track->button();
 } ?>
+</div>
 </div>
 <?php } ?>
 <?php $this->endSection(); 

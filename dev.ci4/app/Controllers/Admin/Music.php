@@ -21,7 +21,7 @@ function __construct() {
 	
 public function index() {
 	$this->mdl_events = new \App\Models\Events();
-	$this->data['events'] = $this->mdl_events->whereIn('music', [1,2])->orderBy('date')->findAll();
+	$this->data['events'] = $this->mdl_events->whereIn('music', [1, 2])->orderBy('date')->findAll();
 
 	$this->data['breadcrumbs'][] = 'admin/music';
 	$this->data['base_url'] = 'admin/music/view';
