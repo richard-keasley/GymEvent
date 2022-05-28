@@ -13,6 +13,48 @@ private function find($event_id) {
 	return $event;
 }
 
+private function post_track($event) {
+	// gets track from post
+	$exe = $this->request->getPost('exe');
+	if(!$exe) {
+		$this->data['messages'][] = 'Invalid track exercise';
+		return null;
+	}
+	$entry_num = intval($this->request->getPost('entry_num'));	
+	if(!$entry_num) {
+		$this->data['messages'][] = 'Invalid track entry number';
+		return null;
+	}
+	
+	$track = new \App\Libraries\Track();
+	$track->event_id = $event->id; 
+	$track->entry_num = $entry_num; 
+	$track->exe = $exe; 
+	$track->check_state = 0; // unchecked
+	return $track;
+}
+
+private function store_track($track, $file) {
+	// check file
+	$extension = $file->getExtension();
+	if(!in_array($extension, \App\Libraries\Track::exts_allowed)) {
+		$this->data['messages'][] = "{$extension} files are not allowed";
+		return false;
+	}
+	// clear existing uploads
+	$count = 0;
+	foreach($track->filename(1) as $filename) {
+		if(unlink($filename)) $count++;
+	}
+	if($count) $this->data['messages'][] = ["Existing track deleted", 'warning'];
+	// store new upload
+	$filepath = $track->filepath();
+	$filename = $track->filebase($extension);
+	if($file->move($filepath, $filename)) return true;
+	$this->data['messages'][] = $file->getErrorString();
+	return false;
+}
+
 public function index() {
 	$this->data['title'] = 'Music player';
 	$this->data['heading'] = 'Music player';
@@ -40,8 +82,9 @@ public function view($event_id=0) {
 public function edit($event_id=0) {
 	$event = $this->find($event_id);
 	
+	$error = '';
 	$cmd = $this->request->getPost('cmd');
-
+	
 	if($cmd=='update') { 
 		//save player
 		$player = $this->request->getPost('player');
@@ -62,43 +105,48 @@ public function edit($event_id=0) {
 			$event = $this->mdl_events->find($event_id);
 		}
 	}
+		
 	if($cmd=='upload') {
-		$file = $this->request->getFile('file');
-		$exe = $this->request->getPost('exe');
-		$num = intval($this->request->getPost('num'));
-		$error = '';
-		
-		if(!$error && !$file) $error = 'No file selected';
-		if(!$error && !$exe) $error = 'No exercise entered';
-		if(!$error && !$num) $error = 'No entry number entered';
-		
-		if(!$error && !$file->isValid()) $error = $file->getErrorString();
-		if(!$error) {
-			$extension = $file->getExtension();
-			if(!in_array($extension, \App\Libraries\Track::exts_allowed)) $error = "{$extension} files are not allowed";
-		}
-		if(!$error) {
-			$track = new \App\Libraries\Track();
-			$track->event_id = $event->id; 
-			$track->entry_num = $num; 
-			$track->exe = $exe; 
-			$track->check_state = 0; // unchecked
+		$track = $this->post_track($event);
+		if(!$track) $error = true;				
 
-			// clear existing uploads
-			$count = 0;
-			foreach($track->filename(1) as $filename) {
-				if(unlink($filename)) $count++;
-			}
-			if($count) $this->data['messages'][] = ["Existing track deleted", 'warning'];
-			// store new upload
-			$filepath = $track->filepath();
-			$filename = $track->filebase($extension);
-			if(!$file->move($filepath, $filename)) $error = $file->getErrorString();
+		$file = $this->request->getFile('file');
+		if(!$file) {
+			$this->data['messages'][] = 'No file selected';
+			$error = true;
 		}
-		// all done 
-		if($error) $this->data['messages'][] = $error;
-		else $this->data['messages'][] = ["Upload added", 'success'];
+		
+		if(!$error && !$file->isValid()) {
+			$this->data['messages'][] = $file->getErrorString();
+			$error = true;
+		}
+		
+		if(!$error) {
+			if($this->store_track($track, $file)) {
+				$this->data['messages'][] = ["Upload added", 'success'];
+			}
+		}
 		#d($file);
+	}
+	
+	if($cmd=='synch') {
+		$track = $this->post_track($event);
+		if($track) {
+			$url = "https://dev.gymevent.uk/music/get_track/{$track->event_id}/{$track->entry_num}/{$track->exe}";
+			$this->data['messages'][] = [$url, 'success'];
+			
+			$client = \Config\Services::curlrequest();
+			$response = $client->request('GET', $url);
+			$this->data['messages'][] = [$response->getBody(), 'success'];
+
+			d($response);
+
+		}
+			
+
+		
+	
+
 	}
 		
 	// all tracks needed for this event

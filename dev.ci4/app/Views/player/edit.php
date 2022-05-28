@@ -180,7 +180,7 @@ echo form_open(base_url(uri_string()), $attr, $hidden);
 <div class="modal-dialog">
 <?php 
 $attr = ['class' => "modal-content"];
-$hidden = ['cmd'=>'upload'];
+$hidden = [];
 echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 ?>
 
@@ -190,7 +190,7 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 </div>
 
 <div class="modal-body">
-<p class="alert-warning p-1">Be aware you will overwrite any existing tracks for this entry / exercise.</p>
+<p class="alert-warning p-1">This will overwrite any existing tracks for this entry / exercise.</p>
 <div class="my-1"><div class="input-group">
 	<label class="input-group-text">Exercise</label> 
 	<?php 
@@ -206,14 +206,18 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 	<label class="input-group-text">Number</label> 
 	<?php 
 	$input = [
-		'name' => 'num',
+		'name' => 'entry_num',
 		'type' => 'number',
 		'class' => "form-control"
 	];
 	echo form_input($input);
 	?>
 </div></div>
-<div class="my-1">
+
+<?php 
+$tabs = new \App\Views\Htm\Tabs;
+ob_start() ?>
+<div class="my-1"><div class="input-group">
 	<?php 
 	$input = [
 		'name' => 'file',
@@ -222,15 +226,29 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 	];
 	echo form_input($input);
 	?>
-</div>
+	<button type="submit" name="cmd" value="upload" class="btn btn-primary">Upload</button>
+</div></div>
 <p>Ensure music is in a supported format (<?php echo implode(', ', \App\Libraries\Track::exts_allowed);?>)
 and smaller than <?php echo formatBytes(\App\Libraries\Track::$max_filesize);?>.</p>
 <p>You should ensure any newly uploaded tracks can be played.</p>
+<?php
+$tabs->set_item('upload', ob_get_clean());
+
+ob_start(); ?>
+<p>Pull this tack from the live website</p>
+<div>
+<button type="submit" name="cmd" value="synch" class="btn btn-primary">synch</button>
+</div>
+<?php 
+$tabs->set_item('synch', ob_get_clean());
+
+echo $tabs->htm();
+?>
+
 </div>
 
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-<button type="submit" class="btn btn-primary">Upload</button>
 </div>
 
 <?php echo form_close();?>
