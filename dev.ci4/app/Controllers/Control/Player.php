@@ -131,9 +131,12 @@ public function edit($event_id=0) {
 	
 	if($cmd=='synch') {
 		$track = $this->post_track($event);
+		
+		# $track->event_id = 15;
+		
 		if($track) {
 			$url = "https://dev.gymevent.uk/music/get_track/{$track->event_id}/{$track->entry_num}/{$track->exe}";
-			$this->data['messages'][] = [$url, 'success'];
+			# $this->data['messages'][] = [$url, 'success'];
 			
 			$client = \Config\Services::curlrequest();
 			$response = $client->request('GET', $url);

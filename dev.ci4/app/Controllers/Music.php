@@ -200,6 +200,14 @@ public function get_track($event_id=0, $entry_num=0, $exe='') {
 	$track->exe = $exe; 
 	$track->check_state = 0; // unchecked
 	
+	$filename = $track->filename();
+	
+	if($filename) {
+		$filename = $track->filepath() . $filename;
+	}
+	return $filename;
+
+	
 	$url = base_url() . $track->urlpath() . $track->filebase();
 	echo $url;
 }

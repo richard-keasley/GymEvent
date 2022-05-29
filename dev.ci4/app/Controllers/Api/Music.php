@@ -10,14 +10,27 @@ public function index() {
 	return $this->respondNoContent();
 }
 
-public function track($event_id=0, $entry_num=0, $exe='') {
+public function track_url($event_id=0, $entry_num=0, $exe='') {
 	$track = new \App\Libraries\Track();
 	$track->event_id = $event_id;
 	$track->entry_num = $entry_num;
 	$track->exe = $exe;
 	$response = $track->url();
 	if(!$response) return $this->failNotfound("track {$entry_num}-{$exe} not found");
-	return $this->respond($response);
+	echo $response; die;
+	# return $this->respond($response);
+}
+
+public function track($event_id=0, $entry_num=0, $exe='') {
+	$track = new \App\Libraries\Track();
+	$track->event_id = $event_id;
+	$track->entry_num = $entry_num;
+	$track->exe = $exe;
+	$filename = $track->filename();
+	if(!$filename) return $this->failNotfound("track {$entry_num}-{$exe} not found");
+	$filename = $track->filepath() . $filename;
+
+	return $this->response->download($filename, null); 
 }
 
 public function set_remote() {

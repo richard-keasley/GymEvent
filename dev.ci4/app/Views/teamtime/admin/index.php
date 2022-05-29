@@ -204,7 +204,7 @@ function show_runvars(arr) {
 		if(music_player=='local') {
 			entry = progtable[runvars['row']][runvars['col']];
 			exe = progtable[0][runvars['col']];
-			url = '<?php echo base_url("/api/music/track/{$event_id}");?>/'+entry+'/'+exe;
+			url = '<?php echo base_url("/api/music/track_url/");?>/'+event_id+'/'+entry+'/'+exe;
 			//console.log(url);
 			$.get(url, function(response) {
 				playermsg.innerHTML = 'Ready&hellip;';
