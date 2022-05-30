@@ -144,8 +144,8 @@ const roles = ['-', 'club', 'controller', 'admin', 99=>'superuser'];
 // can path be viewed by current user
 static private $check_paths = [];
 static function check_path($path, $index=1) {
-	// $index=1 returns permission
-	// $index=0 returns role
+	// $index=1 returns permission (bOol)
+	// $index=0 returns role (string)
 	if(!isset(self::$check_paths[$path])) {
 		$role = self::path_role($path);
 		$perm = self::check_role($role);

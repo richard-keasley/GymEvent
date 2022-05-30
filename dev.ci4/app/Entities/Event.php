@@ -328,14 +328,15 @@ public function link($type, $user_id=0) {
 		break;
 		
 		case 'player':
-		if(in_array($this->music, [2, 3])) { // view, finished
-			$href = base_url("control/player/view/{$this->id}");
-			$label = "player";
+		$path = "control/player/view/{$this->id}";
+		if($this->music==2) $perm = 1 ; // view
+		else $perm = \App\Libraries\Auth::check_path($path);
+		if($perm) { 
 			$attr = [
 				'class' => 'nav-link', 
 				'title' => "View music player"
 			];
-			return anchor($href, $label, $attr);            
+			return anchor(base_url($path), 'player', $attr);            
 		}
 		break;
 		
