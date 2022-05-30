@@ -7,7 +7,6 @@ $this->section('content');
 # d($player);
 # $track = new \App\Libraries\Track;
 # $track->event_id = $event->id;
-# d($event_tracks);
 
 $attr = ['id'=>'editform'];
 $hidden = [
@@ -194,12 +193,14 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 <div class="my-1"><div class="input-group">
 	<label class="input-group-text">Exercise</label> 
 	<?php 
+	$options = ['-'];
+	foreach($player as $round) $options[$exe] = $exe;
 	$input = [
 		'name' => 'exe',
-		'type' => 'text',
-		'class' => "form-control"
+		'class' => "form-control",
+		'options' => $options
 	];
-	echo form_input($input);
+	echo form_dropdown($input);
 	?>
 </div></div>
 <div class="my-1"><div class="input-group">

@@ -17,7 +17,7 @@ function __construct() {
 }
 	
 private function lookup($event_id, $user_id) {
-	// don't use model->lookup() beacuse we want to include deleted events and users 
+	// don't use model->lookup() because we want to include deleted events and users 
 	$this->data['clubret'] = $this->model->where('event_id', $event_id)->where('user_id', $user_id)->first();
 	if(!$this->data['clubret']) throw new \RuntimeException("Can't find entry {$event_id}/{$user_id}", 404);
 	$this->data['user'] = $this->data['clubret']->user();
@@ -111,6 +111,46 @@ public function event($event_id=0) {
 		}
 	}
 	
+	// exclude users who have a return for this event
+	$exclude = [0];
+	$clubrets = $this->data['event']->clubrets();
+	foreach($clubrets as $clubret) $exclude[] = $clubret->user_id;
+	$model = new \App\Models\Users;
+	$users = $model->orderby('name')->whereNotIn('id', $exclude)->findAll();
+	// add new return 
+	if($this->request->getPost('cmd')=='modalUser') {
+		$user_id = intval($this->request->getPost('user_id'));
+		if(in_array($user_id, $exclude)) {
+			$newid = 0;
+		}
+		else {
+			$data = [
+				'event_id' => $event_id,
+				'user_id' => $user_id,
+				'staff' => [],
+				'participants' => []
+			];
+			$clubret = new \App\Entities\Clubret($data);
+			$newid = $this->model->insert($clubret);
+			
+		}
+		if($newid) {
+			$this->data['messages'][] = ["Created new entry", 'success'];
+			$clubret->id = $newid;
+			$this->data['event'] = $mdl_events->find($event_id);			
+		}
+		else {
+			$this->data['messages'][] = ["Couldn't create new entry", 'danger'];
+		}
+	}
+	// add users dialogue
+	$this->data['users_dialogue'] = [
+		'title' => 'Add a club return to this return',
+		'user_id' => 0,
+		'users' => $users,
+		'description' => sprintf('Add a new club return to %s.', $this->data['event']->name)
+	];
+		
 	switch($this->data['event']->clubrets) {
 		case 0: 
 			$msg = ['Returns for this event are not yet open', 'warning'];

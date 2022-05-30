@@ -135,21 +135,29 @@ public function edit($event_id=0) {
 		# $track->event_id = 15;
 		
 		if($track) {
-			$url = "https://dev.gymevent.uk/music/get_track/{$track->event_id}/{$track->entry_num}/{$track->exe}";
-			# $this->data['messages'][] = [$url, 'success'];
+			$server = 'dev.gymevent.uk';
+			$url = "https://{$server}/music/get_track/{$track->event_id}/{$track->entry_num}/{$track->exe}";
+			$this->data['messages'][] = [$url, 'success'];
 			
 			$client = \Config\Services::curlrequest();
-			$response = $client->request('GET', $url);
-			$this->data['messages'][] = [$response->getBody(), 'success'];
+			$options = [
+				'http_errors' => false
+			];
+			$response = $client->request('GET', $url, $options);
+			if($response->getStatusCode()==200) {
+				$this->data['messages'][] = ['got the track', 'success'];
+				# helper('filesystem');
+				# $success = write_file('test.mp3', $response->getBody());
+				# d($success);
+				d($client);
+				d($response);
 
-			d($response);
-
+			}
+			else {
+				$message = sprintf('<code>%s</code>: %s', $server, $response->getBody());
+				$this->data['messages'][] = [$message , 'danger'];
+			}
 		}
-			
-
-		
-	
-
 	}
 		
 	// all tracks needed for this event

@@ -204,8 +204,13 @@ public function get_track($event_id=0, $entry_num=0, $exe='') {
 	
 	if($filename) {
 		$filename = $track->filepath() . $filename;
+		return $this->response->download($filename, null);
 	}
-	return $filename;
+	
+	$body = "Track {$entry_num}/{$exe} not found.";
+	return $this->response->setStatusCode(404)->setBody($body);
+	
+	return $filename; 
 
 	
 	$url = base_url() . $track->urlpath() . $track->filebase();
