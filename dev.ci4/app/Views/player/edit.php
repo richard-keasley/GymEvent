@@ -144,7 +144,7 @@ $this->section('bottom'); ?>
 <div class="toolbar">
 	<?php echo \App\Libraries\View::back_link("control/player/view/{$event->id}");?>
 	<button class="btn btn-primary" type="button" name="update">save</button>
-	<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#upload" title="upload new track"><i class="bi bi-upload"></i></button>
+	<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#upload" title="download track from live website"><i class="bi bi-download"></i></button>
 	<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#rebuild" title="rebuild play list"><i class="bi bi-arrow-repeat"></i></button>
 </div>
 
@@ -174,7 +174,6 @@ echo form_open(base_url(uri_string()), $attr, $hidden);
 </div>
 </div>
 
-
 <div class="modal fade" id="upload" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
 <?php 
@@ -189,12 +188,15 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 </div>
 
 <div class="modal-body">
-<p class="alert-warning p-1">This will overwrite any existing tracks for this entry / exercise.</p>
+<p>Pull a track from the live website to this device. <span class="alert-warning p-1">This will overwrite existing tracks for this entry / exercise on this device.</span></p>
 <div class="my-1"><div class="input-group">
 	<label class="input-group-text">Exercise</label> 
 	<?php 
 	$options = ['-'];
-	foreach($player as $round) $options[$exe] = $exe;
+	foreach($player as $round) {
+		$exe = $round['exe'];
+		$options[$exe] = $exe;
+	}
 	$input = [
 		'name' => 'exe',
 		'class' => "form-control",
@@ -214,41 +216,11 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 	echo form_input($input);
 	?>
 </div></div>
-
-<?php 
-$tabs = new \App\Views\Htm\Tabs;
-ob_start() ?>
-<div class="my-1"><div class="input-group">
-	<?php 
-	$input = [
-		'name' => 'file',
-		'type' => 'file',
-		'class' => "form-control"
-	];
-	echo form_input($input);
-	?>
-	<button type="submit" name="cmd" value="upload" class="btn btn-primary">Upload</button>
-</div></div>
-<p>Ensure music is in a supported format (<?php echo implode(', ', \App\Libraries\Track::exts_allowed);?>)
-and smaller than <?php echo formatBytes(\App\Libraries\Track::$max_filesize);?>.</p>
 <p>You should ensure any newly uploaded tracks can be played.</p>
-<?php
-$tabs->set_item('upload', ob_get_clean());
-
-ob_start(); ?>
-<p>Pull this tack from the live website</p>
-<div>
-<button type="submit" name="cmd" value="synch" class="btn btn-primary">synch</button>
-</div>
-<?php 
-$tabs->set_item('synch', ob_get_clean());
-
-echo $tabs->htm();
-?>
-
 </div>
 
 <div class="modal-footer">
+<button type="submit" name="cmd" value="synch" class="btn btn-primary">synch</button>
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 </div>
 

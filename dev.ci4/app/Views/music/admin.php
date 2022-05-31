@@ -196,7 +196,7 @@ echo form_open($self, $attr, $hidden);
 $colours = \App\Entities\Event::state_colours;
 $input = ['class' => 'btn-check'];
 $input['name'] = 'music';
-foreach(\App\Entities\Event::state_labels as $state=>$state_label) {
+foreach(\App\Entities\Event::states as $state_label=>$state) {
 	$input['id'] = "music_{$state_label}";
 	$input['checked'] = $event->music==$state;
 	$input['value'] = $state;

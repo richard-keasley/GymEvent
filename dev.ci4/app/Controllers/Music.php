@@ -192,7 +192,7 @@ public function edit($entry_id=0) {
 	return view('music/edit', $this->data);
 }
 
-public function get_track($event_id=0, $entry_num=0, $exe='') {
+public function get_track($event_id=0, $entry_num=0, $exe='', $return='content') {
 	// used by control/player to retrieve tracks from main website
 	$track = new \App\Libraries\Track();
 	$track->event_id = $event_id; 
@@ -201,20 +201,23 @@ public function get_track($event_id=0, $entry_num=0, $exe='') {
 	$track->check_state = 0; // unchecked
 	
 	$filename = $track->filename();
-	
+		
 	if($filename) {
-		$filename = $track->filepath() . $filename;
-		return $this->response->download($filename, null);
+		switch($return) {
+			case 'filename':
+			echo $filename;
+			break;
+			
+			default:
+			$filename = $track->filepath() . $filename;
+			# $file = new \CodeIgniter\Files\File($filename);
+			readfile($filename);
+		}
+		die;
 	}
 	
 	$body = "Track {$entry_num}/{$exe} not found.";
 	return $this->response->setStatusCode(404)->setBody($body);
-	
-	return $filename; 
-
-	
-	$url = base_url() . $track->urlpath() . $track->filebase();
-	echo $url;
 }
 
 }

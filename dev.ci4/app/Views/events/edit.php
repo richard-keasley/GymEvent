@@ -201,7 +201,7 @@ foreach($fieldnames as $fieldname) { ?>
 	<label class="input-group-text"><?php echo $fieldname;?></label>
 	<?php 
 	$input['name'] = $fieldname;
-	foreach(\App\Entities\Event::state_labels as $state=>$state_label) {
+	foreach(\App\Entities\Event::states as $state_label=>$state) {
 		$input['id'] = "{$fieldname}_{$state_label}";
 		$input['checked'] = $event->$fieldname==$state;
 		$input['value'] = $state;

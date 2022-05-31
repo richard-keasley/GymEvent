@@ -130,36 +130,9 @@ public function edit($event_id=0) {
 	}
 	
 	if($cmd=='synch') {
-		$track = $this->post_track($event);
-		
-		# $track->event_id = 15;
-		
-		if($track) {
-			$server = 'dev.gymevent.uk';
-			$url = "https://{$server}/music/get_track/{$track->event_id}/{$track->entry_num}/{$track->exe}";
-			$this->data['messages'][] = [$url, 'success'];
-			
-			$client = \Config\Services::curlrequest();
-			$options = [
-				'http_errors' => false
-			];
-			$response = $client->request('GET', $url, $options);
-			if($response->getStatusCode()==200) {
-				$this->data['messages'][] = ['got the track', 'success'];
-				# helper('filesystem');
-				# $success = write_file('test.mp3', $response->getBody());
-				# d($success);
-				d($client);
-				d($response);
-
-			}
-			else {
-				$message = sprintf('<code>%s</code>: %s', $server, $response->getBody());
-				$this->data['messages'][] = [$message , 'danger'];
-			}
-		}
-	}
-		
+		$this->get_track($event);
+	}	
+	
 	// all tracks needed for this event
 	$entries = [];
 	
@@ -250,6 +223,70 @@ public function auto($ch_id=0) {
 	$this->data['title'] = 'Auto player';
 	$this->data['heading'] = 'Auto player';
 	return view("player/auto", $this->data);
+}
+
+private function get_track($event) {
+	$retval = false;
+	$track = $this->post_track($event);
+	if(!$track) return false;
+	
+	$destpath = $track->filepath();
+	if(!file_exists($destpath)) {
+		$this->data['messages'][] = "{$destpath} does not exist";
+		return false;
+	}
+			
+	$server = 'gymevent.uk';
+	
+	$url = "https://{$server}/music/get_track/{$track->event_id}/{$track->entry_num}/{$track->exe}/filename";
+	$client = \Config\Services::curlrequest();
+	$options = [
+		'http_errors' => false
+	];
+	$response = $client->request('GET', $url, $options);
+	$status = $response->getStatusCode();
+	$filename = $response->getBody();
+	if($status > 300) {
+		$this->data['messages'][] = "{$server} - {$status}: {$filename}<br>{$url}";
+		return false;
+	}
+	$destfile = $destpath . $filename;
+			
+	$fp = fopen($destfile, "w");
+	if(!$fp) {
+		$this->data['messages'][] = "Couldn't write to {$destfile}";
+		return false;
+	}
+	
+	$ch = curl_init();
+	if(!$ch) {
+		$this->data['messages'][] = "Couldn't start CURL";
+		fclose($fp);
+		return false;
+	}
+		
+	$options = [
+		CURLOPT_FILE    => $fp,
+		CURLOPT_URL     => $url,
+		CURLOPT_HEADER => 0,
+		CURLOPT_FAILONERROR => false
+	];
+	if(!curl_setopt_array($ch, $options)) {
+		$this->data['messages'][] = 'Failed to set CURL options';
+		curl_close($ch);
+		fclose($fp);
+		return false;
+	}
+	if(curl_exec($ch)) {
+		$this->data['messages'][] = ["Updated {$filename}", 'success'];
+		$retval = true;
+	}
+	else {
+		$this->data['messages'][] = "Failed read {$filename}";
+	}
+	curl_close($ch);
+	fclose($fp);
+	return $retval;	
 }
 
 } 

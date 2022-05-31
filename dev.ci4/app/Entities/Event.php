@@ -264,73 +264,95 @@ public function link($type, $user_id=0) {
 	switch($type) {
 		case 'clubrets': 
 		case 'entries':
-		if($this->clubrets==1) { // edit
-			if($user_id) {
-				$clubrets = new \App\Models\Clubrets();
-				$clubret = $clubrets->lookup($this->id, $user_id);
-				if($clubret) { // update
-					return getlink($clubret->url('view'), 'view return');
+		switch($this->clubrets) {
+			case self::states['edit']:
+				if($user_id) {
+					$clubrets = new \App\Models\Clubrets();
+					$clubret = $clubrets->lookup($this->id, $user_id);
+					if($clubret) { // update
+						return getlink($clubret->url('view'), 'view return');
+					}
+					else { // add
+						return getlink("clubrets/add/{$this->id}/{$user_id}", 'enter this event');
+					}
 				}
-				else { // add
-					return getlink("clubrets/add/{$this->id}/{$user_id}", 'enter this event');
+				else { // no user
+					return anchor(base_url("clubrets/add/{$this->id}"), 'enter this event', ['class'=>'btn btn-outline-primary']);
 				}
-			}
-			else { // no user
-				return anchor(base_url("clubrets/add/{$this->id}"), 'enter this event', ['class'=>'btn btn-outline-primary']);
-			}
-		}
-		if($this->clubrets==2) { // view
-			return getlink("entries/view/{$this->id}", 'entries');
+				break;
+				
+			case self::states['view']:
+				return getlink("entries/view/{$this->id}", 'entries');
+				break;
 		}
 		break;
 
 		case 'videos':
-		if($this->videos==1) { // edit
-			$href = base_url("videos/view/{$this->id}");
-			$label = "videos";
-			if($user_id) {
-				$attr = [
-					'class' => 'nav-link', 
-					'title' => "Alter your videos"
-				];
-			}
-			else {
-				$attr = [
-					'class' => 'btn btn-outline-secondary', 
-					'title' => "login to alter videos"
-				];
-			}
-			return anchor($href, $label, $attr);
-		} 
-		if($this->videos==2) { // view
-			return getlink("videos/view/{$this->id}", 'videos');
+		switch($this->videos) {
+			case self::states['edit']:
+				$href = base_url("videos/view/{$this->id}");
+				$label = "videos";
+				if($user_id) {
+					$attr = [
+						'class' => 'nav-link', 
+						'title' => "Alter your videos"
+					];
+				}
+				else {
+					$attr = [
+						'class' => 'btn btn-outline-secondary', 
+						'title' => "login to alter videos"
+					];
+				}
+				return anchor($href, $label, $attr);
+			
+			case self::states['view']:
+				return getlink("videos/view/{$this->id}", 'videos');
+			
+			default:
+			return '';
 		}
 		break;
 
 		case 'music':
-		if(in_array($this->music, [1, 2])) { // edit or view
-			$href = base_url("music/view/{$this->id}");
-			$label = "music";
-			if($user_id) {
-				$attr = [
-					'class' => 'nav-link', 
-					'title' => "View your music"
-				];
-			}
-			else {
-				$attr = [
-					'class' => 'btn btn-outline-secondary', 
-					'title' => "login to view music"
-				];
-			}
-			return anchor($href, $label, $attr);
+		switch($this->music) {
+			case self::states['edit']:
+			case self::states['view']:
+				$href = base_url("music/view/{$this->id}");
+				$label = "music";
+				if($user_id) {
+					$attr = [
+						'class' => 'nav-link', 
+						'title' => "View your music"
+					];
+				}
+				else {
+					$attr = [
+						'class' => 'btn btn-outline-secondary', 
+						'title' => "login to view music"
+					];
+				}
+				return anchor($href, $label, $attr);
+							
+			case self::states['waiting']:
+			case self::states['finished']:
+			default:
+			return '';
 		}
 		break;
 		
 		case 'player':
 		$path = "control/player/view/{$this->id}";
-		if($this->music==2) $perm = 1 ; // view
-		else $perm = \App\Libraries\Auth::check_path($path);
+		switch($this->music) {
+			case self::states['waiting']:
+				$perm = 0; break;
+			case self::states['view']:
+				$perm = 1; break;
+			case self::states['edit']:
+			case self::states['finished']:
+			default:
+			$perm = \App\Libraries\Auth::check_path($path);	
+		}
 		if($perm) { 
 			$attr = [
 				'class' => 'nav-link', 
@@ -357,10 +379,17 @@ public function user_entries($user_id) {
 	return $query->getResult();
 }
 
-const state_labels = ['waiting', 'edit', 'view', 'finished'];
+/* event states */
+const states = [
+	'waiting' => 0,
+	'edit' => 1,
+	'view' => 2,
+	'finished' => 3
+];
 const state_colours = ['danger', 'warning', 'success', 'danger'];
 static function state_label($key) {
-	return isset(self::state_labels[$key]) ? self::state_labels[$key] : 'unknown';
+	$label = array_search($key, self::states);
+	return $label===false ? 'unknown' : $label;
 }
 static function state_colour($key) {
 	return isset(self::state_colours[$key]) ? self::state_colours[$key] : 'light';

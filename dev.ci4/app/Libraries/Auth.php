@@ -213,8 +213,8 @@ static function path_role($path) {
 			$event = $events->find($param1);
 			$state = $event ? $event->music : null;
 			switch($state) {
-				case 1: // edit
-				case 2: // view
+				case \App\Entities\Event::states['edit']: 
+				case \App\Entities\Event::states['view']: 
 					return 'club' ;
 					break;
 				default: // waiting / finished
@@ -241,9 +241,9 @@ static function path_role($path) {
 			$event = $events->find($param1);
 			$state = $event ? $event->videos : null ;
 			switch($state) {
-				case 1: // edit
+				case \App\Entities\Event::states['edit']: 
 					return "club";
-				case 2: // view
+				case \App\Entities\Event::states['view']: 
 					return self::roles[0];
 				default: // waiting / finished
 					return 'admin';
@@ -264,11 +264,11 @@ static function path_role($path) {
 			case 'view':
 			$events = new \App\Models\Events();
 			$event = $events->find($param1);
-			$clubrets = $event ? $event->clubrets : 0 ;
-			switch($clubrets) {
-				case 1: // edit
+			$state = $event ? $event->clubrets : null ;
+			switch($state) {
+				case \App\Entities\Event::states['edit']: 
 					return self::roles[99];
-				case 2: // view
+				case \App\Entities\Event::states['view']: 
 					return self::roles[0];
 				default: // closed
 					return self::roles[99];
@@ -289,9 +289,9 @@ static function path_role($path) {
 			$event = $events->find($param1);
 			$state = $event ? $event->clubrets : null;
 			switch($state) {
-				case 1: // edit
+				case \App\Entities\Event::states['edit']: 
 					return "club";
-				case 2: // view
+				case \App\Entities\Event::states['view']: 
 					return 'none';
 				default: // closed
 					return 'admin';
