@@ -152,11 +152,10 @@ public function edit($entry_id=0) {
 			$track->check_state = 0; // unchecked
 
 			// clear existing uploads
-			$count = 0;
-			foreach($track->filename(1) as $filename) {
-				if(unlink($filename)) $count++;
+			if($track->delete()) {
+				$this->data['messages'][] = ["Existing track deleted", 'warning'];
 			}
-			if($count) $this->data['messages'][] = ["Existing track deleted", 'warning'];
+			
 			// store new upload
 			$filepath = $track->filepath();
 			$filename = $track->filebase($extension);
@@ -200,23 +199,10 @@ public function get_track($event_id=0, $entry_num=0, $exe='', $return='content')
 	$track->exe = $exe; 
 	$track->check_state = 0; // unchecked
 	
-	$filename = $track->filename();
-		
-	if($filename) {
-		switch($return) {
-			case 'filename':
-			echo $filename;
-			break;
-			
-			default:
-			$filename = $track->filepath() . $filename;
-			# $file = new \CodeIgniter\Files\File($filename);
-			readfile($filename);
-		}
-		die;
-	}
+	$url = $track->url();
+	if($url) return $this->response->setBody(base_url($url));
 	
-	$body = "Track {$entry_num}/{$exe} not found.";
+	$body = "Track {$track->filebase()} not found in event {$event_id}.";
 	return $this->response->setStatusCode(404)->setBody($body);
 }
 

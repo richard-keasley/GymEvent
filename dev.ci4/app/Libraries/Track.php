@@ -164,4 +164,13 @@ public function setFilename($filename) {
 	$this->exe = empty($arr[1]) ? 'unknown' : $arr[1] ;
 }
 
+public function delete() {
+	// clear existing uploads
+	$count = 0;
+	foreach($this->filename(1) as $filename) {
+		if(unlink($filename)) $count++;
+	}
+	return $count;	
+}
+
 } 

@@ -34,27 +34,6 @@ private function post_track($event) {
 	return $track;
 }
 
-private function store_track($track, $file) {
-	// check file
-	$extension = $file->getExtension();
-	if(!in_array($extension, \App\Libraries\Track::exts_allowed)) {
-		$this->data['messages'][] = "{$extension} files are not allowed";
-		return false;
-	}
-	// clear existing uploads
-	$count = 0;
-	foreach($track->filename(1) as $filename) {
-		if(unlink($filename)) $count++;
-	}
-	if($count) $this->data['messages'][] = ["Existing track deleted", 'warning'];
-	// store new upload
-	$filepath = $track->filepath();
-	$filename = $track->filebase($extension);
-	if($file->move($filepath, $filename)) return true;
-	$this->data['messages'][] = $file->getErrorString();
-	return false;
-}
-
 public function index() {
 	$this->data['title'] = 'Music player';
 	$this->data['heading'] = 'Music player';
@@ -105,32 +84,10 @@ public function edit($event_id=0) {
 			$event = $this->mdl_events->find($event_id);
 		}
 	}
-		
-	if($cmd=='upload') {
-		$track = $this->post_track($event);
-		if(!$track) $error = true;				
-
-		$file = $this->request->getFile('file');
-		if(!$file) {
-			$this->data['messages'][] = 'No file selected';
-			$error = true;
-		}
-		
-		if(!$error && !$file->isValid()) {
-			$this->data['messages'][] = $file->getErrorString();
-			$error = true;
-		}
-		
-		if(!$error) {
-			if($this->store_track($track, $file)) {
-				$this->data['messages'][] = ["Upload added", 'success'];
-			}
-		}
-		#d($file);
-	}
 	
 	if($cmd=='synch') {
-		$this->get_track($event);
+		$track = $this->post_track($event);
+		$success = $this->get_track($track);
 	}	
 	
 	// all tracks needed for this event
@@ -225,68 +182,66 @@ public function auto($ch_id=0) {
 	return view("player/auto", $this->data);
 }
 
-private function get_track($event) {
-	$retval = false;
-	$track = $this->post_track($event);
+private function get_track($track, $server='www.gymevent.uk') {
 	if(!$track) return false;
+		
+	$host = parse_url(base_url(),  PHP_URL_HOST);
+	if($host==$server) {
+		$this->data['messages'][] = "Already viewing source ({$server})";
+		return false;
+	}
 	
 	$destpath = $track->filepath();
 	if(!file_exists($destpath)) {
 		$this->data['messages'][] = "{$destpath} does not exist";
 		return false;
 	}
-			
-	$server = 'gymevent.uk';
-	
-	$url = "https://{$server}/music/get_track/{$track->event_id}/{$track->entry_num}/{$track->exe}/filename";
+	// get filename
+	$url = "https://{$server}/music/get_track/{$track->event_id}/{$track->entry_num}/{$track->exe}";
 	$client = \Config\Services::curlrequest();
 	$options = [
 		'http_errors' => false
 	];
 	$response = $client->request('GET', $url, $options);
 	$status = $response->getStatusCode();
-	$filename = $response->getBody();
+	$source = $response->getBody();
 	if($status > 300) {
-		$this->data['messages'][] = "{$server} - {$status}: {$filename}<br>{$url}";
+		$this->data['messages'][] = "{$server} [{$status}]: {$source}";
 		return false;
 	}
+	$filename = basename($source);
 	$destfile = $destpath . $filename;
-			
-	$fp = fopen($destfile, "w");
-	if(!$fp) {
-		$this->data['messages'][] = "Couldn't write to {$destfile}";
+	# $this->data['messages'][] = [$source, 'success'];
+	# $this->data['messages'][] = [$destfile, 'success'];
+	
+	// get file
+	$options = [
+		'http_errors' => false,
+		CURLOPT_HEADER => 0,
+		CURLOPT_NOBODY => 0,
+		CURLOPT_RETURNTRANSFER => 1,
+		CURLOPT_FAILONERROR => false
+	];
+	$response = $client->request('GET', $source, $options);
+	$status = $response->getStatusCode();
+	$data = $response->getBody();
+	if($status > 300) {
+		$this->data['messages'][] = "{$server} [{$status}]: Couldn't get {$filename}";
 		return false;
 	}
 	
-	$ch = curl_init();
-	if(!$ch) {
-		$this->data['messages'][] = "Couldn't start CURL";
-		fclose($fp);
+	if($track->delete()) {
+		$this->data['messages'][] = ["Existing track deleted. You may need to clear your browser cache to see the results.", 'warning'];
+	}
+	
+	$bytes = file_put_contents($destfile, $data);
+	if(!$bytes) {
+		$this->data['messages'][] = "Failed to update {$filename} from {$server}";
 		return false;
 	}
-		
-	$options = [
-		CURLOPT_FILE    => $fp,
-		CURLOPT_URL     => $url,
-		CURLOPT_HEADER => 0,
-		CURLOPT_FAILONERROR => false
-	];
-	if(!curl_setopt_array($ch, $options)) {
-		$this->data['messages'][] = 'Failed to set CURL options';
-		curl_close($ch);
-		fclose($fp);
-		return false;
-	}
-	if(curl_exec($ch)) {
-		$this->data['messages'][] = ["Updated {$filename}", 'success'];
-		$retval = true;
-	}
-	else {
-		$this->data['messages'][] = "Failed read {$filename}";
-	}
-	curl_close($ch);
-	fclose($fp);
-	return $retval;	
+	
+	$this->data['messages'][] = ["Updated {$filename}.", 'success'];
+	return true;
 }
 
 } 

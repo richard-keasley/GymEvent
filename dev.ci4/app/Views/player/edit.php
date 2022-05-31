@@ -183,28 +183,13 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 ?>
 
 <div class="modal-header">
-<h5 class="modal-title" id="exampleModalLabel">Upload a new track</h5>
+<h5 class="modal-title" id="exampleModalLabel">Download track from remote website</h5>
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
 <div class="modal-body">
-<p>Pull a track from the live website to this device. <span class="alert-warning p-1">This will overwrite existing tracks for this entry / exercise on this device.</span></p>
-<div class="my-1"><div class="input-group">
-	<label class="input-group-text">Exercise</label> 
-	<?php 
-	$options = ['-'];
-	foreach($player as $round) {
-		$exe = $round['exe'];
-		$options[$exe] = $exe;
-	}
-	$input = [
-		'name' => 'exe',
-		'class' => "form-control",
-		'options' => $options
-	];
-	echo form_dropdown($input);
-	?>
-</div></div>
+<p>Pull a track from the live website to this device.</p>
+<p class="alert-warning p-1">This will overwrite existing tracks for this entry / exercise on this device.</p>
 <div class="my-1"><div class="input-group">
 	<label class="input-group-text">Number</label> 
 	<?php 
@@ -216,11 +201,27 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 	echo form_input($input);
 	?>
 </div></div>
-<p>You should ensure any newly uploaded tracks can be played.</p>
+<div class="my-1"><div class="input-group">
+	<label class="input-group-text">Exercise</label> 
+	<?php 
+	$options = ['-'];
+	foreach($player as $round) {
+		$exe = strtoupper($round['exe']);
+		$options[$exe] = $exe;
+	}
+	$input = [
+		'name' => 'exe',
+		'class' => "form-control",
+		'options' => $options
+	];
+	echo form_dropdown($input);
+	?>
+</div></div>
+<p>Ensure uploaded tracks can be played.</p>
 </div>
 
 <div class="modal-footer">
-<button type="submit" name="cmd" value="synch" class="btn btn-primary">synch</button>
+<button type="submit" name="cmd" value="synch" class="btn btn-primary" title="Pull track from remote source">synch</button>
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 </div>
 
