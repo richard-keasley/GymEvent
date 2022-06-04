@@ -54,6 +54,10 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	}
 	$stub = $stub ? implode('/', $stub) : 'index';
 	$include = VIEWPATH . "help/{$stub}.php";
+	# d(VIEWPATH);
+	# $config = config('Paths');
+	# d($config->viewDirectory);
+
 	$this->data['help'] = file_exists($include) ? $stub : '';
 	
 	// look for back_link

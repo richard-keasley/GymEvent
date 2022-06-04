@@ -145,10 +145,10 @@ public function event($event_id=0) {
 	}
 	// add users dialogue
 	$this->data['users_dialogue'] = [
-		'title' => 'Add a club return to this return',
+		'title' => 'Add a club return to this event',
 		'user_id' => 0,
 		'users' => $users,
-		'description' => sprintf('Add a new club return to %s.', $this->data['event']->name)
+		'description' => sprintf('Add a new club return to <em>%s</em>.', $this->data['event']->title)
 	];
 		
 	switch($this->data['event']->clubrets) {

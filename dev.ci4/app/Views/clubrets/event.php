@@ -27,7 +27,6 @@ $this->section('content');?>
 <?php } ?>
 </div>
 <?php 
-# d($event->participants());
 $this->endSection(); 
 
 $this->section('top');
@@ -37,7 +36,7 @@ $attr = [
 echo form_open(base_url(uri_string()), $attr);
 echo \App\Libraries\View::back_link($back_link); 
 if(isset($users_dialogue)) { ?>
-	<button type="button" class="btn btn-success bi bi-plus-circle" data-bs-toggle="modal" data-bs-target="#modalUser" title="Add return to this event"></button>
+	<button type="button" class="btn btn-success bi bi-plus-circle" data-bs-toggle="modal" data-bs-target="#modalUser" title="Add new club return to this event"></button>
 	<?php
 }
 echo $this->include('entries/populate/button');
@@ -122,29 +121,7 @@ $this->endSection();
 
 $this->section('bottom'); 
 echo $this->include('entries/populate/form');
-?>
-<div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
-<div class="modal-dialog">
-<?php 
-$attr = ['class' => "modal-content"];
-$hidden = ['cmd' => 'add'];
-echo form_open(base_url(uri_string()), $attr, $hidden);
-?>
-<div class="modal-header">
-<h5 class="modal-title" id="exampleModalLabel">Add new club to this event</h5>
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
+# d($event->participants());
+d($event);
 
-      <div class="modal-body">
-        ...
-      </div>
-	  
-<div class="modal-footer">
-<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-<button type="button" class="btn btn-primary">Add return</button>
-</div>
-<?php echo form_close(); ?>
-</div>
-</div>
-<?php
 $this->endSection(); 
