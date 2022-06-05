@@ -43,6 +43,9 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	// Do Not Edit This Line
 	parent::initController($request, $response, $logger);
 	
+	// find view path
+	define('VIEWPATH', realpath(config('Paths')->viewDirectory));
+	
 	// look for help file
 	$stub = $this->request->uri->getSegments();
 	foreach(array_reverse($stub) as $segment) {
@@ -53,11 +56,7 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 		array_pop($stub);
 	}
 	$stub = $stub ? implode('/', $stub) : 'index';
-	$include = VIEWPATH . "help/{$stub}.php";
-	# d(VIEWPATH);
-	# $config = config('Paths');
-	# d($config->viewDirectory);
-
+	$include = config('Paths')->viewDirectory . "/help/{$stub}.php";
 	$this->data['help'] = file_exists($include) ? $stub : '';
 	
 	// look for back_link

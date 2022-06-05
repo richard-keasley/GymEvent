@@ -13,7 +13,7 @@ if(empty($message) || $message=='(null)') $message = "Sorry! We can't do that!";
 
 $messages = [$message];
 
-include(VIEWPATH . 'includes/_head.php'); 
+include(config('Paths')->viewDirectory . '/includes/_head.php'); 
 ?>
 <ul class="breadcrumb">
 	<li class="breadcrumb-item active"><a href="<?php echo base_url();?>"><span class="bi-house-fill"> home</span></a></li>

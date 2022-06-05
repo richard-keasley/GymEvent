@@ -13,8 +13,6 @@
  *
  * @link: https://codeigniter4.github.io/CodeIgniter4/
  */
- 
-define('VIEWPATH', APPPATH . 'Views/');
 
 function getlink($path, $label='') {
 	$path = trim($path, '/');

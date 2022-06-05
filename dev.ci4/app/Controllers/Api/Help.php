@@ -17,7 +17,7 @@ public function view(...$segments) {
 	$viewname = "help/{$stub}";
 	# if(!\App\Libraries\Auth::check_path($viewname)) return $this->error('Access denied');
 	
-	$include = VIEWPATH . "{$viewname}.php";
+	$include = config('Paths')->viewDirectory . "/{$viewname}.php";
 	if(!file_exists($include)) return $this->error("Can't find help for {$stub}");
 	return $this->respond(view($viewname));
 }
