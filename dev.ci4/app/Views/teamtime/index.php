@@ -22,9 +22,11 @@ if($displays) {
 <h5>Information</h5>
 <?php 
 $nav = [];
-foreach(glob(VIEWPATH . 'teamtime/displays/info/*.php') as $view) {
+$viewpath = \App\Libraries\Teamtime::get_viewpath() . '*.php';
+foreach(glob($viewpath) as $view) {
 	$nav[] = sprintf('teamtime/info/%s', basename($view, '.php'));
 }
+
 echo $navbar->htm($nav);
 
 $this->endSection();

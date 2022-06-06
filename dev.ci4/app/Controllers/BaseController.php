@@ -43,9 +43,6 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	// Do Not Edit This Line
 	parent::initController($request, $response, $logger);
 	
-	// find view path
-	define('VIEWPATH', realpath(config('Paths')->viewDirectory));
-	
 	// look for help file
 	$stub = $this->request->uri->getSegments();
 	foreach(array_reverse($stub) as $segment) {

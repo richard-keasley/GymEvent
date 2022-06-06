@@ -5,7 +5,8 @@
 <p>Each display can be given a separate view. Each view comprises many "frames". These frames alternate between the images stored for this event and the "info" frame. The info frame is entered in the "HTML" box.</p>
 <p>The following views are built-in:</p>
 <ul><?php 
-foreach(glob(VIEWPATH . 'teamtime/displays/info/*.php') as $view) {
+$viewpath = \App\Libraries\Teamtime::get_viewpath() . '*.php';
+foreach(glob($viewpath) as $view) {
 	printf('<li>%s</li>', basename($view, '.php'));
 }
 ?></ul>

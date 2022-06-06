@@ -20,8 +20,8 @@ if($export) {
 										
 			$tbody[] = [
 				'runorder' => implode(', ', $row['run']),
-				'dis' => $row['dis']['abbr'],
-				'cat' => $row['cat']['abbr'],
+				'dis' => $row['dis']['name'],
+				'cat' => $row['cat']['name'],
 				'num' => $row['entry']['num'],
 				'club' => $row['entry']['club']['abbr'],
 				'name' => $row['entry']['name']
