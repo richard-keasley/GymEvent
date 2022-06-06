@@ -2,8 +2,9 @@
 
 class Teamtime {
 const MIN_TICK = 500;
-static $updated = [];
+const VIEWPATH = '/teamtime/displays/info/';
 
+static $updated = [];
 static $appvars = null;
 private static $vars = null;
 
@@ -59,6 +60,14 @@ static function get_vars() {
 	return self::$vars;
 }
 
+private static $_viewpath = null;
+static function get_viewpath() {
+	if(!self::$_viewpath) {
+		self::$_viewpath = realpath(config('Paths')->viewDirectory) . self::VIEWPATH;
+	}
+	return self::$_viewpath;
+}
+
 static function get_var($varname, $id=null) {
 	if(empty(self::$vars[$varname])) return null;
 	if($id===null) return self::$vars[$varname];
@@ -74,10 +83,10 @@ static function display_view($display) {
 	return self::get_var('views', $vw_id);
 }
 
-static function view_html($html, $return=1) {
-	$view = "teamtime/displays/info/{$html}";
-	$path = VIEWPATH . $view . '.php';
-	return file_exists($path) ? view($view) : $html;
+static function view_html($view, $return=1) {
+	$file = self::get_viewpath() . "{$view}.php";
+	$view = self::VIEWPATH . $view;
+	return file_exists($file) ? view($view) : $view;
 }
 
 static function get_images() {

@@ -19,9 +19,10 @@ public function htm($data = false) {
 	$this->table = \App\Views\Htm\Table::load($this->template_name);
 	
 	// HTM heading
-	$headings = []; $formats = [];
+	$headings = []; $formats = []; $new_headings = [];
 	foreach($this->headings as $key=>$fldname) {
 		$headings[$fldname] = '';
+		$new_headings[$fldname] = '';
 		$lvl = $key + 3;
 		$formats[$fldname] = "<h{$lvl}>%s</h{$lvl}>";
 	}
@@ -45,14 +46,13 @@ public function htm($data = false) {
 	
 	echo '<section class="cattable">';
 	$tbody = []; $this_row = [];
-	$table_cats = ''; // HTM heading
+	$show_heading = false; // HTM heading
 	foreach($data as $row) {
 		foreach($row as $fldname=>$val) {
 			if(isset($headings[$fldname])) {
 				if($headings[$fldname]!==$val) {
 					$headings[$fldname] = $val;
-					$level = array_search($fldname, $this->headings) + 3;
-					$table_cats .= sprintf($formats[$fldname], $val);
+					if(!$show_heading) $show_heading = $fldname;
 				}
 				# $this_row[$fldname] = $val;
 			}
@@ -60,12 +60,17 @@ public function htm($data = false) {
 				$this_row[$fldname] = $val;
 			}
 		}
-		if($table_cats) {
+		if($show_heading) {
 			echo $this->generate($tbody, $thead);
 			$tbody = [];
-			echo $table_cats;
-			$table_cats = '';
-			
+			$in_heading = false;
+			foreach($headings as $fldname=>$val) {
+				if($fldname==$show_heading) $in_heading = true;
+				if($in_heading) {
+					printf($formats[$fldname], $val);
+				}
+			}
+			$show_heading = false;
 		}
 		$tbody[] = $this_row;
 	}
