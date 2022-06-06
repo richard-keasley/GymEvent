@@ -141,8 +141,13 @@ static function logout() {
 /* roles and permissions */ 
 const roles = ['-', 'club', 'controller', 'admin', 99=>'superuser'];
 
-// can path be viewed by current user
 static private $check_paths = [];
+
+static function check_paths() {
+	return self::$check_paths;
+}
+
+// can path be viewed by current user
 static function check_path($path, $index=1) {
 	// $index=1 returns permission (bOol)
 	// $index=0 returns role (string)
