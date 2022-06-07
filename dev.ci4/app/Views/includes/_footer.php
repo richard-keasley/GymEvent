@@ -13,6 +13,20 @@ if(ENVIRONMENT == 'development' && empty($exception)) { ?>
 <div class="row text-secondary">
 <div class="col"><?php echo anchor(base_url('setup/dev'), ENVIRONMENT);?></div>
 <div class="col">Page rendered in {elapsed_time} seconds</div>
+<div class="col">
+<button class="btn btn-secondary small" type="button" data-bs-toggle="collapse" data-bs-target="#permlist" aria-expanded="false" aria-controls="permlist">Perms</button>
+<div class="collapse" id="permlist">
+<div class="card card-body">
+<ul class="list-unstyled"><?php 
+foreach(\App\Libraries\Auth::check_paths() as $path=>$row) {
+	$colour = $row[1] ? 'success' : 'danger' ;
+	$title = $row[1] ? 'allowed' : 'Forbidden' ;
+	printf('<li class="text-%s" title="%s"><strong>%s:</strong> %s </li>', $colour, $title, $path, $row[0]);
+};
+?></ul>
+</div>
+</div>
+</div>
 </div>
 </footer>
 <?php }
