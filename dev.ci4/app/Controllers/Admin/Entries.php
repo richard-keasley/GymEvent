@@ -198,7 +198,17 @@ public function edit($event_id=0) {
 
 public function categories($event_id=0) {
 	$this->find($event_id);
-	$array_fields = ['music', 'videos'];
+	
+	$col_names = ['name', 'abbr', 'sort', 'exercises'];
+	$array_fields = [];
+	if(\App\Libraries\Track::enabled()) {
+		$col_names[] = 'music';
+		$array_fields[] = 'music';
+	}
+	if(\App\Libraries\Video::enabled()) {
+		$col_names[] = 'videos';
+		$array_fields[] = 'videos';
+	}	
 	
 	$filter = []; $flds = ['disid'];
 	foreach($flds as $fld) $filter[$fld] = $this->request->getGet($fld);
@@ -209,7 +219,6 @@ public function categories($event_id=0) {
 	if($this->request->getPost('save')) {
 		// update
 		$dis_arr = []; $cat_arr = [];
-		$col_names = ['name', 'abbr', 'sort', 'exercises', 'music', 'videos'];
 		foreach($this->data['entries'] as $dis) {
 			if($dis->id==$filter['disid']) {
 				foreach(['name', 'abbr'] as $col_name) {
@@ -262,6 +271,8 @@ public function categories($event_id=0) {
 	
 	// view
 	$this->data['breadcrumbs'][] = "admin/entries/categories/{$event_id}";
+	
+	$this->data['col_names'] = $col_names;
 	
 	$this->data['heading'] .= ' - categories';
 	$this->data['filter'] = $filter;

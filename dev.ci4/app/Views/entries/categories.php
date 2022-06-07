@@ -41,10 +41,7 @@ else {
 	}
 }
 
-$tbody=[];
-
-$row = []; $tr = [];
-$inputs = [
+$tmp = [
 	'name' => [
 		'type' => 'text',
 		'class' => 'form-control',
@@ -77,6 +74,23 @@ $inputs = [
 		'style' => 'min-width:5em;'
 	]
 ];
+
+$inputs = []; $thead = [];
+foreach($col_names as $key) {
+	$inputs[$key] = $tmp[$key];
+	switch($key) {
+		case 'name':
+			$key='Category'; break;
+		case 'exercises':
+			$key = 'Exercise<br>set' ; break;
+		default:
+			$key = humanize($key);
+	}
+	$thead[] = $key;
+}
+$thead[] = 'Count';
+
+$tbody = []; $tr = [];
 foreach($entries as $dis) { 
 if($dis->id==$filter['disid']) { ?>
 	<fieldset class="input-group my-3">
@@ -105,13 +119,12 @@ if($dis->id==$filter['disid']) { ?>
 		$count = count($cat->entries);
 		$tr['last'] = $count ? $count : '<button class="btn btn-sm btn-danger bi-trash" type="button" onClick="delrow(this)"></button>'; 
 		$tbody[] = $tr;
-		
 	}
 } 
 } 
 
 $table = \App\Views\Htm\Table::load('responsive');
-$table->setHeading(['category','abbr','sort','exercise<br>set','music','videos','count']);
+$table->setHeading($thead);
 echo $table->generate($tbody);
 ?>
 
@@ -205,9 +218,6 @@ if($sb_disciplines) { ?>
 <?php } ?>
 </section>
 
-<?php echo form_close();?>
+<?php echo form_close();
 
-<?php $this->endSection(); 
-
-$this->section('top'); ?>
-<?php $this->endSection(); 
+$this->endSection(); 

@@ -263,6 +263,7 @@ public function link($type, $user_id=0) {
 	if(!$user_id) $user_id = intval(session('user_id'));
 	switch($type) {
 		case 'clubrets': 
+		if(!\App\Entities\Clubret::enabled()) return '';
 		case 'entries':
 		switch($this->clubrets) {
 			case self::states['edit']:
@@ -288,6 +289,7 @@ public function link($type, $user_id=0) {
 		break;
 
 		case 'videos':
+		if(!\App\Libraries\Video::enabled()) return '';
 		switch($this->videos) {
 			case self::states['edit']:
 				$href = base_url("videos/view/{$this->id}");
@@ -315,6 +317,7 @@ public function link($type, $user_id=0) {
 		break;
 
 		case 'music':
+		if(!\App\Libraries\Track::enabled()) return '';
 		switch($this->music) {
 			case self::states['edit']:
 			case self::states['view']:

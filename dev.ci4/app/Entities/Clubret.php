@@ -4,6 +4,10 @@ use CodeIgniter\Entity;
 
 class Clubret extends Entity {
 
+static function enabled() {
+	return \App\Libraries\Auth::check_path('clubrets', 0) != 'disabled';
+}
+
 public function getStaff() {
 	#d($this); die;
 	$db_val = $this->attributes['staff'] ?? '[]';

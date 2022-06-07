@@ -18,6 +18,10 @@ public $entry_num = 0;
 public $exe = ''; // stored in db
 public $check_state = 0; // stored in db 
 
+static function enabled() {
+	return \App\Libraries\Auth::check_path('music', 0) != 'disabled';
+}
+
 // class names for buttons
 const BUTTON_PLAY = 'btn bi m-1 btn-success bi-play-fill';
 const BUTTON_REPEAT = 'btn bi m-1 btn-info bi-arrow-repeat';

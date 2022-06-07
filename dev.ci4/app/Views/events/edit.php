@@ -192,10 +192,9 @@ $acc->set_item('Payment', ob_get_clean());
 
 
 ob_start(); // Event states
-$fieldnames = ['clubrets', 'music', 'videos'];
 $colours = \App\Entities\Event::state_colours;
 $input = ['class' => 'btn-check'];
-foreach($fieldnames as $fieldname) { ?>
+foreach($states as $fieldname) { ?>
 	<div class="btn-bar mb-2">
 	<div class="btn-group">
 	<label class="input-group-text"><?php echo $fieldname;?></label>

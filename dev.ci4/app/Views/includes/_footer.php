@@ -10,12 +10,12 @@ echo form_open(base_url(), $attr); ?>
 
 if(ENVIRONMENT == 'development' && empty($exception)) { ?>
 <footer class="border-top bg-light">
-<div class="row text-secondary">
+<button class="btn btn-warning btn-sm small" type="button" data-bs-toggle="collapse" data-bs-target="#debuginfo" aria-expanded="false" aria-controls="debuginfo"><i class="bi bi-tools"></i></button>
+<div class="collapse row text-secondary" id="debuginfo">
+
 <div class="col"><?php echo anchor(base_url('setup/dev'), ENVIRONMENT);?></div>
 <div class="col">Page rendered in {elapsed_time} seconds</div>
 <div class="col">
-<button class="btn btn-secondary small" type="button" data-bs-toggle="collapse" data-bs-target="#permlist" aria-expanded="false" aria-controls="permlist">Perms</button>
-<div class="collapse" id="permlist">
 <div class="card card-body">
 <ul class="list-unstyled"><?php 
 foreach(\App\Libraries\Auth::check_paths() as $path=>$row) {
@@ -24,7 +24,6 @@ foreach(\App\Libraries\Auth::check_paths() as $path=>$row) {
 	printf('<li class="text-%s" title="%s"><strong>%s:</strong> %s </li>', $colour, $title, $path, $row[0]);
 };
 ?></ul>
-</div>
 </div>
 </div>
 </div>

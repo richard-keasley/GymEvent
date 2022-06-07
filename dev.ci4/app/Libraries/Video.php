@@ -10,6 +10,10 @@ public $entry_num = 0;
 public $exe = ''; // stored in db
 public $url = ''; // stored in db 
 
+static function enabled() {
+	return \App\Libraries\Auth::check_path('videos', 0) != 'disabled';
+}
+
 public function video() {
 	return $this->error ? '' : $this->video;
 }

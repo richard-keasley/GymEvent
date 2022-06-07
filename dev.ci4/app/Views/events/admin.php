@@ -40,7 +40,7 @@ $this->endSection();
 $this->section('content'); ?>
 <section class="mb-3 row"><?php
 
-foreach(['clubrets', 'videos', 'music'] as $fldname) {
+foreach($states as $fldname) {
 	$state = $event->$fldname;
 	$label = \App\Entities\Event::state_label($state);
 	$colour = \App\Entities\Event::state_colour($state);
