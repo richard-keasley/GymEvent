@@ -19,8 +19,7 @@ $this->section('sidebar'); ?>
 	<li class="bi bi-folder my-1"> <?php echo $paths['APPPATH'];?>
 		<ul class="list-unstyled ps-3">
 			<li class="bi bi-list"> [application folders]</li>
-			<li class="bi bi-file-code"> .htaccess</li>
-			<li class="bi bi-file-code"> Common.php</li>
+			<?php htm_pathlist(APPPATH); ?>
 		</ul>
 	</li>
 	<li class="bi bi-folder my-1"> <?php echo $paths['SYSTEMPATH'];?></li>
@@ -29,22 +28,47 @@ $this->section('sidebar'); ?>
 		<ul class="list-unstyled ps-3">
 			<li class="bi bi-folder"> public
 				<ul class="list-unstyled ps-3">
-					<li class="bi bi-folder"> ui</li>
-					<li class="bi bi-list"> [site downloads / etc]</li>
+					<li class="bi bi-folder"> events
+					<ul class="list-unstyled ps-3">
+						<li class="bi bi-list"> event uploads</li>
+					</ul></li>
+					<li class="bi bi-folder"> teamtime</li>
 				</ul>
 			</li>
-			<li class="bi bi-file-code"> .htaccess</li>
-			<li class="bi bi-file-code"> .user.ini</li>
-			<li class="bi bi-file-code"> php.ini</li>
-			<li class="bi bi-file-code"> index.php</li>
-			<li class="bi bi-file"> robots.txt</li>
+			<li class="bi bi-folder"> app
+				<ul class="list-unstyled ps-3">
+					<li class="bi bi-list"> App resources</li>
+					<li class="bi bi-file-code"> *.css</li>
+					<li class="bi bi-file-code"> *.js</li>
+				</ul>
+			</li>
+			<?php htm_pathlist(FCPATH); ?>
 		</ul>
 	</li>
-	<li class="bi bi-file-code"> .env</li>
+	<?php htm_pathlist(ROOTPATH); ?>
 </ul>
 </li>
 </ul>
 <?php $this->endSection();
+
+function htm_pathlist($path) {
+	$files = [];
+	foreach(scandir($path) as $file) {
+		$file = new \CodeIgniter\Files\File($path . $file);
+		switch($file->getExtension()) {
+			case 'ico': 
+				$icon = 'file-image'; break;
+			case 'txt': 
+			case 'md':
+				$icon = 'file'; break;
+			default:
+			$icon = 'file-code';
+		}
+		if($file->isFile()) {
+			printf('<li class="bi bi-%s"> %s</li>', $icon, $file->getBasename());
+		}
+	}	
+}
 
 $this->section('content'); ?>
 <h4>Directory structure</h4>
