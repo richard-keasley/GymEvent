@@ -63,7 +63,7 @@ $this->section('top'); ?>
 echo \App\Libraries\View::back_link("entries/view/{$event->id}");
 echo getlink("/admin/entries/export/{$event->id}/csv", '<span class="bi-file-spreadsheet" title="Download scoreboard spreadsheet"></span>');
 echo getlink("/admin/entries/export/{$event->id}/scoretable", '<span class="bi-table" title="Download score tables"></span>');
-echo getlink("/admin/entries/export/{$event->id}/sql", '<span class="bi-file-code" title="Download SQL script"></span>');
+# echo getlink("/admin/entries/export/{$event->id}/sql", '<span class="bi-file-code" title="Download SQL script"></span>');
 if($format=='run') {
 	echo getlink("/admin/entries/export/{$event->id}", '<span class="bi-list" title="View scoreboard data"></span>');
 }
