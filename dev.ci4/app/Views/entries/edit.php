@@ -6,9 +6,11 @@ foreach($users as $id=>$user) $user_options[$id] = $user->name;
 
 // select which entries to show
 $cat_entries = [];
-foreach($this->data['entries'] as $dis) {
+$exeset_id = 0;
+foreach($entries as $dis) {
 	foreach($dis->cats as $cat) {
 		if($cat->id===$filter['catid']) {
+			$exeset_id = $cat->exercises;
 			$cat_entries = $cat->entries;
 		}
 	}
@@ -40,6 +42,9 @@ $this->section('content');
 <div class="col-auto"><select class="form-control" name="catid"></select></div>
 <div class="col-auto"><button type="submit" class="btn btn-primary">get</button></div>
 <div class="col-auto"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#runorder">Run order</button></div>
+<div class="col-auto"><div class="border border-secondary rounded">
+<?php echo getlink("/admin/entries/categories/3?disid={$filter['disid']}", 'discipline'); ?>
+</div></div>
 </div>
 <script>
 const selector = <?php echo json_encode($selector);?>;
@@ -194,6 +199,18 @@ function newrow(show) {
 }
 </script>
 </div>
+
+<p><strong>Exercise set for this category: </strong><?php 
+$scoreboard = new \App\ThirdParty\scoreboard;
+foreach($scoreboard->get_exesets() as $exeset) {
+	if($exeset['SetId']==$exeset_id) {
+		$exe_names = array_column($exeset['children'], 'Name');
+		printf('%u. %s: <em>(%s)</em>', $exeset['SetId'], $exeset['Name'], implode(', ', $exe_names));
+		
+		# d($exeset);
+	}
+}
+?></p>
 
 <?php } ?>
 

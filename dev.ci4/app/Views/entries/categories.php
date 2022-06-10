@@ -93,6 +93,7 @@ $thead[] = 'Count';
 $tbody = []; $tr = [];
 foreach($entries as $dis) { 
 if($dis->id==$filter['disid']) { ?>
+	<p>Ensure the discipline's name and abbreviation match values held in <em>Scoreboard</em>.</p>
 	<fieldset class="input-group my-3">
 		<label class="input-group-text">Discipline</label>
 		<?php echo form_input("dis{$dis->id}_name", $dis->name, 'class="form-control"');?> 
@@ -116,8 +117,11 @@ if($dis->id==$filter['disid']) { ?>
 			}
 			$tr[$key] = $td;
 		}
+		
 		$count = count($cat->entries);
-		$tr['last'] = $count ? $count : '<button class="btn btn-sm btn-danger bi-trash" type="button" onClick="delrow(this)"></button>'; 
+		$count = $count ? " {$count}" : ' <button class="btn btn-danger bi-trash" type="button" onClick="delrow(this)"></button>';
+		$tr['last'] = getlink("admin/entries/edit/3?disid={$dis->id}&catid={$cat->id}", 'edit') . $count;
+				
 		$tbody[] = $tr;
 	}
 } 

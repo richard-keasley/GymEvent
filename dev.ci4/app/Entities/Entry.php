@@ -135,13 +135,22 @@ public function getRunorder() {
 	$db_val = json_decode($this->attributes['runorder'], 1) ?? [];
 	$entity_val = [
 		'rnd' => intval($db_val['rnd'] ?? 0),
-		'rot' => intval($db_val['rot'] ?? 0)
+		'rot' => intval($db_val['rot'] ?? 1), // normally start on first rotation
+		'exe' => intval($db_val['exe'] ?? 0)
 	];
 	return $entity_val;
 }
 
 private $_rundata = null;
 public function get_rundata($datakey=null) {
+/* From Kev
+
+I need which exercise entries start on and assume they enter the competition in the first rotation of their round. Its a bit more complex if the competition is big enough that some entries start their competition in a different rotation. In which case I would need to know which exercise and which rotation they begin. 
+
+read help / entries / edit
+*/
+	
+	
 	if($this->_rundata===null) {
 		$scoreboard = new \App\ThirdParty\scoreboard;
 		$runorder = $this->runorder;		
@@ -154,7 +163,7 @@ public function get_rundata($datakey=null) {
 				$sb_exes = $sb_exeset['children'];
 				$sb_sort = array_column($sb_exes, 'Order');
 				array_multisort($sb_sort, $sb_exes);
-				$key = $runorder['rot'] - 1;
+				$key = $runorder['exe'] - 1;
 				if(isset($sb_exes[$key])) $exe = $sb_exes[$key];
 			}
 		}

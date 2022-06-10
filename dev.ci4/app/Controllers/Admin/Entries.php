@@ -443,13 +443,13 @@ public function export($event_id=0, $format='view') {
 	if($format=='scoretable') {
 		$response  = view('entries/export-scoretable', $this->data);
 		# return '<pre>' . $response . '</pre>';
-		return $this->response->download("{$file_title}.csv", $response);
+		return $this->response->download("{$file_title}.csv", UTF_BOM . $response);
 	}
 	
 	if($format=='sql') {
 		$response  = view('entries/export-sql', $this->data);
 		# return '<pre>' . $response . '</pre>';
-		return $this->response->download("{$file_title}.sql.txt", $response);
+		return $this->response->download("{$file_title}.sql.txt", UTF_BOM . $response);
 	}		
 					
 	$this->data['export'] = []; $row = [];
@@ -475,6 +475,7 @@ public function export($event_id=0, $format='view') {
 					'name' => $entry->name,
 					'dob' => $entry->dob
 				];
+				$row['order'] = $entry->get_rundata('order');
 				$row['run'] = $entry->get_rundata('export');
 				
 				$this->data['export'][] = $row;
@@ -486,7 +487,7 @@ public function export($event_id=0, $format='view') {
 	if($format=='csv') {
 		$response  = view('entries/export-csv', $this->data);
 		# return '<pre>' . $response . '</pre>';
-		return $this->response->download("{$file_title}.csv", $response);
+		return $this->response->download("{$file_title}.csv", UTF_BOM . $response);
 	}
 		
 	$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];

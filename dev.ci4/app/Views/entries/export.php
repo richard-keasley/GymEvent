@@ -9,7 +9,7 @@ if($export) {
 		foreach($export as $row) {
 			// sort by running order, discipline, category, number
 			$rowsort = [
-				$row['run'],
+				$row['order'], // from entry->runorder
 				$row['dis']['abbr'],
 				$row['cat']['sort'],
 				$row['entry']['num']
