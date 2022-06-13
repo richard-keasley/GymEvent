@@ -1,6 +1,8 @@
 <?php $this->extend('default');
 
 $this->section('content');?>
+<div class="item-image"><img src="<?php echo base_url('/app/profile/logo.png');?>"></div>
+
 <p>Setup screens for everything. Please make sure you know what you're doing! Ask Richard if you're not sure.</p>
 <p>You are viewing device <code><?php echo $device;?></code>.</p>
 <?php $this->endSection();

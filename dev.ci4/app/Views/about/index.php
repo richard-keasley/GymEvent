@@ -3,6 +3,8 @@
 $this->section('content'); 
 echo $nav;
 ?>
+<div class="item-image"><img src="<?php echo base_url('/app/profile/logo.png');?>"></div>
+
 <p>GymEvent is a multi-discipline system designed to be simple and use to set-up for a wide variety of events. GymEvent is run by Richard and Kevin from <a href="https://www.hawthgymnastics.co.uk/">Hawth Gymnastics</a>.</p>
 <p>We use reconditioned laptops as judge consoles. Any device will do, and we encourage users to provide their own device (be it laptop, tablet, mobile phone).</p>
 <p>The service includes:</p>
