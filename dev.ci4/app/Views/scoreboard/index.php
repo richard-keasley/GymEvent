@@ -1,7 +1,7 @@
 <?php $this->extend('default');
 
 $this->section('content'); ?>
-<p><img src="/app/scoreboard/screen.png" style="float:right;" alt="screen">Our scoring system is multi-discipline. Each discipline has its own scoring requirements, but in general the scoring elements follow similar rules and judging forms can be tailored to the needs of each discipline or event.</p>
+<p><img src="/app/scoreboard/screen.png" class="float-end" style="max-width:35%" alt="screen">Our scoring system is multi-discipline. Each discipline has its own scoring requirements, but in general the scoring elements follow similar rules and judging forms can be tailored to the needs of each discipline or event.</p>
 <p>The scoring system is designed for simplicity making it especially suitable for regional or club events. It doesn't conform to <em>all</em> requirements detailed in the relevant discipline's code of points documents (e.g. it doesn’t take all E scores and automatically exclude outer scores - you just put in the scores you want to save). Limiting the app to just simple sums and averages provides the most flexibility, especially useful in events that don't have  full judging panels.</p>
 <p>The application can display scores to audiences in "real time" and results' tables are also "real time". This means medal ceremonies can usually start as soon as all the scores have been entered by judges.</p>
 <p>We have a touch screen panel which shows the results while the competition is in progress, which has proved popular with coaches.</p>

@@ -22,6 +22,7 @@ $this->section('content');
 		<li>create tables for team-time</li>
 	</ul></li>
 <li>Run the event</li>
+<li>Publish the results</li>
 </ol>
 
 <p><img src="/app/profile/image.png"></p>
