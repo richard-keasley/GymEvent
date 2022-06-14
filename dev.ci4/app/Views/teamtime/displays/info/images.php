@@ -1,10 +1,12 @@
+<?php
+$tt_lib = new \App\Libraries\Teamtime;
+$images = $tt_lib::get_images();
+
+?>
 <div>
 <div id="carouselExampleControls" class="carousel slide carousel-fade" data-bs-ride="carousel">
 <div class="carousel-inner">
-<?php 
-$tt_lib = new \App\Libraries\Teamtime;
-$images = $tt_lib::get_images();
-foreach($images as $key=>$image) {
+<?php foreach($images as $key=>$image) {
 	$active = $key ? '' : 'active' ;
 	printf('<div class="carousel-item %s"><img src="%s" class="d-block w-100"></div>', $active, $image);
 } ?>

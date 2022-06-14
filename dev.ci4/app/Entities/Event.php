@@ -82,27 +82,20 @@ const player_row = [
 ];
 
 /* event uploads */
-public function file_link($basename) {
-	return \App\Libraries\View::download("/public/events/{$this->id}/files/{$basename}");
+public function file_link($file) {
+	$href = substr($file, strlen(FCPATH));
+	return \App\Libraries\View::download($href);
 }
 
-public function file_path($basename='') {
-	return FCPATH . "public/events/{$this->id}/files/{$basename}";
+public function file_path() {
+	return FCPATH . "public/events/{$this->id}/files/";
 }
 
 public function getFiles() {
-	$files = [];
-	foreach(glob($this->file_path('*')) as $file) {
-		$file = basename($file);
-		if(strpos($file, 'index.')!==0) $files[] = $file;
-	}
+	$files = new \CodeIgniter\Files\FileCollection();
+	$files->addDirectory($this->file_path());
+	$files->removePattern('index.');
 	return $files;
-}
-
-public function file($basename) {
-	$file = new \CodeIgniter\Files\File($this->file_path($basename));
-	if(!$file->getRealPath()) throw new \RuntimeException("Can't find file $basename", 404);
-	return $file;	
 }
 
 private $_clubrets = null;

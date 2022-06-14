@@ -90,14 +90,13 @@ static function view_html($view, $return=1) {
 }
 
 static function get_images() {
-	$pos = strlen(FCPATH);
-	$path = self::get_var('settings', 'image_path');
-	$pattern = FCPATH . $path;
+	$files = new \CodeIgniter\Files\FileCollection();
+	$path = realpath(FCPATH . self::get_var('settings', 'image_path'));
+	$files->addDirectory($path);
 	$retval = [];
-	foreach(glob($pattern) as $file) {
-		if(is_file($file)) {
-			$retval[] = base_url(substr($file, $pos));
-		}
+	$pos = strlen(FCPATH);
+	foreach($files as $file) {
+		$retval[] = base_url(substr($file, $pos));
 	}
 	return $retval;
 }

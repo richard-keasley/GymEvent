@@ -216,9 +216,9 @@ ob_start(); // Downloads
 ?>
 <p><strong>NB:</strong> Upload an image named 'logo.*' to use it as an image on the main event page.</p>
 <ul class="list-group"><?php 
-$pattern = '<li class="list-group-item">%s <button type="button" name="cmd" value="delfile" data-key="%u" class="btn btn-danger bi-trash"></button></li>';
-foreach($event->files as $key=>$filename) {
-	printf($pattern, $event->file_link($filename), $key);
+$pattern = '<li class="list-group-item">%s <button type="button" name="cmd" value="delfile" data-key="%u" class="btn btn-sm btn-danger bi-trash"></button></li>';
+foreach($event->files as $key=>$file) {
+	printf($pattern, $event->file_link($file), $key);
 } ?></ul>
 <div class="row my-3">
 <div class="col-auto">

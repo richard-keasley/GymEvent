@@ -25,7 +25,7 @@ function settings() {
 		$value = $this->request->getPost();
 		unset($value['save']);
 		$value['run_rows'] = csv_array($value['run_rows']);
-		$value['image_path'] = '/' . trim($value['image_path'], "/\\*") . '/*' ;
+		$value['image_path'] = '/' . trim($value['image_path'], "/\\");
 		$appvar->id = 'teamtime.settings';
 		$appvar->value = $value;
 		#d($appvar);

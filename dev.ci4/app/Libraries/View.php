@@ -25,6 +25,11 @@ static function download($filename) {
 		case 'xml':
 		case 'html':
 			$icon = '-code'; break;
+		case 'mp3':
+		case 'wma':
+		case 'wav':
+		case 'm4a':
+			$icon = '-music'; break;
 		default:
 			$icon = '';
 	}

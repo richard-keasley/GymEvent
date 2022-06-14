@@ -1,5 +1,7 @@
 <?php $this->extend('default');
 
+$this->section('content'); 
+
 $downloads = [];
 $logo_src = ''; 
 foreach($event->files as $file) {
@@ -10,8 +12,7 @@ foreach($event->files as $file) {
 		$downloads[] = $file;
 	}
 }
-
-$this->section('content'); ?>
+?>
 <section class="clearfix">
 <p><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></p>
 
@@ -53,13 +54,12 @@ $this->section('content'); ?>
 
 </section>
 
-<?php 
-if($downloads) { ?>
+<?php if($downloads) { ?>
 <section><h4>Downloads</h4>
 <ul class="list-group"><?php 
 $pattern = '<li class="list-group-item">%s</li>';
-foreach($downloads as $filename) {
-	printf($pattern, $event->file_link($filename));
+foreach($downloads as $file) {
+	printf($pattern, $event->file_link($file));
 } ?></ul>
 </section>
 <?php }
