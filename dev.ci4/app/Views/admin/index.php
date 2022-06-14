@@ -15,6 +15,7 @@ $nav = [
 	'control/teamtime', 
 	'admin/general', 
 	'admin/profile',
+	'admin/help',
 	'setup'
 ];
 $navbar = new \App\Views\Htm\Navbar($nav);

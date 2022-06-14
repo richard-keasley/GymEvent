@@ -424,7 +424,6 @@ public function import($event_id=0) {
 
 public function export($event_id=0, $format='view') {
 	$this->find($event_id);
-	$file_title = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $this->data['event']->title));
 
 	// build user table
 	$usr_model = new \App\Models\Users();
@@ -438,20 +437,9 @@ public function export($event_id=0, $format='view') {
 				}
 			}	
 		}
-	}
+	}	
 	
-	if($format=='scoretable') {
-		$response  = view('entries/export-scoretable', $this->data);
-		# return '<pre>' . $response . '</pre>';
-		return $this->response->download("{$file_title}.csv", UTF_BOM . $response);
-	}
-	
-	if($format=='sql') {
-		$response  = view('entries/export-sql', $this->data);
-		# return '<pre>' . $response . '</pre>';
-		return $this->response->download("{$file_title}.sql.txt", UTF_BOM . $response);
-	}		
-					
+	// build export table
 	$this->data['export'] = []; $row = [];
 	foreach($this->data['entries'] as $dis) { 
 		$row['dis'] = [
@@ -462,17 +450,17 @@ public function export($event_id=0, $format='view') {
 			$row['cat'] = [
 				'name' => $cat->name,
 				'abbr' => $cat->abbr,
-				'sort' => $cat->sort,
+				'order' => $cat->sort,
 				'setid' => $cat->exercises
 			];
 			foreach($cat->entries as $entry) {
 				$row['entry'] = [
 					'club' => [
 						'name' => $this->data['users'][$entry->user_id]->name ?? '??',
-						'abbr' => $this->data['users'][$entry->user_id]->abbr ?? '?'
+						'shortName' => $this->data['users'][$entry->user_id]->abbr ?? '?'
 					],
-					'num' => $entry->num,
-					'name' => $entry->name,
+					'number' => $entry->num,
+					'title' => $entry->name,
 					'dob' => $entry->dob
 				];
 				$row['order'] = $entry->get_rundata('order');
@@ -483,13 +471,26 @@ public function export($event_id=0, $format='view') {
 			// end cat 
 		} // end dis  
 	} // end entries
-	
-	if($format=='csv') {
-		$response  = view('entries/export-csv', $this->data);
-		# return '<pre>' . $response . '</pre>';
-		return $this->response->download("{$file_title}.csv", UTF_BOM . $response);
-	}
 		
+	// look for export request
+	switch($format) {
+		case 'sql':
+		$filetype = 'sql.txt'; break;
+		
+		case 'scoretable':
+		case 'csv':
+		$filetype = 'csv'; break;
+			
+		default:
+		$filetype = null;
+	}
+	if($filetype) {
+		$response = view("entries/export-{$format}", $this->data);
+		$filetitle = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $this->data['event']->title));
+		# return UTF8_BOM . '<pre>' . $response . '</pre>';
+		return $this->response->download("{$filetitle}.{$filetype}", UTF8_BOM . $response);
+	}
+			
 	$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
 	$suffix = $format=='run' ? 'run order' : 'export';
 	$this->data['heading'] .= " - {$suffix}";

@@ -11,10 +11,9 @@ if($export) {
 			$rowsort = [
 				$row['order'], // from entry->runorder
 				$row['dis']['abbr'],
-				$row['cat']['sort'],
-				$row['entry']['num']
+				$row['cat']['order'],
+				$row['entry']['number']
 			];
-			$rowsort = array_flatten_with_dots($rowsort);
 			$table_sort[] = $rowsort;
 			$pad_length[] = max(array_map('strlen', $rowsort));
 										
@@ -22,9 +21,9 @@ if($export) {
 				'runorder' => implode(', ', $row['run']),
 				'dis' => $row['dis']['name'],
 				'cat' => $row['cat']['name'],
-				'num' => $row['entry']['num'],
-				'club' => $row['entry']['club']['abbr'],
-				'name' => $row['entry']['name']
+				'num' => $row['entry']['number'],
+				'club' => $row['entry']['club']['shortName'],
+				'name' => $row['entry']['title']
 			];
 		}
 
@@ -47,10 +46,19 @@ if($export) {
 		break;
 		
 		default:
-		$tbody = [];
-		foreach($export as $row) $tbody[] = array_flatten_with_dots($row);
+		$tbody = []; $thead = [];
+		foreach($export as $rowkey=>$row) {
+			$row = array_flatten_with_dots($row);
+			if(!$thead) {
+				foreach(array_keys($row) as $key) {
+					$thead[] = str_replace('.', '_', $key);
+				}
+			}
+			$tbody[] = $row;
+		}
 		$table = \App\Views\Htm\Table::load('bordered');
-		$table->setHeading(array_keys($tbody[0]));
+		$table->setHeading($thead);
+		# d($thead);
 		echo $table->generate($tbody);
 	}
 }
