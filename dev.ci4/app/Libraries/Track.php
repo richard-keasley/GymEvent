@@ -133,21 +133,27 @@ public function url() {
 	return $filename ? $this->urlpath() . $filename : '' ;
 } 
 
-public function filename($all=null) {
-	$pattern = $this->filepath() . $this->filebase() . '.*';
-	$files = glob($pattern); 
-	if($all) return $files;
-	// return first file with valid extension
-	foreach($files as $file) {
-		$arr = explode('.', $file); 
-		$ext = end($arr);
-		if(in_array($ext, self::exts_allowed)) return basename($file);
-	}
-	return '';
-} 
+public function filename() {
+	// return first filename for this track
+	$files = $this->files();
+	return count($files) ? $files->getIterator()->current()->getFilename() : '';
+}
+
+public function files($event=false) {
+	// returns all files for this event or all files for this track
+	$filepath = $this->filepath();
+	if(!is_dir($filepath)) return [];
+	
+	$filebase = $event ? '' : $this->filebase() ;
+	$regex = sprintf('#%s\.(%s)$#i', $filebase, implode('|', self::exts_allowed));
+	$files = new \CodeIgniter\Files\FileCollection();
+	$files->addDirectory($filepath);
+	$files->retainPattern($regex);
+	return $files;
+}
 
 public function filebase($extension='') {
-	if($extension) $extension = ".$extension";
+	if($extension) $extension = ".{$extension}";
 	return sprintf('%03d_%s%s', $this->entry_num, strtoupper($this->exe), $extension);
 } 
 
@@ -171,8 +177,8 @@ public function setFilename($filename) {
 public function delete() {
 	// clear existing uploads
 	$count = 0;
-	foreach($this->filename(1) as $filename) {
-		if(unlink($filename)) $count++;
+	foreach($this->files() as $file) {
+		if(unlink($file->getPathname())) $count++;
 	}
 	return $count;	
 }

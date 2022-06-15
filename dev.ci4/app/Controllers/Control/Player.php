@@ -61,7 +61,6 @@ public function view($event_id=0) {
 public function edit($event_id=0) {
 	$event = $this->find($event_id);
 	
-	$error = '';
 	$cmd = $this->request->getPost('cmd');
 	
 	if($cmd=='update') { 

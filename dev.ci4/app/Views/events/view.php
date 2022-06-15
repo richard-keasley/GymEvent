@@ -2,16 +2,15 @@
 
 $this->section('content'); 
 
-$downloads = [];
+$downloads = $event->files;
 $logo_src = ''; 
-foreach($event->files as $file) {
-	if(strpos($file, 'logo.')===0) {
-		$logo_src = sprintf('/public/events/%u/files/%s', $event->id, $file);
-	}
-	else {
-		$downloads[] = $file;
+$pattern = 'logo.';
+foreach($downloads as $file) {
+	if(strpos($file->getPathname(), $pattern)) {
+		$logo_src = substr($file->getPathname(), strlen(FCPATH));
 	}
 }
+$downloads->removePattern($pattern);
 ?>
 <section class="clearfix">
 <p><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></p>
@@ -34,7 +33,7 @@ foreach($event->files as $file) {
 <?php if($event->clubrets==1) { ?>
 <section class="p-1 alert-success rounded">
 <p><strong>We are accepting entries for this event</strong></p>
-<p>If your club is interested in entering this event, you are advised to open an entry as soon as possible, even if you can not provide full details. You can continue to make edits until entries are closed. We will use the details within your return at that point (there is no "submit" button).</p>
+<p>You are advised to open an entry <em>as soon as possible</em> if you intend to enter this event. You can continue to make edits until entries are closed. We will use the details within your return at that point (there is no "submit" button).</p>
 </section>
 <?php } ?>
 

@@ -33,7 +33,7 @@ public function delete_all($event_id) {
 	$event = $this->onlyDeleted()->find($event_id);
 	if(!$event) return false;
 	
-	self::delete_path(dirname($event->file_path()));
+	self::delete_path(dirname($event->filepath()));
 	
 	$model = new \App\Models\Clubrets;
 	$model->where('event_id', $event_id)->delete(null, true);

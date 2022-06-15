@@ -90,8 +90,10 @@ static function view_html($view, $return=1) {
 }
 
 static function get_images() {
-	$files = new \CodeIgniter\Files\FileCollection();
 	$path = realpath(FCPATH . self::get_var('settings', 'image_path'));
+	if(!$path) return [];
+	
+	$files = new \CodeIgniter\Files\FileCollection();
 	$files->addDirectory($path);
 	$retval = [];
 	$pos = strlen(FCPATH);

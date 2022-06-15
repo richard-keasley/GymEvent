@@ -87,13 +87,15 @@ public function file_link($file) {
 	return \App\Libraries\View::download($href);
 }
 
-public function file_path() {
+public function filepath() {
 	return FCPATH . "public/events/{$this->id}/files/";
 }
 
 public function getFiles() {
+	$path = $this->filepath();
+	if(!is_dir($path)) return [];
 	$files = new \CodeIgniter\Files\FileCollection();
-	$files->addDirectory($this->file_path());
+	$files->addDirectory($path);
 	$files->removePattern('index.');
 	return $files;
 }

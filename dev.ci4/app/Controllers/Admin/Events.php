@@ -176,9 +176,9 @@ public function edit($event_id=0) {
 		if($getPost['cmd']=='upload') {
 			$file = $this->request->getFile('file');
 			if($file->isValid()) {
-				$file_path = $this->data['event']->file_path();
+				$filepath = $this->data['event']->filepath();
 				
-				if($file->move($file_path, $file->getClientName())) {
+				if($file->move($filepath, $file->getClientName())) {
 				
 					$this->data['messages'][] = ["Upload added", 'success'];
 				} else {

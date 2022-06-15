@@ -1,10 +1,18 @@
 <?php $this->extend('default'); 
 
 $this->section('content'); 
-#d($event);
-#d($event->player);
 $track = new \App\Libraries\Track;
 $track->event_id = $event->id;
+
+// get all stored tracks
+$notlisted = [];
+$files = $track->files(true);
+foreach($files as $file) $notlisted[] = $file->getFilename();
+
+# d($track);
+# d($notlisted);
+# d($event);
+# d($event->player);
 ?>
 
 <div class="toolbar sticky-top">
@@ -79,18 +87,6 @@ $player.on("error", function(e) {
 
 <div class="accordion">
 <?php 
-$pattern = $track->filepath() . '*';
-$notlisted = [];
-foreach(glob($pattern) as $filepath) {
-	$fi = pathinfo($filepath);
-	$filename = $fi['filename'] ?? '' ;
-	$extension = $fi['extension'] ?? 'invalid' ;
-	if($filename && in_array($extension, \App\Libraries\Track::exts_allowed)) {
-		$notlisted[] = "{$filename}.{$extension}";
-		# d([$filename, $extension]);
-	}
-}
-
 foreach($event->player as $round_key=>$round) { 
 $panel_id = sprintf('acc-panel%u', $round_key);
 $track->exe = $round['exe'];
@@ -108,7 +104,9 @@ $track->exe = $round['exe'];
 	<div class="playlist">
 	<?php foreach($round['entry_nums'] as $entry_num) {
 		$track->entry_num = $entry_num;
+		// list this track
 		echo $track->button();
+		// remove this track from notlisted array
 		$filekey = array_search($track->filename(), $notlisted);
 		if($filekey!==false) unset($notlisted[$filekey]);
 	} ?>
