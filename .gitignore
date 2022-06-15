@@ -4,6 +4,7 @@ dev.ci4/.env
 # codeigniter system
 dev.ci4/system/*
 dev.ci4/writable/*
+dev.ci4/ci/*
 
 # event downloads / resources
 dev.ci4/public/public/*
