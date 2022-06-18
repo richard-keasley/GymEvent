@@ -8,34 +8,4 @@ static function back_link($href) {
 	return anchor(base_url($href), $label, $attr);
 } 
 
-static function download($filename) {
-	switch(strtolower(pathinfo($filename, PATHINFO_EXTENSION))) {
-		case 'pdf': 
-			$icon = '-pdf'; break;
-		case 'docx':
-			$icon = '-richtext'; break;
-		case 'xlsx': 
-		case 'csv':
-			$icon = '-spreadsheet'; break;
-		case 'png':
-		case 'jpg':
-		case 'svg':
-			$icon = '-image'; break;
-		case 'sql':
-		case 'xml':
-		case 'html':
-			$icon = '-code'; break;
-		case 'mp3':
-		case 'wma':
-		case 'wav':
-		case 'm4a':
-			$icon = '-music'; break;
-		default:
-			$icon = '';
-	}
-	$label = humanize(urldecode(pathinfo($filename, PATHINFO_FILENAME)));
-	$label = sprintf('<span class="bi bi-file%s pe-2"></span>%s', $icon, $label);
-	return anchor(base_url($filename), $label);
-}	
-
 } 

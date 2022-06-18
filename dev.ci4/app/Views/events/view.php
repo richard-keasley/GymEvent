@@ -2,15 +2,15 @@
 
 $this->section('content'); 
 
-$downloads = $event->files;
+$files = $event->files;
 $logo_src = ''; 
 $pattern = 'logo.';
-foreach($downloads as $file) {
+foreach($files as $file) {
 	if(strpos($file->getPathname(), $pattern)) {
 		$logo_src = substr($file->getPathname(), strlen(FCPATH));
 	}
 }
-$downloads->removePattern($pattern);
+$files->removePattern($pattern);
 ?>
 <section class="clearfix">
 <p><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></p>
@@ -53,13 +53,12 @@ $downloads->removePattern($pattern);
 
 </section>
 
-<?php if($downloads) { ?>
+<?php if($files) { ?>
 <section><h4>Downloads</h4>
-<ul class="list-group"><?php 
-$pattern = '<li class="list-group-item">%s</li>';
-foreach($downloads as $file) {
-	printf($pattern, $event->file_link($file));
-} ?></ul>
+<?php
+$downloads = new \App\Views\Htm\Downloads($files);
+echo $downloads->htm();
+?>
 </section>
 <?php }
 

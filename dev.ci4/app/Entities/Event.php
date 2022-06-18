@@ -82,11 +82,6 @@ const player_row = [
 ];
 
 /* event uploads */
-public function file_link($file) {
-	$href = substr($file, strlen(FCPATH));
-	return \App\Libraries\View::download($href);
-}
-
 public function filepath() {
 	return FCPATH . "public/events/{$this->id}/files/";
 }
