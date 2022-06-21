@@ -3,6 +3,7 @@
 $this->section('content'); 
 
 $files = $event->files;
+// extract logo if it's there
 $logo_src = ''; 
 $pattern = 'logo.';
 foreach($files as $file) {
@@ -11,6 +12,7 @@ foreach($files as $file) {
 	}
 }
 $files->removePattern($pattern);
+
 ?>
 <section class="clearfix">
 <p><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></p>
@@ -53,7 +55,7 @@ $files->removePattern($pattern);
 
 </section>
 
-<?php if($files) { ?>
+<?php if(count($files)) { ?>
 <section><h4>Downloads</h4>
 <?php
 $downloads = new \App\Views\Htm\Downloads($files);

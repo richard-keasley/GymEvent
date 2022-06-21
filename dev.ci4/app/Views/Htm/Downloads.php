@@ -21,6 +21,7 @@ public function __construct($files=[]) {
 }
 
 public function htm() {
+	if(!count($this->files)) return '';
 	$retval = $this->template['items_start'];
 	foreach($this->files as $key=>$file) {
 		$retval .= $this->template['item_start'];

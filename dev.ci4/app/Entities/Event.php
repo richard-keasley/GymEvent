@@ -87,9 +87,9 @@ public function filepath() {
 }
 
 public function getFiles() {
-	$path = $this->filepath();
-	if(!is_dir($path)) return [];
 	$files = new \CodeIgniter\Files\FileCollection();
+	$path = $this->filepath();
+	if(!is_dir($path)) return $files;
 	$files->addDirectory($path);
 	$files->removePattern('index.');
 	return $files;
