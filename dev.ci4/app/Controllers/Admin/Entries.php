@@ -471,19 +471,20 @@ public function export($event_id=0, $format='view') {
 			// end cat 
 		} // end dis  
 	} // end entries
-		
-	// look for export request
-	switch($format) {
-		case 'sql':
-		$filetype = 'sql.txt'; break;
-		
-		case 'scoretable':
-		case 'csv':
-		$filetype = 'csv'; break;
-			
-		default:
-		$filetype = null;
-	}
+
+	// check format requested 
+	$filetypes = [
+		'default' => '',
+		'sql' => 'sql.txt',
+		'csv' => 'csv', 
+		'scoretable' => 'csv',
+		'run' => ''
+	];
+	// use default if not valid
+	if(!isset($filetypes[$format])) $format = array_key_first($filetypes);
+	$filetype = $filetypes[$format];
+	
+	// download if filetype is set
 	if($filetype) {
 		$response = view("entries/export-{$format}", $this->data);
 		$filetitle = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $this->data['event']->title));
