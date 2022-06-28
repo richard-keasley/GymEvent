@@ -10,7 +10,10 @@ $controller = isset($segments[0]) ? $segments[0] : '' ;
 $allow_new = $controller=='clubrets';
 
 $attr = ['id' => "existing"];
-$hidden = ['tabView' => '#existing'];
+$hidden = [
+	'tabView' => '#existing',
+	'hp-info' => ''
+];
 echo form_open(base_url(uri_string()), $attr, $hidden);
 ?>
 <p>Your user name is your club name.</p> 
@@ -49,7 +52,8 @@ $attr = [
 	'autocomplete' => "off"
 ];
 $hidden = [
-	'tabView' => '#create'
+	'tabView' => '#create',
+	'hp-info' => ''
 ];
 echo form_open(base_url(uri_string()), $attr, $hidden);?>
 <p class="form-floating">

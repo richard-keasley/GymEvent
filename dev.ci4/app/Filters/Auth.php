@@ -17,7 +17,7 @@ public function before(RequestInterface $request, $arguments = null) {
 	$messages = [];
 	
 	$check_ip = \App\Libraries\Auth::$lgn_model->check_ip($request->getIPAddress());
-	if(!$check_ip) throw new \RuntimeException('Oops! Overuse injury', 423);
+	# if(!$check_ip) throw new \RuntimeException('Oops! Overuse injury', 423);
 	
 	// check for existing login / logout
 	if($request->getPost('logout')) {
@@ -28,34 +28,31 @@ public function before(RequestInterface $request, $arguments = null) {
 	}
 	
 	// check for new login
-	switch($request->getPost('login')) {
-		case 'login':
-		$name = trim($request->getPost('name'));
-		$password = trim($request->getPost('password'));
-		if(!\App\Libraries\Auth::login($name, $password)) {
-			$messages[] = 'Username or Password is wrong';
-		}
-		break;
-		
-		case 'new';
-		$postUser = new \App\Entities\User($request->getPost());
-		$postUser->name = trim($postUser->name);
-		$postUser->password = trim($postUser->password);
-		$postUser->password2 = trim($postUser->password2);
-		if($postUser->password2!==$postUser->password) $messages[] = 'Passwords do not match';
-		if(!$messages) {
-			$postUser->role = 'club';
-			$user_id = \App\Libraries\Auth::$usr_model->insert($postUser);
-			if($user_id) {
-				$messages[] = ["Created new user", 'success'];
-				\App\Libraries\Auth::loginas($user_id, 'created');
-				\App\Libraries\Auth::$lgn_model->insert(['user_id'=>$user_id]);
+	$postUser = \App\Libraries\Auth::login_request($request->getPost());
+	if($postUser) {
+		switch($postUser->login) {
+			case 'login':
+			if(!\App\Libraries\Auth::login($postUser->name, $postUser->password)) {
+				$messages[] = 'Username or Password is wrong';
 			}
-			else {
-				$messages = \App\Libraries\Auth::$usr_model->errors();
+			break;
+			
+			case 'new';
+			if($postUser->password2!==$postUser->password) $messages[] = 'Passwords do not match';
+			if(!$messages) {
+				$postUser->role = 'club';
+				$user_id = \App\Libraries\Auth::$usr_model->insert($postUser);
+				if($user_id) {
+					$messages[] = ["Created new user", 'success'];
+					\App\Libraries\Auth::loginas($user_id, 'created');
+					\App\Libraries\Auth::$lgn_model->insert(['user_id'=>$user_id]);
+				}
+				else {
+					$messages = \App\Libraries\Auth::$usr_model->errors();
+				}
 			}
+			break;	
 		}
-		break;	
 	}
 	
 	// check this role is enabled

@@ -25,6 +25,28 @@ static function init() {
 	self::$min_role = $appval['min'] ?? self::roles[0];
 }
 
+static function login_request($post=[]) {
+	// return unchecked user from POST
+	if(empty($post['login'])) return null;
+
+	if(isset($post['hp-info'])) {
+		$error = $post['hp-info'] ? 'Honey pot full' : false; 
+	}
+	else {
+		$error = 'No honey pot';
+	}
+	if($error) {
+		self::$lgn_model->insert(['error' => $error]);
+		return null;
+	}
+	
+	$postUser = new \App\Entities\User($post);
+	$postUser->name = trim($postUser->name);
+	$postUser->password = trim($postUser->password);
+	$postUser->password2 = trim($postUser->password2);
+	return $postUser;		
+}
+
 static function loginas($user_id, $method='login') {
 	$user = self::$usr_model
 		->where('id', $user_id)
