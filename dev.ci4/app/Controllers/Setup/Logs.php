@@ -6,7 +6,11 @@ public function __construct() {
 	$this->data['breadcrumbs'][] = 'admin';
 	$this->data['breadcrumbs'][] = 'setup';
 	$this->data['breadcrumbs'][] = ['setup/logs', 'Error logs'];
-	
+	$this->get_logfiles();
+}
+
+
+private function get_logfiles() {
 	$this->data['logfiles'] = new \CodeIgniter\Files\FileCollection();
 	$path = realpath(WRITEPATH . '/logs');
 	if($path) {
@@ -16,12 +20,11 @@ public function __construct() {
 }
 
 private function findlog($logkey) {
-	$logfile = null;
-	if(is_null($logkey)) return $logfile;
+	if(is_null($logkey)) return null;
 	foreach($this->data['logfiles'] as $key=>$file) {
-		if($key==$logkey) $logfile = $file;
+		if($key==$logkey) return $file;
 	}
-	return $logfile;	
+	return null;	
 }
 	
 public function index() {
@@ -29,8 +32,15 @@ public function index() {
 		$logkey = $this->request->getPost('logkey');
 		$logfile = $this->findlog($logkey);
 		if($logfile) {
-			$message = sprintf('%s deleted', $logfile->getBasename());
-			$this->data['messages'][] = [$message, 'info'];
+			$filepath = $logfile->getRealPath();
+			$basename = $logfile->getBasename();
+			if(unlink($filepath)) {
+				$this->data['messages'][] = ["{$basename} deleted", 'info'];
+				$this->get_logfiles();
+			}
+			else {
+				$this->data['messages'][] = ["Error deleting {$basename}", 'danger'];
+			}		
 		}
 		else {
 			$this->data['messages'][] = ["Can't find log file {$logkey}", 'danger'];
@@ -48,6 +58,27 @@ public function view($logkey=0) {
 	if(!$logfile) throw new \RuntimeException("Can't find log file {$logkey}", 404);
 
 	// view
+	$this->data['buttons'] = [\App\Libraries\View::back_link("setup/logs")];
+	if($logkey > 0) {
+		$href = sprintf("/setup/logs/view/%s", $logkey - 1);
+		$label = '<i class="bi-arrow-left"></i>';
+		$attr = [
+			'class' => "btn btn-outline-dark ",
+			'title' => "Previous"
+		];
+		$this->data['buttons'][] = anchor(base_url($href), $label, $attr);
+	}
+	if($logkey < count($this->data['logfiles'])) {
+		$href = sprintf("/setup/logs/view/%s", $logkey + 1);
+		$label = '<i class="bi-arrow-right"></i>';
+		$attr = [
+			'class' => "btn btn-outline-dark",
+			'title' => "Next"
+		];
+		$this->data['buttons'][] = anchor(base_url($href), $label, $attr);
+	}
+	$this->data['buttons'][] = '<button class="btn btn-danger" type="submit"><i class="bi-trash"></i></button>';
+		
 	$this->data['title'] = "Error log {$logkey}";
 	$this->data['heading'] = $this->data['title'];
 	$this->data['breadcrumbs'][] = ["setup/logs/view/{$logkey}", $logkey];
