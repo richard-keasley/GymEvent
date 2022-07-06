@@ -38,7 +38,10 @@ ob_start();?>
 <fieldset><legend>User details</legend>
 <div class="row mb-3">
 	<label for="user_name" class="col-sm-2 col-form-label">Club name</label>
-	<div class="col-sm-10"><?php echo form_input("user_name", $user->name, 'class="form-control"');?></div>
+	<div class="col-sm-10">
+	<?php echo form_input("user_name", $user->name, 'class="form-control"');?>
+	<p class="d-none alert-warning p-1 m-0"><small>Careful if you change this; it is your username when you login. You may need to update your browser's password manager as well.</small></p>
+	</div>
 </div>
 <div class="row mb-3">
 	<label for="user_email" class="col-sm-2 col-form-label">Email</label>
@@ -255,6 +258,11 @@ let partrows = '#participants .clubent tbody tr';
 let staffrows = '#staff .clubent tbody tr';
 
 $(function() {
+	
+$('[name=user_name]').focus(function() {
+	var hidden = this.parentElement.querySelector('.d-none');
+	if(hidden) hidden.classList.remove("d-none");
+});
 
 $(partrows).find('[data-field=dis]').change(function() { update_partrows(); });
 $(partrows).find('[name=del]').click(function(){
