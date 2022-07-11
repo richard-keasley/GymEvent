@@ -21,6 +21,7 @@ public function htm() {
 	<script>
 	$(function(){
 	tinymce.init({
+		relative_urls : false,
 		selector: '#<?php echo $id;?> textarea',
 		branding: false,
 		menubar: false,
