@@ -15,7 +15,7 @@ $files->removePattern($pattern);
 
 ?>
 <section class="clearfix">
-<p><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></p>
+<p><strong><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></strong></p>
 
 <?php if($logo_src) { ?>
 	<div class="item-image">
