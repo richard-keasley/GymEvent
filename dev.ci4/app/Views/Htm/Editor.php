@@ -26,13 +26,13 @@ public function htm() {
 		branding: false,
 		menubar: false,
 		browser_spellcheck: true,
-		plugins: 'code',
-		toolbar: 'Undo Redo | Blocks | Bold Italic | code',
+		plugins: 'link code',
+		toolbar: 'Undo Redo | Blocks | Bold Italic | link code',
 		content_css: '/app/bootstrap.css'
 	});
 	});
 	</script>
-	<script src="/app/tinymce_6.0.0/tinymce/js/tinymce/tinymce.min.js"></script>
+	<script src="/app/tinymce_6.1.2/tinymce/js/tinymce/tinymce.min.js"></script>
 	<?php
 	echo '</div>';
 }
