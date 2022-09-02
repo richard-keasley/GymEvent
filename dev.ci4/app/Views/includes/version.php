@@ -8,8 +8,8 @@ $tbody = [
 	['CodeIgniter', \CodeIgniter\CodeIgniter::CI_VERSION],
 	['Bootstrap', '5.1.0'],
 	['Bootstrap icons', '1.5.0'],
-	['jQuery', '3.6.0'],
-	['TinyMCE', '6.0.0']
+	['jQuery', '3.6.1'],
+	['TinyMCE', '6.1.2']
 ];
 $table = \App\Views\Htm\Table::load('small');
 echo $table->generate($tbody);
