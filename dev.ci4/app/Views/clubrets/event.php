@@ -2,52 +2,9 @@
 $table = \App\Views\Htm\Table::load('responsive');
 
 $this->section('content');?>
-<div class="d-flex flex-wrap gap-3">
-<?php foreach($event->participants() as $dis) { ?>
-	<section class="mw-100">
-	<?php
-	foreach($dis['cats'] as $cat) { 	 
-		$table->setHeading(['', 'club', 'name', 'DoB', '']);
-		$tbody = [];
-		foreach($cat['entries'] as $entkey=>$entry) {
-			if(!$entry['club']) $entry['club'] = 'unknown <i class="bi bi-exclamation-triangle-fill text-warning"></i>';
-			$tbody[] = [
-				$entkey + 1,
-				$entry['club'],
-				$entry['name'],
-				date('d-M-Y', $entry['dob']),
-				humanize($entry['opt'])
-			];
-		}
-		printf('<h5>%s - %s</h5>', $dis['name'], $cat['name']);
-		echo $table->generate($tbody);
-	}
-	?>
-	</section>
-<?php } ?>
-</div>
-<?php 
-$this->endSection(); 
+<div class="d-flex flex-wrap gap-3 d-print-block mb-1">
 
-$this->section('top');
-$attr = [
-	'class' => "toolbar sticky-top"
-];
-echo form_open(base_url(uri_string()), $attr);
-echo \App\Libraries\View::back_link($back_link); 
-if(isset($users_dialogue)) { ?>
-	<button type="button" class="btn btn-success bi bi-plus-circle" data-bs-toggle="modal" data-bs-target="#modalUser" title="Add new club return to this event"></button>
-	<?php
-}
-echo $this->include('entries/populate/button');
-echo form_close();
-if(isset($users_dialogue)) { 
-	echo $this->include('includes/users/dialogue');
-}
-$this->endSection(); 
-
-$this->section('sidebar');
-?>
+<section class="mw-100">
 <h4>Payments due</h4>
 <?php
 $fees = []; $cols = []; $rows = []; $count = [];
@@ -84,22 +41,25 @@ foreach($rows as $rowkey=>$club) {
 		$tbody[$rowkey][$colkey] = $count[$rowkey][$colkey] ?? 0;
 
 	}
-	$tbody[$rowkey]['fees'] = sprintf('&pound;&nbsp;%.2f', $fees[$rowkey]);
+	$tbody[$rowkey]['fees'] = \App\Views\Htm\Table::money($fees[$rowkey]);
 }
-$tfoot = [sprintf('[%u clubs]', count($tbody))]; $thead = [''];
+$thead = [''];
+$tfoot = [sprintf('[%u clubs]', count($tbody))]; 
 foreach($cols as $colkey) {
 	$arr = array_column($tbody, $colkey);
 	$tfoot[$colkey] = array_sum($arr);
 	$thead[$colkey] = $colkey;
 }
-$tfoot[] = sprintf('&pound;&nbsp;%.2f', array_sum($fees));
 $thead[] = '&pound;';
+$tfoot[] = \App\Views\Htm\Table::money(array_sum($fees));
 
 $table->setHeading($thead);
 $table->setFooting($tfoot);
 echo $table->generate($tbody);
 ?>
+</section>
 
+<section class="mw-100">
 <h4>Staff</h4>
 <?php
 $tbody = [];
@@ -115,9 +75,60 @@ foreach($event->staff() as $entkey=>$entry) {
 }
 $table->setHeading(['club', 'type', 'name', 'BG']);
 $table->setFooting([]);
-echo $table->generate($tbody);
+echo $table->generate($tbody);#?>
+</section>
 
+</div>
+
+<div class="d-flex flex-wrap gap-3 d-print-block"><?php
+foreach($event->participants() as $dis) { 
+	foreach($dis['cats'] as $cat) { 	 
+		# $table->setHeading(['', 'club', 'name', 'DoB', '']);
+		$table->autoHeading = false;
+		$tbody = [];
+		foreach($cat['entries'] as $entkey=>$entry) {
+			if(!$entry['club']) $entry['club'] = 'unknown <i class="bi bi-exclamation-triangle-fill text-warning"></i>';
+			$tbody[] = [
+				$entkey + 1,
+				$entry['club'],
+				$entry['name'],
+				date('d-M-Y', $entry['dob']),
+				humanize($entry['opt'])
+			];
+		}
+		echo '<section class="mw-100">';
+
+		printf('<h4>%s - %s</h4>', $dis['name'], $cat['name']);
+		echo $table->generate($tbody);
+		echo '</section>';
+	}
+} 
+?></div>
+
+<?php 
 $this->endSection(); 
+
+$this->section('top');
+$attr = [
+	'class' => "toolbar sticky-top"
+];
+echo form_open(base_url(uri_string()), $attr);
+echo \App\Libraries\View::back_link($back_link); 
+if(isset($users_dialogue)) { ?>
+	<button type="button" class="btn btn-success bi bi-plus-circle" data-bs-toggle="modal" data-bs-target="#modalUser" title="Add new club return to this event"></button>
+	<?php
+}
+echo $this->include('entries/populate/button');
+echo form_close();
+if(isset($users_dialogue)) { 
+	echo $this->include('includes/users/dialogue');
+}
+$this->endSection(); 
+
+/*
+$this->section('sidebar');
+$this->endSection(); 
+*/
 
 $this->section('bottom'); 
 echo $this->include('entries/populate/form');

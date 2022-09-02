@@ -9,10 +9,18 @@ body {
 	max-width: none;
 }
 
-.toolbar, .breadcrumb, footer {
-	display: none ;
+.toolbar, .breadcrumb, footer, header .messages {
+	display: none;
 }
 
+}
+
+h2, h3, h4, fieldset legend {
+	font-family: 'DaysOne';
+	color: #600;
+}
+h5, h6 {
+	color: #600;
 }
 
 .toolbar > .nav-link {

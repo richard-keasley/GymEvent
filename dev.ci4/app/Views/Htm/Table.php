@@ -18,6 +18,14 @@ const templates = [
 ]
 ];
 
+static function money($amount) {
+	// returns a table cell formatted as money
+	return [
+		'data' => '&pound;&nbsp;' . number_format($amount, 2),
+		'class' => "text-end"
+	];
+}
+
 static function load($tkey = 'default') {
 	return new \CodeIgniter\View\Table(self::templates[$tkey]);
 }

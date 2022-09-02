@@ -11,17 +11,18 @@ $this->section('content'); ?>
 
 <p>Check the <a href="https://codeigniter4.github.io/userguide" target="_blank">User Guide</a>. CodeIgniter is a community-developed open source project, with several venues for the community members to gather and exchange ideas. View all the threads on <a href="https://forum.codeigniter.com/" target="_blank">CodeIgniter's forum</a>, or <a href="https://codeigniterchat.slack.com/"target="_blank">chat on Slack</a>!</p>
 
-<p><a href="<?php echo base_url('setup/db');?>">Read about the database sructure.</a></p>
+<p><a href="<?php echo base_url('setup/db');?>">Read about the database structure.</a></p>
 
 <h4>Updating CodeIgniter</h4>
 <?php 
 $paths = new \Config\Paths;
 $systemDirectory = realpath($paths->systemDirectory);
+$ci_folder = dirname(dirname($systemDirectory));
 ?>
 <ol>
-<li>Create a directory <code>x.x.x</code> in <code><?php echo dirname($systemDirectory);?></code>.</li>
-<li>Upload contents of the CodeIgniter <em>system</em> folder to newly created App folder.</li>
-<li>Update 'systemDirectory' in <code>\App\Config\Paths</code> to point to the new system folder.</li>
+<li>Create a directory <code>x.x.x</code> in <code><?php echo $ci_folder;?></code>.</li>
+<li>Upload contents of the CodeIgniter installation to folder <code><?php echo $ci_folder;?>/x.x.x</code>.</li>
+<li>Update 'systemDirectory' in <code>/App/Config/Paths</code> to point to the <em>system</em> folder within this installation (<code><?php echo $ci_folder;?>/x.x.x/system</code>).</li>
 <li>Check <a target="ci" href="https://codeigniter4.github.io/userguide/installation/upgrading.html">CodeIgniter release notes</a> and merge changes as necessary into <code>\App\Config\*</code>.</li>
 </ol>
 <p>CodeIgniter system directory is currently <code><?php echo $systemDirectory;?></code>.</p>

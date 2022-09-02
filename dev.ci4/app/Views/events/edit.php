@@ -168,7 +168,7 @@ foreach($discats as $key=>$discat) {
 		'<button type="button" name="del" class="btn bi-trash btn-danger" title="delete"></button>'
 	];
 }
-$template = ['table_open' => '<table class="discats">'];
+$template = ['table_open' => '<table class="discats" style="min-width:30em;">'];
 $table = new \CodeIgniter\View\Table($template);
 $table->setHeading('dis', 'inf', 'cats', 'options', '');
 echo $table->generate($tbody);

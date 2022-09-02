@@ -59,9 +59,9 @@ foreach($event->participants() as $dis) { ?>
 	foreach($dis['cats'] as $cat) { 
 		$count = count($cat['entries']);
 		$total += $count;
-		$tbody[] = [$cat['name'], $count];
+		$tbody[] = [$cat['name'], ['data'=>$count,'class'=>"text-end"]];
 	}
-	$table->setHeading([$dis['name'], $total]);
+	$table->setHeading([$dis['name'], ['data'=>$total,'class'=>"text-end"]]);
 	echo $table->generate($tbody);
 	?>
 	</div>
@@ -89,9 +89,9 @@ foreach($entries as $dis) { ?>
 
 		$count = count($cat->entries);
 		$total += $count ;
-		$tbody[] = [$label, $count];
+		$tbody[] = [$label, ['data'=>$count,'class'=>"text-end"]];
 	}
-	$table->setHeading([$dis->name,$total]);
+	$table->setHeading([$dis->name, ['data'=>$total,'class'=>"text-end"]]);
 	echo $table->generate($tbody);
 	?>
 	</div>

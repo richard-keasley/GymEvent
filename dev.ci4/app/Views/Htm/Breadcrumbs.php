@@ -4,7 +4,7 @@ class Breadcrumbs {
 public $items = [];
 public $template = [
 	'items_start' => '<nav><ul class="breadcrumb">',
-	'item_start' => '<li class="breadcrumb-item %s">',
+	'item_start' => '<li class="breadcrumb-item">',
 	'a_attr' => [],
 	'item_end' => '</li>',
 	'items_end' => '</ul></nav>'

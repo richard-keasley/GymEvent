@@ -21,7 +21,7 @@ class Paths
 	 * as this file.
 	 */
 	# public $systemDirectory = __DIR__ . '/../../system/4.1.9';
-	public $systemDirectory = __DIR__ . '/../../ci/4.2.0/system';
+	public $systemDirectory = __DIR__ . '/../../ci/4.2.3/system';
 
 	/*
 	 *---------------------------------------------------------------
