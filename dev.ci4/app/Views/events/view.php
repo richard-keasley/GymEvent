@@ -15,8 +15,7 @@ $files->removePattern($pattern);
 
 ?>
 <section class="clearfix">
-<p><strong><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></strong></p>
-
+<p><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></p>
 <?php if($logo_src) { ?>
 	<div class="item-image">
 	<img src="<?php echo base_url($logo_src);?>">
@@ -24,6 +23,7 @@ $files->removePattern($pattern);
 <?php } ?>
 
 <div><?php echo $event->description;?></div>
+</section>
 
 <?php if($event->clubrets==1) { ?>
 <section class="alert alert-success">
@@ -52,8 +52,6 @@ $files->removePattern($pattern);
 <p>Please upload your music as soon as you can, give us time to check your music can be played! You can alter tracks as often as you like until the music service is closed.</p> 
 </section>
 <?php } ?>
-
-</section>
 
 <?php if(count($files)) { ?>
 <section><h4>Downloads</h4>
