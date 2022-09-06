@@ -20,8 +20,7 @@ class Paths
 	 * Include the path if the folder is not in the same directory
 	 * as this file.
 	 */
-	# public $systemDirectory = __DIR__ . '/../../system/4.1.9';
-	public $systemDirectory = __DIR__ . '/../../ci/4.2.3/system';
+	public $systemDirectory = __DIR__ . '/../../ci/4.2.6/system';
 
 	/*
 	 *---------------------------------------------------------------

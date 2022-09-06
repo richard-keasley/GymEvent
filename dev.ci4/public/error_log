@@ -1,0 +1,6 @@
+[03-Sep-2022 17:26:19 Europe/London] PHP Warning:  require_once(/home/gymevent/dev.ci4/ci/4.2.5/system/Modules/Modules.php): Failed to open stream: No such file or directory in /home/gymevent/dev.ci4/ci/4.2.5/system/bootstrap.php on line 95
+[03-Sep-2022 17:26:19 Europe/London] PHP Fatal error:  Uncaught Error: Failed opening required '/home/gymevent/dev.ci4/ci/4.2.5/system/Modules/Modules.php' (include_path='.:/opt/alt/php80/usr/share/pear:/opt/alt/php80/usr/share/php:/usr/share/pear:/usr/share/php') in /home/gymevent/dev.ci4/ci/4.2.5/system/bootstrap.php:95
+Stack trace:
+#0 /home/gymevent/dev.ci4/public/index.php(38): require()
+#1 {main}
+  thrown in /home/gymevent/dev.ci4/ci/4.2.5/system/bootstrap.php on line 95

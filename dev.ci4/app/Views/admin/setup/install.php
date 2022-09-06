@@ -51,25 +51,6 @@ $this->section('sidebar'); ?>
 </ul>
 <?php $this->endSection();
 
-function htm_pathlist($path) {
-	$files = [];
-	foreach(scandir($path) as $file) {
-		$file = new \CodeIgniter\Files\File($path . $file);
-		switch($file->getExtension()) {
-			case 'ico': 
-				$icon = 'file-image'; break;
-			case 'txt': 
-			case 'md':
-				$icon = 'file'; break;
-			default:
-			$icon = 'file-code';
-		}
-		if($file->isFile()) {
-			printf('<li class="bi bi-%s"> %s</li>', $icon, $file->getBasename());
-		}
-	}	
-}
-
 $this->section('content'); ?>
 <h4>Directory structure</h4>
 
@@ -92,7 +73,7 @@ Event specific files (and installation specific files) are in <?php echo path_la
 
 <h4>Installation edits</h4>
 
-<p>Edit <?php echo path_label('ROOTPATH', '.env');?> according to the specific set-up of each server. Include database connection information and default URL.</p>
+<p>Edit <?php echo path_label('ROOTPATH', '.env');?> according to the specific set-up of each server. Include database connection information and base URL. Leave "base URL" blank for laptops / etc (an over-ride in <code>\App\Config\App</code> will calculate this).</p>
 
 <p>Ensure the php.ini files (<?php echo path_label('FCPATH', 'php.ini');?> &amp; <?php echo path_label('FCPATH', '.user.ini');?> are appropriate for the server.</p>
 
@@ -141,4 +122,23 @@ function path_label($const_name, $file='') {
 	$text = $const_name;
 	if($file) $text .= "/{$file}";
 	return sprintf('<mark data-bs-toggle="tooltip" title="%s">%s</mark>', $title, $text);
+}
+
+function htm_pathlist($path) {
+	$files = [];
+	foreach(scandir($path) as $file) {
+		$file = new \CodeIgniter\Files\File($path . $file);
+		switch($file->getExtension()) {
+			case 'ico': 
+				$icon = 'file-image'; break;
+			case 'txt': 
+			case 'md':
+				$icon = 'file'; break;
+			default:
+			$icon = 'file-code';
+		}
+		if($file->isFile()) {
+			printf('<li class="bi bi-%s"> %s</li>', $icon, $file->getBasename());
+		}
+	}	
 }

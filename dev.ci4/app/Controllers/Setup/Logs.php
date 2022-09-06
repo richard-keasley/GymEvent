@@ -9,14 +9,20 @@ public function __construct() {
 	$this->get_logfiles();
 }
 
-
 private function get_logfiles() {
 	$this->data['logfiles'] = new \CodeIgniter\Files\FileCollection();
+	// PHP native error log
+	$error_log = realpath(ini_get('error_log'));
+	if($error_log) {
+		$this->data['logfiles']->addFile($error_log);
+	}
+	// CI logs
 	$path = realpath(WRITEPATH . '/logs');
 	if($path) {
 		$this->data['logfiles']->addDirectory($path);
 		$this->data['logfiles']->removePattern('index.*');
 	}
+	
 }
 
 private function findlog($logkey) {
