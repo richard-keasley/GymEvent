@@ -22,8 +22,8 @@ Edit `.env` to include database connection, server name.
 
 ## Dependencies
 
-- Codeigniter v4.1.5
+- Codeigniter v4.2.5
 - MySql
-- PHP
+- PHP 8+
 
 Database is not included in distribution. Ask me for it.  
