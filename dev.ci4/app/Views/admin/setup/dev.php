@@ -39,7 +39,7 @@ $ci_folder = dirname(dirname($systemDirectory));
 <p>Custom styles can be added to <mark>/app/custom.ccs</mark>.</p>
 
 <h5>JavaScript helpers</h5>
-<p><mark>/app/bootstrap.bundle.min.js</mark> is included as a JS helper at the end of each page. This requires <mark>/app/bootstrap.bundle.min.js.map</mark>.</p>
+<p><mark>bootstrap.bundle.min.js</mark> is included as a JS helper at the end of each page. This requires <mark>bootstrap.bundle.min.js.map</mark>.</p>
 
 <p><a href="https://jquery.com/"><img src="<?php echo base_url('/app/images/jquery.svg');?>" class="pe-2" style="height:1.3em;">jQuery</a> is used as well (but not jQuery-UI).</p>
 
