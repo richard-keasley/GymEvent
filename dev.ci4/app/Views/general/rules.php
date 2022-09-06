@@ -21,7 +21,7 @@ foreach($rules as $name=>$rule_part) {
 		<?php
 	}
 	else {
-		printf('<p class="alert-danger">%s</p>', $rule_part);
+		printf('<p class="alert alert-danger">%s</p>', $rule_part);
 	}
 }
 $this->endSection(); 

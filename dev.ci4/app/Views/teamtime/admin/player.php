@@ -12,13 +12,13 @@ if($progtable) {
 	array_shift($exes);
 }
 else { ?>
-<p class="alert-danger">Programme appears to be empty</p>
+<p class="alert alert-danger">Programme appears to be empty</p>
 <?php } 
 
 $get_var = $tt_lib::get_var('teams');
 $teams = $get_var ? $get_var->value : [] ;
 if(!$teams) { ?>
-<p class="alert-danger">Teams are not set-up</p>
+<p class="alert alert-danger">Teams are not set-up</p>
 <?php }
 
 $event_id = $tt_lib::get_var('settings', 'event_id');
@@ -52,7 +52,7 @@ $this->section('top'); ?>
 <div class="col-auto">
 <?php echo \App\Libraries\View::back_link('control/teamtime'); ?>
 </div>
-<div class="col-auto"><div id="player">
+<div class="col-auto"><div id="player" class="m-0 p-1 alert alert-light">
 <audio style="width:25em;" controls></audio> 
 <p class="m-0 p-0">ready&hellip;</p>
 <p class="m-0 p-0">source&hellip;</p>
@@ -70,7 +70,7 @@ $('button[name=trk]').click(function() {
 	if(!track_url) return;
 	playersrc.innerHTML = track_url;
 	playermsg.innerHTML = 'Playing ' + this.value;
-	player.className = 'alert-success';
+	player.className = 'm-0 p-1 alert alert-success';
 	playeraudio.src = track_url;
 	playeraudio.play();
 });
@@ -94,7 +94,7 @@ playeraudio.addEventListener("error", function(e) {
 		msg = 'An unknown error occurred.';
     }
 	playermsg.innerHTML = msg;
-	player.className = 'alert-danger';
+	player.className = 'm-0 p-1 alert alert-danger';
 });
 
 });

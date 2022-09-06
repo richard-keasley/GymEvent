@@ -29,20 +29,20 @@ var playermsg = $('#playtrack p')[0];
 var play_button = 0;
 var active_tab = 0;
 
+playermsg.className = 'p-1 my-0 text-bg-light';
+
 $('button[name=trk]').click(function() {
 	var track_url = this.dataset.url;
 	if(!track_url) return;
 		
 	if(active_tab) {
-		active_tab.classList.remove('bg-success');
-		active_tab.classList.remove('text-light');
+		active_tab.classList.remove('text-bg-success');
 	}
 
 	var acc_item = this.parentElement.parentElement.parentElement.parentElement;
 	if(acc_item.className=='accordion-item') {
 		active_tab = acc_item.querySelector('.accordion-button');
-		active_tab.classList.add('bg-success');
-		active_tab.classList.add('text-light');
+		active_tab.classList.add('text-bg-success');
 	}
 	else {
 		active_tab = 0;
@@ -51,7 +51,7 @@ $('button[name=trk]').click(function() {
 	if(play_button) {
 		play_button.className = BUTTON_REPEAT;
 		playermsg.innerHTML = 'ready&hellip;';
-		playermsg.className = '';
+		playermsg.className = 'p-1 my-0 text-bg-light';
 		$player.trigger('pause');
 		if(play_button.value==this.value) {
 			play_button = 0;
@@ -61,7 +61,7 @@ $('button[name=trk]').click(function() {
 		
 	play_button = this;
 	playermsg.innerHTML = 'Playing ' + this.value;
-	playermsg.className = 'alert-success';
+	playermsg.className = 'p-1 my-0 text-bg-success';
 	this.className = BUTTON_PAUSE;
 	$player.attr('src', track_url);
 	$player.trigger('play');
@@ -78,7 +78,7 @@ $player.on("error", function(e) {
     }
 	msg = '<a href="' + e.target.src + '" title="try to download this track" target="music">'+msg+'</a>';
 	playermsg.innerHTML = msg;
-	playermsg.className = 'alert-danger';
+	playermsg.className = 'p-1 my-0 alert alert-danger';
 });
 
 });
@@ -120,7 +120,7 @@ $track->exe = $round['exe'];
 </div>
 
 <?php if($notlisted) { ?>
-<div class="border my-1 p-1 alert-danger">
+<div class="alert alert-danger">
 <h6>Tracks saved, but not listed</h6>
 <div class="playlist">
 <?php foreach($notlisted as $filename) { 

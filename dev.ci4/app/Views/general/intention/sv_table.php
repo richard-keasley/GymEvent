@@ -25,9 +25,9 @@ echo $table->generate($tbody);
 
 <?php if($sv_table['errors']) { ?>
 <div class="col" style="min-width:20em;">
-<div class="mt-3 p-1 alert-danger">
+<div class="mt-3 p-1 alert alert-danger">
 <h5>Routine construction errors</h5>
-<ul class="alert-danger list-unstyled p-1"><?php foreach($sv_table['errors'] as $error) {
+<ul class="list-unstyled m-0"><?php foreach($sv_table['errors'] as $error) {
 	printf('<li>%s</li>', $error);
 } ?>
 </ul>

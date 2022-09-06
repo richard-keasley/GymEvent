@@ -57,7 +57,7 @@ echo form_dropdown($input);
 <div class="col-auto">
 <p>You are viewing device <code><?php echo $device;?></code>.</p>
 
-<nav class="flex-column">
+<nav class="nav flex-column">
 
 <div class="nav-link text-primary" style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalHelp" data-stub="setup">Permissions</div>
 <?php 

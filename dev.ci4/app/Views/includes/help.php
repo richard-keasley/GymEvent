@@ -29,11 +29,11 @@ modalHelp.addEventListener('show.bs.modal', function (event) {
 			modalBody.innerHTML = response;
 		}
 		catch(err) {
-			modalBody.innerHTML = '<p class="alert-danger">' + err.message + '</p>';
+			modalBody.innerHTML = '<p class="alert alert-danger">' + err.message + '</p>';
 		}
 	})
 	.fail(function(jqXHR) {
-		modalBody.innerHTML = '<p class="alert-danger">' + get_error(jqXHR) + '</p>';
+		modalBody.innerHTML = '<p class="alert alert-danger">' + get_error(jqXHR) + '</p>';
 	});
 });
 </script>

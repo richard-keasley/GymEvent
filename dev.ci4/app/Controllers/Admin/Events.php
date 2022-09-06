@@ -104,7 +104,7 @@ public function view($event_id=0) {
 	
 	$this->data['modal_delete'] = [
 		'title' => "Delete '{$this->data['event']->title}'",
-		'description' => '<p>Are you sure you want to delete this event?</p><p class="alert-primary">Be aware all related files, music, entries and club returns will also be deleted.</p>',
+		'description' => '<p>Are you sure you want to delete this event?</p><p class="bg-opacity-25 bg-primary">Be aware all related files, music, entries and club returns will also be deleted.</p>',
 		'item_id' => $event_id
 	];
 		

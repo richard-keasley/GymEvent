@@ -51,23 +51,18 @@ $ci_folder = dirname(dirname($systemDirectory));
 <li>Normal text <code>.nav-link</code> indicates a link to an 'information page'</li>
 </ul>
 
-<h3>Colours</h3>
-<div class="container"><?php 
-$bgs = ['transparent', 'light', 'dark'];
-$texts = ['primary','secondary','success','danger','warning','info','light','dark','body', 'muted','white','black-50','white-50'];
-
-foreach($texts as $text) { ?>
-<div class="row">	
-<?php foreach($bgs as $bg) { ?>
-	<div class="col bg-<?php echo $bg;?> text-<?php echo $text;?> border">
-	.bg-<?php echo $bg;?>
-	.text-<?php echo $text;?>
-	</div>
-<?php } ?>
-	<div class="col alert-<?php echo $text;?> border">
-	.alert-<?php echo $text;?>
-	</div>
-</div>
+<h3>Colour scheme</h3>
+<div class="my-2 d-flex flex-wrap">
+<?php 
+$prefixes = ['text-bg-', 'text-', 'bg-opacity-25 bg-'];
+$colours = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light'];
+foreach($prefixes as $prefix) { ?>
+	<div class="px-2" style="width:100%; max-width:16em"><?php 
+	foreach($colours as $colour) {
+		$class = $prefix . $colour;
+		printf('<div class="p-1 %1$s">%1$s</div>', $class);
+	}
+	?></div>
 <?php } ?>
 </div>
 

@@ -1,14 +1,14 @@
 <?php 
 if(empty($exekey)) { 
-	echo '<p class="alert-danger">No exercise specified</p>';
+	echo '<p class="alert alert-danger">No exercise specified</p>';
 	return;
 }
 if(empty($exeset->ruleset->exes[$exekey])) { 
-	printf('<p class="alert-danger">No rules for %s</p>', $exekey);
+	printf('<p class="alert alert-danger">No rules for %s</p>', $exekey);
 	return;
 }
 if(empty($exeset->exercises[$exekey])) {
-	printf('<p class="alert-danger">No exercise for %s</p>', $exekey);
+	printf('<p class="alert alert-danger">No exercise for %s</p>', $exekey);
 	return;
 }
 
@@ -103,7 +103,7 @@ switch($exe_rules['method']) {
 }
 
 if($errors) { ?>
-<div class="mt-3 p-1 alert-danger border border-danger rounded">
+<div class="p-1 alert alert-danger">
 <ul class="list-unstyled m-0">
 <?php foreach($errors as $error) printf('<li>%s</li>', $error); ?>
 </ul>

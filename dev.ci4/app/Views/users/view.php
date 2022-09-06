@@ -4,7 +4,7 @@ $table = new \CodeIgniter\View\Table($template);
 
 $this->section('content'); 
 if($user->deleted_at) { ?>
-	<p class="alert-danger p-1"><span class="bi bi-x-circle"></span> User disabled</p>
+	<p class="alert alert-danger"><span class="bi bi-x-circle"></span> User disabled</p>
 <?php } 
 
 $vartable = new \App\Views\Htm\Vartable;

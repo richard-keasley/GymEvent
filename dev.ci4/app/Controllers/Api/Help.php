@@ -23,7 +23,7 @@ public function view(...$segments) {
 }
 
 public function error($msg) {
-	return sprintf('<p class="p-3 alert-danger">%s!</p>', $msg);
+	return sprintf('<p class="alert alert-danger">%s!</p>', $msg);
 }
 
 }

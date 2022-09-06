@@ -189,7 +189,7 @@ echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
 
 <div class="modal-body">
 <p>Pull a track from the live website to this device.</p>
-<p class="alert-warning p-1">This will overwrite existing tracks for this entry / exercise on this device.</p>
+<p class="alert alert-warning p-1">This will overwrite existing tracks for this entry / exercise on this device.</p>
 <div class="my-1"><div class="input-group">
 	<label class="input-group-text">Number</label> 
 	<?php 

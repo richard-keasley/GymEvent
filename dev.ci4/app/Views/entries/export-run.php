@@ -9,7 +9,7 @@ $rowsort = [
 $success = array_sort_by_multiple_keys($export, $rowsort);
 
 if(!$success) { ?>
-<p class="p-1 m-1 alert-danger">There was a problem with the the sorting.</p>
+<p class="alert alert-danger">There was a problem with the the sorting.</p>
 <?php }
 
 $tbody = [];

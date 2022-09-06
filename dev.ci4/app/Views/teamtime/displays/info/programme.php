@@ -30,7 +30,7 @@ if($key) echo '</tbody>'; // $key>0 if there was a body
 ?>
 </table>
 <?php } else { ?>
-<p class="alert-warning">Programme appears to be empty</p>
+<p class="alert alert-warning">Programme appears to be empty</p>
 <?php } ?>
 </div>
 

@@ -87,7 +87,7 @@ foreach($entries as $dis) { ?>
 		}
 		elseif($can_edit) {
 			echo $heading;
-			echo '<p class="alert-info">Empty category.</p>';
+			echo '<p class="alert alert-info">Empty category.</p>';
 		}
 	} ?>
 	</section>

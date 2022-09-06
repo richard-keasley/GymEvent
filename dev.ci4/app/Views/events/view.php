@@ -26,14 +26,14 @@ $files->removePattern($pattern);
 <div><?php echo $event->description;?></div>
 
 <?php if($event->clubrets==1) { ?>
-<section class="p-1 alert-success rounded">
+<section class="alert alert-success">
 <p><strong>We are accepting entries for this event</strong></p>
 <p>You are advised to open an entry <em>as soon as possible</em> if you intend to enter this event. You can continue to make edits until entries are closed. We will use the details within your return at that point (there is no "submit" button).</p>
 </section>
 <?php } ?>
 
 <?php if($event->clubrets==2) { ?>
-<section class="p-1 alert-warning rounded">
+<section class="alert alert-warning">
 <p><strong>Entries for this event are now closed</strong></p>
 <p>If you find an error in the entries, <em>inform the event organisers as soon as possible</em>. There is no guarantee entries can be corrected if you wait too long.</p>
 </section>
@@ -47,7 +47,7 @@ $files->removePattern($pattern);
 <?php } ?>
 
 <?php if($event->music==1) { ?>
-<section class="p-1 alert-success rounded">
+<section class="alert alert-success">
 <p><strong>You can now upload your music</strong></p>
 <p>Please upload your music as soon as you can, give us time to check your music can be played! You can alter tracks as often as you like until the music service is closed.</p> 
 </section>

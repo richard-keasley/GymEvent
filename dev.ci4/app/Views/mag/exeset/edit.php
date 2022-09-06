@@ -424,7 +424,7 @@ function update_exevals(message, message_ok=0) {
 		else {
 			htm = message_ok ? exekey + ' missing in response' : message ;
 		}
-		if(!this_ok) htm = '<ul class="list-unstyled alert-danger"><li>' + htm + '</li></ul>';
+		if(!this_ok) htm = '<div class="p-1 alert alert-danger"><ul class="list-unstyled m-0"><li>' + htm + '</li></ul></div>';
 		$('#exeval-'+exekey).html(htm);
 	});
 }

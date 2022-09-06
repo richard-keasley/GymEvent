@@ -1,12 +1,12 @@
 <?php $this->extend('default'); 
 
 $this->section('content'); ?>
-<section id="playtrack" class="alert-warning">
+<section id="playtrack" class="alert alert-warning">
 <audio style="width:100%" controls></audio> 
 <p class="pb-1 px-1 m-0">track&hellip;</p>
 <p class="p-1 m-0">looking up channel&hellip;</p>
 </section>
-<p class="my-3"><strong>Important:</strong> This service will only work if the browser is set to allow "autoplay" from this website. Otherwise <span class="alert-danger">NotAllowedError</span> will be shown.</p>
+<p class="my-3"><strong>Important:</strong> This service will only work if the browser is set to allow "autoplay" from this website. Otherwise <span class="bg-opacity-25 bg-danger">NotAllowedError</span> will be shown.</p>
 <?php $this->endSection(); 
 
 $this->section('sidebar'); ?>
@@ -92,7 +92,7 @@ else {
 
 function show_message(message, success=0) {
 	$('#playtrack p')[1].innerHTML = message;
-	$('#playtrack')[0].className = success ? 'alert-success' : 'alert-danger';
+	$('#playtrack')[0].className = success ? 'alert alert-success' : 'alert alert-danger';
 }
 
 </script>

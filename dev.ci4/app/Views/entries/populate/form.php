@@ -17,7 +17,7 @@ echo form_open(base_url(uri_string()), $attr); ?>
 	<p>All category data (e.g. category name, exercises, music, video) must be re-entered.</p>
 
 	<?php if(!$ok) { ?>	
-	<p class="alert-danger"><span class="bi bi-exclamation-triangle-fill"></span> Re-population can only be carried out on <strong>listed</strong> events with completed club returns (i.e. Event state 'clubrets' marked as 'view'). Ensure these are correctly set before populating the event's entries from club returns.</p>
+	<p class="alert alert-danger"><span class="bi bi-exclamation-triangle-fill"></span> Re-population can only be carried out on <strong>listed</strong> events with completed club returns (i.e. Event state 'clubrets' marked as 'view'). Ensure these are correctly set before populating the event's entries from club returns.</p>
 	<?php } ?>	
 </div>
 <div class="modal-footer">

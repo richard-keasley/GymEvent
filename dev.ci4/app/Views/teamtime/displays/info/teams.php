@@ -10,6 +10,6 @@ foreach($get_var->value as $row) {
 ?>
 </tbody></table>
 <?php } else { ?>
-<p class="alert-warning">'Teams' appears to be empty</p>
+<p class="alert alert-warning">'Teams' appears to be empty</p>
 <?php } ?>
 </div>

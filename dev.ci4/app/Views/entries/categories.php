@@ -33,7 +33,7 @@ echo form_open($action, $attr, $hidden);
 <?php
 $exeset_opts = [0 => '[none]'];
 if(!$exesets) {
-	printf('<p class="p-2 alert-danger"><span class="bi bi-exclamation-triangle"></span> %s</p>', $scoreboard->error ? $scoreboard->error : 'Empty scoreboard data');
+	printf('<p class="alert alert-danger"><span class="bi bi-exclamation-triangle"></span> %s</p>', $scoreboard->error ? $scoreboard->error : 'Empty scoreboard data');
 }
 else {
 	foreach($exesets as $exeset) {

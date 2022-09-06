@@ -93,10 +93,10 @@ if(isset($modal_delete)) { ?>
 
 <?php 
 if($user->deleted_at) { ?>
-<p class="alert-danger">This user is not active</p>
+<p class="alert alert-danger">This user is not active</p>
 <?php } ?>
 <?php if($event->deleted_at) { ?>
-<p class="alert-danger">This event is not listed</p>
+<p class="alert alert-danger">This event is not listed</p>
 <?php } ?>
 
 <?php 

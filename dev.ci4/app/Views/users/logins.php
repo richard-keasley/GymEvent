@@ -22,7 +22,7 @@ foreach($logins as $login) {
 		sprintf('<a href="%s/logins/ip/%s">%s</a>', $base_url, $login['ip'], $IP),
 		$login['ip_info'],
 		$user_link,
-		$login['error'] ? sprintf('<div class="alert-danger p-1">%s</div>', $login['error']) : '<span class="text-success">OK</span>',
+		$login['error'] ? sprintf('<div class="alert alert-danger my-1 p-1">%s</div>', $login['error']) : '<span class="text-success">OK</span>',
 		'btns' => 
 			sprintf('<button class="bi btn btn-danger bi-trash" name="del" value="%u" type="submit"></button>', $login['id']) .
 			sprintf(' <button class="bi btn btn-danger bi-shield-exclamation" name="block" value="%s" type="submit"></button>', $login['ip'])

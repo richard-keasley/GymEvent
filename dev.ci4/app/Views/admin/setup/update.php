@@ -40,7 +40,7 @@ echo \App\Libraries\View::back_link("setup");
 </div>
 <div class="modal-body">
 	<p><strong>Careful!</strong> This will overwrite files in the live version, synchronising it with the development version. Be sure the source version is stable before updating.</p>
-	<p class="alert-light p-1">Files in the root folders (<code><?php echo implode(', ', $dest_roots);?></code>) are not updated. These files contain installation specific settings. Update these manually if necessary.</p>
+	<p class="alert alert-warning">Files in the root folders (<code><?php echo implode(', ', $dest_roots);?></code>) are not updated. These files contain installation specific settings. Update these manually if necessary.</p>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

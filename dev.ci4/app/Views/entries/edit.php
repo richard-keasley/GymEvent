@@ -261,7 +261,7 @@ if($fields) { ?>
 		</div>
 	<?php }
 } else { ?>
-	<p class="alert-warning p-1">No running order parameters are available. Is this an empty category?"</p>
+	<p class="alert alert-warning">No running order parameters are available. Is this an empty category?"</p>
 <?php } ?>
 </div>
 

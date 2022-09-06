@@ -98,7 +98,7 @@ echo form_open(base_url(uri_string()), $attr); ?>
 <?php 
 $music_player = $tt_lib::get_var("settings", "music_player");
 if($music_player=='local') { ?>
-<div id="playtrack" class="alert-success">
+<div id="playtrack" class="m-0 p-1 alert alert-success">
 <audio style="width:100%" controls></audio> 
 <p class="m-0">ready&hellip;</p>
 </div>
@@ -106,9 +106,11 @@ if($music_player=='local') { ?>
 
 if($music_player=='remote') { ?>
 <div id="remoteplayer">
-<?php echo anchor(base_url('control/player/auto'), 'remote player'); ?> 
+<div>
+<?php echo anchor(base_url('control/player/auto'), 'remote player'); ?>&nbsp;&nbsp;&nbsp; 
 <button type="button" class="btn btn-sm btn-primary bi bi-play-fill" onclick="remote_music('play')"></button>
 <button type="button" class="btn btn-sm btn-primary bi bi-stop-fill" onclick="remote_music('stop')"></button>
+</div>
 <p class="m-0">ready&hellip;</p>
 </div>
 <script>
@@ -129,11 +131,11 @@ function remote_music(state) {
 	$.post(url, postvar)
 	.done(function(response) {
 		$remoteplayer_msg.innerHTML = response.state + ': ' + response.url;
-		$remoteplayer.className = 'alert-success';
+		$remoteplayer.className = 'm-0 p-1 alert alert-success';
 	})
 	.fail(function(jqXHR) {
 		$remoteplayer_msg.innerHTML = get_error(jqXHR);
-		$remoteplayer.className = 'alert-danger';
+		$remoteplayer.className = 'm-0 p-1 alert alert-danger';
 	});
 }
 </script>
@@ -178,7 +180,7 @@ function set_runvars(cmd='') {
 		show_runvars(response);
 	})
 	.fail(function(jqXHR) {
-		$('#msg').html('<p class="alert-danger">' + get_error(jqXHR) + '</p>'); 
+		$('#msg').html('<p class="alert alert-danger">' + get_error(jqXHR) + '</p>'); 
 	});
 };
 
@@ -208,13 +210,13 @@ function show_runvars(arr) {
 			//console.log(url);
 			$.get(url, function(response) {
 				playermsg.innerHTML = 'Ready&hellip;';
-				$playtrack.className = 'alert-success';
+				$playtrack.className = 'm-0 p-1 alert alert-success';
 				$player[0].src = response;
 				$player.show();
 			})
 			.fail(function(jqXHR) {
 				playermsg.innerHTML = get_error(jqXHR);
-				$playtrack.className = 'alert-danger';
+				$playtrack.className = 'm-0 p-1 alert alert-danger';
 				$player[0].pause();
 				$player.hide();
 			});
@@ -278,7 +280,7 @@ $player.on("error", function(e) {
     }
 	msg = '<a href="' + e.target.src + '" title="try to download this track" target="music">'+msg+'</a>';
 	playermsg.innerHTML = msg;
-	$playtrack.className = 'alert-danger m-0';
+	$playtrack.className = 'alert alert-danger p-1 m-0';
 });
 
 } // end local music_player
@@ -288,7 +290,7 @@ $.get(url, function(response) {
 	show_runvars(response);
 })
 .fail(function(jqXHR) {
-	$('#msg').html('<p class="alert-danger">' + get_error(jqXHR) + '</p>'); 
+	$('#msg').html('<p class="alert alert-danger">' + get_error(jqXHR) + '</p>'); 
 });
 
 var tt = setInterval(function(){

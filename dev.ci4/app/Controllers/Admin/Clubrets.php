@@ -68,7 +68,7 @@ public function view($event_id=0, $user_id=0) {
 	}
 	$this->data['modal_delete'] = [
 		'title' => 'Delete this return',
-		'description' => '<p>Are you sure you want to delete this return? <span class="alert-warning">This process is irreversible.</span></p>',
+		'description' => '<p>Are you sure you want to delete this return? <span class="bg-opacity-25 bg-warning">This process is irreversible.</span></p>',
 		'cmd' => "del_item",
 		'item_id' => $this->data['clubret']->id
 	];
