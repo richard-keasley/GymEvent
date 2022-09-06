@@ -134,12 +134,7 @@ $tabs->set_item('Staff', ob_get_clean(), 'staff');
 if($event->discats) {
 ob_start();	?>
 <div id="participants">
-<<<<<<< Updated upstream
-<p>Gymnasts' details should be entered as: <span class="alert-primary">Name1, Name2, BG number, <abbr title="Date of birth as dd/mm/yy">DoB</abbr></span>. Each piece of information is separated by a comma.
-<button title="View more information about this" type="button" class="btn btn-sm badge bg-info" data-bs-toggle="modal" data-bs-target="#modalHelp" data-stub="clubrets/edit"><span class="bi bi-question-circle"></span></button></p>
-=======
 <p>Gymnasts' details should be entered as: <span class="bg-opacity-25 bg-primary">Name1, Name2, BG number, <abbr title="Date of birth as dd/mm/yy">DoB</abbr></span>. Each piece of information is separated by a comma.</p>
->>>>>>> Stashed changes
 <p>Place each gymnast on one separate line. If your entry comprises multiple gymnasts (e.g. Acro and Team-gym), place all gymnasts in that entry in the same box.<br>Try copying and pasting the information directly from <a href="https://www.british-gymnastics.org/gymnet/clubs/members" target="bg">BG GymNet</a>.</p>
 <?php 
 echo $event->participants; 
