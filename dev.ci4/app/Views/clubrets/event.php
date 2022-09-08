@@ -5,7 +5,7 @@ $this->section('content');?>
 <div class="d-flex flex-wrap gap-3 d-print-block mb-1">
 
 <section class="mw-100">
-<h4>Payments due</h4>
+<h4>Club returns</h4>
 <?php
 $fees = []; $cols = []; $rows = []; $count = [];
 foreach($clubrets as $rowkey=>$clubret) {
@@ -38,8 +38,8 @@ $tbody = [];
 foreach($rows as $rowkey=>$club) {
 	$tbody[$rowkey] = [$club];
 	foreach($cols as $colkey) {
-		$tbody[$rowkey][$colkey] = $count[$rowkey][$colkey] ?? 0;
-
+		$val = $count[$rowkey][$colkey] ?? 0;
+		$tbody[$rowkey][$colkey] = \App\Views\Htm\Table::number($val);
 	}
 	$tbody[$rowkey]['fees'] = \App\Views\Htm\Table::money($fees[$rowkey]);
 }
@@ -47,7 +47,7 @@ $thead = [''];
 $tfoot = [sprintf('[%u clubs]', count($tbody))]; 
 foreach($cols as $colkey) {
 	$arr = array_column($tbody, $colkey);
-	$tfoot[$colkey] = array_sum($arr);
+	$tfoot[$colkey] = \App\Views\Htm\Table::number(array_sum($arr));
 	$thead[$colkey] = $colkey;
 }
 $thead[] = '&pound;';

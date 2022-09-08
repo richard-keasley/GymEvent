@@ -66,4 +66,6 @@ foreach($prefixes as $prefix) { ?>
 <?php } ?>
 </div>
 
+<p><?php echo anchor(base_url('setup/dev/test'), 'Test page');?></p>
+
 <?php $this->endSection();

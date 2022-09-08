@@ -18,10 +18,18 @@ const templates = [
 ]
 ];
 
-static function money($amount) {
+static function money($value) {
 	// returns a table cell formatted as money
 	return [
-		'data' => '&pound;&nbsp;' . number_format($amount, 2),
+		'data' => '&pound;&nbsp;' . number_format($value, 2),
+		'class' => "text-end"
+	];
+}
+
+static function number($value) {
+	// returns a table cell with formatted as integer (right aligned)
+	return [
+		'data' => intval($value),
 		'class' => "text-end"
 	];
 }
