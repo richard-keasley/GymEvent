@@ -3,20 +3,26 @@ helper('html');
 
 $this->section('content'); ?>
 <h4>Outstanding updates to live version</h4>
-
 <?php  
 $dest_roots = [];
 foreach($datasets as $dataset) { 
-$dest_roots[] = $dataset['dest'];
-?>
-<section>
-<div class="border">
-From: <code><?php echo $dataset['source'];?></code><br>
-To: <code><?php echo $dataset['dest'];?></code>
-</div> 
-<?php echo ul($dataset['log'], ['class'=>'list-unstyled']);?>
-</section>
-<?php 
+	$dest_roots[] = $dataset['dest'];
+	?>
+	<section>
+	<div class="border">
+	From: <code><?php echo $dataset['source'];?></code><br>
+	To: <code><?php echo $dataset['dest'];?></code>
+	</div> 
+	<?php 
+	if(count($dataset['log'])) {
+		echo ul($dataset['log'], ['class'=>'list-unstyled']);
+	}
+	else { 
+		printf('<p class="alert alert-success p-1">No updates found in <code>%s</code></p>', $dataset['source']);
+	}
+	?>
+	</section>
+	<?php 
 } 
 $this->endSection();
 

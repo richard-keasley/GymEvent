@@ -1,8 +1,7 @@
 <?php $this->extend('default');
 
 $this->section('content');
-
-
+	
 $style = 'background:#F99;text-align:right;width:5em;';
 $data = [
 	['item', ['data'=>'count', 'style'=>$style]],
@@ -10,21 +9,27 @@ $data = [
 	['hat', ['data'=>1, 'style'=>$style]]
 ];
 $footing = ['total', ['data'=>3, 'style'=>$style]];
-
-echo '<p>Use default template</p>';
-$table = new \CodeIgniter\View\Table();
-$table->setFooting($footing);
-echo $table->generate($data);
-
-echo '<p>Update template footer to use {th} rather then {td}.</p>';
-$template = [
-	'footing_cell_start' => '<th>',
-	'footing_cell_end' => '</th>'
+$templates = [
+	[],
+	[
+		'footing_cell_start' => '<th>',
+		'footing_cell_end' => '</th>',
+		'heading_cell_start' => '<td>',
+		'heading_cell_end' => '</td>'
+	],
+	[
+		'heading_cell_start' => '<td>',
+		'heading_cell_end' => '</td>'
+	]
 ];
-$table = new \CodeIgniter\View\Table($template);
-$table->setFooting($footing);
-echo $table->generate($data);
 
+foreach($templates as $tkey=>$template) {
+	printf('<h4>Template %s</h4>', $tkey);
+	printf('<pre>%s</pre>', htmlentities   (print_r($template, 1)));
+	$table = new \CodeIgniter\View\Table($template);
+	$table->setFooting($footing);
+	echo $table->generate($data);
+}
 
 $this->endSection();
 
