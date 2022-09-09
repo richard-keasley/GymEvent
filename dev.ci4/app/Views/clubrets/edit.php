@@ -80,8 +80,8 @@ $tabs->set_item('Club details', ob_get_clean(), 'club');
 if(!empty($event->staffcats[0])) {
 ob_start();?>
 <div id="staff">
-<p>Staff details should be entered as: <span class="bg-opacity-25 bg-primary">Name1, Name2, BG number, <abbr title="Date of birth as dd/mm/yy">DoB</abbr></span>.</p>
-<p>Each piece of information is separated by a comma. Place place each staff member in a separate box. Try copying and pasting the information directly from <a href="https://www.british-gymnastics.org/gymnet/clubs/members" target="bg">BG GymNet</a>.</p>
+<p>Staff details should be entered as: <span class="bg-opacity-25 bg-primary">Name1, Name2, BG number, <abbr title="Date of birth as dd/mm/yy">DoB</abbr></span>. Each piece of information is separated by a comma.</p>
+<p>Place place each staff member in a separate box. Try copying and pasting the information directly from <a href="https://www.british-gymnastics.org/gymnet/clubs/members" target="bg">BG GymNet</a>.</p>
 <?php echo $event->staff; 
 
 $staff = $clubret->staff;
@@ -135,7 +135,7 @@ if($event->discats) {
 ob_start();	?>
 <div id="participants">
 <p>Gymnasts' details should be entered as: <span class="bg-opacity-25 bg-primary">Name1, Name2, BG number, <abbr title="Date of birth as dd/mm/yy">DoB</abbr></span>. Each piece of information is separated by a comma.</p>
-<p>Place each gymnast on one separate line. If your entry comprises multiple gymnasts (e.g. Acro and Team-gym), place all gymnasts in that entry in the same box.<br>Try copying and pasting the information directly from <a href="https://www.british-gymnastics.org/gymnet/clubs/members" target="bg">BG GymNet</a>.</p>
+<p>Place each gymnast on one separate line. If your entry comprises multiple gymnasts (e.g. Acro and Team-gym), place all gymnasts in that entry in the same box. Try copying and pasting the information directly from <a href="https://www.british-gymnastics.org/gymnet/clubs/members" target="bg">BG GymNet</a>.</p>
 <?php 
 echo $event->participants; 
 

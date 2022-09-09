@@ -120,7 +120,7 @@ if($dis->id==$filter['disid']) { ?>
 		
 		$count = count($cat->entries);
 		$count = $count ? " {$count}" : ' <button class="btn btn-danger bi-trash" type="button" onClick="delrow(this)"></button>';
-		$tr['last'] = getlink("admin/entries/edit/3?disid={$dis->id}&catid={$cat->id}", 'edit') . $count;
+		$tr['last'] = getlink("admin/entries/edit/{$event->id}?disid={$dis->id}&catid={$cat->id}", 'edit') . $count;
 				
 		$tbody[] = $tr;
 	}

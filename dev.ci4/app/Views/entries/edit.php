@@ -42,8 +42,8 @@ $this->section('content');
 <div class="col-auto"><select class="form-control" name="catid"></select></div>
 <div class="col-auto"><button type="submit" class="btn btn-primary">get</button></div>
 <div class="col-auto"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#runorder">Run order</button></div>
-<div class="col-auto"><div class="border border-secondary rounded">
-<?php echo getlink("/admin/entries/categories/3?disid={$filter['disid']}", 'discipline'); ?>
+<div class="col-auto"><div class="p-1 border border-secondary rounded">
+<?php echo getlink("/admin/entries/categories/{$event->id}?disid={$filter['disid']}", 'discipline'); ?>
 </div></div>
 </div>
 <script>
