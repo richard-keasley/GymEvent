@@ -12,3 +12,9 @@ foreach($logfiles as $key=>$file) {
 ?>
 </ul>
 <?php $this->endSection(); 
+
+$this->section('top'); ?>
+<div class="toolbar sticky-top"><?php
+ 	echo \App\Libraries\View::back_link("setup");
+?></div>
+<?php $this->endSection(); 

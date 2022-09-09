@@ -53,6 +53,8 @@ public function index() {
 		}
 	}
 	
+	if(!count($this->data['logfiles'])) $this->data['messages'][] = ["No log files found", 'light'];
+		
 	// view
 	$this->data['title'] = 'Error logs';
 	$this->data['heading'] = $this->data['title'];

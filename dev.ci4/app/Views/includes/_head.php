@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/app/icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/app/icons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/app/icons/favicon-16x16.png">
-<link rel="stylesheet" type="text/css" href="/app/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="/app/gymevent.css">
 <link rel="stylesheet" type="text/css" href="/app/custom.css">
 <script src="/app/jquery-3.6.1/jquery.min.js" type="text/javascript"></script>
 <title><?php echo $title;?></title>
