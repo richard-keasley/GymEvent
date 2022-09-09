@@ -68,11 +68,14 @@ $attr = [
 $editor = new \App\Views\Htm\Editor($attr);
 echo $editor->htm();
 
-if($event->clubrets) { ?>
-<p>This section should only be altered while the event sate 'clubrets' is set to 'waiting'.</p>
+$edit_locked = $event->clubrets > 0;
+
+if($edit_locked) { ?>
+<p class="alert alert-danger">This section can only be altered while the event sate 'clubrets' is set to 'waiting'.</p>
 <?php } 
 
-else { ?> 
+else { 
+?> 
 <p>Do not use spaces, commas or special characters within discipline and categories. Try to use the same abbreviations as <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#sbdis">scoreboard</button>.</p>
 <div class="modal" id="sbdis" tabindex="-1">
 <div class="modal-dialog">
@@ -141,7 +144,7 @@ $input = [
 ]
 ];
 
-if($event->clubrets) {
+if($edit_locked) {
 	foreach($input as $key=>$field) {
 		$input[$key]['readonly'] = "readonly";
 	}
