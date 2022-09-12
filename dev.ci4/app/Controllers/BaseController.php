@@ -71,4 +71,12 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	}
 }
 
+protected function export_csv($data, $filetitle='export') {
+	$filetype='csv';
+	$response = view("entries/export-{$filetype}", ['export'=>$data]);
+	$filetitle = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $filetitle));
+	# return UTF8_BOM . '<pre>' . $response . '</pre>';
+	return $this->response->download("{$filetitle}.{$filetype}", UTF8_BOM . $response);
+}
+
 }

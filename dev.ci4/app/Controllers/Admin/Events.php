@@ -57,6 +57,8 @@ public function add() {
 public function view($event_id=0) {
 	$this->find($event_id);
 
+	$download = $this->request->getPost('download');
+
 	// create entries from returns
 	// see also App\Controllers\Admin\Clubrets->event
 	if($this->request->getPost('populate')) {
@@ -107,12 +109,52 @@ public function view($event_id=0) {
 		'description' => '<p>Are you sure you want to delete this event?</p><p class="bg-opacity-25 bg-primary">Be aware all related files, music, entries and club returns will also be deleted.</p>',
 		'item_id' => $event_id
 	];
-		
+	
+	// build entries table
+	$tbody = [];
+	if($this->data['event']->clubrets==2) { 
+		$base_edit = "/admin/entries/edit/{$event_id}";
+		$tbody = [];
+		foreach($this->data['event']->entries() as $diskey=>$dis) { 
+			$cats = [];
+			foreach($dis->cats as $cat) {
+				$label = $cat->name;
+				$count = count($cat->entries);
+				if($download!='entries') {
+					$params = [
+						'disid' => $dis->id,
+						'catid' =>$cat->id
+					];
+					$href = base_url($base_edit .'?' . http_build_query($params));
+					$label = anchor($href, $label, ['title' => 'Edit category']);
+				}
+				$cats[] = [
+					'category' => $label, 
+					'count' => $count
+				];
+			}
+			$tbody[$diskey] = [
+				'disname' => $dis->name,
+				'cats' => $cats
+			];
+		}
+	}
+	if($download=='entries') {
+		$export = [];
+		foreach($tbody as $dis) {
+			$row = ['dis' => $dis['disname']];
+			foreach($dis['cats'] as $cat) {
+				$export[] = array_merge($row, $cat);
+			}
+		}
+		return $this->export($export, 'entries');
+	}
+	$this->data['entries'] = $tbody;
+			
 	// view
 	$this->data['back_link'] = "/admin/events";
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['clubrets'] = $this->data['event']->clubrets();
-	$this->data['entries'] = $this->data['event']->entries();
 	return view('events/admin', $this->data);
 }
 
@@ -203,6 +245,12 @@ public function edit($event_id=0) {
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb('edit', 'admin');
 	return view('events/edit', $this->data);
+}
+
+private function export($tbody, $suffix='') {
+	$filetitle = $this->data['event']->title;
+	if($suffix) $filetitle .= "_{$suffix}";
+	return $this->export_csv($tbody, $filetitle);
 }
 	
 }

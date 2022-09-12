@@ -486,6 +486,9 @@ public function export($event_id=0, $format='view') {
 	
 	// download if filetype is set
 	if($filetype) {
+		if($format=='csv') {
+			return $this->export_csv($this->data['export'], $this->data['event']->title);
+		}
 		$response = view("entries/export-{$format}", $this->data);
 		$filetitle = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $this->data['event']->title));
 		# return UTF8_BOM . '<pre>' . $response . '</pre>';

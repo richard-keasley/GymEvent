@@ -99,6 +99,8 @@ public function event($event_id=0) {
 	$this->data['event'] = $mdl_events->find($event_id);
 	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
 	
+	$download = $this->request->getPost('download');
+
 	// create entries from returns
 	// see also App\Controllers\Admin\Events->event
 	if($this->request->getPost('populate')) {
@@ -150,7 +152,67 @@ public function event($event_id=0) {
 		'users' => $users,
 		'description' => sprintf('Add a new club return to <em>%s</em>.', $this->data['event']->title)
 	];
-		
+	
+	// build summary table
+	$fees = []; $cols = []; $users = []; $count = [];
+	foreach($clubrets as $rowkey=>$clubret) {
+		$user = $clubret->user();
+		if($download=='summary') {
+			$label = $user ? $user->name : '[unknown]' ;
+		}
+		else {
+			if($user) {
+				$label = $user->name;
+				if($user->deleted_at) $label .= ' <i class="bi bi-x-circle text-danger" title="This user is disabled"></i>';		
+			}
+			else $label = 'unknown <i class="bi bi-exclamation-triangle-fill text-warning"></i>';
+			
+			$ok = $clubret->check();
+			if(!$ok) $label .= ' <span class="bi bi-exclamation-triangle-fill text-warning" title="There are errors in this return"></span>';
+			$label = getlink($clubret->url('view', 'admin'), $label);
+			if($user) $label .= ' ' . $user->link();
+		}
+		$users[$rowkey] = $label;
+				
+		$count[$rowkey] = [];
+		foreach($clubret->participants as $participant) {
+			$dis = $participant['dis'];
+			if(empty($count[$rowkey][$dis])) $count[$rowkey][$dis] = 0;
+			$count[$rowkey][$dis]++;
+			if(!in_array($dis, $cols)) $cols[] = $dis;
+		}
+			
+		$cr_fees = $clubret->fees('fees');
+		$fees[$rowkey] = array_sum(array_column($cr_fees, 1));
+	}
+	$tbody = [];
+	foreach($users as $rowkey=>$club) {
+		$tbody[$rowkey] = ['club' => $club];
+		foreach($cols as $colkey) {
+			$val = $count[$rowkey][$colkey] ?? 0;
+			$tbody[$rowkey][$colkey] = $val;
+		}
+		$tbody[$rowkey]['fees'] = $fees[$rowkey];
+	}
+	if($download=='summary') return $this->export($tbody, 'summary');
+	$this->data['summary'] = $tbody;
+	
+	// build staff table
+	$tbody = [];
+	foreach($this->data['event']->staff() as $entkey=>$entry) {
+		$tbody[] = [
+			# $entkey + 1,
+			$entry['club'],
+			humanize($entry['cat']),
+			$entry['name'],
+			$entry['bg'],
+			# date('d-M-Y', $entry['dob'])
+		];
+	}
+	if($download=='staff') return $this->export($tbody, 'staff');
+	$this->data['staff'] = $tbody;
+
+	// view
 	switch($this->data['event']->clubrets) {
 		case 0: 
 			$msg = ['Returns for this event are not yet open', 'warning'];
@@ -176,6 +238,12 @@ public function event($event_id=0) {
 	$this->data['clubrets'] = $this->data['event']->clubrets();
 	
 	return view('clubrets/event', $this->data);
+}
+
+private function export($tbody, $suffix='') {
+	$filetitle = $this->data['event']->title;
+	if($suffix) $filetitle .= "_{$suffix}";
+	return $this->export_csv($tbody, $filetitle);
 }
 
 }

@@ -39,7 +39,6 @@ $this->endSection();
 
 $this->section('content'); ?>
 <section class="mb-3 row"><?php
-
 foreach($states as $fldname) {
 	$state = $event->$fldname;
 	$label = \App\Entities\Event::state_label($state);
@@ -49,7 +48,8 @@ foreach($states as $fldname) {
 ?></section>
 
 <?php if($event->clubrets==1) { ?>
-<section><h4>Returns</h4>
+<section>
+<h4>Returns</h4>
 <div class="row">
 <?php 
 foreach($event->participants() as $dis) { ?>
@@ -71,31 +71,38 @@ foreach($event->participants() as $dis) { ?>
 <?php } ?>
 
 <?php if($event->clubrets==2) { ?>
-<section><h4>Entries</h4> 
-<div class="row"><?php 
+<section>
+<?php echo form_open(base_url(uri_string())); ?>
+<h4>Entries
+	<button type="submit" name="download" value="entries" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
+</h4>
+<?php echo form_close(); ?>
 
-$base_edit = "/admin/entries/edit/{$event->id}";
+<div class="row"><?php 
 foreach($entries as $dis) { ?>
 	<div class="col-auto">
-	<?php 
-	$tbody = []; $total = 0;
-	foreach($dis->cats as $cat) { 
-		$params = [
-			'disid' => $dis->id,
-			'catid' =>$cat->id
-		];
-		$href = base_url($base_edit .'?' . http_build_query($params));
-		$label = anchor($href, $cat->name, ['title' => 'Edit category']);
-
-		$count = count($cat->entries);
-		$total += $count ;
-		$tbody[] = [$label, ['data'=>$count,'class'=>"text-end"]];
+	<?php
+	$tbody = [];
+	$count = 0;
+	echo "<h5>{$dis['disname']}</h5>"; 
+	foreach($dis['cats'] as $cat) {
+		$count += $cat['count'];
+		$cat['count'] = \App\Views\Htm\Table::number($cat['count']);
+		$tbody[] = $cat;
 	}
-	$table->setHeading([$dis->name, ['data'=>$total,'class'=>"text-end"]]);
+	$tfoot = [
+		'total',
+		\App\Views\Htm\Table::number($count)
+	];
+	
+	$table->autoHeading = false;
+	$table->setFooting($tfoot);
 	echo $table->generate($tbody);
 	?>
 	</div>
-<?php } ?></div>
+	<?php 
+}  
+?></div>
 </section>
 <?php } ?>
 

@@ -5,53 +5,48 @@ $this->section('content');?>
 <div class="d-flex flex-wrap gap-3 d-print-block mb-1">
 
 <section class="mw-100">
-<h4>Club returns</h4>
-<?php
-$fees = []; $cols = []; $rows = []; $count = [];
-foreach($clubrets as $rowkey=>$clubret) {
-	$user = $clubret->user();
-	if($user) {
-		$label = $user->name;
-		if($user->deleted_at) $label .= ' <i class="bi bi-x-circle text-danger" title="This user is disabled"></i>';		
-	}
-	else $label = 'unknown <i class="bi bi-exclamation-triangle-fill text-warning"></i>';
-	
-	$ok = $clubret->check();
-	if(!$ok) $label .= ' <span class="bi bi-exclamation-triangle-fill text-warning" title="There are errors in this return"></span>';
-	
-	$rows[$rowkey] = getlink($clubret->url('view', 'admin'), $label);
-	if($user) $rows[$rowkey] .= ' ' . $user->link();
-	
-	$count[$rowkey] = [];
-	foreach($clubret->participants as $participant) {
-		$dis = $participant['dis'];
-		if(empty($count[$rowkey][$dis])) $count[$rowkey][$dis] = 0;
-		$count[$rowkey][$dis]++;
-		if(!in_array($dis, $cols)) $cols[] = $dis;
-	}
-		
-	$cr_fees = $clubret->fees('fees');
-	$fees[$rowkey] = array_sum(array_column($cr_fees, 1));
-}
+<?php 
+$attr = ['class' => ""];
+echo form_open(base_url(uri_string()), $attr);
+?>
+<h4>Club returns
+	<button type="submit" name="download" value="summary" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
+</h4>
+<?php echo form_close();
 
-$tbody = [];
-foreach($rows as $rowkey=>$club) {
-	$tbody[$rowkey] = [$club];
-	foreach($cols as $colkey) {
-		$val = $count[$rowkey][$colkey] ?? 0;
-		$tbody[$rowkey][$colkey] = \App\Views\Htm\Table::number($val);
+$tbody = []; $tr = []; $thead = []; $tfoot = [];
+foreach($summary as $row) {
+	if(!$thead) {
+		foreach($row as $key=>$val) {
+			$thead[$key] = ($key);
+			$arr = array_column($summary, $key);
+			switch($key) {
+				case 'club' : 
+					$val = count($arr); break;
+				case 'fees' : 
+					$val = \App\Views\Htm\Table::money(array_sum($arr));
+					break;
+				default: 
+					$val = \App\Views\Htm\Table::number(array_sum($arr));
+			}
+			$tfoot[$key] = $val;
+		}
 	}
-	$tbody[$rowkey]['fees'] = \App\Views\Htm\Table::money($fees[$rowkey]);
+	
+	foreach($row as $key=>$val) {
+		switch($key) {
+			case 'fees':
+				$val = \App\Views\Htm\Table::money($val);
+				break;
+			case 'club': 
+				break;
+			default:
+				$val = \App\Views\Htm\Table::number($val);
+		}
+		$tr[$key] = $val;
+	}
+	$tbody[] = $tr;
 }
-$thead = [''];
-$tfoot = [sprintf('[%u clubs]', count($tbody))]; 
-foreach($cols as $colkey) {
-	$arr = array_column($tbody, $colkey);
-	$tfoot[$colkey] = \App\Views\Htm\Table::number(array_sum($arr));
-	$thead[$colkey] = $colkey;
-}
-$thead[] = '&pound;';
-$tfoot[] = \App\Views\Htm\Table::money(array_sum($fees));
 
 $table->setHeading($thead);
 $table->setFooting($tfoot);
@@ -60,22 +55,18 @@ echo $table->generate($tbody);
 </section>
 
 <section class="mw-100">
-<h4>Staff</h4>
 <?php
-$tbody = [];
-foreach($event->staff() as $entkey=>$entry) {
-	$tbody[] = [
-		# $entkey + 1,
-		$entry['club'],
-		humanize($entry['cat']),
-		$entry['name'],
-		$entry['bg'],
-		# date('d-M-Y', $entry['dob'])
-	];
-}
+$attr = [];
+echo form_open(base_url(uri_string()), $attr);
+?>
+<h4>Staff
+	<button type="submit" name="download" value="staff" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
+</h4>
+<?php echo form_close();
 $table->setHeading(['club', 'type', 'name', 'BG']);
 $table->setFooting([]);
-echo $table->generate($tbody);#?>
+echo $table->generate($staff);
+?>
 </section>
 
 </div>
