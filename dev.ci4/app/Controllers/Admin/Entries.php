@@ -164,7 +164,9 @@ public function edit($event_id=0) {
 		$this->find($event_id);
 	}
 	
-	if($this->request->getPost('runorder')) {
+	$batch = $this->request->getPost('batch');
+	if($batch) {
+		$update = null;
 		// select which entries to update
 		$ent_ids = [];
 		foreach($this->data['entries'] as $dis) {
@@ -177,13 +179,24 @@ public function edit($event_id=0) {
 			}
 		}
 		if($ent_ids) {
-			$runorder = $this->request->getPost();
-			unset($runorder['runorder']);
-			$data = ['runorder' => json_encode($runorder)];
-			$this->ent_model->update($ent_ids, $data);
+			if($batch=='runorder') {
+				$runorder = $this->request->getPost();
+				unset($runorder['runorder']);
+				unset($runorder['batch']);
+				$update = ['runorder' => json_encode($runorder)];
+			}
+			if($batch=='catmerge') {
+				$category_id = intval($this->request->getPost('category_id'));
+				if($category_id) {
+					$update = ['category_id'=>$category_id];
+				}
+			}
 		}
-		// read 
-		$this->find($event_id);
+		if($update) {	
+			$this->ent_model->update($ent_ids, $update);
+			// read 
+			$this->find($event_id);
+		}
 	}
 	
 	// view

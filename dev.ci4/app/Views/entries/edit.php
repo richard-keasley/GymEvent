@@ -4,6 +4,20 @@ $self = base_url(sprintf('/%s?%s', uri_string(), http_build_query($filter)));
 $user_options = [];
 foreach($users as $id=>$user) $user_options[$id] = $user->name;
 
+$selector = []; $dis_options = []; $cat_options = [];
+foreach($entries as $dis) { 
+	$dis_options[$dis->id] = $dis->name;
+	$selector[$dis->id] = [];
+	foreach($dis->cats as $cat) {
+		$selector[$dis->id][] = [$cat->id, $cat->name];
+	}
+	if($dis->id==$filter['disid']) {
+		foreach($selector[$dis->id] as $row) {
+			$cat_options[$row[0]] = $row[1];
+		}
+	}
+}
+
 // select which entries to show
 $cat_entries = [];
 $exeset_id = 0;
@@ -28,20 +42,15 @@ $this->section('content');
 <p>Select the discipline and category; press 'GET'. Edit entry names, numbers, DoBs and add new entries.</p>
 <div class="row">
 <div class="col-auto"><?php 
-	$selector = []; $opts = [];
-	foreach($entries as $dis) { 
-		$opts[$dis->id] = $dis->name;
-		$selector[$dis->id] = [];
-		foreach($dis->cats as $cat) {
-			$selector[$dis->id][] = [$cat->id, $cat->name];
-		}
-	}
-	echo form_dropdown('disid', $opts, $filter['disid'], 'class="form-control"');
+	echo form_dropdown('disid', $dis_options, $filter['disid'], 'class="form-control"');
 ?>
 </div>
 <div class="col-auto"><select class="form-control" name="catid"></select></div>
 <div class="col-auto"><button type="submit" class="btn btn-primary">get</button></div>
-<div class="col-auto"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#runorder">Run order</button></div>
+<div class="col-auto">
+	<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#runorder">Run order</button>
+	<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#catmerge">Merge</button>
+</div>
 <div class="col-auto"><div class="p-1 border border-secondary rounded">
 <?php echo getlink("/admin/entries/categories/{$event->id}?disid={$filter['disid']}", 'discipline'); ?>
 </div></div>
@@ -79,14 +88,10 @@ $hidden = ['save'=>1];
 echo form_open($self, $attr, $hidden);
 
 $tbody=[]; $tr = [];
-$arr = empty($selector[$filter['disid']]) ? [] : $selector[$filter['disid']];
-$cat_opts = [];
-foreach($arr as $row) $cat_opts[$row[0]] = $row[1];
-
 $inputs = [
 	'category_id' => [
 		'class' => 'form-control',
-		'options' => $cat_opts
+		'options' => $cat_options
 	],
 	'num' => [
 		'class' => 'form-control',
@@ -228,14 +233,12 @@ echo form_close();
 <div class="modal fade" id="runorder">
 <div class="modal-dialog modal-sm">
 <?php 
-$attr = [
-	'class' => "modal-content"
-];
-$hidden = ['runorder' => 1];
+$attr = ['class' => "modal-content"];
+$hidden = ['batch'=>'runorder'];
 echo form_open($self, $attr, $hidden); 
 ?>
 <div class="modal-header">
-	<h5 class="modal-title" id="exampleModalLabel">Running order</h5>
+	<h5 class="modal-title">Running order</h5>
 	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
@@ -263,6 +266,40 @@ if($fields) { ?>
 } else { ?>
 	<p class="alert alert-warning">No running order parameters are available. Is this an empty category?"</p>
 <?php } ?>
+</div>
+
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+	<button type="submit" class="btn btn-primary">Update</button>
+</div>
+
+<?php echo form_close();?>
+</div>
+</div>
+
+<div class="modal fade" id="catmerge">
+<div class="modal-dialog modal-sm">
+<?php 
+$attr = ['class' => "modal-content"];
+$hidden = ['batch' => 'catmerge'];
+echo form_open($self, $attr, $hidden); 
+?>
+<div class="modal-header">
+	<h5 class="modal-title">Merge category</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+	<p>Move <em>all</em> these entries to another category?</p>
+	<p><?php
+	$input = [
+		'name' => 'category_id',
+		'selected' => $filter['catid'],
+		'options' => $cat_options,
+		'class' => "form-control"
+	];
+	echo form_dropdown($input);
+	?></p>
 </div>
 
 <div class="modal-footer">
