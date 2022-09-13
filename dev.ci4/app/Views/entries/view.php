@@ -71,23 +71,25 @@ foreach($entries as $dis) { ?>
 			$tbody[] = $row;
 		}
 		
-		$heading = $cat->name;
-		if($can_edit) {
-			$params = [
-				'disid' => $dis->id,
-				'catid' =>$cat->id
-			];
-			$href = $edit_base . '?' . http_build_query($params);
-			$heading = sprintf('<h5>%s</h5>', anchor($href, $heading, ['title' => 'Edit category']));
+		if($tbody || $can_edit) {
+			$heading = $cat->name;
+			if($can_edit) {
+				$params = [
+					'disid' => $dis->id,
+					'catid' => $cat->id
+				];
+				$href = $edit_base . '?' . http_build_query($params);
+				$heading = anchor($href, $heading, ['title' => 'Edit category']);
+			}
+			echo "<h5>{$heading}</h5>";
 		}
-		if($tbody) {	
-			echo $heading;
+		
+		if($tbody) {
 			$table->autoHeading = false;
 			echo $table->generate($tbody); 
 		}
 		elseif($can_edit) {
-			echo $heading;
-			echo '<p class="alert alert-info">Empty category.</p>';
+			echo '<p class="alert alert-warning p-1">Empty category.</p>';
 		}
 	} ?>
 	</section>
