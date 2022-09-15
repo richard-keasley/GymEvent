@@ -91,12 +91,11 @@ $this->section('sidebar'); ?>
 <?php
 $vartable = new \App\Views\Htm\Vartable;
 foreach($tracks_table as $status=>$count) {
-	if($count) $vartable->items[$status] = [$count, 'int'];
+	if($count) $vartable->items[$status] = \App\Views\Htm\Table::number($count);
 }
-$vartable->footer = [array_sum($tracks_table), 'int'];
+$vartable->footer = [\App\Views\Htm\Table::number(array_sum($tracks_table)), 'Total'];
 echo $vartable->htm();
 
-printf('<p>%s entries.</p>', $count_entries); 
 ?></section>
 <?php $this->endSection();
 

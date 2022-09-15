@@ -9,18 +9,17 @@ if($user->deleted_at) { ?>
 
 $vartable = new \App\Views\Htm\Vartable;
 $tbody = [
-	'ID' => [$user->id, null],
-	'Name' => [$user->name, null],
-	'Short name' => [$user->abbr, null],
-	'E-mail' => [$user->email, 'email'],
-	'Role' => [$user->role, null],
-	'Disabled' => [$user->deleted_at, 'time'],
-	'Last active' => [$user->updated, 'time']
+	'ID' => $user->id,
+	'Name' => $user->name,
+	'Short name' => $user->abbr,
+	'E-mail' => \App\Views\Htm\Table::email($user->email),
+	'Role' => $user->role,
+	'Disabled' => \App\Views\Htm\Table::time($user->deleted_at),
+	'Last active' => \App\Views\Htm\Table::time($user->updated)
 ];
 if(\App\Libraries\Auth::check_role('superuser')) {
-#	$tbody['cookie'] = [$user->cookie, null];
-	$tbody['Reset key'] = [$user->reset_key, null];
-	$tbody['Reset requested'] = [$user->reset_time, 'time'];
+	$tbody['Reset key'] = $user->reset_key;
+	$tbody['Reset requested'] = \App\Views\Htm\Table::time($user->reset_time);
 }
 echo $vartable->htm($tbody);
 

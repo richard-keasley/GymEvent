@@ -18,6 +18,12 @@ const templates = [
 ]
 ];
 
+static function load($tkey = 'default') {
+	return new \CodeIgniter\View\Table(self::templates[$tkey]);
+}
+
+/* return table cells for formatting */
+
 static function money($value) {
 	// returns a table cell formatted as money
 	return [
@@ -34,8 +40,21 @@ static function number($value) {
 	];
 }
 
-static function load($tkey = 'default') {
-	return new \CodeIgniter\View\Table(self::templates[$tkey]);
+static function email($value) {
+	// returns a table cell with email as clickable link
+	return $value ? mailto($value) : '' ;
+}
+
+static function time($value) {
+	return $value ? date('d M Y H:i', strtotime($value)) : '' ;
+}
+
+static function date($value) {
+	return $value ? date('d M Y', strtotime($value)) : '' ;
+}
+
+static function bool($value) {
+	return $value ? 'yes' : 'no' ;
 }
 	
 }

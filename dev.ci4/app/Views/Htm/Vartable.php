@@ -6,7 +6,10 @@ public $footer = null;
 public $template = [
 	'htm_start' => '<div class="table-responsive"><table class="table table-sm table-borderless">',
 	'items_start' => '<tbody>', 
-	'item' => '<tr><th class="py-1 text-end">%s</th><td>%s</td></tr>',
+	'item_start' => '<tr>',
+	'item_varname' => '<th class="py-1 text-end">%s</th>',
+	'item_value' => '<td>%s</td>',
+	'item_end' => '</tr>',
 	'items_end' => '</tbody>', 
 	'footer_start' => '<tfoot>',
 	'footer_end' => '</tfoot>',
@@ -23,47 +26,59 @@ public function htm($items = false) {
 	
 	$retval .= $this->template['items_start'];
 	foreach($this->items as $key=>$item) {		
-		$retval .= sprintf($this->template['item'], $key, self::item_td($item));
+		$retval .= $this->htm_item($key, $item);
 	}
 	$retval .= $this->template['items_end'];
 	
 	if($this->footer) {
-		$retval .= $this->template['footer_start'];
-		$key = $this->footer[2] ?? 'Total'; 
-		$retval .= sprintf($this->template['item'], $key, self::item_td($this->footer));
-		$retval .= $this->template['footer_end'];
+		if(is_array($this->footer)) {
+			$key = $this->footer[1] ?? ''; 
+			$item = $this->footer[0] ?? ''; 
+		}
+		else {
+			$key = '';
+			$item = $this->footer;
+		}
+		if($item) {
+			$retval .= $this->template['footer_start'];
+			$retval .= $this->htm_item($key, $item);
+			$retval .= $this->template['footer_end'];
+		}
 	}
 	
 	$retval .= $this->template['htm_end'];
 	return $retval;
 }
 
-static function item_td($item) {
-	if(is_array($item)) {
-		$value = $item[0];
-		$type = $item[1];
+private function htm_item($varname, $varvalue) {
+	$retval = $this->template['item_start'];
+	$retval .= sprintf($this->template['item_varname'], $varname);
+		
+	$pattern = $this->template['item_value'];
+	if(is_array($varvalue)) {
+		if(preg_match('/(<\w+)/i', $this->template['item_value'], $matches)) {
+			$search = $matches[0];
+		}
+		else {
+			$search = null;
+		}
+		if($search) {
+			$attrs = [];
+			foreach($varvalue as $key=>$val) {
+				if($key !== 'data') $attrs[$key] = $val;
+            }
+			$replace = $search . ' ' . stringify_attributes($attrs);
+			$pattern = str_replace($search, $replace, $this->template['item_value']);
+		}
+		$data = $varvalue['data'] ?? '' ;
 	}
 	else {
-		$value = $item;
-		$type = '';
+		$data = $varvalue;
 	}
-	switch($type) {
-		case 'time' : 
-			return $value ? date('d M Y H:i', strtotime($value)) : '' ;
-			break;
-		case 'date' : 
-			return $value ? date('d M Y', strtotime($value)) : '' ;
-			break;
-		case 'email': 
-			return $value ? mailto($value) : '' ;
-		case 'bool':
-			return $value ? 'yes' : 'no' ;
-			break;
-		case 'money':
-			return sprintf('<div class="text-end">&pound; %.2f</div>', $value);
-			break;
-	}
-	return $value;
+	$retval .= sprintf($pattern, $data);
+	
+	$retval .= $this->template['item_end'];
+	return $retval;
 }
 
 }

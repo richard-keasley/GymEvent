@@ -206,9 +206,10 @@ public function fees($op=1) {
 	if($op=='htm') {
 		$vartable = new \App\Views\Htm\Vartable;
 		foreach($fees as $fee) {
-			$vartable->items[$fee[0]] = [$fee[1], 'money'];
+			$vartable->items[$fee[0]] = \App\Views\Htm\Table::money($fee[1]);
+			
 		}
-		$vartable->footer = [$total, 'money'];
+		$vartable->footer = [\App\Views\Htm\Table::money($total), 'Total'];
 		return $vartable->htm();
 	}
 	return $total;
