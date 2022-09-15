@@ -55,7 +55,7 @@ $ci_folder = dirname(dirname($systemDirectory));
 <div class="my-2 d-flex flex-wrap">
 <?php 
 $prefixes = ['text-bg-', 'text-', 'bg-opacity-25 bg-'];
-$colours = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light'];
+$colours = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 foreach($prefixes as $prefix) { ?>
 	<div class="px-2" style="width:100%; max-width:16em"><?php 
 	foreach($colours as $colour) {

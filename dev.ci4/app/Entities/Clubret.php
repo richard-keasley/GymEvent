@@ -233,8 +233,9 @@ public $csv = '';
 
 function __construct($namestring) {
 	$this->namestring = $namestring;
-	$arr = preg_split("/ *[\t,] *+/", $namestring, 4);
+	$arr = preg_split("/ *[\t,] *+/", $namestring);
 	$arr = array_pad($arr, 4, '');
+	$arr = array_slice($arr, 0, 4);
 	
 	$this->name = trim($arr[0] . ' ' . $arr[1]);
 	$this->bg = $arr[2];

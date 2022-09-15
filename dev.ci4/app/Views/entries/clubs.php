@@ -1,24 +1,27 @@
 <?php $this->extend('default');
 
 $this->section('content');
-$tbody = [];
-foreach($users as $user) {
-	$tbody[] = [
-		$user->deleted_at ?  
-			'<span title="club disabled" class="bi-x-circle text-danger"></span>' : 
-			'<span title="club enabled" class="bi-check-circle text-success"></span>',
-		$user->name .' ' . $user->link(),
-		$user->abbr,
-		$user->email,
-		$user->entcount
-	];
-}
 
+$attr = [];
+echo form_open(base_url(uri_string()), $attr);
+?>
+<h4>Club summary
+ <button type="submit" name="download" value="clubs" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
+</h4>
+<?php
+echo form_close();
+
+# d($tbody);
+foreach($tbody as $rowkey=>$row) {
+	$tbody[$rowkey]['state'] = $row['state'] ? 
+		'<span title="club disabled" class="bi-x-circle text-danger"></span>' : 
+		'<span title="club enabled" class="bi-check-circle text-success"></span>' ;
+	$tbody[$rowkey]['count'] = \App\Views\Htm\Table::number($row['count']);
+}
 $table = \App\Views\Htm\Table::load('responsive');
 $table->autoHeading = false;
 $table->setFooting(['', count($users) . ' clubs', '', '', $entcount]);
 echo $table->generate($tbody);
-# d($tbody);
 
 # d($users);
 # d($entries);

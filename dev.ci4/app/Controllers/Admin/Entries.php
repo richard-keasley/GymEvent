@@ -96,13 +96,25 @@ public function clubs($event_id=0) {
 	$this->data['entcount'] = array_sum($counts);
 	
 	$error = false;
-	foreach($this->data['users'] as $id=>$username) {
+	$tbody = [];
+	foreach($this->data['users'] as $id=>$user) {
 		$entcount = $counts[$id] ?? 0 ;
 		if(!$entcount) $error = true;
-		$this->data['users'][$id]->entcount = $entcount;
+		$tbody[] = [
+			'state' => $user->state ? 1 : 0 ,
+			'name' => $user->name,
+			'abbr' => $user->abbr,
+			'email' => $user->email,
+			'count' => $entcount
+		];
 	}
 	if($error) $this->data['messages'][] = ['Inconsistent data', 'danger'];
-	
+	$download = $this->request->getPost('download');
+	if($download=='clubs') {
+		return $this->export_csv($tbody, $download);
+	}
+		
+	$this->data['tbody'] = $tbody;
 	return view('entries/clubs', $this->data);
 }
 
