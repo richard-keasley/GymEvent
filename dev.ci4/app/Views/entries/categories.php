@@ -260,7 +260,7 @@ echo form_open($action, $attr, $hidden);
 <div class="modal-body">
 <p>Move all entries from <span class="text-bg-light" id="mergefrom"></span> to another category.</p>
 <?php
-$options = [];
+$options = ['select'];
 foreach($entries as $dis) { 
 	if($dis->id==$filter['disid']) {
 		foreach($dis->cats as $cat) {
