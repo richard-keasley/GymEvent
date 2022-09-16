@@ -465,7 +465,7 @@ public function import($event_id=0) {
 	return view('entries/import', $this->data);
 }
 
-public function export($event_id=0, $format='view') {
+public function export($event_id=0, $layout='view') {
 	$this->find($event_id);
 
 	// build user table
@@ -515,7 +515,7 @@ public function export($event_id=0, $format='view') {
 		} // end dis  
 	} // end entries
 
-	// check format requested 
+	// check layout requested 
 	$filetypes = [
 		'default' => '',
 		'sql' => 'sql.txt',
@@ -524,24 +524,157 @@ public function export($event_id=0, $format='view') {
 		'run' => ''
 	];
 	// use default if not valid
-	if(!isset($filetypes[$format])) $format = array_key_first($filetypes);
-	$filetype = $filetypes[$format];
+	if(!isset($filetypes[$layout])) $layout = array_key_first($filetypes);
+	$filetype = $filetypes[$layout];
 	
 	// download if filetype is set
 	if($filetype) {
-		if($format=='csv') {
+		if($layout=='csv') {
 			return $this->export_csv($this->data['export'], $this->data['event']->title);
 		}
-		$response = view("entries/export-{$format}", $this->data);
+		$response = view("entries/export-{$layout}", $this->data);
 		$filetitle = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $this->data['event']->title));
 		# return UTF8_BOM . '<pre>' . $response . '</pre>';
 		return $this->response->download("{$filetitle}.{$filetype}", UTF8_BOM . $response);
 	}
 			
 	$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
-	$suffix = $format=='run' ? 'run order' : 'export';
+	$suffix = $layout=='run' ? 'run order' : 'export';
 	$this->data['heading'] .= " - {$suffix}";
-	$this->data['format'] = $format;
+	$this->data['layout'] = $layout;
+	return view('entries/export', $this->data);	
+}
+
+
+public function x2($event_id=0, $type=null, $download=0) {
+	$this->find($event_id);
+
+	// build user table
+	$usr_model = new \App\Models\Users();
+	$ent_users = [];
+	foreach($this->data['entries'] as $dis) { 
+		foreach($dis->cats as $cat) { 
+			foreach($cat->entries as $entry) {
+				$user_id = $entry->user_id;
+				if($user_id && empty($ent_users[$user_id])) {
+					$ent_users[$user_id] = $usr_model->withDeleted()->find($user_id);
+				}
+			}	
+		}
+	}	
+	
+	// build export table
+	$this->data['export'] = []; $row = [];
+	foreach($this->data['entries'] as $dis) { 
+		$row['dis'] = [
+			'name' => $dis->name,
+			'abbr' => $dis->abbr
+		];
+		foreach($dis->cats as $cat) { 
+			$row['cat'] = [
+				'name' => $cat->name,
+				'abbr' => $cat->abbr,
+				'order' => $cat->sort,
+				'setid' => $cat->exercises
+			];
+			foreach($cat->entries as $entry) {
+				$row['entry'] = [
+					'club' => [
+						'name' => $ent_users[$entry->user_id]->name ?? '??',
+						'shortName' => $ent_users[$entry->user_id]->abbr ?? '?'
+					],
+					'number' => $entry->num,
+					'title' => $entry->name,
+					'dob' => $entry->dob
+				];
+				$row['order'] = $entry->get_rundata('order');
+				$row['run'] = $entry->get_rundata('export');
+				
+				$this->data['export'][] = $row;
+			}		
+			// end cat 
+		} // end dis  
+	} // end entries
+	
+	# d($this->data['export']);
+	
+	$layouts = [
+		'scoreboard' => 'table', 
+		'scoretable' => 'cattable', 
+		'runorder' => 'cattable',
+		'entries' => 'cattable'
+	];
+	if(empty($layouts[$type])) $type = array_key_first($layouts);
+	switch($type) {
+		case 'runorder':
+		$data = $this->data['export'];
+		// sort by running order, discipline, category, number
+		$rowsort = [
+			'order' => SORT_ASC, // from entry->runorder
+			'dis.abbr' => SORT_ASC,
+			'cat.order' => SORT_ASC,
+			'entry.number' => SORT_ASC 
+		];
+		$success = array_sort_by_multiple_keys($data, $rowsort);
+		$tbody = [];
+		foreach($data as $row) {
+			$tbody[] = [
+				'runorder' => implode(', ', $row['run']),
+				'dis' => $row['dis']['name'],
+				'cat' => $row['cat']['name'],
+				'num' => $row['entry']['number'],
+				'club' => $row['entry']['club']['shortName'],
+				'name' => $row['entry']['title']
+			];
+		}
+		$this->data['tbody'] = $tbody;
+		$this->data['headings'] = ['runorder', 'dis', 'cat'];
+		break;
+		
+		default:
+		
+	}
+	$this->data['type'] = $type;
+
+	$this->data['heading'] .= " - {$type}";
+	$this->data['layout'] = $layouts[$type];
+
+	$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
+	$suffix = $type=='run' ? 'run order' : 'export';
+	$this->data['layout'] = $layouts[$type];
+	return view('entries/export', $this->data);		
+	
+	
+	
+
+	// check export type requested 
+	$filetypes = [
+		'default' => '',
+		'sql' => 'sql.txt',
+		'csv' => 'csv', 
+		'scoretable' => 'csv',
+		'run' => ''
+	];
+	// use default if not valid
+	if(!isset($filetypes[$type])) $type = array_key_first($filetypes);
+	$filetype = $filetypes[$type];
+	
+	// download if filetype is set
+	if($filetype) {
+		if($type=='csv') {
+			return $this->export_csv($this->data['export'], $this->data['event']->title);
+		}
+		$response = view("entries/export-{$type}", $this->data);
+		$filetitle = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $this->data['event']->title));
+		# return UTF8_BOM . '<pre>' . $response . '</pre>';
+		return $this->response->download("{$filetitle}.{$filetype}", UTF8_BOM . $response);
+	}
+			
+	$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
+	$suffix = $type=='run' ? 'run order' : 'export';
+	$this->data['heading'] .= " - {$suffix}";
+	d($this->data['layout']);
+	$this->data['layout'] = $layouts[$type];
 	return view('entries/export', $this->data);	
 }
 

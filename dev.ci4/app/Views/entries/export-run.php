@@ -9,7 +9,7 @@ $rowsort = [
 $success = array_sort_by_multiple_keys($export, $rowsort);
 
 if(!$success) { ?>
-<p class="alert alert-danger">There was a problem with the the sorting.</p>
+<p class="alert alert-danger">There was a problem with the sorting.</p>
 <?php }
 
 $tbody = [];
@@ -24,5 +24,6 @@ foreach($export as $row) {
 	];
 }
 $headings = ['runorder', 'dis', 'cat'];
+
 $cattable = new \App\Views\Htm\Cattable($headings);
 echo $cattable->htm($tbody);

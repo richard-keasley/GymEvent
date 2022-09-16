@@ -2,7 +2,7 @@
 
 $this->section('content');
 if($export) {
-	include __DIR__ . "/export-{$format}.php";
+	include __DIR__ . "/export-{$layout}.php";
 }
 $this->endSection(); 
 
@@ -18,7 +18,7 @@ $formats = [
 	'run' => ['class' => "bi-list-ol", 'title' => "View running order"]
 ];
 foreach($formats as $req=>$attribs) {
-	if($req!=$format) {
+	if($req!=$layout) {
 		$href = "/admin/entries/export/{$event->id}/{$req}";
 		echo getlink($href, sprintf('<span %s></span>', stringify_attributes($attribs)));
 	}
