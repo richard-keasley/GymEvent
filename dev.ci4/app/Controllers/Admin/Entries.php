@@ -294,6 +294,23 @@ public function categories($event_id=0) {
 		$this->find($event_id);
 	}
 	
+	if($this->request->getPost('merge')) {
+		$source = intval($this->request->getPost('source'));
+		$dest = intval($this->request->getPost('dest'));
+		if($source && $dest && $source!==$dest) {
+			$where = ['category_id'=>$source];
+			$ent_ids = [];
+			foreach($this->ent_model->where($where)->findAll() as $tmp) $ent_ids[] = $tmp->id;
+			if($ent_ids) {
+				$update = ['category_id'=>$dest];
+				$this->ent_model->update($ent_ids, $update);
+				// read 
+				$this->find($event_id);
+				$this->data['messages'][] = ['Merged categories', 'success'];
+			}
+		}
+	}
+		
 	// view
 	$this->data['breadcrumbs'][] = "admin/entries/categories/{$event_id}";
 	
@@ -301,6 +318,7 @@ public function categories($event_id=0) {
 	
 	$this->data['heading'] .= ' - categories';
 	$this->data['filter'] = $filter;
+
 	return view('entries/categories', $this->data);
 }
 

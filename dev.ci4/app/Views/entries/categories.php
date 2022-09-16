@@ -118,10 +118,18 @@ if($dis->id==$filter['disid']) { ?>
 			$tr[$key] = $td;
 		}
 		
-		$count = count($cat->entries);
-		$count = $count ? " {$count}" : ' <button class="btn btn-danger bi-trash" type="button" onClick="delrow(this)"></button>';
-		$tr['last'] = getlink("admin/entries/edit/{$event->id}?disid={$dis->id}&catid={$cat->id}", 'edit') . $count;
+		$last = [];
+		$last[] = getlink("admin/entries/edit/{$event->id}?disid={$dis->id}&catid={$cat->id}", 'edit');
 				
+		$count = count($cat->entries);
+		if($count) {
+			$last[] = sprintf('<button title="merge this category" class="btn btn-warning bi-layer-backward" type="button" onClick="merge(%u, \'%s\')"></button>', $cat->id, $cat->name);
+			$last[] = $count;
+		}
+		else {
+			$last[] = '<button class="btn btn-danger bi-trash" type="button" onClick="delrow(this)"></button>';
+		}
+		$tr['last'] = implode(' ', $last);
 		$tbody[] = $tr;
 	}
 } 
@@ -154,6 +162,8 @@ $table->setTemplate($template);
 $table->setHeading('Add category');
 echo $table->generate([$tr]);
 ?>
+</div>
+
 <script>
 function delrow(el) {
 	var tr = el.parentElement.parentElement;
@@ -161,6 +171,13 @@ function delrow(el) {
 		input.value = '#delrow';
 	});
 	tr.style.display = "none";
+}
+
+function merge(cat_id, label) {
+	var mergeModal = new bootstrap.Modal('#mergeModal', {})
+	$('#mergeModal #mergefrom').html(label);
+	$('#mergeModal input[name=source]').val(cat_id);
+	mergeModal.show();
 }
 
 function newrow(show) {
@@ -176,7 +193,6 @@ function newrow(show) {
 	}
 }
 </script>
-</div>
 
 <section class="my-2">
 <?php if($exesets) { ?>
@@ -225,3 +241,50 @@ if($sb_disciplines) { ?>
 <?php echo form_close();
 
 $this->endSection(); 
+
+
+$this->section('bottom'); ?>
+<div class="modal fade" id="mergeModal" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog">
+<?php
+$attr = ['class' => "modal-content"];
+$hidden = ['merge' => '1', 'source'=>''];
+echo form_open($action, $attr, $hidden);
+?>
+
+<div class="modal-header">
+<h5 class="modal-title">Merge categories</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+<p>Move all entries from <span class="text-bg-light" id="mergefrom"></span> to another category.</p>
+<?php
+$options = [];
+foreach($entries as $dis) { 
+	if($dis->id==$filter['disid']) {
+		foreach($dis->cats as $cat) {
+			$options[$cat->id] = $cat->name;
+		}
+	}
+}
+$input = [
+	'name' => 'dest',
+	'options' => $options,
+	'class' => 'form-control'
+];
+echo form_dropdown($input);
+?>
+<p class="alert alert-danger p-1 mt-2">Be sure you have the correct categories before you merge.</p>
+</div>
+	  
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+<button type="submit" class="btn btn-primary">Merge</button>
+</div>
+
+<?php echo form_close();?>
+</div>
+</div>
+
+<?php $this->endSection();
