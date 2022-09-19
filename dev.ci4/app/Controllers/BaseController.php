@@ -71,12 +71,19 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	}
 }
 
-protected function export_csv($data, $filetitle='export') {
-	$filetype='csv';
-	$response = view("entries/export-{$filetype}", ['export'=>$data]);
+protected function download($data, $layout='table', $filetitle='') {
+	$filetype = 'csv';
+	$data['format'] = $filetype;
+	$response = view("export/{$layout}", $data);
 	$filetitle = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $filetitle));
-	# return UTF8_BOM . '<pre>' . $response . '</pre>';
-	return $this->response->download("{$filetitle}.{$filetype}", UTF8_BOM . $response);
+	
+// https://stackoverflow.com/questions/33592518/how-can-i-setting-utf-8-to-csv-file-in-php-codeigniter
+// prepend this to UTF8 file downloads
+# define('UTF8_BOM', chr(239) . chr(187) . chr(191)); 
+	$prepend = "\xEF\xBB\xBF"; 
+	
+	# return $prepend . '<pre>' . $response . '</pre>';
+	return $this->response->download("{$filetitle}.{$filetype}", $prepend . $response);
 }
 
 }

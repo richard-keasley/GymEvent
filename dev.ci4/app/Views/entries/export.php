@@ -1,28 +1,31 @@
 <?php $this->extend('default');
 
 $this->section('content');
-if($export) {
-	include __DIR__ . "/export-{$layout}.php";
+if($layout) {
+	echo view("export/{$layout}", $this->data);
 }
 $this->endSection(); 
 
 $this->section('top'); ?>
-<div class="toolbar"><?php 
+<form method="GET" id="selector" class="toolbar"><?php 
 echo \App\Libraries\View::back_link("entries/view/{$event->id}");
 
-$formats = [
-	'csv' => ['class' => "bi-file-spreadsheet", 'title' => "Download scoreboard spreadsheet"],
-	'scoretable' => ['class' => "bi-table", 'title' => "Download score tables"],
-	# 'sql' => ['class' => "bi-file-code", 'title' => "Download SQL script"],
-	'default' => ['class' => "bi-list", 'title' => "View scoreboard data"],
-	'run' => ['class' => "bi-list-ol", 'title' => "View running order"]
+$options = [];
+foreach($sources as $key) $options[$key] = $key;
+$input = [
+	'name' => "source",
+	'class' => "form-control",
+	'options' => $options,
+	'selected' => $source,
+	'style' => "max-width:10em"
 ];
-foreach($formats as $req=>$attribs) {
-	if($req!=$layout) {
-		$href = "/admin/entries/export/{$event->id}/{$req}";
-		echo getlink($href, sprintf('<span %s></span>', stringify_attributes($attribs)));
-	}
-}
-?></div>
+echo form_dropdown($input);
+?>
+<button type="submit" name="action" value="download"class="btn btn-secondary" title="Download this as spreadsheet"><i class="bi bi-table"></i></button>
+<script>
+$(function() {
+$('[name=source]').change(function() { $('#selector').submit(); });
+});
+</script>
+</form>
 <?php $this->endSection(); 
-

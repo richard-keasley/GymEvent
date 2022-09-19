@@ -54,10 +54,10 @@ $ci_folder = dirname(dirname($systemDirectory));
 <h3>Colour scheme</h3>
 <div class="my-2 d-flex flex-wrap">
 <?php 
-$prefixes = ['text-bg-', 'text-', 'bg-opacity-25 bg-'];
+$prefixes = ['text-bg-', 'text-', 'bg-opacity-25 bg-', 'm-0 alert alert-'];
 $colours = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 foreach($prefixes as $prefix) { ?>
-	<div class="px-2" style="width:100%; max-width:16em"><?php 
+	<div class="px-2 w-100" style="max-width:16em"><?php 
 	foreach($colours as $colour) {
 		$class = $prefix . $colour;
 		printf('<div class="p-1 %1$s">%1$s</div>', $class);

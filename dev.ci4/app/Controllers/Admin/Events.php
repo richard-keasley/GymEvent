@@ -250,7 +250,10 @@ public function edit($event_id=0) {
 private function export($tbody, $suffix='') {
 	$filetitle = $this->data['event']->title;
 	if($suffix) $filetitle .= "_{$suffix}";
-	return $this->export_csv($tbody, $filetitle);
+	$data = [
+		'export' => $tbody
+	];
+	return $this->download($data, 'table', $filetitle);
 }
 	
 }

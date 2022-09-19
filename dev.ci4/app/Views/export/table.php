@@ -1,4 +1,6 @@
 <?php
+$format = $format ?? 'htm';
+
 $thead = []; $tbody = [];
 foreach($export as $row) {
 	$row = array_flatten_with_dots($row);
@@ -10,12 +12,14 @@ foreach($export as $row) {
 	$tbody[] = $row;
 }
 
-if(1) {
+switch($format) {
+	case 'htm':
 	$table = \App\Views\Htm\Table::load('bordered');
 	$table->setHeading($thead);
 	echo $table->generate($tbody);
-}
-else {
+	break;
+
+	default:
 	$fp = fopen('php://output', 'w');
 	fputcsv($fp, $thead);
 	foreach($tbody as $row) fputcsv($fp, $row);

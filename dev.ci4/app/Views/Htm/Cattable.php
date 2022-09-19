@@ -1,95 +1,121 @@
 <?php namespace App\Views\Htm;
 
 class Cattable {
-private $table = null; 
-
-public $data = [];
+public $data = null;
 public $headings = []; // data columns to convert to HTM headings
 public $table_header = false; // include table header
 public $template_name = 'bordered'; // table template
+private $compiled = null; // compiled data
 
 public function __construct($headings=[]) {
 	$this->headings = $headings;
 }
 
-public function htm($data = false) {
-	if(!$data) $data = $this->data;
-	if(!$data) return;
+public function compile() {
+	if(!$this->data) {
+		$this->compiled = false;
+		return;
+	}
+	
+	// headings
+	$prev_headings = [];
+	foreach($this->headings as $level=>$fldname) {
+		$prev_headings[$level] = '';
+	}
+	$headings = [];
 
-	$this->table = \App\Views\Htm\Table::load($this->template_name);
-	
-	// HTM heading
-	$headings = []; $formats = []; $new_headings = [];
-	foreach($this->headings as $key=>$fldname) {
-		$headings[$fldname] = '';
-		$new_headings[$fldname] = '';
-		$lvl = $key + 3;
-		$formats[$fldname] = "<h{$lvl}>%s</h{$lvl}>";
-	}
-
-	// table header
-	if($this->table_header) {
-		$thead = [];
-		foreach(array_keys(current($data)) as $fldname) {
-			if(!isset($headings[$fldname])) {
-				$thead[] = $fldname;
-			}
-		}
-	}
-	else $thead = false;
-	
-	ob_start();
-	
-	# d($this->headings);
-	# d($thead);
-	# d($data);
-	
-	echo '<section class="cattable">';
-	$tbody = []; $this_row = [];
-	$show_heading = false; // HTM heading
-	foreach($data as $row) {
-		foreach($row as $fldname=>$val) {
-			if(isset($headings[$fldname])) {
-				if($headings[$fldname]!==$val) {
-					$headings[$fldname] = $val;
-					if(!$show_heading) $show_heading = $fldname;
+	// build categorised tables
+	$compiled = [];
+	$catkey = 0;
+	foreach($this->data as $row) {
+		// headings
+		foreach($this->headings as $level=>$fldname) {
+			if(isset($row[$fldname])) {
+				$heading = $row[$fldname];
+				// check if new category
+				if($headings || ($heading!=$prev_headings[$level])) {
+					$prev_headings[$level] = $heading;
+					$headings[$level] = $heading;
 				}
-				# $this_row[$fldname] = $val;
-			}
-			else {
-				$this_row[$fldname] = $val;
+				// remove headings from row
+				unset($row[$fldname]);
 			}
 		}
-		if($show_heading) {
-			echo $this->generate($tbody, $thead);
-			$tbody = [];
-			$in_heading = false;
-			foreach($headings as $fldname=>$val) {
-				if($fldname==$show_heading) $in_heading = true;
-				if($in_heading) {
-					printf($formats[$fldname], $val);
-				}
-			}
-			$show_heading = false;
+		
+		if($headings) {
+			$catkey++;
+			$compiled[$catkey] = [
+				'headings' => $headings,
+				'tbody' => []
+			];
+			#$prev_headings = $headings;
+			$headings = [];
 		}
-		$tbody[] = $this_row;
+		$compiled[$catkey]['tbody'][] = $row;
 	}
+	# d($compiled);
+	$this->compiled = $compiled;
+}
+public function csv($data = false) {
+	if($data) $this->data = $this->data;
+	$this->compile();
+	if(!$this->compiled) return;
 	
-	echo $this->generate($tbody, $thead);
-	echo '</section>';
+	$blank_row = [''];
+	
+	ob_start(); 
+	$fp =  fopen('php://output', 'w');
+	foreach($this->compiled as $cattable) { 
+		foreach($cattable['headings'] as $level=>$heading) {
+			fputcsv($fp, [$heading]);
+		}
+		
+		if($this->table_header) {
+			$row = current($cattable['tbody']);
+			$thead = array_keys($row);
+			fputcsv($fp, $thead);
+		}
+		foreach($cattable['tbody'] as $row) {
+			fputcsv($fp, $row);
+		}
+		fputcsv($fp, $blank_row);
+	} 
 	return ob_get_clean();
 }
 
-private function generate($tbody, $thead) {
-	if(!$tbody) return '';
-	
-	if($thead) {
-		$this->table->setHeading($thead);
-	}
-	else {
-		$this->table->autoHeading = false;
-	}
-	return $this->table->generate($tbody);
+public function htm($data = false) {
+	if($data) $this->data = $this->data;
+	$this->compile();
+	if(!$this->compiled) return;
+		
+	$table = \App\Views\Htm\Table::load($this->template_name);
+	ob_start(); 
+	?>
+	<div class="cattables">
+	<?php foreach($this->compiled as $cattable) { ?>
+		<section><?php 
+		
+		foreach($cattable['headings'] as $level=>$heading) {
+			$hl = $level + 2; // heading level
+			$tag = $hl>6 ? 'p' : "h{$hl}"; 
+			echo "<{$tag}>{$heading}</{$tag}>";
+		}
+		
+		if($this->table_header) {
+			$row = current($cattable['tbody']);
+			$thead = array_keys($row);
+			$table->setHeading($thead);		
+		}
+		else {
+			$table->autoHeading = false;
+		}
+		echo $table->generate($cattable['tbody']);
+		
+		?></section>
+	<?php } ?>
+	</div>
+	<?php
+	return ob_get_clean();
 }
 
 }
