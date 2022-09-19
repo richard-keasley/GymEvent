@@ -1,21 +1,31 @@
 <?php $this->extend('default');
 
 $this->section('content');
-if($layout) {
+if($layout && $source) {
+	?>
+	<p class="alert alert-light p-1"><?php
+	echo match($source) {
+		'score_table' => 'Manual score sheets',
+		'scoreboard' => 'Data for importing into the scoreboard app',
+		'run_order' => 'Running order',
+		'entries' => 'Entries in this event',
+		'entry_list' => 'Numbered list of entries',
+		default => "Export {$source}"
+	};
+	?></p>
+	<?php 
 	echo view("export/{$layout}", $this->data);
 }
 $this->endSection(); 
 
 $this->section('top'); ?>
-<form method="GET" id="selector" class="toolbar"><?php 
+<form method="GET" id="selector" class="toolbar sticky-top"><?php 
 echo \App\Libraries\View::back_link("entries/view/{$event->id}");
 
-$options = [];
-foreach($sources as $key) $options[$key] = $key;
 $input = [
 	'name' => "source",
 	'class' => "form-control",
-	'options' => $options,
+	'options' => $source_opts,
 	'selected' => $source,
 	'style' => "max-width:10em"
 ];

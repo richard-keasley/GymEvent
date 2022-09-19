@@ -11,7 +11,7 @@ public function __construct($headings=[]) {
 	$this->headings = $headings;
 }
 
-public function compile() {
+private function compile() {
 	if(!$this->data) {
 		$this->compiled = false;
 		return;
@@ -56,6 +56,7 @@ public function compile() {
 	# d($compiled);
 	$this->compiled = $compiled;
 }
+
 public function csv($data = false) {
 	if($data) $this->data = $this->data;
 	$this->compile();
@@ -69,6 +70,7 @@ public function csv($data = false) {
 		foreach($cattable['headings'] as $level=>$heading) {
 			fputcsv($fp, [$heading]);
 		}
+		fputcsv($fp, $blank_row);
 		
 		if($this->table_header) {
 			$row = current($cattable['tbody']);

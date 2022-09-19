@@ -67,27 +67,27 @@ foreach($entries as $dis) {
 }
 
 if($tbody) {
+	# helper('text');
 	array_multisort($orderby, $tbody);
 	$track_count = 0;
 	$tfoot = ['club' => count($tbody) . ' clubs'];
-	$attr = [
-		'style' => "width:10em;",
-		'class' => "d-block overflow-hidden"
-	];
 	$thead = ['club' => 'club'];
-	// used for state header
-	$attr = [
-		'style' => "width:4em;",
-		'class' => "d-block overflow-hidden"
-	];
+	
 	foreach($state_labels as $state_label) {
-		$thead[$state_label] =  anchor("/admin/music/view/{$event->id}?status={$state_label}", $state_label);
-			$column = array_column($tbody, $state_label);
+		$href = "/admin/music/view/{$event->id}?status={$state_label}";
+		$attrs = [
+			'style' => "width:4em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;",
+			'title' => $state_label,
+			'class' => "d-block"
+		];
+		$thead[$state_label] = anchor($href, $state_label, $attrs);
+		$column = array_column($tbody, $state_label);
 		$sum = array_sum($column);
 		$track_count += $sum;
 		$tfoot[$state_label] = $sum ? sprintf('%u / %u', $sum, count(array_filter($column))) : '' ;
 		foreach($tbody as $rowkey=>$row) {
-			if(!$row[$state_label]) $tbody[$rowkey][$state_label] = '';
+			$val = $row[$state_label];
+			$tbody[$rowkey][$state_label] = $val ? \App\Views\Htm\Table::number($val) : '';
 		}
 	}
 	$tfoot['club'] = sprintf('%u tracks / %u clubs', $track_count, count($tbody));

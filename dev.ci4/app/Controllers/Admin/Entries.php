@@ -484,21 +484,13 @@ public function export($event_id=0, $download=0) {
 			}	
 		}
 	}	
-		
-	$source = $this->request->getGet('source');
-	$layouts = [
-		'scoreboard' => 'table', 
-		'scoretable' => 'cattable', 
-		'runorder' => 'cattable',
-		'entries' => 'cattable'
-	];
-	if(empty($layouts[$source])) $source = array_key_first($layouts);
-	$layout = $layouts[$source];
 	
 	// build export table
-	$export_table = [];
+	$source = $this->request->getGet('source');
+	$export_table = []; 
+	$this->data['headings'] = [];
 	switch($source) {
-		case 'runorder':
+		case 'run_order':
 		$sort = [[],[],[],[]];
 		foreach($this->data['entries'] as $dis) {
 			foreach($dis->cats as $cat) {
@@ -519,11 +511,11 @@ public function export($event_id=0, $download=0) {
 			}
 		}
 		array_multisort($sort[0], $sort[1], $sort[2], $sort[3], $export_table);
-		$this->data['export'] = $export_table;
+		$layout = 'cattable';
 		$this->data['headings'] = ['runorder', 'dis', 'cat'];
 		break;
 		
-		case 'scoretable':
+		case 'score_table':
 		// build export table
 		$scoreboard = new \App\ThirdParty\scoreboard;
 		$exesets = [];
@@ -544,10 +536,10 @@ public function export($event_id=0, $download=0) {
 				
 				$exeset = $exesets[$cat->exercises] ?? [] ;
 				foreach($exeset as $exe) {
-					$tr[$exe['ShortName']] = '-';
+					$tr[$exe['ShortName']] = '';
 				}
-				$tr['Tot'] = 0;
-				$tr['Pos'] = 1;
+				$tr['Tot'] = '';
+				$tr['Pos'] = '';
 																
 				foreach($cat->entries as $rowkey=>$entry) {
 					$tr['num'] = $entry->num;
@@ -557,9 +549,8 @@ public function export($event_id=0, $download=0) {
 				}
 			}
 		}
-		
+		$layout = 'cattable';
 		$this->data['headings'] = ['dis', 'cat'];
-		$this->data['export'] = $export_table;
 		break;
 		
 		case 'entries':
@@ -576,12 +567,30 @@ public function export($event_id=0, $download=0) {
 				}
 			}
 		}
+		$layout = 'cattable';
 		$this->data['headings'] = ['dis', 'cat'];
-		$this->data['export'] = $export_table;	
 		break;
 		
-		case 'scoreboard':
+		case 'entry_list':
+		$sort = [];
+		foreach($this->data['entries'] as $dis) {
+			foreach($dis->cats as $cat) {
+				foreach($cat->entries as $rowkey=>$entry) {
+					$export_table[] = [
+						'num' => $entry->num,
+						'name' => $entry->name
+					];
+					$sort[] = $entry->num;
+				}
+			}
+		}
+		array_multisort($sort, $export_table);
+
+		$layout = 'table';
+		break;
+		
 		default:
+		$source = 'scoreboard';
 		// build export table
 		$row = [];
 		foreach($this->data['entries'] as $dis) { 
@@ -616,20 +625,28 @@ public function export($event_id=0, $download=0) {
 			// end dis  
 		} 
 		// end entries
-		$this->data['export'] = $export_table;	
+		$layout = 'table';
 	}
+	$this->data['export'] = $export_table;
 	
 	$action = $this->request->getGet('action');
 	if($action=='download') {
 		return $this->download($this->data, $layout, $source);
 	}
-
+	
 	// view
-	$this->data['sources'] = array_keys($layouts);
 	$this->data['source'] = $source;
-	$this->data['heading'] .= " - {$source}";
+	$this->data['heading'] .= ' - ' . humanize($source);
 	$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
 	$this->data['layout'] = $layout;
+
+	// valid sources
+	$arr = ['scoreboard', 'score_table', 'run_order', 'entries', 'entry_list'];
+	$this->data['source_opts'] = [];
+	foreach($arr as $key) {
+		$this->data['source_opts'][$key] = humanize($key);
+	}
+
 	return view('entries/export', $this->data);			
 }
 
