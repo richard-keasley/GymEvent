@@ -1,7 +1,10 @@
 <p>The media player should play most formats. Click a track to start playing.</p>
 <p>If the browser won't play the track, you can <em>sometimes</em> play the track on your local machine if you download it. For example: the browser will not play Windows Media files (<code>.wma</code>), but any Windows machine will be able to play these tracks once they are downloaded.</p>
 
-<h3>Finding tracks</h3>
+<p>If a track has been converted (because it wouldn't play), the original track should be stored in <code>~/orig</code>.</p>
+
+<hr>
+<h5>Finding tracks</h5>
 <?php
 $event_id = intval(basename(previous_url()));
 $track_type = 'mp3';
@@ -27,3 +30,5 @@ $filebase = $track->filebase($track_type);
 </ul>
 
 <p>Use this information to manually add tracks to the play list.</p>
+
+<p>If the track has been converted, the original track should be here: <code><?php echo base_url() . $track->urlpath() . 'orig/' . $track->filebase('*');;?></code></p>

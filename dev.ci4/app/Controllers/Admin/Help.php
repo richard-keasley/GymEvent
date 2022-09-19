@@ -35,4 +35,13 @@ public function view($key=0) {
 	return view('admin/help/view', $this->data);
 }
 
+public function stub() {
+	$viewname = $this->request->getGet('view');
+	$include = $this->data['filebase'] . "/{$viewname}.php";
+	$this->data['include'] = file_exists($include) ? $include : '';
+	if(!$this->data['include']) $this->data['messages'][] = "No help file found";
+	
+	return view('admin/help/view', $this->data);
+}
+
 }

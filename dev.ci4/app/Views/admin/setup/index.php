@@ -58,9 +58,8 @@ echo form_dropdown($input);
 <p>You are viewing device <code><?php echo $device;?></code>.</p>
 
 <nav class="nav flex-column">
-
-<div class="nav-link text-primary" style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalHelp" data-stub="setup">Permissions</div>
 <?php 
+echo getlink('admin/help/stub?view=setup', 'Permissions');
 echo getlink('setup/scoreboard', 'Scoreboard');
 echo getlink('setup/php_info', 'PHP info');
 echo getlink('setup/appvars', 'App variables');

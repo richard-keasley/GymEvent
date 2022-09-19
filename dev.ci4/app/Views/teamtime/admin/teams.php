@@ -23,23 +23,26 @@ echo form_open(base_url(uri_string()), $attr); ?>
 	<h5 class="modal-title" id="exampleModalLabel">Edit teams</h5>
 	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-<div class="modal-body">
-	<?php 
-	$value = [];
-	$get_var = $tt_lib::get_var('teams');
-	foreach($get_var->value as $row) {
-		$value[] = implode("\t", $row);
-	}
 
-	$input = [
-		'class' => "form-control",
-		'rows' => "20",
-		'name' => "teams",
-		'value' => implode("\n", $value)
-	];
-	echo form_textarea($input);
-	?>
+<div class="modal-body">
+<p>Each row is <code>number team_name</code>. Do not use column headers. Team names with multiple words is allowed (no underscore needed).</p>
+<?php 
+$value = [];
+$get_var = $tt_lib::get_var('teams');
+foreach($get_var->value as $row) {
+	$value[] = implode("\t", $row);
+}
+
+$input = [
+	'class' => "form-control",
+	'rows' => "20",
+	'name' => "teams",
+	'value' => implode("\n", $value)
+];
+echo form_textarea($input);
+?>
 </div>
+
 <div class="modal-footer">
 	<button class="btn btn-primary" type="submit" name="save" value="1">Save</button>
 	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
