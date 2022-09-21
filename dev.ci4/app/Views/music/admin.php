@@ -20,6 +20,7 @@ echo form_open($self, $attr, $hidden);
 		<button class="btn btn-success" type="submit" name="val" value="1" title="checked"><i class="px-1 bi-check-square"></i></button>
 		<button class="btn btn-info" type="submit" name="val" value="2" title="withdrawn"><i class="px-1 bi-x-square"></i></button>
 	</div>
+	<iframe name="player" style="height:3rem;"></iframe>
 </div>
 
 <?php
@@ -140,33 +141,6 @@ echo getlink("admin/music/clubs/{$event->id}", 'clubs');
 <div class="col-auto">
 	<button type="submit" class="btn btn-primary">get</button>
 </div>
-<script>
-const selector = <?php echo json_encode($selector);?>;
-const filter = <?php echo json_encode($filter);?>;
-let $dis_sel = null;
-let $cat_sel = null;
-let dis_id = 0;
-let selected = '';
-
-$(function() {
-$dis_sel = $('[name=dis]');
-$cat_sel = $('[name=cat]');
-update_selector();
-$dis_sel.change(function() { update_selector(); });
-});
-
-function update_selector(dis_id) {
-	dis_id = $dis_sel.val()
-	$cat_sel.find('option').remove();
-	$cat_sel.append('<option value="0">-</option>');
-	$.each(selector[dis_id], function(value, text) {
-		selected = value==filter.cat ? 'selected="selected"' : '' ;
-        $cat_sel.append('<option value="'+value+'" '+selected+'>'+text+'</option>');
-	});
-	if(dis_id=='0') $cat_sel.hide();
-	else $cat_sel.show();
-}
-</script> 
 </form> 
 
 <?php $this->endSection();
@@ -204,13 +178,6 @@ foreach(\App\Entities\Event::states as $state_label=>$state) {
 } 
 ?>
 </div>
-<script>
-$(function() {
-	$('#frmstate [name=music]').click(function(){
-		$('#frmstate').submit();
-	});
-});
-</script>
 </div>
 
 <div class="modal-footer">
@@ -219,6 +186,40 @@ $(function() {
 <?php echo form_close();?>
 </div>
 </div>
+
+<script>
+const selector = <?php echo json_encode($selector);?>;
+const filter = <?php echo json_encode($filter);?>;
+let $dis_sel = null;
+let $cat_sel = null;
+let dis_id = 0;
+let selected = '';
+
+$(function() {
+	$dis_sel = $('[name=dis]');
+	$cat_sel = $('[name=cat]');
+	update_selector();
+
+	$('#frmstate [name=music]').click(function(){
+		$('#frmstate').submit();
+	});
+	$dis_sel.change(function() {
+		update_selector(); 
+	});
+});
+
+function update_selector(dis_id) {
+	dis_id = $dis_sel.val()
+	$cat_sel.find('option').remove();
+	$cat_sel.append('<option value="0">-</option>');
+	$.each(selector[dis_id], function(value, text) {
+		selected = value==filter.cat ? 'selected="selected"' : '' ;
+        $cat_sel.append('<option value="'+value+'" '+selected+'>'+text+'</option>');
+	});
+	if(dis_id=='0') $cat_sel.hide();
+	else $cat_sel.show();
+}
+</script>
 
 <?php 
 # d($filter);
