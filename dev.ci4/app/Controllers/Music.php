@@ -73,7 +73,11 @@ public function view($event_id=0) {
 				if($cat_entries) {
 					$perm_entries = [];
 					foreach($cat_entries as $entry) {
-						if($entry->perm('music', 'view')) $perm_entries[] = $entry;
+						// make this page user specific (even if you are admin)
+						# if($entry->perm('music', 'view')) {
+						if($entry->user_id == session('user_id')) {
+							$perm_entries[] = $entry;
+						}
 					}
 					if($perm_entries) {
 						$cat_opts[$cat->id] = "{$dis->abbr} - {$cat->name}";
