@@ -29,7 +29,10 @@ if($event->deleted_at) { ?>
 		echo getlink("admin/entries/view/{$event->id}", 'entries');
 		echo getlink("admin/entries/export/{$event->id}", 'export');
 	}
-	echo $event->link('music');
+	if($event->link('music')) {
+		echo getlink("admin/music/view/{$event->id}", 'music');
+
+	}
 	echo $event->link('player');
 	echo $event->link('videos');
 } 
