@@ -135,8 +135,15 @@ public function edit($entry_id=0) {
 		if(!$file) $error = 'No file selected';
 		if(!$error && !$file->isValid()) $error = $file->getErrorString();
 		if(!$error) {
+			/*
+			d($file);
+			sometimes returns "bin" for "mp3" ... dunno why
 			$extension = $file->getExtension();
-			if(!in_array($extension, \App\Libraries\Track::exts_allowed)) $error = "{$extension} files are not allowed";
+			use client extension... that will be used after upload
+			https://codeigniter.com/user_guide/libraries/uploaded_files.html
+			*/
+			$extension = $file->getClientExtension();
+			if(!in_array($extension, \App\Libraries\Track::exts_allowed)) $error = "Files of type '{$extension}' are not allowed";
 		}
 		if(!$error) {
 			$filesize = $file->getSizeByUnit('mb');
