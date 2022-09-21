@@ -181,10 +181,10 @@ public function auto($ch_id=0) {
 	return view("player/auto", $this->data);
 }
 
-private function get_track($track, $server='www.gymevent.uk') {
+private function get_track($track, $server='gymevent.uk') {
 	if(!$track) return false;
 		
-	$host = parse_url(base_url(),  PHP_URL_HOST);
+	$host = parse_url(base_url(), PHP_URL_HOST);
 	if($host==$server) {
 		$this->data['messages'][] = "Already viewing source ({$server})";
 		return false;
@@ -197,6 +197,7 @@ private function get_track($track, $server='www.gymevent.uk') {
 	}
 	// get filename
 	$url = "https://{$server}/music/get_track/{$track->event_id}/{$track->entry_num}/{$track->exe}";
+	# $url = "https://{$server}/music/get_track/19/{$track->entry_num}/{$track->exe}";
 	$client = \Config\Services::curlrequest();
 	$options = [
 		'http_errors' => false
@@ -205,7 +206,7 @@ private function get_track($track, $server='www.gymevent.uk') {
 	$status = $response->getStatusCode();
 	$source = $response->getBody();
 	if($status > 300) {
-		$this->data['messages'][] = "{$server} [{$status}]: {$source}";
+		$this->data['messages'][] = "{$url} [{$status}]<br>synch failed";
 		return false;
 	}
 	$filename = basename($source);

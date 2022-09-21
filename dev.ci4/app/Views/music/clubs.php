@@ -19,11 +19,11 @@ $('#selform [name=status]').change(function() {
 </script>
 </form>
 <?php 
-# d($attr);
-
 # d($event);
 # d($entries);
 # d($users);
+# d($state_labels);
+# d($status);
 
 $track = new \App\Libraries\Track();
 $track->event_id = $event->id;
@@ -31,6 +31,11 @@ $track->event_id = $event->id;
 $tbody = []; $orderby = [];
 $new_row = ['club' => ''];
 foreach($state_labels as $state_label) $new_row[$state_label] = 0;
+
+$email = [
+	'to' => [],
+	'subject' => $event->title .' - music upload'
+];
 
 foreach($entries as $dis) {
 	foreach($dis->cats as $cat) {
@@ -49,7 +54,8 @@ foreach($entries as $dis) {
 						if($user) {
 							$club = anchor("/admin/music/view/{$event->id}?user={$user_id}", $user->name) . ' ' . $user->link() ;
 							if($user->email) {
-								$club .= ' ' . mailto("{$user->email}?subject={$event->title} - music upload", '<i class="bi-envelope"><i>', ['title' => $user->email]);
+								$club .= ' ' . mailto("{$user->email}?subject={$email['subject']}", '<i class="bi-envelope"></i>', ['title' => $user->email]);
+								$email['to'][] = $user->email;
 							}
 							$orderby[$user_id] = $user->name;
 							$tbody[$user_id]['club'] = $club;
@@ -67,7 +73,6 @@ foreach($entries as $dis) {
 }
 
 if($tbody) {
-	# helper('text');
 	array_multisort($orderby, $tbody);
 	$track_count = 0;
 	$tfoot = ['club' => count($tbody) . ' clubs'];
@@ -96,6 +101,27 @@ if($tbody) {
 	$table->setFooting($tfoot);
 	$table->setHeading($thead);
 	echo $table->generate($tbody);
+
+	if($status) { ?>
+	<section>
+		<h5>Email</h5>
+		<p><strong>Subject:</strong> <?php echo $email['subject'];?></p>
+		<p><?php 
+			$href = sprintf('%s?subject=%s', implode(',', $email['to']), $email['subject']);
+			echo mailto($href, '<i class="bi-envelope"></i> Send email to these clubs');
+		?></p>
+		<section>
+		<p>Dear club,</p>
+		<p>This is a reminder you must complete your music upload for the 
+		<em><?php echo $event->title;?></em>
+		by the end of today.</p>
+		<p>Please upload your remaining music as soon as you can.</p>
+		<p>https://gymevent.uk/music/view/<?php echo $event->id;?></p>
+		<p>Please contact Richard if you are struggling to do this.</p>
+		<p>Richard</p>
+		</section>
+	</section>
+	<?php } 
 }
 
 $this->endSection(); 
