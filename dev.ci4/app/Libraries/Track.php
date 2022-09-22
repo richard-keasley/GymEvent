@@ -95,16 +95,35 @@ public function view($opts=[]) {
 
 	$ret = [];
 	switch($icon) {
+		/* 
+		ToDo: make play-btn call JS held within each view
+		Then can make media player on each page (along with info on the track being played
+		$params = [$this->event_id, $this->entry_num, $this->exe];
+		'onClick' = sprintf('play_track(%s)', implode(',', $params));
+		*/
 		case 'play-btn':
-			$ret[] = sprintf('<span title="%s" class="btn btn-%s bi-%s" onclick="window.open(\'%s\', \'player\', \'width=500,height=100,menubar=0,status=0\')"></span>', 
-				$title, $colour, $icon, $this->url());
+			$attrs = [
+				'title' => $title,
+				'class' => "btn btn-{$colour} bi-{$icon}",
+				'onClick' => "window.open('{$this->url()}', 'player', 'width=500,height=100,menubar=0,status=0')"
+			];
+			$ret[] = sprintf('<span %s></span>', stringify_attributes($attrs));
 			break;
-		default: 
-			$ret[] = sprintf('<span title="%s" class="text-%s bi-%s"></span>',
-				$title, $colour, $icon);
+		default:
+			$attrs = [
+				'title' => $title,
+				'class' => "text-{$colour} bi-{$icon}"
+			];
+			$ret[] = sprintf('<span %s></span>', stringify_attributes($attrs));			
 	}
 	if(in_array('checkbox', $opts)) {
-		$ret[] = sprintf('<input name="trk_%s" type="checkbox" value="1" class="form-check-input">', $this->filebase());
+		$attrs = [
+			'name' => "trk_" . $this->filebase(),
+			'type' => "checkbox",
+			'value' => "1",
+			'class' => "form-check-input"
+		];
+		$ret[] = form_input($attrs);
 	}
 	return sprintf('<span class="track">%s</span>', implode(' ', $ret));
 } 

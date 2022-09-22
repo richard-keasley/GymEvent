@@ -1,5 +1,4 @@
 <?php $this->extend('default');
-$table = \App\Views\Htm\Table::load('default');
 
 $this->section('content'); 
 
@@ -14,11 +13,17 @@ $track->event_id = $event->id;
 <form method="GET" id="selector" class="mb-2 toolbar">
 <?php 
 echo getlink("admin/music/view/{$event->id}", 'admin');
-echo form_dropdown('cat', $cat_opts, $filter['cat'], 'class="form-control"');
+$input = [
+	'name' => "cat",
+	'options' => $cat_opts,
+	'selected' => $filter['cat'],
+	'class' => "form-control"
+];
+echo form_dropdown($input);
 ?>
 <script>
 $(function() {
-	$('#selector [name=cat]').change(function(){
+	$('#selector [name=cat]').change(function() {
 		$('#selector').submit();
 	});
 });
@@ -26,10 +31,10 @@ $(function() {
 </form>
 
 <?php if($event->music<2) { ?>
-<p>Click on <span class="text-primary"><span class="bi bi-pencil"></span> edit</span> to upload new tracks for each entry.</p>
-<?php } ?>
+	<p>Click <span class="text-primary"><span title="edit this entry" class="bi bi-pencil"></span> edit</span> to upload new tracks for each entry.</p>
+<?php } 
 
-<?php
+$table = \App\Views\Htm\Table::load('responsive');
 foreach($entries as $dis) { ?>
 	<section><h4><?php echo $dis->name;?></h4>
 	<?php foreach($dis->cats as $cat) {
@@ -49,7 +54,8 @@ foreach($entries as $dis) { ?>
 				if(!$key) $thead[] = $track->exe;
 			}
 			if($entry->perm('music', 'edit')) {
-				$tr[] = getlink($entry->url('music'), '<span class="bi bi-pencil"></span>');
+				$label = sprintf('<span title="edit track for %s/%s" class="bi bi-pencil"></span>', $entry->num, $track->exe);
+				$tr[] = getlink($entry->url('music'), $label);
 			}
 			$tbody[] = $tr;
 		}
