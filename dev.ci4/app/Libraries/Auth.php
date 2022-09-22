@@ -40,11 +40,10 @@ static function login_request($post=[]) {
 		return null;
 	}
 	
-	$postUser = new \App\Entities\User($post);
-	$postUser->name = trim($postUser->name);
-	$postUser->password = trim($postUser->password);
-	$postUser->password2 = trim($postUser->password2);
-	return $postUser;		
+	foreach(['name', 'password', 'password2'] as $key) {
+		$post[$key] = trim($post[$key] ?? '');
+	}
+	return new \App\Entities\User($post);	
 }
 
 static function loginas($user_id, $method='login') {

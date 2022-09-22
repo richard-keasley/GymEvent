@@ -55,7 +55,9 @@ echo form_dropdown($input);
 </div>
 
 <div class="col-auto">
-<p>You are viewing device <code><?php echo $device;?></code>.</p>
+<p>You are viewing device 
+<code><?php echo $device;?></code> -
+<code><?php echo base_url();?></code>.</p>
 
 <nav class="nav flex-column">
 <?php 
