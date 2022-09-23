@@ -24,6 +24,7 @@ public function evt_discats($event_id, $entries=1, $orderby='num') {
 			->where('discipline_id', $dis->id)
 			->orderBy('sort', 'ASC')
 			->findAll();
+		$dis->cats = []; // in case there's nothing returned
 		foreach($cats as $cat_key=>$entrycat) {
 			$entrycat->entries = $entries ? $this->cat_entries($entrycat->id, $orderby) : [] ;
 			$dis->cats[$cat_key] = $entrycat;
@@ -149,7 +150,6 @@ public function delete_category($category_id) {
 	$this->entrycats->delete($category_id);
 }
 
-
 public function populate($event_id) {
 	// check event 
 	$mdl_events = new \App\Models\Events;
@@ -159,7 +159,8 @@ public function populate($event_id) {
 	// read participants from club returns
 	$participants = $event->participants();
 	if(!$participants) return false;
-	
+	# d($participants); return false;
+		
 	$this->delete_event($event_id);
 	$count = 0;
 	// copy participants from club returns to entries
@@ -172,12 +173,14 @@ public function populate($event_id) {
 				'sort' => sprintf('%03u', $sort)
 			];
 			$cat_id = $this->entrycats->insert($cat_arr);
-			foreach($cat['entries'] as $entkey=>$entry) {
-				$entry['category_id'] = $cat_id;
-				unset($entry['club']);
-				$entry['dob'] = date('Y-m-d', $entry['dob']);
-				$this->add_entry($entry);
-				$count++;
+			if($cat_id) {
+				foreach($cat['entries'] as $entkey=>$entry) {
+					$entry['category_id'] = $cat_id;
+					unset($entry['club']);
+					$entry['dob'] = date('Y-m-d', $entry['dob']);
+					$this->add_entry($entry);
+					$count++;
+				}
 			}
 		}
 	}
@@ -211,7 +214,7 @@ protected $returnType   = 'App\Entities\EntryCat';
 
 protected $validationRules = [
 	'discipline_id' => 'integer|greater_than[0]',
-	'name' => 'required|min_length[2]'
+	'name' => 'required|min_length[1]'
 ];
 protected $beforeInsert = ['beforeInsert'];
 

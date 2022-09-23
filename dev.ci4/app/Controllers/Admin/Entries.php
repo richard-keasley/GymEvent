@@ -505,11 +505,12 @@ public function export($event_id=0, $download=0) {
 					];
 					$sort[0][] = $entry->get_rundata('order');
 					$sort[1][] = $dis->abbr;
-					$sort[2][] = $cat->order;
+					$sort[2][] = $cat->sort;
 					$sort[3][] = $entry->num;
 				}
 			}
 		}
+		# d($sort);
 		array_multisort($sort[0], $sort[1], $sort[2], $sort[3], $export_table);
 		$layout = 'cattable';
 		$this->data['headings'] = ['runorder', 'dis', 'cat'];
