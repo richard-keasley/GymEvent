@@ -9,7 +9,7 @@ Track::$max_filesize = Track::ini_size(ini_get('upload_max_filesize'));
 class Track { 
 
 const type_allowed = 'audio';
-const exts_allowed = ['wav','aac','aif','aiff','m4a','mp2','mp3','wma'];
+const exts_allowed = ['aac','aif','aiff','m4a','mp2','mp3','ogg','wav','wma'];
 static $max_filesize = 0; // max upload size [B]
 
 // need these to work out file path
