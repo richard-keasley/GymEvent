@@ -50,6 +50,7 @@ foreach($entries as $dis) { ?>
 			foreach($entry->music as $exe=>$check_state) {
 				$track->exe = $exe;
 				$track->check_state = $check_state;
+				// convert to $track->playbtn();
 				$tr[] = $track->view();
 				if(!$key) $thead[] = $track->exe;
 			}

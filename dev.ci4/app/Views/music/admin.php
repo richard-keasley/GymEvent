@@ -20,7 +20,7 @@ echo form_open($self, $attr, $hidden);
 		<button class="btn btn-success" type="submit" name="val" value="1" title="checked"><i class="px-1 bi-check-square"></i></button>
 		<button class="btn btn-info" type="submit" name="val" value="2" title="withdrawn"><i class="px-1 bi-x-square"></i></button>
 	</div>
-	<iframe name="player" style="height:3rem;"></iframe>
+	<?php echo $this->include('Htm/Playtrack'); ?>
 </div>
 
 <?php
@@ -63,7 +63,7 @@ foreach($entries as $dis) {
 				if($show_entry) {
 					$count_entries++;
 					foreach($ent_tracks as $track) {
-						$tr[] = $track->view(['checkbox']);
+						$tr[] = $track->playbtn(['checkbox']);
 						$tracks_table[$track->status()] ++;
 					}
 					$tr[] = getlink($entry->url('music'), '<span class="bi bi-pencil"></span>');
