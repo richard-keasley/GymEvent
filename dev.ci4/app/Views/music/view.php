@@ -30,7 +30,10 @@ $(function() {
 </script>
 </form>
 
-<?php if($event->music<2) { ?>
+<?php 
+echo $this->include('Htm/Playtrack');
+
+if($event->music<2) { ?>
 	<p>Click <span class="text-primary"><span title="edit this entry" class="bi bi-pencil"></span> edit</span> to upload new tracks for each entry.</p>
 <?php } 
 
@@ -50,8 +53,7 @@ foreach($entries as $dis) { ?>
 			foreach($entry->music as $exe=>$check_state) {
 				$track->exe = $exe;
 				$track->check_state = $check_state;
-				// convert to $track->playbtn();
-				$tr[] = $track->view();
+				$tr[] = $track->playbtn();
 				if(!$key) $thead[] = $track->exe;
 			}
 			if($entry->perm('music', 'edit')) {
@@ -67,6 +69,6 @@ foreach($entries as $dis) { ?>
 	}
 	?>
 	</section>
-<?php } ?>
-<?php 
+<?php } 
+
 $this->endSection(); 

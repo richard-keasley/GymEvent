@@ -6,7 +6,10 @@ const playtrack = {
 	play: function(track_url) {
 		playtrack.pause();
 		if(track_url) {
-			var html = track_url.split('/').pop();
+			var temp = track_url.split('/').pop();
+			var html = temp.split('?')[0];
+			html = html.replace('.', ' (') + ')';
+			html = html.replace('_', ' ');
 			playtrack.msg(html, 'success');
 			playtrack.player.attr('src', track_url);
 			playtrack.player.trigger('play');

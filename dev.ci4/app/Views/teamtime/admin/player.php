@@ -38,9 +38,7 @@ foreach($teams as $team) {
 	$track->entry_num = $team[0];
 	foreach($exes as $exe) {
 		$track->exe = $exe;
-		$tr[$exe] = $track->button();
-			
-		
+		$tr[$exe] = $track->playbtn(['player']);
 	}
 	$tbody[] = $tr;
 }
@@ -52,52 +50,22 @@ $this->section('top'); ?>
 <div class="col-auto">
 <?php echo \App\Libraries\View::back_link('control/teamtime'); ?>
 </div>
-<div class="col-auto"><div id="player" class="m-0 p-1 alert alert-light">
-<audio style="width:25em;" controls></audio> 
-<p class="m-0 p-0">ready&hellip;</p>
-<p class="m-0 p-0">source&hellip;</p>
-</div></div>
+
+<div class="col-auto">
+<?php echo $this->include('Htm/Playtrack'); ?>
 </div>
 <script>
-$(function() {
-var player = $('#player')[0];
-var playeraudio = $('#player audio')[0];
-var playermsg = $('#player p')[0];
-var playersrc = $('#player p')[1];
+$(function(){
 
-$('button[name=trk]').click(function() {
+$('button[name=track]').click(function() {
 	var track_url = this.dataset.url;
-	if(!track_url) return;
-	playersrc.innerHTML = track_url;
-	playermsg.innerHTML = 'Playing ' + this.value;
-	player.className = 'm-0 p-1 alert alert-success';
-	playeraudio.src = track_url;
-	playeraudio.play();
+	if(!track_url) return; 
+	playtrack.play(track_url);
 });
-
-playeraudio.addEventListener("error", function(e) {
-	var msg = '' ;
-	switch(e.target.error.code) {
-		case e.target.error.MEDIA_ERR_ABORTED: 
-		msg = 'Download aborted'; 
-		break;
-		case e.target.error.MEDIA_ERR_NETWORK: 
-		msg = 'Network error'; 
-		break;
-		case e.target.error.MEDIA_ERR_DECODE: 
-		msg = 'Decoding error'; 
-		break;
-		case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED: 
-		msg = 'No decoder available'; 
-		break;
-		default: 
-		msg = 'An unknown error occurred.';
-    }
-	playermsg.innerHTML = msg;
-	player.className = 'm-0 p-1 alert alert-danger';
-});
-
+	
 });
 </script>
+
+</div>
 
 <?php $this->endSection();

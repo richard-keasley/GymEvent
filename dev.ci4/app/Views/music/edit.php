@@ -14,7 +14,7 @@ $track->entry_num = $entry->num;
 foreach($entry->music as $exe=>$check_state) {
 	$track->exe = $exe;
 	$track->check_state = $check_state;
-	$tr[$exe] = $track->view();
+	$tr[$exe] = $track->playbtn();
 	if(!$empty && !$track->filename()) $empty = $track->exe;
 	$exe_opts[$exe] = $exe;
 }
@@ -52,8 +52,12 @@ $('#upload').submit(function() {
 		.html('<span class="spinner-border spinner-border-sm" role="status"></span> wait');
 });
 </script>
-<?php echo form_close();?>
+<?php 
+echo form_close();
 
+echo $this->include('Htm/Playtrack');
+
+?>
 <div class="toolbar"><?php
 echo \App\Libraries\View::back_link("/music/view/{$event->id}");
 echo getlink("/admin/music/view/{$event->id}", 'admin');

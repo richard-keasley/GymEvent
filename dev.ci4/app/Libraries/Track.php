@@ -67,116 +67,72 @@ public function button() {
 	return sprintf('<button %s>%s</button>', stringify_attributes($attr), $label);
 } 
 
-public function view($opts=[]) {
-	// convert to $this->playbtn()
-	$status = $this->status();
-	switch($status) {
-		case 'unchecked': 
-			$icon = 'play-btn'; 
-			$colour = 'warning'; 
-			$title = 'This track has not been checked';
-			break;
-		case 'ok': 
-			$icon = 'play-btn'; 
-			$colour = 'success'; 
-			$title = 'This track is ready for the event';
-			break;
-		case 'archived': 
-			$icon = 'archive'; 
-			$colour = 'success'; 
-			$title = 'This track has been safely stored';
-			break;
-		case 'withdrawn': 
-			$icon = 'x-square'; 
-			$colour = 'info'; 
-			$title = 'This exercise has been withdrawn';
-			break;
-		default:
-			$icon = 'file-x'; 
-			$colour = 'danger'; 
-			$title = 'Track not found';
-	}
-
-	$ret = [];
-	switch($icon) {
-		case 'play-btn':
-			$attrs = [
-				'title' => $title,
-				'class' => "btn btn-{$colour} bi-{$icon}",
-				'onClick' => "window.open('{$this->url()}', 'player', 'width=500,height=100,menubar=0,status=0')"
-			];
-			$ret[] = sprintf('<span %s></span>', stringify_attributes($attrs));
-			break;
-		default:
-			$attrs = [
-				'title' => $title,
-				'class' => "text-{$colour} bi-{$icon}"
-			];
-			$ret[] = sprintf('<span %s></span>', stringify_attributes($attrs));			
-	}
-	if(in_array('checkbox', $opts)) {
-		$attrs = [
-			'name' => "trk_" . $this->filebase(),
-			'type' => "checkbox",
-			'value' => "1",
-			'class' => "form-check-input"
-		];
-		$ret[] = form_input($attrs);
-	}
-	return sprintf('<span class="track">%s</span>', implode(' ', $ret));
-}
-
 public function playbtn($opts=[]) {
-	$status = $this->status();
-	switch($status) {
-		case 'unchecked': 
-			$icon = 'play-btn'; 
-			$colour = 'warning'; 
-			$title = 'This track has not been checked';
-			break;
-		case 'ok': 
-			$icon = 'play-btn'; 
-			$colour = 'success'; 
-			$title = 'This track is ready for the event';
-			break;
-		case 'archived': 
-			$icon = 'archive'; 
-			$colour = 'success'; 
-			$title = 'This track has been safely stored';
-			break;
-		case 'withdrawn': 
-			$icon = 'x-square'; 
-			$colour = 'info'; 
-			$title = 'This exercise has been withdrawn';
-			break;
-		default:
-			$icon = 'file-x'; 
-			$colour = 'danger'; 
-			$title = 'Track not found';
-	}
-
 	$ret = [];
-	switch($icon) {
-		case 'play-btn':
-			$params = [
-				$this->event_id, 
-				$this->entry_num, 
-				"'{$this->exe}'"
-			];
-			$attrs = [
-				'title' => $title,
-				'class' => "btn btn-{$colour} bi-{$icon}",
-				'onClick' => sprintf("playtrack.play('%s');", $this->url())
-			];
-			break;
-		default:
-			$attrs = [
-				'title' => $title,
-				'class' => "text-{$colour} bi-{$icon}"
-			];	
+
+	if(in_array('player', $opts)) {
+		$url = $this->url();
+		$attr = [
+			'title' => sprintf('%s %s', $this->entry_num, strtoupper($this->exe)),
+			'type' => 'button',
+			'data-url' => $url,
+			'name' => "track"
+		];
+		if($url) {
+			$attr['class'] = self::BUTTON_PLAY;
+		}
+		else {
+			$attr['class'] = self::BUTTON_MISSING;
+			$attr['title'] .= ' (missing)';
+		}	
+		$ret[] = sprintf('<button %s>%s</button>', stringify_attributes($attr), $this->entry_num);
 	}
-	$ret[] = sprintf('<span %s></span>', stringify_attributes($attrs));
-			
+	else {
+		$status = $this->status();
+		switch($status) {
+			case 'unchecked': 
+				$icon = 'play-btn'; 
+				$colour = 'warning'; 
+				$title = 'This track has not been checked';
+				break;
+			case 'ok': 
+				$icon = 'play-btn'; 
+				$colour = 'success'; 
+				$title = 'This track is ready for the event';
+				break;
+			case 'archived': 
+				$icon = 'archive'; 
+				$colour = 'success'; 
+				$title = 'This track has been safely stored';
+				break;
+			case 'withdrawn': 
+				$icon = 'x-square'; 
+				$colour = 'info'; 
+				$title = 'This exercise has been withdrawn';
+				break;
+			default:
+				$icon = 'file-x'; 
+				$colour = 'danger'; 
+				$title = 'Track not found';
+		}
+
+		switch($icon) {
+			case 'play-btn':
+				$attrs = [
+					'title' => $title,
+					'class' => "btn btn-{$colour} bi-{$icon}",
+					'onClick' => sprintf("playtrack.play('%s');", $this->url())
+				];
+				break;
+			default:
+				$attrs = [
+					'title' => $title,
+					'class' => "text-{$colour} bi-{$icon}"
+				];	
+		}
+		$ret[] = sprintf('<span %s></span>', stringify_attributes($attrs));
+	}
+	
 	if(in_array('checkbox', $opts)) {
 		$attrs = [
 			'name' => "trk_" . $this->filebase(),
@@ -210,7 +166,9 @@ public function status() {
 
 public function url() {
 	$filename = $this->filename();
-	return $filename ? $this->urlpath() . $filename : '' ;
+	if(!$filename) return '';
+	// allows cache to work for 20 seconds
+	return $this->urlpath() . $filename . '?t=' . floor(time() / 20) ;
 } 
 
 public function filename() {
