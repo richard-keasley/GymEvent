@@ -1,11 +1,11 @@
 <?php 
 $cattable = new \App\Views\Htm\Cattable($headings);
-$cattable->table_header = true;
 $cattable->data = $export;
 
 $format = $format ?? 'htm';
 switch($format) {
 	case 'htm':
+	$cattable->table_header = true;
 	echo $cattable->htm();
 	break;
 	
