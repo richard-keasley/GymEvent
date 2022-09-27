@@ -81,9 +81,12 @@ $track->exe = $round['exe'];
 		$track->entry_num = $entry_num;
 		// list this track
 		echo $track->playbtn(['player']);
-		// remove this track from notlisted array
-		$filekey = array_search($track->filename(), $notlisted);
-		if($filekey!==false) unset($notlisted[$filekey]);
+		$file = $track->file();
+		if($file) {
+			// remove this track from notlisted array
+			$filekey = array_search($file->getFilename(), $notlisted);
+			if($filekey!==false) unset($notlisted[$filekey]);
+		}
 	} ?>
 	</div>
 	</div>

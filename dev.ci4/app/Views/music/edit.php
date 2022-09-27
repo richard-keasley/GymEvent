@@ -15,7 +15,7 @@ foreach($entry->music as $exe=>$check_state) {
 	$track->exe = $exe;
 	$track->check_state = $check_state;
 	$tr[$exe] = $track->playbtn();
-	if(!$empty && !$track->filename()) $empty = $track->exe;
+	if(!$empty && !$track->file()) $empty = $track->exe;
 	$exe_opts[$exe] = $exe;
 }
 $tbody[] = $tr;

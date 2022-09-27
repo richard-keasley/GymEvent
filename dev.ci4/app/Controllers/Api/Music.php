@@ -26,10 +26,9 @@ public function track($event_id=0, $entry_num=0, $exe='') {
 	$track->event_id = $event_id;
 	$track->entry_num = $entry_num;
 	$track->exe = $exe;
-	$filename = $track->filename();
-	if(!$filename) return $this->failNotfound("track {$entry_num}-{$exe} not found");
-	$filename = $track->filepath() . $filename;
-
+	$file = $track->file();
+	if(!$file) return $this->failNotfound("track {$entry_num}-{$exe} not found");
+	$filename = $track->filepath() . $file->getFilename();
 	return $this->response->download($filename, null); 
 }
 

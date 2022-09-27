@@ -142,25 +142,25 @@ public function status() {
 	// returns a state_label
 	switch($this->check_state) {
 		case 1: // ok
-			return $this->filename() ? 'ok' : 'archived' ;
+			return $this->file() ? 'ok' : 'archived' ;
 		case 2: // withdrawn
 			return 'withdrawn';
 		default: // unchecked
-			return $this->filename() ? 'unchecked' : 'missing' ;
+			return $this->file() ? 'unchecked' : 'missing' ;
 	}
 } 
 
 public function url() {
-	$filename = $this->filename();
-	if(!$filename) return '';
-	// allows cache to work for 20 seconds
-	return $this->urlpath() . $filename . '?t=' . floor(time() / 20) ;
+	$file = $this->file();
+	if(!$file) return '';
+	$query = ['t' => $file->getMTime()];
+	return $this->urlpath() . $file->getFilename() . '?' . http_build_query($query);
 } 
 
-public function filename() {
-	// return first filename for this track
+public function file() {
+	// return first file for this track
 	$files = $this->files();
-	return count($files) ? $files->getIterator()->current()->getFilename() : '';
+	return count($files) ? $files->getIterator()->current() : null;
 }
 
 public function files($event=false) {
