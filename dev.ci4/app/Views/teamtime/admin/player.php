@@ -1,14 +1,18 @@
 <?php $this->extend('default');
-$table = \App\Views\Htm\Table::load('default');
 
 $this->section('content');
 
+$table = \App\Views\Htm\Table::load('responsive');
 $get_var = $tt_lib::get_var('progtable');
 $progtable = $get_var ? $get_var->value : [] ;
 $exes = [];
 if($progtable) {
 	$exes = $progtable[0];
-	$table->setHeading($exes);
+	$thead = [];
+	foreach($exes as $exe) {
+		$thead[] = \App\Views\Htm\Table::centre($exe);
+	}
+	$table->setHeading($thead);
 	array_shift($exes);
 }
 else { ?>
@@ -46,18 +50,18 @@ echo $table->generate($tbody);
 $this->endSection(); 
 
 $this->section('top'); ?>
-<div class="toolbar sticky-top row">
-<div class="col-auto">
+<div class="toolbar sticky-top d-flex flex-wrap">
+<div>
 <?php echo \App\Libraries\View::back_link('control/teamtime'); ?>
 </div>
 
-<div class="col-auto">
+<div style="width:100%; max-width:30em;">
 <?php echo $this->include('Htm/Playtrack'); ?>
 </div>
 <script>
 $(function(){
 
-$('button[name=track]').click(function() {
+$('button[name=trk]').click(function() {
 	var track_url = this.dataset.url;
 	if(!track_url) return; 
 	playtrack.play(track_url);

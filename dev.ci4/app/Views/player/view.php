@@ -16,31 +16,23 @@ foreach($files as $file) $notlisted[] = $file->getFilename();
 ?>
 
 <div class="toolbar sticky-top">
-<div id="playtrack" class="flex-column">
-<audio controls></audio> 
-<p>ready&hellip;</p>
-</div>
+<?php echo $this->include('Htm/Playtrack');?>
 <script>
 <?php echo \App\Libraries\Track::js_buttons();?>
+var active_btn = 0;
+var active_tab = 0; 
 
 $(function() {
-var $player = $('#playtrack audio');
-var playermsg = $('#playtrack p')[0];
-var play_button = 0;
-var active_tab = 0;
-
-playermsg.className = 'p-1 my-0 text-bg-light';
-
 $('button[name=trk]').click(function() {
 	var track_url = this.dataset.url;
 	if(!track_url) return;
-		
+	
+	// highlight selected tab
 	if(active_tab) {
 		active_tab.classList.remove('text-bg-success');
 	}
-
-	var acc_item = this.parentElement.parentElement.parentElement.parentElement;
-	if(acc_item.className=='accordion-item') {
+	var acc_item = this.closest('.accordion-item');
+	if(acc_item) {
 		active_tab = acc_item.querySelector('.accordion-button');
 		active_tab.classList.add('text-bg-success');
 	}
@@ -48,39 +40,22 @@ $('button[name=trk]').click(function() {
 		active_tab = 0;
 	}
 	
-	if(play_button) {
-		play_button.className = BUTTON_REPEAT;
-		playermsg.innerHTML = 'ready&hellip;';
-		playermsg.className = 'p-1 my-0 text-bg-light';
-		$player.trigger('pause');
-		if(play_button.value==this.value) {
-			play_button = 0;
+	// is a button active?
+	if(active_btn) {
+		active_btn.className = BUTTON_REPEAT;
+		playtrack.pause();
+		if(active_btn.title==this.title) {
+			// stopping current track
+			active_btn = 0;
 			return;
 		}
 	}
-		
-	play_button = this;
-	playermsg.innerHTML = 'Playing ' + this.value;
-	playermsg.className = 'p-1 my-0 text-bg-success';
-	this.className = BUTTON_PAUSE;
-	$player.attr('src', track_url);
-	$player.trigger('play');
+	
+	// play new track
+	active_btn = this;
+	active_btn.className = BUTTON_PAUSE;
+	playtrack.play(track_url);
 });
-
-$player.on("error", function(e) {
-	var msg = '' ;
-	switch(e.target.error.code) {
-		case e.target.error.MEDIA_ERR_ABORTED: msg = 'Download aborted'; break;
-		case e.target.error.MEDIA_ERR_NETWORK: msg = 'Network error'; break;
-		case e.target.error.MEDIA_ERR_DECODE: msg = 'Decoding error'; break;
-		case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED: msg = 'No decoder available'; break;
-		default: msg = 'An unknown error occurred.';
-    }
-	msg = '<a href="' + e.target.src + '" title="try to download this track" target="music">'+msg+'</a>';
-	playermsg.innerHTML = msg;
-	playermsg.className = 'p-1 my-0 alert alert-danger';
-});
-
 });
 </script>
 </div>
@@ -105,7 +80,7 @@ $track->exe = $round['exe'];
 	<?php foreach($round['entry_nums'] as $entry_num) {
 		$track->entry_num = $entry_num;
 		// list this track
-		echo $track->button();
+		echo $track->playbtn(['player']);
 		// remove this track from notlisted array
 		$filekey = array_search($track->filename(), $notlisted);
 		if($filekey!==false) unset($notlisted[$filekey]);
@@ -125,7 +100,7 @@ $track->exe = $round['exe'];
 <div class="playlist">
 <?php foreach($notlisted as $filename) { 
 	$track->setFilename($filename);
-	echo $track->button();
+	echo $track->playbtn(['player']);
 } ?>
 </div>
 </div>

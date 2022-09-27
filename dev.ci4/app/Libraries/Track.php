@@ -24,6 +24,7 @@ static function enabled() {
 
 // class names for buttons
 const BUTTON_PLAY = 'btn bi m-1 btn-success bi-play-fill';
+const BUTTON_UNCHECKED = 'btn bi m-1 btn-warning bi-play-fill';
 const BUTTON_REPEAT = 'btn bi m-1 btn-info bi-arrow-repeat';
 const BUTTON_PAUSE = 'btn bi m-1 btn-primary bi-pause-fill';
 const BUTTON_MISSING = 'btn bi m-1 btn-danger bi-x';
@@ -45,93 +46,77 @@ static function ini_size($ini_size) {
 	return (int) $ret;
 }
 
-public function button() {
-	$label = $this->entry_num;
-	$url = $this->url();
-	$onclick = 'playtrack.play()';
-	$attr = [
-		'name' => 'trk',
-		'value' => $this->filebase(),
-		'data-url' => $url,
-		'title' => sprintf('%s %s', $this->entry_num, strtoupper($this->exe)),
-		'type' => 'button',
-		'onclick' => ''
-	];
-	if($url) {
-		$attr['class'] = self::BUTTON_PLAY;
-	}
-	else {
-		$attr['class'] = self::BUTTON_MISSING;
-		$attr['title'] .= ' (missing)';
-	}	
-	return sprintf('<button %s>%s</button>', stringify_attributes($attr), $label);
-} 
-
 public function playbtn($opts=[]) {
 	$ret = [];
-
+	$track_url = $this->url();
+	
 	if(in_array('player', $opts)) {
-		$url = $this->url();
-		$attr = [
+		$label = $this->entry_num;
+		$tag = 'button';
+		$attrs = [
 			'title' => sprintf('%s %s', $this->entry_num, strtoupper($this->exe)),
 			'type' => 'button',
-			'data-url' => $url,
-			'name' => "track"
+			'data-url' => $track_url,
+			'name' => "trk",
+			'style' => "min-width:4em;"
 		];
-		if($url) {
-			$attr['class'] = self::BUTTON_PLAY;
+		if($track_url) {
+			$attrs['class'] = self::BUTTON_PLAY;
 		}
 		else {
-			$attr['class'] = self::BUTTON_MISSING;
-			$attr['title'] .= ' (missing)';
+			$attrs['class'] = self::BUTTON_MISSING;
+			$attrs['title'] .= ' (missing)';
 		}	
-		$ret[] = sprintf('<button %s>%s</button>', stringify_attributes($attr), $this->entry_num);
 	}
 	else {
+		$label = '';
 		$status = $this->status();
 		switch($status) {
-			case 'unchecked': 
-				$icon = 'play-btn'; 
-				$colour = 'warning'; 
-				$title = 'This track has not been checked';
-				break;
-			case 'ok': 
-				$icon = 'play-btn'; 
-				$colour = 'success'; 
-				$title = 'This track is ready for the event';
-				break;
-			case 'archived': 
-				$icon = 'archive'; 
-				$colour = 'success'; 
-				$title = 'This track has been safely stored';
-				break;
-			case 'withdrawn': 
-				$icon = 'x-square'; 
-				$colour = 'info'; 
-				$title = 'This exercise has been withdrawn';
-				break;
-			default:
-				$icon = 'file-x'; 
-				$colour = 'danger'; 
-				$title = 'Track not found';
-		}
+			case 'unchecked':
+			$tag = 'button';
+			$attrs = [
+				'title' => 'This track has not been checked',
+				'type' => 'button',
+				'class' => self::BUTTON_UNCHECKED,
+				'onClick' => sprintf("playtrack.play('%s');", $track_url)
+			];
+			break;
 
-		switch($icon) {
-			case 'play-btn':
-				$attrs = [
-					'title' => $title,
-					'class' => "btn btn-{$colour} bi-{$icon}",
-					'onClick' => sprintf("playtrack.play('%s');", $this->url())
-				];
-				break;
+			case 'ok': 
+			$tag = 'button';
+			$attrs = [
+				'title' => "This track is ready for the event",
+				'type' => 'button',
+				'class' => self::BUTTON_PLAY,
+				'onClick' => sprintf("playtrack.play('%s');", $track_url)
+			];
+			break;
+
+			case 'archived': 
+			$tag = 'span';
+			$attrs = [
+				'title' => "This track has been safely stored",
+				'class' => "text-success bi-archive"
+			];
+			break;
+			
+			case 'withdrawn': 
+			$tag = 'span';
+			$attrs = [
+				'title' => "This track has been safely stored",
+				'class' => "text-info bi-x-square"
+			];
+			break;
+			
 			default:
-				$attrs = [
-					'title' => $title,
-					'class' => "text-{$colour} bi-{$icon}"
-				];	
+			$tag = 'span';
+			$attrs = [
+				'title' => "Track not found",
+				'class' => "text-danger bi-x-square"
+			];
 		}
-		$ret[] = sprintf('<span %s></span>', stringify_attributes($attrs));
 	}
+	$ret[] = sprintf("<{$tag} %s>{$label}</{$tag}>", stringify_attributes($attrs));
 	
 	if(in_array('checkbox', $opts)) {
 		$attrs = [
@@ -142,6 +127,7 @@ public function playbtn($opts=[]) {
 		];
 		$ret[] = form_input($attrs);
 	}
+	
 	return sprintf('<span class="track">%s</span>', implode(' ', $ret));
 }
 

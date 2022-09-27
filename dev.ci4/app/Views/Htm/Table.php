@@ -40,6 +40,13 @@ static function number($value) {
 	];
 }
 
+static function centre($value) {
+	return [
+		'data' => $value,
+		'class' => "text-center"
+	];
+}
+
 static function email($value) {
 	// returns a table cell with email as clickable link
 	return $value ? mailto($value) : '' ;
