@@ -114,9 +114,9 @@ if($tbody) {
 		<p>Dear club,</p>
 		<p>This is a reminder you must complete your music upload for the 
 		<em><?php echo $event->title;?></em>
-		by the end of today.</p>
+		before <strong>{closing date}</strong> when the service will close.</p>
 		<p>Please upload your remaining music as soon as you can.</p>
-		<p>https://gymevent.uk/music/view/<?php echo $event->id;?></p>
+		<p>https://gymevent.uk/events/view/<?php echo $event->id;?></p>
 		<p>Please contact Richard if you are struggling to do this.</p>
 		<p>Richard</p>
 		</section>
