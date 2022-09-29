@@ -3,7 +3,7 @@ $event_id = $tt_lib::get_var("settings", "event_id");
 
 $this->section('sidebar');
 $attr = [
-	'id' => "runvars"
+	'style' => "max-width:22em;"
 ];
 echo form_open(base_url(uri_string()), $attr); ?>
 
@@ -97,12 +97,10 @@ echo form_open(base_url(uri_string()), $attr); ?>
 <div class="cmode-only my-2 p-1 border">
 <?php 
 $music_player = $tt_lib::get_var("settings", "music_player");
-if($music_player=='local') { ?>
-<div id="playtrack" class="m-0 p-1 alert alert-success">
-<audio style="width:100%" controls></audio> 
-<p class="m-0">ready&hellip;</p>
-</div>
-<?php }
+
+if($music_player=='local') {
+	echo $this->include('Htm/Playtrack');
+}
 
 if($music_player=='remote') { ?>
 <div id="remoteplayer">
@@ -112,7 +110,6 @@ if($music_player=='remote') { ?>
 <button type="button" class="btn btn-sm btn-primary bi bi-stop-fill" onclick="remote_music('stop')"></button>
 </div>
 <p class="m-0">ready&hellip;</p>
-</div>
 <script>
 const $remoteplayer = $('#remoteplayer')[0];
 const $remoteplayer_msg = $('#remoteplayer p')[0];
@@ -139,8 +136,9 @@ function remote_music(state) {
 	});
 }
 </script>
-
+</div>
 <?php } ?>
+
 </div>
 
 <?php 
@@ -148,7 +146,9 @@ echo form_close();
 $this->endSection(); 
 
 $this->section('content');?>
-<iframe id="displayframe" src="/teamtime/display/0"></iframe>
+<div class="ratio ratio-16x9">
+<iframe src="/teamtime/display/0"></iframe>
+</div>
 <?php $this->endSection(); 
 
 $this->section('bottom'); 
@@ -159,9 +159,8 @@ const csrf_token = '<?php echo csrf_token();?>';
 const csrf_hash = '<?php echo csrf_hash();?>';
 const music_player = '<?php echo $music_player;?>';
 const event_id = <?php echo $event_id;?>;
+
 let runvars = null;	
-let $player = null;
-let playermsg = null;
 let postvar = null;
 let entry = 0;
 let exe = '';
@@ -208,17 +207,12 @@ function show_runvars(arr) {
 			exe = progtable[0][runvars['col']];
 			url = '<?php echo base_url("/api/music/track_url/");?>/'+event_id+'/'+entry+'/'+exe;
 			//console.log(url);
+			playtrack.pause();
 			$.get(url, function(response) {
-				playermsg.innerHTML = 'Ready&hellip;';
-				$playtrack.className = 'm-0 p-1 alert alert-success';
-				$player[0].src = response;
-				$player.show();
+				playtrack.play(response, 0);
 			})
 			.fail(function(jqXHR) {
-				playermsg.innerHTML = get_error(jqXHR);
-				$playtrack.className = 'm-0 p-1 alert alert-danger';
-				$player[0].pause();
-				$player.hide();
+				playtrack.msg(get_error(jqXHR), 'danger');
 			});
 		}
 		$('.cmode-only').show(); 
@@ -264,26 +258,6 @@ function team_name(number) {
 }
 
 $(function() {
-if(music_player=='local') {
-$playtrack = $('#playtrack')[0];
-$player = $('#playtrack audio');
-playermsg = $('#playtrack p')[0];
-
-$player.on("error", function(e) {
-	var msg = '' ;
-	switch(e.target.error.code) {
-		case e.target.error.MEDIA_ERR_ABORTED: msg = 'Download aborted'; break;
-		case e.target.error.MEDIA_ERR_NETWORK: msg = 'Network error'; break;
-		case e.target.error.MEDIA_ERR_DECODE: msg = 'Decoding error'; break;
-		case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED: msg = 'No decoder available'; break;
-		default: msg = 'An unknown error occurred.';
-    }
-	msg = '<a href="' + e.target.src + '" title="try to download this track" target="music">'+msg+'</a>';
-	playermsg.innerHTML = msg;
-	$playtrack.className = 'alert alert-danger p-1 m-0';
-});
-
-} // end local music_player
 
 url = '<?php echo base_url("/api/teamtime/get/runvars");?>';
 $.get(url, function(response) {

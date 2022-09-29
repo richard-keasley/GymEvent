@@ -16,15 +16,3 @@
 #run_place ul .omode {
 	font-weight: bold;
 }
-
-#displayframe {
-	width: 92vw;
-	height: 52vw;
-	max-width: 32rem;
-	max-height: 18rem;
-}
-#runvars {
-	width: 92vw;
-	max-width: 22rem;
-}
-

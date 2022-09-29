@@ -1,9 +1,9 @@
 <div id="playtrack" class="w-100 flex-column">
 <audio class="w-100" controls="controls"></audio> 
-<p class="p-1 my-0"></p>
+<p class=""></p>
 <script>
 const playtrack = {
-	play: function(track_url) {
+	play: function(track_url, autoplay=1) {
 		playtrack.pause();
 		if(track_url) {
 			var temp = track_url.split('/').pop();
@@ -12,11 +12,13 @@ const playtrack = {
 			html = html.replace('_', ' ');
 			playtrack.msg(html, 'success');
 			playtrack.player.attr('src', track_url);
-			playtrack.player.trigger('play');
+			if(autoplay) {
+				playtrack.player.trigger('play');
+			}
 		}
 	},
 	pause: function() {
-		playtrack.msg('<span>ready&hellip;</span>', 'light');
+		playtrack.msg('ready&hellip;', 'light');
 		playtrack.player.trigger('pause');
 	},
 	msg: function(html, alert) {
