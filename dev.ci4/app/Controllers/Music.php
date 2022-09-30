@@ -202,19 +202,4 @@ public function edit($entry_id=0) {
 	return view('music/edit', $this->data);
 }
 
-public function get_track($event_id=0, $entry_num=0, $exe='', $return='content') {
-	// used by control/player to retrieve tracks from main website
-	$track = new \App\Libraries\Track();
-	$track->event_id = $event_id; 
-	$track->entry_num = $entry_num; 
-	$track->exe = $exe; 
-	$track->check_state = 0; // unchecked
-	
-	$url = $track->url();
-	if($url) return $this->response->setBody(base_url($url));
-	
-	$body = "Track {$track->filebase()} not found in event {$event_id}.";
-	return $this->response->setStatusCode(404)->setBody($body);
-}
-
 }

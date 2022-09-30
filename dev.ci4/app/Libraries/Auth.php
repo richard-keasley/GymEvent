@@ -252,7 +252,7 @@ static function path_role($path) {
 			$entry = $model->find($param1);
 			return $entry ? $entry->role($controller, 'edit') : 'none';
 			
-			case 'get_track':
+			case 'track_url':
 			return self::roles[0];
 			
 			default:

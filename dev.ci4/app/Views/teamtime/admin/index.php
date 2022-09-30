@@ -207,9 +207,10 @@ function show_runvars(arr) {
 			entry = progtable[runvars['row']][runvars['col']];
 			exe = progtable[0][runvars['col']];
 			url = '<?php echo base_url("/api/music/track_url/");?>/'+event_id+'/'+entry+'/'+exe;
-			//console.log(url);
+			// console.log(url);
 			playtrack.pause();
 			$.get(url, function(response) {
+				// console.log(response);
 				playtrack.load(response, 0); // NB: no autoplay
 			})
 			.fail(function(jqXHR) {

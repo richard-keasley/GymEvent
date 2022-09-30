@@ -15,10 +15,9 @@ public function track_url($event_id=0, $entry_num=0, $exe='') {
 	$track->event_id = $event_id;
 	$track->entry_num = $entry_num;
 	$track->exe = $exe;
-	$response = $track->url();
-	if(!$response) return $this->failNotfound("track {$entry_num}-{$exe} not found");
-	echo $response; die;
-	# return $this->respond($response);
+	$url = $track->url();
+	if(!$url) return $this->failNotfound("No music found for {$entry_num} {$exe}");
+	return $this->respond(base_url($url));
 }
 
 public function track($event_id=0, $entry_num=0, $exe='') {
@@ -27,7 +26,7 @@ public function track($event_id=0, $entry_num=0, $exe='') {
 	$track->entry_num = $entry_num;
 	$track->exe = $exe;
 	$file = $track->file();
-	if(!$file) return $this->failNotfound("track {$entry_num}-{$exe} not found");
+	if(!$file) return $this->failNotfound("No music found for {$entry_num} {$exe}");
 	$filename = $track->filepath() . $file->getFilename();
 	return $this->response->download($filename, null); 
 }

@@ -196,8 +196,7 @@ private function get_track($track, $server='gymevent.uk') {
 		return false;
 	}
 	// get filename
-	$url = "https://{$server}/music/get_track/{$track->event_id}/{$track->entry_num}/{$track->exe}";
-	# $url = "https://{$server}/music/get_track/19/{$track->entry_num}/{$track->exe}";
+	$url = "https://{$server}/api/music/track_url/{$track->event_id}/{$track->entry_num}/{$track->exe}";
 	$client = \Config\Services::curlrequest();
 	$options = [
 		'http_errors' => false
@@ -209,7 +208,8 @@ private function get_track($track, $server='gymevent.uk') {
 		$this->data['messages'][] = "{$url} [{$status}]<br>synch failed";
 		return false;
 	}
-	$filename = basename($source);
+	$uri = new \CodeIgniter\HTTP\URI($source);
+	$filename = basename($uri->getPath());
 	$destfile = $destpath . $filename;
 	# $this->data['messages'][] = [$source, 'success'];
 	# $this->data['messages'][] = [$destfile, 'success'];

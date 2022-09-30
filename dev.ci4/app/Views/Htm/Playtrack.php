@@ -1,4 +1,4 @@
-<div id="playtrack" class="w-100 flex-column">
+<div id="playtrack" class="w-100 d-flex flex-column">
 <audio class="w-100" controls="controls"></audio> 
 <p class=""></p>
 <script>
