@@ -78,7 +78,7 @@ public function playbtn($opts=[]) {
 				'title' => 'This track has not been checked',
 				'type' => 'button',
 				'class' => self::BUTTON_UNCHECKED,
-				'onClick' => sprintf("playtrack.play('%s');", $track_url)
+				'onClick' => sprintf("playtrack.load('%s');", $track_url)
 			];
 			break;
 
@@ -88,7 +88,7 @@ public function playbtn($opts=[]) {
 				'title' => "This track is ready for the event",
 				'type' => 'button',
 				'class' => self::BUTTON_PLAY,
-				'onClick' => sprintf("playtrack.play('%s');", $track_url)
+				'onClick' => sprintf("playtrack.load('%s');", $track_url)
 			];
 			break;
 

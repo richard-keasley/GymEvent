@@ -1,4 +1,6 @@
-<?php if(!empty($_SESSION['user_id'])) { 
+<?php 
+if(empty($_SESSION['user_id'])) return; 
+
 $attr = [
 	'class' => "alert alert-light p-1 d-print-none"
 ];
@@ -8,26 +10,34 @@ echo form_open(base_url(), $attr); ?>
 <label>Logged in as <?php printf('<a href="%s">%s</a>', base_url('user'), $_SESSION['user_name']);?></label>
 <?php echo form_close();
 
-if(ENVIRONMENT == 'development' && empty($exception)) { ?>
-<footer class="border-top bg-light">
-<button class="btn btn-warning btn-sm small" type="button" data-bs-toggle="collapse" data-bs-target="#debuginfo" aria-expanded="false" aria-controls="debuginfo"><i class="bi bi-tools"></i></button>
-<div class="collapse row text-secondary" id="debuginfo">
+if(ENVIRONMENT != 'development') return;
+if(!empty($exception)) return;
+?>
+<footer class="row border-top bg-light text-secondary">
 
-<div class="col"><?php echo anchor(base_url('setup/dev'), ENVIRONMENT);?></div>
-<div class="col">Page rendered in {elapsed_time} seconds</div>
+<div class="col"><?php 
+$links = [
+	['setup/dev', 'Development notes'],
+	['setup/update', 'Update the App']
+];
+$navbar = new \App\Views\Htm\Navbar($links);
+$navbar->template['items_start'] = '<ul class="nav">';
+echo $navbar->htm();
+?></div>
+
 <div class="col">
-<div class="card card-body">
-<ul class="list-unstyled"><?php 
+<p class="p-2 m-0">Page rendered in {elapsed_time} sec</p>
+</div>
+
+<div class="col">
+<button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#debuginfo" aria-expanded="false" aria-controls="debuginfo"><i class="bi bi-lock"></i> Permissions <i class="bi bi-chevron-down"></i></button>
+<ul id="debuginfo" class="collapse list-unstyled m-0"><?php 
 foreach(\App\Libraries\Auth::check_paths() as $path=>$row) {
 	$colour = $row[1] ? 'success' : 'danger' ;
 	$title = $row[1] ? 'allowed' : 'Forbidden' ;
-	printf('<li class="text-%s" title="%s"><strong>%s:</strong> %s </li>', $colour, $title, $path, $row[0]);
+	printf('<li class="text-%s" title="%s"><strong>%s :</strong> %s </li>', $colour, $title, $path, $row[0]);
 };
 ?></ul>
 </div>
-</div>
-</div>
-</footer>
-<?php }
 
-}
+</footer>

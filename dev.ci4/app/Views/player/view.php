@@ -54,7 +54,7 @@ $('button[name=trk]').click(function() {
 	// play new track
 	active_btn = this;
 	active_btn.className = BUTTON_PAUSE;
-	playtrack.play(track_url);
+	playtrack.load(track_url);
 });
 });
 </script>

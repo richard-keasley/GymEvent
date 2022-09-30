@@ -3,7 +3,8 @@ $event_id = $tt_lib::get_var("settings", "event_id");
 
 $this->section('sidebar');
 $attr = [
-	'style' => "max-width:22em;"
+	'style' => "max-width:25em;",
+	'id' => 'runvars'
 ];
 echo form_open(base_url(uri_string()), $attr); ?>
 
@@ -70,8 +71,8 @@ echo form_open(base_url(uri_string()), $attr); ?>
 </span>
 
 <button class="ps-3 btn btn-outline-primary collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#topfields" aria-expanded="false" aria-controls="topfields">
-<span class="bi bi-arrows-expand"></span>
-<span class="bi bi-arrows-collapse"></span>
+<span class="bi bi-arrows-expand" title="show settings"></span>
+<span class="bi bi-arrows-collapse" title="hide settings"></span>
 </button>
 	
 </div>
@@ -209,7 +210,7 @@ function show_runvars(arr) {
 			//console.log(url);
 			playtrack.pause();
 			$.get(url, function(response) {
-				playtrack.play(response, 0);
+				playtrack.load(response, 0); // NB: no autoplay
 			})
 			.fail(function(jqXHR) {
 				playtrack.msg(get_error(jqXHR), 'danger');

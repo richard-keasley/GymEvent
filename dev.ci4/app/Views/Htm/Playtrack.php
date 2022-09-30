@@ -3,12 +3,13 @@
 <p class=""></p>
 <script>
 const playtrack = {
-	play: function(track_url, autoplay=1) {
+	load: function(track_url, autoplay=1) {
 		playtrack.pause();
 		if(track_url) {
-			var temp = track_url.split('/').pop();
-			var html = temp.split('?')[0];
-			html = html.replace('.', ' (') + ')';
+			var temp = track_url.split('/').pop(); // filename
+			var html = temp.split('?')[0]; // remove query
+			html = html.replace(/^0+/, ''); // trim leading zeros
+			html = html.replace('.', ' (') + ')'; // separate extension into bracket
 			html = html.replace('_', ' ');
 			playtrack.msg(html, 'success');
 			playtrack.player.attr('src', track_url);

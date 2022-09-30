@@ -63,8 +63,8 @@ $(function(){
 
 $('button[name=trk]').click(function() {
 	var track_url = this.dataset.url;
-	if(!track_url) return; 
-	playtrack.play(track_url);
+	if(!track_url) return;
+	playtrack.load(track_url); 
 });
 	
 });
