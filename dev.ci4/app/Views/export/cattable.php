@@ -1,14 +1,12 @@
-<?php 
+<?php
+$format = $format ?? 'htm';
+$headings = $headings ?? [];
+ 
 $cattable = new \App\Views\Htm\Cattable($headings);
 $cattable->data = $export;
+$cattable->table_header = $table_header ?? true;
 
-$format = $format ?? 'htm';
-switch($format) {
-	case 'htm':
-	$cattable->table_header = true;
-	echo $cattable->htm();
-	break;
-	
-	default:
-	echo $cattable->csv();
-}
+echo match($format) {
+	'htm' => $cattable->htm(),
+	default => $cattable->csv()
+};

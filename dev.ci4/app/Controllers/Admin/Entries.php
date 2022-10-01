@@ -512,7 +512,8 @@ public function export($event_id=0, $download=0) {
 		}
 		# d($sort);
 		array_multisort($sort[0], $sort[1], $sort[2], $sort[3], $export_table);
-		$layout = 'cattable';
+		$this->data['layout'] = 'cattable';
+		$this->data['table_header'] = false;
 		$this->data['headings'] = ['runorder', 'dis', 'cat'];
 		break;
 		
@@ -550,7 +551,7 @@ public function export($event_id=0, $download=0) {
 				}
 			}
 		}
-		$layout = 'cattable';
+		$this->data['layout'] = 'cattable';
 		$this->data['headings'] = ['dis', 'cat'];
 		break;
 		
@@ -568,7 +569,8 @@ public function export($event_id=0, $download=0) {
 				}
 			}
 		}
-		$layout = 'cattable';
+		$this->data['layout'] = 'cattable';
+		$this->data['table_header'] = false;
 		$this->data['headings'] = ['dis', 'cat'];
 		break;
 		
@@ -587,7 +589,7 @@ public function export($event_id=0, $download=0) {
 		}
 		array_multisort($sort, $export_table);
 
-		$layout = 'table';
+		$this->data['layout'] = 'table';
 		break;
 		
 		default:
@@ -626,20 +628,19 @@ public function export($event_id=0, $download=0) {
 			// end dis  
 		} 
 		// end entries
-		$layout = 'table';
+		$this->data['layout'] = 'table';
 	}
 	$this->data['export'] = $export_table;
 	
 	$action = $this->request->getGet('action');
 	if($action=='download') {
-		return $this->download($this->data, $layout, $source);
+		return $this->download($this->data, $this->data['layout'], $source);
 	}
 	
 	// view
 	$this->data['source'] = $source;
 	$this->data['heading'] .= ' - ' . humanize($source);
 	$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
-	$this->data['layout'] = $layout;
 
 	// valid sources
 	$arr = ['scoreboard', 'score_table', 'run_order', 'entries', 'entry_list'];

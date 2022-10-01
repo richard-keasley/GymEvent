@@ -9,6 +9,9 @@ $this->section('content'); ?>
 <img src="/app/setup/db2.png" class="m-1">
 </div>
 
+<p><?php
+echo anchor(base_url('setup/db/orphans'), 'View orphans');
+?></p>
 <p>Deleting <code>events</code> or <code>users</code> will delete associated <code>club returns</code> and <code>entries</code>.</p>
 <p><code>Entries</code> are created from <code>club returns</code>, but are not related to them (after creation).</p>
 <p><strong>ToDo</strong> DB structure for entries:

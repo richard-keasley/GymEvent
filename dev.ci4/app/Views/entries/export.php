@@ -13,8 +13,8 @@ if($layout && $source) {
 		default => "Export {$source}"
 	};
 	?></p>
-	<?php 
-	echo view("export/{$layout}", $this->data);
+	<?php
+	echo $this->include("export/{$layout}");
 }
 $this->endSection(); 
 
