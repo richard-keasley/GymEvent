@@ -6,7 +6,7 @@ $tbody = [
 	['component', '<abbr title="version">v</abbr>'],
 	['PHP', phpversion()],
 	['CodeIgniter', \CodeIgniter\CodeIgniter::CI_VERSION],
-	['Bootstrap', '5.2.1'],
+	['Bootstrap', '5.2.2'],
 	['Bootstrap icons', '1.5.0'],
 	['jQuery', '3.6.1'],
 	['TinyMCE', \App\Views\Htm\Editor::version]
