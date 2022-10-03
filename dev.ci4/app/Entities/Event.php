@@ -337,12 +337,12 @@ public function link($type, $user_id=0) {
 		case 'player':
 		$path = "control/player/view/{$this->id}";
 		switch($this->music) {
+			case self::states['finished']:
 			case self::states['waiting']:
 				$perm = 0; break;
 			case self::states['view']:
 				$perm = 1; break;
 			case self::states['edit']:
-			case self::states['finished']:
 			default:
 			$perm = \App\Libraries\Auth::check_path($path);	
 		}
