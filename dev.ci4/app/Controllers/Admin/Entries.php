@@ -590,6 +590,7 @@ public function export($event_id=0, $download=0) {
 		array_multisort($sort, $export_table);
 
 		$this->data['layout'] = 'table';
+		$this->data['table_header'] = false;
 		break;
 		
 		default:
