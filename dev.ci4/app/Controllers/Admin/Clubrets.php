@@ -211,6 +211,26 @@ public function event($event_id=0) {
 	}
 	if($download=='staff') return $this->export($tbody, 'staff');
 	$this->data['staff'] = $tbody;
+	
+	// build participants table
+	$tbody = [];
+	foreach($this->data['event']->participants() as $dis) { 
+		foreach($dis['cats'] as $cat) { 	 
+			foreach($cat['entries'] as $entkey=>$entry) {
+				if(!$entry['club']) $entry['club'] = 'unknown';
+				$tbody[] = [
+					'dis' => $dis['name'],
+					'cat' => $cat['name'],
+					'club' => $entry['club'],
+					'name' => $entry['name'],
+					'DoB' => date('d-M-Y', $entry['dob']),
+					'opt' => humanize($entry['opt'])
+				];
+			}
+		}
+	}
+	if($download=='participants') return $this->export($tbody, 'participants');
+	$this->data['participants'] = $tbody;
 
 	// view
 	switch($this->data['event']->clubrets) {

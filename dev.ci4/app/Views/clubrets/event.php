@@ -55,10 +55,7 @@ echo $table->generate($tbody);
 </section>
 
 <section class="mw-100">
-<?php
-$attr = [];
-echo form_open(base_url(uri_string()), $attr);
-?>
+<?php echo form_open(base_url(uri_string()), $attr); ?>
 <h4>Staff
 	<button type="submit" name="download" value="staff" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
 </h4>
@@ -71,29 +68,18 @@ echo $table->generate($staff);
 
 </div>
 
-<div class="d-flex flex-wrap gap-3 d-print-block"><?php
-foreach($event->participants() as $dis) { 
-	foreach($dis['cats'] as $cat) { 	 
-		# $table->setHeading(['', 'club', 'name', 'DoB', '']);
-		$table->autoHeading = false;
-		$tbody = [];
-		foreach($cat['entries'] as $entkey=>$entry) {
-			if(!$entry['club']) $entry['club'] = 'unknown <i class="bi bi-exclamation-triangle-fill text-warning"></i>';
-			$tbody[] = [
-				$entkey + 1,
-				$entry['club'],
-				$entry['name'],
-				date('d-M-Y', $entry['dob']),
-				humanize($entry['opt'])
-			];
-		}
-		echo '<section class="mw-100">';
+<?php echo form_open(base_url(uri_string())); ?>
+<h4>Participants
+	<button type="submit" name="download" value="participants" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
+</h4>
+<?php echo form_close(); ?>
 
-		printf('<h4>%s - %s</h4>', $dis['name'], $cat['name']);
-		echo $table->generate($tbody);
-		echo '</section>';
-	}
-} 
+<div class="d-flex flex-wrap gap-3 d-print-block"><?php
+	$headings = ['dis', 'cat'];
+	$cattable = new \App\Views\Htm\Cattable($headings);
+	$cattable->data = $participants;
+	echo $cattable->htm();
+	# echo $table->generate($participants);
 ?></div>
 
 <?php 
@@ -123,7 +109,7 @@ $this->endSection();
 
 $this->section('bottom'); 
 echo $this->include('entries/populate/form');
-# d($event->participants());
-d($event);
+d($event->participants());
+# d($event);
 
 $this->endSection(); 

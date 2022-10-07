@@ -1,5 +1,11 @@
 <?php namespace App\Views\Htm;
 
+/*
+$cattable = new \App\Views\Htm\Cattable($headings);
+$cattable->data = $tbody;
+echo $cattable->htm();
+*/
+
 class Cattable {
 public $data = null;
 public $headings = []; // data columns to convert to HTM headings
