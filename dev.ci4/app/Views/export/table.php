@@ -21,11 +21,14 @@ switch($format) {
 	else $table->autoHeading = false;
 	echo $table->generate($tbody);
 	break;
+	
+	case 'csv':
+	$csv = new \App\Libraries\Csv;
+	if($thead) $csv->add_row($thead);
+	$csv->add_table($tbody);
+	$csv->write('php://output');
+	break;
 
 	default:
-	$csv = new \App\Libraries\Csv;
-	$csv->open('php://output');
-	if($thead) $csv->put_row($thead);
-	$csv->put_table($tbody);
-	$csv->close();
+	printf('<pre>%s</pre>', print_r($tbody, 1));
 }

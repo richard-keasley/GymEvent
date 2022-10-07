@@ -58,26 +58,22 @@ private function compile() {
 }
 
 public function csv($data = false) {
-	
 	if($data) $this->data = $this->data;
 	$this->compile();
 	if(!$this->compiled) return;
 	
-	$blank_row = [''];
-	
-	ob_start(); 
 	$csv = new \App\Libraries\Csv;
-	$csv->open('php://output');
 	foreach($this->compiled as $cattable) { 
 		foreach($cattable['headings'] as $level=>$heading) {
-			$csv->put_row([$heading]);
+			$csv->add_row([$heading]);
 		}
-		$csv->put_row($blank_row);
+		$csv->add_row(['']);
 		
-		$csv->put_table($cattable['tbody'], $this->table_header);
-		$csv->put_row($blank_row);
+		$csv->add_table($cattable['tbody'], true);
+		$csv->add_row(['']);
 	} 
-	$csv->close();
+	ob_start(); 
+	$csv->write('php://output');
 	return ob_get_clean();
 }
 

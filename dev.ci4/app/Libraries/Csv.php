@@ -1,34 +1,40 @@
 <?php namespace App\Libraries;
+/*
+$csv = new \App\Libraries\Csv;
+$csv->add_row($arr);
+$csv->add_table($tbody, true);
+$csv->write($filename);
+*/
 
 class Csv {
-private $fp = null;
-private $filename = null; 
+	
+public $data = [];
 
-function open($filename) {
-	$this->fp = fopen($filename, 'w');
-	$this->filename = $this->fp ? $filename : null;
-	return $this->fp;
-}
-
-function put_row($row) {
+function add_row($row) {
 	foreach($row as $key=>$val) {
 		$row[$key] =  html_entity_decode($val, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
 	}	
-	fputcsv($this->fp, $row);
+	$this->data[] = $row;
 }
 
-function put_table($tbody, $header=0) {
+function add_table($tbody, $header=0) {
 	if(!$tbody) return;
 	if($header) {
 		$row = current($tbody);
-		$this->put_row(array_keys($row));
+		$this->add_row(array_keys($row));
 	}
-	foreach($tbody as $row) $this->put_row($row);
+	foreach($tbody as $row) $this->add_row($row);
 }
 
-function close() {
-	fclose($this->fp);
-	$this->fp = null;
+function write($filename) {
+	if(!$this->data) return false;
+	$fp = fopen($filename, 'w');
+	if(!$fp) return false;
+	foreach($this->data as $row) {
+		fputcsv($fp, $row);
+	}
+	fclose($fp);
+	return true;
 }
 
 }

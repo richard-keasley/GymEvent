@@ -168,10 +168,11 @@ read help / entries / edit
 			}
 		}
 		
-		// order is by running order, exercise order, exercise id
-		// this makes a unique key for each rotation / exercise
-		$arr = $runorder;
+		// this is the working group
+		$arr = $runorder; // [round, start rotation, start exercise]
+		// in case there is more than one apparatus in the group
 		$arr[] = $exe['Order'] ?? 999;
+		// in case 2 disciplines have same apparatus order
 		$arr[] = $exe['ExerciseId'] ?? 999;
 		$order = '';
 		foreach($arr as $val) $order .= sprintf('%03d', $val);

@@ -3,15 +3,59 @@
 class scoreboard {
 public $error = null;
 
-function get_time($varname, $format='Y-m-d H:i:s') {
-	$include = __DIR__ . "/scoreboard/{$varname}.php";
-	if(file_exists($include)) {
-		return date($format, filemtime($include));
+private $db = null;
+
+public function query($sql) {
+	if(!$this->db) return null;
+	try {
+		$res = $this->db->simpleQuery($sql);
+		return $res->fetch_all(MYSQLI_ASSOC);
 	}
-	else {
-		$this->error = "Can't find scoreboard data file {$varname}";
-		return null;
- 	}
+	catch(\Exception $ex) {
+		echo $ex->getMessage();
+	}
+	return [];
+}
+
+function init_db() {
+	$config = config('Database');
+	$database = new \CodeIgniter\Database\Database;
+	try {
+		$this->db = $database->load($config->scoreboard, 'scoreboard');
+		$this->db->initialize();
+	}
+	catch(\CodeIgniter\Database\Exceptions\DatabaseException $ex) {
+		echo $ex->getMessage();
+		$this->db = null;
+	}
+	catch(\ErrorException $ex) {
+		echo $ex->getMessage();
+		$this->db = null;
+	}
+	return $this->db ? true : false;
+}
+
+function get_time($varname, $format='Y-m-d H:i:s') {
+	$include = $this->get_include($varname);
+	return $include ?
+		date($format, filemtime($include)) : 
+		null;
+}
+
+function get_table($varname) {
+	$include = $this->get_include($varname);
+	if($include) {
+		include $include;
+		return $$varname;
+	}
+	return [];
+}
+
+private function get_include($varname) {
+	$include = __DIR__ . "/scoreboard/{$varname}.php";
+	if(file_exists($include)) return $include;
+	$this->error = "Can't find scoreboard data file {$varname}";
+	return false;
 }
 
 function get_exesets() {
@@ -47,19 +91,7 @@ function get_discats() {
 	return $retval;
 }
 
-function get_table($varname) {
-	$include = __DIR__ . "/scoreboard/{$varname}.php";
-	if(file_exists($include)) {
-		include $include;
-	}
-	else {
-		$this->error = "Can't find scoreboard data file {$varname}";
-		return [];
- 	}
-	return $$varname;
-}
-
-function join_tables($parents, $children, $parent_key, $join_key='') {
+private function join_tables($parents, $children, $parent_key, $join_key='') {
 	if(!$join_key) $join_key = $parent_key;
 	$retval = []; 
 	foreach($parents as $parent) {
@@ -70,7 +102,6 @@ function join_tables($parents, $children, $parent_key, $join_key='') {
 		$retval[] = $parent;
 	}
 	return $retval;
-
 }
 
 }

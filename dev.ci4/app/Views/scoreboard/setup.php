@@ -52,7 +52,10 @@ echo $table->generate($tbody);
 		'class' => "nav-link",
 		'title' =>"view scoreboard"
 	];
-	echo anchor(base_url('/scoreboard'), 'view', $attr);?>
+	echo anchor(base_url('/scoreboard'), 'view', $attr);
+	$attr['title'] = "View scoreboard data";
+	echo anchor(base_url('/setup/scoreboard/data'), 'data', $attr);
+	?>
 </div>
 
 <?php 

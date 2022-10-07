@@ -490,35 +490,7 @@ public function export($event_id=0, $download=0) {
 	$export_table = []; 
 	$this->data['headings'] = [];
 	switch($source) {
-		case 'run_order':
-		$sort = [[],[],[],[]];
-		foreach($this->data['entries'] as $dis) {
-			foreach($dis->cats as $cat) {
-				foreach($cat->entries as $rowkey=>$entry) {
-					$export_table[] = [
-						'runorder' => implode(', ', $entry->get_rundata('export')),
-						'dis' => $dis->name,
-						'cat' => $cat->name,
-						'num' => $entry->num,
-						'club' => $ent_users[$entry->user_id]->abbr ?? '?',
-						'name' => $entry->name
-					];
-					$sort[0][] = $entry->get_rundata('order');
-					$sort[1][] = $dis->abbr;
-					$sort[2][] = $cat->sort;
-					$sort[3][] = $entry->num;
-				}
-			}
-		}
-		# d($sort);
-		array_multisort($sort[0], $sort[1], $sort[2], $sort[3], $export_table);
-		$this->data['layout'] = 'cattable';
-		$this->data['table_header'] = false;
-		$this->data['headings'] = ['runorder', 'dis', 'cat'];
-		break;
-		
 		case 'score_table':
-		// build export table
 		$scoreboard = new \App\ThirdParty\scoreboard;
 		$exesets = [];
 		foreach($scoreboard->get_exesets() as $exeset) {
@@ -552,6 +524,7 @@ public function export($event_id=0, $download=0) {
 			}
 		}
 		$this->data['layout'] = 'cattable';
+		$this->data['table_header'] = true;
 		$this->data['headings'] = ['dis', 'cat'];
 		break;
 		
@@ -593,10 +566,40 @@ public function export($event_id=0, $download=0) {
 		$this->data['table_header'] = false;
 		break;
 		
+		case 'run_order':
+		$sort = [];
+		foreach($this->data['entries'] as $dis) {
+			foreach($dis->cats as $cat) {
+				foreach($cat->entries as $rowkey=>$entry) {
+					$export_table[] = [
+						'runorder' => implode(', ', $entry->get_rundata('export')),
+						'dis' => $dis->name,
+						'cat' => $cat->name,
+						'num' => $entry->num,
+						'club' => $ent_users[$entry->user_id]->abbr ?? '?',
+						'name' => $entry->name
+					];
+					$sort[] = [
+						$entry->get_rundata('order'),
+						$dis->abbr,
+						$cat->sort,
+						$entry->num
+					];
+				}
+			}
+		}
+		array_multisort($sort, $export_table);
+		# d($sort);
+				
+		$this->data['layout'] = 'cattable';
+		$this->data['table_header'] = false;
+		$this->data['headings'] = ['runorder', 'dis', 'cat'];
+		break;
+		
 		default:
 		$source = 'scoreboard';
-		// build export table
-		$row = [];
+		$sort = [];
+		$row = []; 
 		foreach($this->data['entries'] as $dis) { 
 			$row['dis'] = [
 				'name' => $dis->name,
@@ -619,10 +622,16 @@ public function export($event_id=0, $download=0) {
 						'title' => $entry->name,
 						'dob' => $entry->dob
 					];
-					$row['order'] = $entry->get_rundata('order');
+					$row['order'] = '';#$entry->get_rundata('order');
 					$row['run'] = $entry->get_rundata('export');
-					
 					$export_table[] = $row;
+					// NB: same sort as run_order
+					$sort[] = [
+						$entry->get_rundata('order'),
+						$dis->abbr,
+						$cat->sort,
+						$entry->num
+					];
 				}		
 				// end cat 
 			} 
@@ -630,6 +639,12 @@ public function export($event_id=0, $download=0) {
 		} 
 		// end entries
 		$this->data['layout'] = 'table';
+		array_multisort($sort, $export_table);
+		// preserve sort order for Kev
+		foreach($export_table as $rowkey=>$row) {
+			$export_table[$rowkey]['order'] = sprintf('%04d', $rowkey + 1);
+			# $export_table[$rowkey]['order'] = implode('-', $sort[$rowkey]);
+		}
 	}
 	$this->data['export'] = $export_table;
 	
