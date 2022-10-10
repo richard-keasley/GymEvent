@@ -40,3 +40,4 @@ $disciplines = array(
   array('DisId' => '45','Name' => 'Floor & Vault - Men','ShortName' => 'FV-M','Order' => '3','FilterMaxScore' => '0','MultiApparatus' => '1','CategoryId' => '10','SplitKey' => '-E','AgeBonus' => '0','DropDown' => '0'),
   array('DisId' => '46','Name' => 'Floor & Vault - Women','ShortName' => 'FV-W','Order' => '3','FilterMaxScore' => '0','MultiApparatus' => '1','CategoryId' => '10','SplitKey' => '-E','AgeBonus' => '0','DropDown' => '0')
 );
+

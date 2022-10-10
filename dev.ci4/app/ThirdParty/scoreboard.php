@@ -2,8 +2,16 @@
 
 class scoreboard {
 public $error = null;
-
+public $tables = [];
 private $db = null;
+
+function __construct() {
+	$files = new \CodeIgniter\Files\FileCollection([__DIR__ . '/scoreboard']);
+	foreach($files as $file) {
+		$varname = $file->getBasename('.php');
+		$this->tables[$varname] = $file;
+	}
+}
 
 public function query($sql) {
 	if(!$this->db) return null;
@@ -38,22 +46,21 @@ function init_db() {
 function get_time($varname, $format='Y-m-d H:i:s') {
 	$include = $this->get_include($varname);
 	return $include ?
-		date($format, filemtime($include)) : 
+		date($format, $include->getMTime()) : 
 		null;
 }
 
 function get_table($varname) {
 	$include = $this->get_include($varname);
 	if($include) {
-		include $include;
+		include $include->getPathname();
 		return $$varname;
 	}
 	return [];
 }
 
-private function get_include($varname) {
-	$include = __DIR__ . "/scoreboard/{$varname}.php";
-	if(file_exists($include)) return $include;
+function get_include($varname) {
+	if(isset($this->tables[$varname])) return $this->tables[$varname];
 	$this->error = "Can't find scoreboard data file {$varname}";
 	return false;
 }

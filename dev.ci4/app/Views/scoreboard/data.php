@@ -1,32 +1,13 @@
 <?php $this->extend('default');
 
-$this->section('content'); 
-$scoreboard = new \App\ThirdParty\scoreboard;
-$files = new CodeIgniter\Files\FileCollection([APPPATH . 'ThirdParty/scoreboard']);
-$tablenames = [];
-foreach($files as $file) $tablenames[] = $file->getBasename('.php');
-
-/*
-Future project
-
-This will read the scoreboard database, so we can put in the current values
-
-$success = $scoreboard->init_db();
-foreach($tablenames as $tablename) {
-	$sql = "SELECT * FROM `{$tablename}`";
-	$res = $scoreboard->query($sql);
-	d($res);
-	echo '<pre> $ret = ' . var_export($res, 1) . '; </pre>';
-}
-*/
-?>
-
+$this->section('content'); ?>
 <section>
 <h5>Available tables</h5>
-<ul class="list">
+<ul class="nav list flex-column">
 <?php
-foreach($tablenames as $tablename) {
-	printf('<li><code>%s</code> %s</li>', $tablename, $scoreboard->get_time($tablename, 'j F Y'));
+foreach($scoreboard->tables as $varname=>$file) {
+	$href = base_url("/setup/scoreboard/data/{$varname}");
+	printf('<li><a class="nav-link" href="%s">%s</a></li>', $href, $varname);
 }
 ?>
 </ul>
