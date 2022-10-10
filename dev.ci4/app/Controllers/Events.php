@@ -7,27 +7,32 @@ private $model = null;
 public function __construct() {
 	$this->data['breadcrumbs'][] = 'events';
 	$this->model = new \App\Models\Events();
-	$this->data['events'] = $this->model->orderBy('date')->findAll();
 }
 	
 public function index() {
-$this->data['body'] = <<< EOT
-<p>Select the event you are interested in.</p>
-EOT;
+	$this->data['options'] = ['past', 'current', 'future'];
+
+	$option = $this->request->getGet('f');
+	if(!in_array($option, $this->data['options'])) $option = 'current'; 
+	$clubrets = match($option) {
+		'past' => [3],
+		'future' => [0],
+		default => [1, 2]
+	};
+	$this->data['option'] = $option;
+
+	$this->data['events'] = $this->model->whereIn('clubrets', $clubrets)->orderBy('date')->findAll();
+
+	$this->data['body'] = 'index-default';
 	$this->data['base_url'] = base_url('events/view');
 	return view('events/index', $this->data);
 }
 
 public function view($event_id=0) {
-    $this->data['event'] = null;
-    foreach($this->data['events'] as $key=>$event) {
-	    if($event->id==$event_id) {
-	        $this->data['event'] = $event;
-	        break;
-	    }
-	}
+	if(!$event_id) return $this->index();
+	$this->data['event'] = $this->model->find($event_id);
  	if(!$this->data['event']) throw new \RuntimeException("Can't find event {$event_id}", 404);
- 
+    
 	// view
 	$this->data['id'] = $event_id;
 	$this->data['title'] = $this->data['event']->title;

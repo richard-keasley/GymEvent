@@ -25,9 +25,7 @@ private function find($event_id) {
 }
 	
 public function index() {
-$this->data['body'] = <<< EOT
-<p>Select the event you are interested in.</p>
-EOT;
+	$this->data['body'] = 'index-admin';
 	$this->data['base_url'] = base_url('admin/events/view');
 	$this->data['events'] = $this->mdl_events->orderBy('date')->withDeleted()->findAll();
 	return view('events/index', $this->data);
