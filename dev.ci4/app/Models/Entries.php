@@ -5,7 +5,7 @@ class Entries extends Model {
 
 protected $table      = 'evt_entries';
 protected $primaryKey = 'id';
-protected $allowedFields = ['num', 'category_id', 'user_id', 'name', 'dob', 'music', 'videos', 'runorder'];
+protected $allowedFields = ['num', 'category_id', 'user_id', 'name', 'dob', 'music', 'videos', 'runorder', 'opt'];
 protected $returnType   = 'App\Entities\Entry';
 
 protected $disciplines = null;
@@ -174,7 +174,7 @@ public function populate($event_id) {
 			];
 			$cat_id = $this->entrycats->insert($cat_arr);
 			if($cat_id) {
-				foreach($cat['entries'] as $entkey=>$entry) {
+				foreach($cat['entries'] as $entry) {
 					$entry['category_id'] = $cat_id;
 					unset($entry['club']);
 					$entry['dob'] = date('Y-m-d', $entry['dob']);

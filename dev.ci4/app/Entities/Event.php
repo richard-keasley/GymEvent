@@ -221,6 +221,7 @@ public function participants() {
 		$participants[$diskey]['cats'] = $dis['cats'];
 	}
 	array_multisort($dis_sort, $participants);
+	
 	return $participants;
 }
 

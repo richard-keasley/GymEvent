@@ -218,14 +218,16 @@ public function event($event_id=0) {
 		foreach($dis['cats'] as $cat) { 	 
 			foreach($cat['entries'] as $entkey=>$entry) {
 				if(!$entry['club']) $entry['club'] = 'unknown';
-				$tbody[] = [
+				$row = [
 					'dis' => $dis['name'],
 					'cat' => $cat['name'],
 					'club' => $entry['club'],
 					'name' => $entry['name'],
-					'DoB' => date('d-M-Y', $entry['dob']),
-					'opt' => humanize($entry['opt'])
+					'DoB' => date('d-M-Y', $entry['dob'])
 				];
+				if(!$entkey) $has_opt = $entry['opt'];
+				if($has_opt) $row['opt'] = humanize($entry['opt']);
+				$tbody[] = $row;
 			}
 		}
 	}

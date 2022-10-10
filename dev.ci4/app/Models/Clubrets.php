@@ -6,7 +6,8 @@ class Clubrets extends Model {
 protected $table      = 'clubrets';
 protected $primaryKey = 'id';
 protected $returnType    = 'App\Entities\Clubret';
-protected $allowedFields = ['event_id', 'user_id', 'name', 'address', 'phone', 'other', 'participants', 'staff'];
+protected $updatedField  = 'updated';
+protected $allowedFields = ['event_id', 'user_id', 'name', 'address', 'phone', 'other', 'participants', 'staff', 'updated'];
 
 public function tidy() {
 	$return = [];

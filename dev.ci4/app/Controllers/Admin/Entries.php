@@ -571,7 +571,7 @@ public function export($event_id=0, $download=0) {
 		foreach($this->data['entries'] as $dis) {
 			foreach($dis->cats as $cat) {
 				foreach($cat->entries as $rowkey=>$entry) {
-					$export_table[] = [
+					$row = [
 						'runorder' => implode(', ', $entry->get_rundata('export')),
 						'dis' => $dis->name,
 						'cat' => $cat->name,
@@ -579,6 +579,10 @@ public function export($event_id=0, $download=0) {
 						'club' => $ent_users[$entry->user_id]->abbr ?? '?',
 						'name' => $entry->name
 					];
+					if(!$rowkey) $has_opt = $entry->opt;
+					if($has_opt) $row['opt'] = humanize($entry->opt);
+					$export_table[] = $row;
+					
 					$sort[] = [
 						$entry->get_rundata('order'),
 						$dis->abbr,
