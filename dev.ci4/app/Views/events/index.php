@@ -15,12 +15,19 @@ echo getlink('admin/events/add', 'create new event');
 
 $this->section('sidebar');
 $nav = [];
-foreach($events as $event) { 
+foreach($events as $event) {
+	$icon = $event->deleted_at ?
+		\App\Entities\Event::icons['hidden'] :
+		match(intval($event->clubrets)) {
+			0 => \App\Entities\Event::icons['future'],
+			3 => \App\Entities\Event::icons['past'],
+			default => \App\Entities\Event::icons['current']
+		};
+	
 	$date = new DateTime($event->date);
-	$deleted_at = $event->deleted_at ? '<span class="bi bi-x-circle text-danger" title="this event is not listed"></span>' : '' ;
 	$nav[] = [
 		sprintf('%s/%u', $base_url, $event->id),
-		sprintf('%s: %s %s', $date->format('j-M-y'), $event->title, $deleted_at)
+		sprintf('%s %s: %s', $icon, $date->format('j-M-y'), $event->title)
 	];
 }
 $navbar = new \App\Views\Htm\Navbar($nav);

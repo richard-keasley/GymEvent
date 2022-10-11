@@ -1,6 +1,6 @@
 <h5>Viewing <?php echo $option;?> events</h5>
 <?php 
-$format = '<a href="%s" class="btn btn-outline-primary">%s</a>';
+$format = '<a href="%s" class="btn btn-outline-primary">%s %s</a>';
 
 if($events) { ?>
 <p>Select the event you are interested in.</p>
@@ -13,7 +13,8 @@ events.
 <div class="toolbar">
 <?php
 foreach($options as $opt) {
-	printf($format, base_url("/events?f={$opt}"), $opt);
+	$icon = \App\Entities\Event::icons[$opt] ?? '' ;
+	printf($format, base_url("/events?f={$opt}"), $icon, $opt);
 }
 ?>
 </div>

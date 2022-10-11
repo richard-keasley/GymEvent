@@ -24,18 +24,20 @@ if(\App\Libraries\Auth::check_role('superuser')) {
 echo $vartable->htm($tbody);
 
 if(!$user->deleted_at) { ?>
-<section><h4>Event entries</h4>
+<section><h4>Current events</h4>
 <nav class="nav flex-column"><?php 
 $nav = [];
 $clubrets = $user->clubrets();
 foreach($clubrets as $clubret) {
 	$event = $clubret->event();
+	$event_label = \App\Entities\Event::icons['current'] . ' ' . $event->title;
+	
 	$links = [];
 	if($event->clubrets==1) { // edit
-		$links[] = getlink($clubret->url('view'), $event->title);
+		$links[] = getlink($clubret->url('view'), $event_label);
 	}		
 	if($event->clubrets==2) { // view	
-		$links[] = getlink("entries/view/{$event->id}", $event->title);
+		$links[] = getlink("entries/view/{$event->id}", $event_label);
 		if($event->videos) $links[] = getlink("videos/view/{$event->id}", 'videos');
 		if($event->music) $links[] = getlink("music/view/{$event->id}", 'music');
 	}

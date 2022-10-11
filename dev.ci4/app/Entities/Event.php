@@ -3,6 +3,13 @@
 use CodeIgniter\Entity;
 
 class Event extends Entity {
+
+const icons = [
+	'future' => '<i class="bi bi-calendar-x text-danger" title="Not yet open"></i>',
+	'past' => '<i class="bi bi-calendar-check text-success" title="Finished"></i>',
+	'current' => '<i class="bi bi-calendar-fill text-success" title="Current"></i>',
+	'hidden' => '<i class="bi bi-x-circle text-danger" title="Not listed"></i>'
+];
 	
 protected $casts = [
 	'staffcats' => 'csv'
