@@ -111,9 +111,6 @@ public function clubs($event_id=0) {
 	if($error) $this->data['messages'][] = ['Inconsistent data', 'danger'];
 	$download = $this->request->getPost('download');
 	if($download=='clubs') {
-		
-		
-		
 		return $this->download(['export'=>$tbody], 'table', $download);
 	}
 		
@@ -135,7 +132,7 @@ public function edit($event_id=0) {
 		
 	if($this->request->getPost('save')) {
 		// update
-		$col_names = ['category_id', 'num', 'name', 'dob', 'user_id'];
+		$col_names = ['category_id', 'user_id', 'num', 'name', 'dob', 'opt'];
 		$entries = $this->ent_model->cat_entries($filter['catid']);
 		$data = [];
 		foreach($entries as $entry) {
@@ -214,6 +211,25 @@ public function edit($event_id=0) {
 		}
 	}
 	
+	// filter which entries to show
+	$this->data['cat_entries'] = [];
+	$this->data['exeset_id'] = 0;
+	$opt_count = 0;
+	foreach($this->data['entries'] as $dis) {
+		foreach($dis->cats as $cat) {
+			if($cat->id===$filter['catid']) {
+				$this->data['exeset_id'] = $cat->exercises;
+				$this->data['cat_entries'] = $cat->entries;
+				foreach($cat->entries as $entry) {
+					if($entry->opt) $opt_count++;
+				}
+			}
+		}
+	}
+	if($opt_count && $opt_count!=count($this->data['cat_entries'])) {
+		$this->data['messages'][] = ['Entry options should to be entered for <em>all</em> entries or <em>none</em>.', 'warning'];
+	}	
+		
 	// view
 	foreach($this->ent_model->get_errors($event_id) as $error) {
 		$this->data['messages'][] = $error;

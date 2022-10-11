@@ -18,18 +18,6 @@ foreach($entries as $dis) {
 	}
 }
 
-// select which entries to show
-$cat_entries = [];
-$exeset_id = 0;
-foreach($entries as $dis) {
-	foreach($dis->cats as $cat) {
-		if($cat->id===$filter['catid']) {
-			$exeset_id = $cat->exercises;
-			$cat_entries = $cat->entries;
-		}
-	}
-}
-
 $this->section('content');
 # d($users);
 # d($filter);
@@ -87,7 +75,6 @@ $attr = [];
 $hidden = ['save'=>1];
 echo form_open($self, $attr, $hidden);
 
-$tbody=[]; $tr = [];
 $inputs = [
 	'category_id' => [
 		'class' => 'form-control',
@@ -110,21 +97,29 @@ $inputs = [
 	'dob'=> [
 		'class' => 'form-control',
 		'type' => 'date'
+	],
+	'opt' => [
+		'class' => 'form-control',
+		'style' => 'min-width:3em;'
 	]
 ];
 
+$tbody = []; 
 $run_inputs = [];
-foreach($cat_entries as $entry) {		
+foreach($cat_entries as $entry) {
+	$tr = [];
 	foreach($inputs as $key=>$input) {
-		$inputs[$key]['name'] = "ent{$entry->id}_$key";
+		$input['name'] = "ent{$entry->id}_$key";
 		if(isset($input['options'])) {
-			$inputs[$key]['selected'] = $entry->$key;
+			$input['selected'] = $entry->$key;
+			$tr[] = form_dropdown($input);
 		}
 		else {
-			$inputs[$key]['value'] = $entry->$key;
+			$input['value'] = $entry->$key;
+			$tr[] = form_input($input);
 		}
 	}
-	
+		
 	foreach($entry->runorder as $key=>$val) {
 		$value = $val ? $val : ''; // allow placeholder to show
 		$input = [
@@ -135,22 +130,19 @@ foreach($cat_entries as $entry) {
 		];
 		$run_inputs[$key] = form_input($input);
 	}
-		
-	$tbody[] = [
-		form_dropdown($inputs['category_id']),
-		form_input($inputs['num']),
-		form_dropdown($inputs['user_id']),
-		form_input($inputs['name']),
-		form_input($inputs['dob']),
-		sprintf('<div style="width:9em" class="input-group">%s</div>', implode(' ', $run_inputs)),
-		sprintf('<button class="btn btn-sm btn-danger bi bi-trash" type="button" onClick="delrow(this)"></button>', $entry->id)
-	];
+	$tr[] = sprintf('<div style="width:9em" class="input-group">%s</div>', implode(' ', $run_inputs));
+	
+	$tr[] = sprintf('<button class="btn btn-sm btn-danger bi bi-trash" type="button" onClick="delrow(this)"></button>', $entry->id);
+			
+	$tbody[] = $tr;
+	
 }
 
 if($tbody) {
 $table = \App\Views\Htm\Table::load('responsive');
-$table->setHeading(['Category', 'Num', 'Club', 'Name', 'DoB', 'Run order', '']);
-echo $table->generate($tbody); ?>
+$table->setHeading(['Category', 'Num', 'Club', 'Name', 'DoB', 'Opt', 'Run order', '']);
+echo $table->generate($tbody); 
+?>
 <script>
 function delrow(el) {
 	var tr = el.parentElement.parentElement;
