@@ -161,8 +161,6 @@ read help / entries / edit
 		foreach($scoreboard->get_exesets() as $sb_exeset) {
 			if($sb_exeset['SetId']==$exeset_id) {
 				$sb_exes = $sb_exeset['children'];
-				$sb_sort = array_column($sb_exes, 'Order');
-				array_multisort($sb_sort, $sb_exes);
 				$key = $runorder['exe'] - 1;
 				if(isset($sb_exes[$key])) $exe = $sb_exes[$key];
 			}

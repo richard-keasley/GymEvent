@@ -33,9 +33,3 @@
 <hr>
 <p>Each category is assigned an "exercise set", looked up from  <code>exerciseset</code> in scoreboard database.</p>
 <p>Discipline and discipline categories <em>could be</em> looked up as well, but they need to be tidied up and descriptions added for that to happen.</p>
-
-<?php
-$scoreboard = new \App\ThirdParty\scoreboard;
-$disciplines = $scoreboard->get_table('disciplines');
-d($disciplines);
-?>

@@ -199,7 +199,7 @@ function newrow(show) {
 <p><button class="ps-3 btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#exerciseset" aria-expanded="false">
 <span class="bi bi-arrows-expand"></span>
 <span class="bi bi-arrows-collapse"></span>
-</button> View exercise sets (last updated on <?php echo $scoreboard->get_time('exerciseset', 'j F Y');?>)</p>
+</button> View exercise sets (last updated on <?php echo $scoreboard->get_time('exerciseset', 'd MMMM YYY');?>)</p>
 <div id="exerciseset" class="collapse">
 <h5>Exercise sets</h5>
 <ul><?php 
@@ -219,7 +219,7 @@ if($sb_disciplines) { ?>
 <p><button class="ps-3 btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sb_disciplines" aria-expanded="false">
 <span class="bi bi-arrows-expand"></span>
 <span class="bi bi-arrows-collapse"></span>
-</button> View Scoreboard disciplines (last updated on <?php echo $scoreboard->get_time('disciplines', 'j F Y');?>)</p>
+</button> View Scoreboard disciplines (last updated on <?php echo $scoreboard->get_time('disciplines', 'd MMMM YYY');?>)</p>
 <div id="sb_disciplines" class="collapse">
 <h5>Scoreboard disciplines</h5>
 <ul class="list-group">

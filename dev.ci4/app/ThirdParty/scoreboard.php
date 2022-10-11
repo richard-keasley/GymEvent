@@ -3,110 +3,118 @@
 class scoreboard {
 public $error = null;
 public $tables = [];
+public $files = null;
 private $db = null;
 
 function __construct() {
-	$files = new \CodeIgniter\Files\FileCollection([__DIR__ . '/scoreboard']);
-	foreach($files as $file) {
-		$varname = $file->getBasename('.php');
-		$this->tables[$varname] = $file;
-	}
+	$this->files = new \CodeIgniter\Files\FileCollection([__DIR__ . '/scoreboard']);
+	foreach($this->files as $file) include $file->getPathname();
 }
 
 public function query($sql) {
-	if(!$this->db) return null;
 	try {
+		if(!$this->db) {
+			$this->db = \Config\Database::connect('scoreboard');
+		}
 		$res = $this->db->simpleQuery($sql);
 		return $res->fetch_all(MYSQLI_ASSOC);
 	}
-	catch(\Exception $ex) {
-		echo $ex->getMessage();
+	catch(\Exception | \CodeIgniter\Database\Exceptions\DatabaseException $ex) {
+		$this->error = $ex->getMessage();
 	}
-	return [];
+	return null;
 }
 
-function init_db() {
-	$config = config('Database');
-	$database = new \CodeIgniter\Database\Database;
-	try {
-		$this->db = $database->load($config->scoreboard, 'scoreboard');
-		$this->db->initialize();
-	}
-	catch(\CodeIgniter\Database\Exceptions\DatabaseException $ex) {
-		echo $ex->getMessage();
-		$this->db = null;
-	}
-	catch(\ErrorException $ex) {
-		echo $ex->getMessage();
-		$this->db = null;
-	}
-	return $this->db ? true : false;
+function get_time($varname, $format='yyyy-MM-dd HH:mm:ss') {
+	$time = $this->tables[$varname]['time'] ?? null ;
+	if(!$time) return null;
+	$time = new \CodeIgniter\I18n\Time($time);
+	return $time->toLocalizedString($format);
 }
 
-function get_time($varname, $format='Y-m-d H:i:s') {
-	$include = $this->get_include($varname);
-	return $include ?
-		date($format, $include->getMTime()) : 
-		null;
+private function get_table($varname) {
+	return $this->tables[$varname]['table'] ?? [] ;
 }
 
-function get_table($varname) {
-	$include = $this->get_include($varname);
-	if($include) {
-		include $include->getPathname();
-		return $$varname;
+function get_file($varname) {
+	foreach($this->files as $file) {
+		$basename = $file->getBaseName('.php');
+		if($basename==$varname) return $file;
 	}
-	return [];
-}
-
-function get_include($varname) {
-	if(isset($this->tables[$varname])) return $this->tables[$varname];
 	$this->error = "Can't find scoreboard data file {$varname}";
-	return false;
+	return null;
 }
 
 function get_exesets() {
 	$tables = [];
-	foreach(['exerciseset', 'exercises'] as $key=>$varname) {
-		$tables[$key] = $this->get_table($varname);
-		if(!$tables[$key]) return false;
+	foreach(['exerciseset', 'exercises'] as $varname) {
+		$tables[$varname] = $this->get_table($varname);
+		if(!$tables[$varname]) return [];
 	}
-	return $this->join_tables($tables[0], $tables[1], 'SetId');
-}
-
-function get_disciplines() {
-	$tables = [];
-	foreach(['disciplinecategory', 'disciplines'] as $key=>$varname) {
-		$tables[$key] = $this->get_table($varname);
-		if(!$tables[$key]) return false;
+	// clean exercise sets
+	$include = [
+		8, 6, 5,
+		1, 9, 
+		2, 
+		3, 4, 
+		12,
+		11, 23, 24, 25, 26
+	];
+	$temp = [];
+	foreach($tables['exerciseset'] as $row) {
+		$key = array_search($row['SetId'], $include);
+		if($row['SetId']==11) $row['Name'] = 'Floor &amp; Vault';
+		if($key!==false) $temp[$key] = $row;
 	}
-	return $this->join_tables($tables[0], $tables[1], 'CategoryId');
+	ksort($temp);
+	$tables['exerciseset'] = $temp;
+	
+	$retval = [];
+	foreach($tables['exerciseset'] as $exeset) {
+		$exeset['children'] = [];
+		$sort = [];
+		foreach($tables['exercises'] as $exercise) {
+			if($exercise['SetId']==$exeset['SetId']) {
+				$sort[] = $exercise['Order'];
+				$exeset['children'][] = $exercise;
+			}
+		}
+		if($exeset['children']) {
+			array_multisort($sort, $exeset['children']);
+			$retval[] = $exeset;
+		}
+	}
+	return $retval;
 }
 
 function get_discats() {
 	$retval = [];
 	$cats = $this->get_table('disciplinecategory');
-	$diss = $this->get_table('disciplines');
-	if(!$cats || !$diss) return $retval;
+	$disciplines = $this->get_table('disciplines');
+	
+	// clean disciplines
+	$include = [
+		4, 14,
+		5, 
+		12, 16,
+		13, 
+		45, 46
+	];
+	$temp = [];
+	foreach($disciplines as $row) {
+		$key = array_search($row['DisId'], $include);
+		if($key!==false) $temp[$key] = $row;
+	}
+	ksort($temp);
+	$disciplines = $temp;
+		
+	if(!$cats || !$disciplines) return $retval;
 	foreach($cats as $key=>$cat) {
 		$cat['disciplines'] = [];
-		foreach($diss as $dis) {
+		foreach($disciplines as $dis) {
 			if($dis['CategoryId']==$cat['CategoryId']) $cat['disciplines'][] = $dis;
 		}
-		$retval[] = $cat;
-	}
-	return $retval;
-}
-
-private function join_tables($parents, $children, $parent_key, $join_key='') {
-	if(!$join_key) $join_key = $parent_key;
-	$retval = []; 
-	foreach($parents as $parent) {
-		$parent['children'] = [];
-		foreach($children as $child) {
-			if($child[$join_key]==$parent[$parent_key]) $parent['children'][] = $child;
-		}
-		$retval[] = $parent;
+		if($cat['disciplines']) $retval[] = $cat;
 	}
 	return $retval;
 }
