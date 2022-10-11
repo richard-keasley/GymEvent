@@ -42,9 +42,7 @@ public function index() {
 	$this->data['base_url'] = 'videos/view';
 	$this->data['title'] = 'Video index';
 	$this->data['heading'] = 'Select event to view';
-	$this->data['body'] = <<<EOT
-<p>The video service is open for these events. You may be able to see more if you are logged in.</p> 
-EOT;
+	$this->data['body'] = 'videos';
 	return view('events/index', $this->data);
 }
 

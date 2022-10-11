@@ -40,9 +40,7 @@ public function index() {
 	$this->data['events'] = $this->mdl_events->where('music', 2)->findAll();
 	$this->data['breadcrumbs'][] = "player";
 	$this->data['base_url'] = 'control/player/view';
-	$this->data['body'] = <<<EOT
-<p>The music service for these events is set to "view". There will be no more uploads for these events.</p>
-EOT;
+	$this->data['body'] = 'control_player';
 	return view('events/index', $this->data);
 }
 

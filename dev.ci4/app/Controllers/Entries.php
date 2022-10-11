@@ -30,9 +30,7 @@ public function index() {
 	$mod_events = new \App\Models\Events();
 	$this->data['events'] = $mod_events->find($ids);
 	
-$this->data['body'] = <<< EOT
-<p>Entries are complete for these events. Please inform the competition organisers as soon as possible if you see any errors. If you need to submit music or videos for this event, you should hear from us soon. Please be aware entries' numbers may change in the forthcoming days.</p>
-EOT;
+	$this->data['body'] = 'entries';
 	$this->data['back_link'] = 'entries';
 	$this->data['breadcrumbs'][] = 'entries';
 	$this->data['base_url'] = 'entries/view';

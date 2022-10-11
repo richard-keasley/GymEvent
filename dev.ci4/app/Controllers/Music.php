@@ -42,9 +42,7 @@ public function index() {
 		}
 	}
 	// view
-	$this->data['body'] = <<< EOT
-<p>The music service is open for these events. Please upload your music as soon as you can.</p>
-EOT;
+	$this->data['body'] = 'music';
 	$this->data['back_link'] = 'events';
 	$this->data['base_url'] = 'music/view';
 	$this->data['title'] = 'Video index';

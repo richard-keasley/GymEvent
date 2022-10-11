@@ -41,11 +41,8 @@ public function index() {
 		#$events[] = new \App\Entities\Event($row);
 
 	}
-	$this->data['events'] = $events;
-		
-$this->data['body'] = <<< EOT
-<p>These are all the events with entries.</p>
-EOT;
+	$this->data['events'] = $events;	
+	$this->data['body'] = 'admin_entries';
 	$this->data['base_url'] = 'entries/view';
 	return view('events/index', $this->data);
 }

@@ -3,7 +3,7 @@
 $this->section('content'); ?>
 <div class="item-image"><img src="<?php echo base_url('/app/profile/logo.png');?>"></div>
 <?php
-echo $this->include("events/{$body}");
+if(!empty($body)) echo $this->include("events/index-{$body}");
 $this->endSection(); 
 
 $this->section('bottom'); ?>
