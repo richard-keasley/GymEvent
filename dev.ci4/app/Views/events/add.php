@@ -20,7 +20,14 @@ echo form_open(base_url(uri_string()), $attr, $hidden); ?>
 	<?php echo form_input("date", $event->date, 'class="form-control"', 'date');?>
 </p>
 
-<p><label>Description [HTML]</label> <?php echo form_textarea("description", $event->description, 'class="form-control"');?></p>
+<div class="my-3"><?php 
+$attr = [
+	'name' => 'description',
+	'value' => $event->description
+];
+$editor = new \App\Views\Htm\Editor($attr);
+echo $editor->htm();
+?></div>
 
 <div class="toolbar">
 	<?php echo \App\Libraries\View::back_link("admin/events"); ?>
