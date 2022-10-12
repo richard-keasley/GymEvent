@@ -1,7 +1,7 @@
 <?php namespace App\Views\Htm;
 
 class Editor {
-const version = '6.1.2'; 
+const version = '6.2.0'; 
 
 public $attr = [
 	'name' => 'html',
@@ -9,9 +9,11 @@ public $attr = [
 	'class' => 'form-control'
 ];
 public $label = true;
+public $src = '';
 
 public function __construct($attr=[]) {
 	foreach($attr as $key=>$val) $this->attr[$key] = $val;
+	$this->src = sprintf('/app/tinymce_%s/tinymce/js/tinymce/tinymce.min.js', self::version);
 } 
 
 public function htm() {
@@ -25,16 +27,17 @@ public function htm() {
 	tinymce.init({
 		relative_urls : false,
 		selector: '#<?php echo $id;?> textarea',
+		promotion: false,
 		branding: false,
 		menubar: false,
 		browser_spellcheck: true,
-		plugins: 'link code',
-		toolbar: 'Undo Redo | Blocks | Bold Italic | link code',
-		content_css: '/app/bootstrap.css'
+		plugins: 'link code lists help',
+		toolbar: 'Undo Redo | Blocks | Bold Italic bullist | link code | help',
+		content_css: '/app/gymevent.css'
 	});
 	});
 	</script>
-	<script src="/app/tinymce_6.1.2/tinymce/js/tinymce/tinymce.min.js"></script>
+	<script src="<?php echo $this->src;?>"></script>
 	<?php
 	echo '</div>';
 }
