@@ -29,13 +29,13 @@ echo $navbar->htm();
 <p class="p-2 m-0">Page rendered in {elapsed_time} sec</p>
 </div>
 
-<div class="col">
-<button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#debuginfo" aria-expanded="false" aria-controls="debuginfo"><i class="bi bi-lock"></i> Permissions <i class="bi bi-chevron-down"></i></button>
-<ul id="debuginfo" class="collapse list-unstyled m-0"><?php 
+<div class="col dropup">
+<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-lock"></i> Permissions</button>
+<ul id="debuginfo" class="dropdown-menu dropdown-menu-end"><?php 
 foreach(\App\Libraries\Auth::check_paths() as $path=>$row) {
 	$colour = $row[1] ? 'success' : 'danger' ;
 	$title = $row[1] ? 'allowed' : 'Forbidden' ;
-	printf('<li class="text-%s" title="%s"><strong>%s :</strong> %s </li>', $colour, $title, $path, $row[0]);
+	printf('<li class="dropdown-item text-%s" title="%s"><strong>%s :</strong> %s </li>', $colour, $title, $path, $row[0]);
 };
 ?></ul>
 </div>
