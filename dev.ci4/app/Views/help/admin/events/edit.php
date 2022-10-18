@@ -1,6 +1,7 @@
-<h3>disciplines / categories</h3>
-<p>Only use alpha-numeric characters, dashes and under-scores in disciplines and categories. No spaces, &amps;s, commas, etc.</p> 
-<p>inf settings</p>
+<h3>Participants</h3>
+<h5>disciplines / categories</h5>
+<p>Only use alpha-numeric characters, dashes and under-scores in disciplines and categories. No spaces, &amp;, commas, etc.</p> 
+<h5>inf settings</h5>
 <dl>
 <dt>fe</dt><dd>Fee per entry</dd>
 <dt>fg</dt><dd>Fee per gymnast</dd>
@@ -33,6 +34,7 @@ $table->setHeading($thead);
 echo $table->generate($tbody);
 ?>
 
+<?php /*
 <h5>Video states</h5>
 <?php 
 $tbody = [
@@ -42,7 +44,7 @@ $tbody = [
 ];
 $table->setHeading($thead);
 echo $table->generate($tbody);
-?>
+// */ ?>
 
 <h5>Music states</h5>
 <?php 
