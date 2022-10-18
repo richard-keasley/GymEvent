@@ -30,14 +30,14 @@ public function index() {
 	
 	// delete
 	$cmd = $this->request->getPost('cmd');
-	if($cmd=='del_user') {
-		$user_id = $this->request->getPost('item_id');
-		if($this->usr_model->delete_all($user_id)) {
-			$this->data['messages'][] = ["User {$user_id} deleted", 'success'];
+	$item_id = intval($this->request->getPost('item_id'));
+	if($cmd=='del_user' && $item_id) {
+		if($this->usr_model->delete($item_id, true)) {
+			$this->data['messages'][] = ["User {$item_id} deleted", 'success'];
 		}
 		else {
 			$this->data['messages'] = $this->usr_model->errors();
-			$this->data['messages'][] = "User {$user_id} not deleted.";
+			$this->data['messages'][] = "User {$item_id} not deleted.";
 		}
 	}
 		
@@ -75,7 +75,7 @@ public function index() {
 	$this->data['modal_delete'] = [
 		'cmd' => 'del_user',
 		'title' => 'Delete <span class="dataname">user</span>',
-		'description' => '<p>Delete this user and all related data (returns and entries)?</p>',
+		'description' => '<p>Delete this user? (Event entries are preserved.)</p>',
 		'item_id' => 0
 	];
 	return view('users/index', $this->data);
@@ -85,20 +85,6 @@ public function view($user_id=0) {
 	$this->find($user_id);
 	
 	if(!$this->data['user_self']) {
-		$cmd = $this->request->getPost('cmd');
-		if($cmd=='del_user') {
-			$user_id = $this->request->getPost('item_id');
-			if($this->usr_model->delete_all($user_id)) {
-				$this->data['messages'][] = ["User {$user_id} deleted", 'success'];
-				$session = \Config\Services::session();
-				$session->setFlashdata('messages', $this->data['messages']);
-				return redirect()->to(base_url('admin/users'));
-			}
-			else {
-				$this->data['messages'] = $this->usr_model->errors();
-				$this->data['messages'][] = "User {$user_id} not deleted.";
-			}
-		}
 				
 		$set_enabled = $this->request->getPost('enable');
 		if($set_enabled) {
@@ -170,9 +156,10 @@ public function view($user_id=0) {
 			$this->data['toolbar'][] = '<button name="enable" value="enable" type="submit" title="enable" class="btn btn-success bi-check-circle"></button>';
 			$this->data['toolbar'][] = '<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#del_user" title="Delete this user"><span class="bi bi-trash"></span></button>';
 			$this->data['modal_delete'] = [
+				'action' => 'admin/users',
 				'id' => 'del_user',
 				'title' => "Delete '{$this->data['user']->name}'",
-				'description' => '<p>Delete this user and all related data (returns and entries)?</p>',
+				'description' => '<p>Delete this user? (Event entries are preserved.)</p>',
 				'cmd' => "del_user",
 				'item_id' => $this->data['user']->id
 			];

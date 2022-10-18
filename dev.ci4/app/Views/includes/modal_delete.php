@@ -1,4 +1,5 @@
-<?php 
+<?php
+$action =  $modal_delete['action'] ?? base_url(uri_string());
 $id = $modal_delete['id'] ?? 'modal_delete';
 $cmd = $modal_delete['cmd'] ?? 'del_item';
 $item_id = $modal_delete['item_id'] ?? 0;
@@ -15,7 +16,7 @@ $hidden = [
 	'cmd' => $cmd,
 	'item_id' => $item_id
 ];
-echo form_open(base_url(uri_string()), $attr, $hidden);
+echo form_open($action, $attr, $hidden);
 ?>
 <div class="modal-header">
 	<h5 class="modal-title"><?php echo $title;?></h5>

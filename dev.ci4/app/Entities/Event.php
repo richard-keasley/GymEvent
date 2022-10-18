@@ -108,8 +108,8 @@ public function clubrets() {
 		$this->_clubrets = [];
 		$model = new \App\Models\Clubrets;
 		// include unlisted users 
-		$sql = "SELECT `clubrets`.`id` FROM `clubrets` 
-			INNER JOIN `users` ON `clubrets`.`user_id`=`users`.`id`
+		$sql = "SELECT `clubrets`.`id`, `users`.`name` FROM `clubrets` 
+			LEFT JOIN `users` ON `clubrets`.`user_id`=`users`.`id`
 			WHERE `clubrets`.`event_id`='{$this->id}'
 			ORDER BY `users`.`name`;";
 		$res = $model->query($sql)->getResultArray();

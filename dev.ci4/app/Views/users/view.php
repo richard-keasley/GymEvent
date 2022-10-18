@@ -91,7 +91,6 @@ if(isset($users_dialogue)) {
 	echo $this->include('includes/users/dialogue');
 }
 if(isset($modal_delete)) {
-	$cmd = 'test';
 	echo $this->include('includes/modal_delete');
 }
 

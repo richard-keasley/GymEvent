@@ -20,7 +20,7 @@ foreach($tbody as $rowkey=>$row) {
 }
 $table = \App\Views\Htm\Table::load('responsive');
 $table->autoHeading = false;
-$table->setFooting(['', count($users) . ' clubs', '', '', $entcount]);
+$table->setFooting(['', count($tbody) . ' clubs', '', '', $entcount]);
 echo $table->generate($tbody);
 
 # d($users);

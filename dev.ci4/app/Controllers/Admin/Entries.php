@@ -92,20 +92,23 @@ public function clubs($event_id=0) {
 	}
 	$this->data['entcount'] = array_sum($counts);
 	
-	$error = false;
-	$tbody = [];
-	foreach($this->data['users'] as $id=>$user) {
-		$entcount = $counts[$id] ?? 0 ;
-		if(!$entcount) $error = true;
+	$tbody = []; $sort = [];
+	$not_found = '<i title="user not found" class="bi-exclamation-triangle-fill text-danger"></i>';
+	foreach($counts as $user_id=>$count) {
+		$user = $this->data['users'][$user_id] ?? null;
+		if($user) $state = $user->state ? 1 : 0;
+		else $state = 1;
 		$tbody[] = [
-			'state' => $user->state ? 1 : 0 ,
-			'name' => $user->name,
-			'abbr' => $user->abbr,
-			'email' => $user->email,
-			'count' => $entcount
+			'state' => $state,
+			'name' => $user->name ?? $not_found,
+			'abbr' => $user->abbr ?? $not_found,
+			'email' => $user->email ?? $not_found,
+			'count' => $count
 		];
+		$sort[] = $user->name ?? '' ;
 	}
-	if($error) $this->data['messages'][] = ['Inconsistent data', 'danger'];
+	array_multisort($sort, $tbody);
+		
 	$download = $this->request->getPost('download');
 	if($download=='clubs') {
 		return $this->download(['export'=>$tbody], 'table', $download);

@@ -48,14 +48,5 @@ public function getNew() {
 	foreach($this->allowedFields as $field) $retval->$field = '';
 	return $retval;
 }
-
-public function delete_all($user_id) {
-	$model = new \App\Models\Clubrets;
-	$model->where('user_id', $user_id)->delete(null, true);
-	$model = new \App\Models\Entries;
-	$model->where('user_id', $user_id)->delete(null, true);
-	$this->delete($user_id, true);
-	return true;	
-}
  
 } 

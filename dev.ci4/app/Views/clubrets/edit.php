@@ -4,6 +4,15 @@ $table = \App\Views\Htm\Table::load('responsive');
 $this->section('content'); 
 #d($event->discats);
 
+// namestring textarea
+$names_edit = [
+	'class' => 'form-control',
+	'data-field' => 'names',
+	'style' => 'min-width:22em;white-space:pre;',
+	'cols' => 30,
+	'rows' => 1
+];
+
 if($clubret->id) { // existing
 	$action = $clubret->url('edit');
 }
@@ -94,18 +103,17 @@ if(!$staff) { // provide one blank entry
 
 $options = [];
 foreach($event->staffcats as $val) $options[$val] = humanize($val);
+
 $inputs = [
 	'cat' => [
 		'options' => $options, 
-		'class' => 'form-control',
-		'data-field' => 'cat'
+		'class' => 'form-control'
 	],
-	'name' => [
-		'class' => 'form-control',
-		'data-field' => 'name',
-		'style' => 'min-width:20em;'
-	]
+	'name' => $names_edit
 ];
+foreach(array_keys($inputs) as $key) {
+	$inputs[$key]['data-field'] = $key;
+}
 
 $tbody = []; 
 foreach($staff as $rowkey=>$row) {
@@ -146,37 +154,31 @@ if(!$participants) { // provide one blank participant
 		'dis'=>'', 'cat' => [], 'team'=>'', 'names' => [] 
 	]];
 }
+
 $inputs = [
 	'dis' => [
 		'options' => $dis_opts,
 		'class' => 'form-control',
-		'data-field' => 'dis',
 		'style' => 'min-width:4em;'
 	],
 	'cat' => [
 		'class' => 'form-control',
-		'data-field' => 'cat',
 		'style' => 'min-width:4em;'
 	],
 	'team' => [
 		'class' => 'form-control',
-		'data-field' => 'team',
 		'placeholder' => 'Team name',
 		'style' => 'min-width:8em;'
 	],
-	'names' => [
-		'class' => 'form-control',
-		'data-field' => 'names',
-		'style' => 'min-width:20em;',
-		'cols' => 30,
-		'rows' => 1
-	],
+	'names' => $names_edit,
 	'opt' => [
 		'class' => 'form-control',
-		'data-field' => 'opt',
 		'style' => 'min-width:5em;'
 	]
 ];
+foreach(array_keys($inputs) as $key) {
+	$inputs[$key]['data-field'] = $key;
+}
 
 foreach($discats as $key=>$discat) {
 	$options = [];
