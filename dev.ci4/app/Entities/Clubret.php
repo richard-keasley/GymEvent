@@ -217,7 +217,7 @@ public function fees($op=1) {
 
 }
 
-class namestring {
+class namestring implements \Stringable {
 /* 
 a namestring is a comma separated string containing:
 name 1, name 2, BG number, DoB
@@ -234,32 +234,71 @@ public $csv = '';
 
 function __construct($namestring) {
 	$this->namestring = $namestring;
-	$arr = preg_split("/ *[\t,] *+/", $namestring);
+	$arr = preg_split("/ *[\t,] *+/", trim($namestring));
 	$arr = array_pad($arr, 4, '');
 	$arr = array_slice($arr, 0, 4);
 	
-	$this->name = trim($arr[0] . ' ' . $arr[1]);
-	$this->bg = $arr[2];
+	// BG should be 2
+	$bg_key = 2;
+	// DoB should be 3
+	$dob_key = 3;
+	$dob = self::input_dob($arr[$dob_key]);
+
+	// look for BG in wrong place
+	if(!self::is_bg($arr[$bg_key])) {
+		foreach([3, 0, 1] as $test) {
+			if(self::is_bg($arr[$test])) {
+				$tmp = $arr[$bg_key]; 
+				$arr[$bg_key] = $arr[$test]; 
+				$arr[$test] = $tmp;
+				break;
+			}
+		}
+	}
+	// look for DoB in wrong place
+	if(!$dob) {
+		foreach([0, 1] as $test) {
+			$dob = self::input_dob($arr[$test]);
+			if($dob) {
+				$tmp = $arr[$dob_key]; 
+				$arr[$dob_key] = $arr[$test]; 
+				$arr[$test] = $tmp;
+				break;
+			}
+		}
+	}
 	
-	if($arr[3]) $this->dob = self::euro_time($arr[3]);
-	if($this->dob) $arr[3] = $this->htm_dob();
+	$this->bg = $arr[$bg_key];
+	$this->dob = $dob;
+	$this->name = $arr[0] . ' ' . $arr[1];
+
+	if($this->dob) $arr[$dob_key] = $this->htm_dob();
 	$this->csv = $namestring ? implode(', ', $arr) : '' ;
 }
 
 function htm_dob() {
-	$timestamp = $this->dob;
-	return is_null($timestamp) ? '' : date('d-M-Y', $timestamp) ;
+	return $this->dob ? date('d-M-Y', $this->dob) : '' ;
 }
 
-static function euro_time($str) {
+static function input_dob($str) {
 	// ensure form input is formatted
 	$ret = trim($str);				
 	$ret = preg_replace('!\s+!', ' ', $ret); // remove multiple spaces
-	$ret = str_replace(array('/','.',' '), '-', $ret); // replace separator
+	$ret = str_replace(['/','.',' '], '-', $ret); // replace separator
 	$ret = array_pad( explode('-',$ret,3), 3, ''); // 3 items
-	if(ctype_digit($ret[0]) && ctype_digit($ret[1])) $ret = array_reverse($ret); // don't reverse non-numerical month
-	$ret = implode('-', $ret); // convert to Y-m-d
+	// month could be first or second
+	if(ctype_digit($ret[0]) && ctype_digit($ret[1])) $ret = array_reverse($ret); // don't reverse if non-numerical month
+	$ret = implode('-', $ret); // convert to Y-m-d  
 	return strtotime($ret);
+}
+
+public function __toString(): string {
+	$arr = [
+		"name: {$this->name}",
+		"bg: {$this->bg}",
+		"dob: {$this->dob} ({$this->htm_dob()})"
+	];
+	return implode('<br>', $arr);
 }
 
 function error() {
@@ -269,7 +308,7 @@ function error() {
 	if(strlen($this->name)<6) return "has invalid name";
 	
 	if(empty($this->bg)) return "has no BG number";
-	if(!preg_match('/^[0-9]*$/', $this->bg)) return "has invalid BG number";
+	if(!self::is_bg($this->bg)) return "has invalid BG number";
 	
 	if(empty($this->dob)) return  "has invalid DoB";
 	else {
@@ -281,5 +320,10 @@ function error() {
 	
 	return '';
 }
+
+static function is_bg($val) {
+	return ctype_digit($val);
+}
+
 
 }

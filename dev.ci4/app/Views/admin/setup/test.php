@@ -1,34 +1,30 @@
 <?php $this->extend('default');
 
 $this->section('content');
-	
-$style = 'background:#F99;text-align:right;width:5em;';
-$data = [
-	['item', ['data'=>'count', 'style'=>$style]],
-	['shirt', ['data'=>2, 'style'=>$style]],
-	['hat', ['data'=>1, 'style'=>$style]]
-];
-$footing = ['total', ['data'=>3, 'style'=>$style]];
-$templates = [
-	[],
-	[
-		'footing_cell_start' => '<th>',
-		'footing_cell_end' => '</th>',
-		'heading_cell_start' => '<td>',
-		'heading_cell_end' => '</td>'
-	],
-	[
-		'heading_cell_start' => '<td>',
-		'heading_cell_end' => '</td>'
-	]
+$clubret = new \App\Entities\Clubret;
+
+
+$testdata = [
+	'name1, name2, 12346, 7-8-2010',
+	' name1, name2, 12346, 12 aug 2010    ',
+	'123456, name1, name2, 12 aug 2010    ',
+	'123456, name1, name2, 12 aug 2021',
+	'123456, 12 aug 2010, name1, name2    ',
+	'name1, name2, 12346, dunno',
+	'name1, name2, 12346',
+	'name1, name2, 0, dunno',
+	'',
+	'name1',
+	'3 aug 1990',
+	'465, 5/3/90'
 ];
 
-foreach($templates as $tkey=>$template) {
-	printf('<h4>Template %s</h4>', $tkey);
-	printf('<pre>%s</pre>', htmlentities   (print_r($template, 1)));
-	$table = new \CodeIgniter\View\Table($template);
-	$table->setFooting($footing);
-	echo $table->generate($data);
+foreach($testdata as $key=>$row) {
+	$namestring = new \App\Entities\namestring($row);
+	$error = $namestring->error();
+	echo "<p><strong>{$row}</strong><br>{$namestring}";
+	if($error) printf('<br><span class="text-danger">Row %s %s</span>', $key, $error);
+	echo "</p>";
 }
 
 $this->endSection();
