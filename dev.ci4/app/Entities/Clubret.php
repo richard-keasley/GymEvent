@@ -234,23 +234,21 @@ public $csv = '';
 
 function __construct($namestring) {
 	$this->namestring = $namestring;
-	$arr = preg_split("/ *[\t,] *+/", trim($namestring));
-	$arr = array_pad($arr, 4, '');
-	$arr = array_slice($arr, 0, 4);
+	$input = preg_split("/ *[\t,] *+/", trim($namestring));
+	$input = array_pad($input, 4, '');
+	$input = array_slice($input, 0, 4);
 	
 	// BG should be 2
 	$bg_key = 2;
 	// DoB should be 3
 	$dob_key = 3;
-	$dob = self::input_dob($arr[$dob_key]);
+	$dob = self::input_dob($input[$dob_key]);
 
 	// look for BG in wrong place
-	if(!self::is_bg($arr[$bg_key])) {
+	if(!self::is_bg($input[$bg_key])) {
 		foreach([3, 0, 1] as $test) {
-			if(self::is_bg($arr[$test])) {
-				$tmp = $arr[$bg_key]; 
-				$arr[$bg_key] = $arr[$test]; 
-				$arr[$test] = $tmp;
+			if(self::is_bg($input[$test])) {
+				$bg_key = $test;
 				break;
 			}
 		}
@@ -258,21 +256,40 @@ function __construct($namestring) {
 	// look for DoB in wrong place
 	if(!$dob) {
 		foreach([0, 1] as $test) {
-			$dob = self::input_dob($arr[$test]);
+			$dob = self::input_dob($input[$test]);
 			if($dob) {
-				$tmp = $arr[$dob_key]; 
-				$arr[$dob_key] = $arr[$test]; 
-				$arr[$test] = $tmp;
+				$dob_key = $test;
 				break;
 			}
 		}
 	}
 	
-	$this->bg = $arr[$bg_key];
+	$arr = [];
+	
+	// build name from unused input
+	$used = [$dob_key, $bg_key];
+	foreach($input as $key=>$val) {
+		if(!(in_array($key, $used))) $arr[] = $val;
+	}
+	$this->name = implode(' ', $arr);
+	
+	// add BG
+	$this->bg = $input[$bg_key];
+	$arr[] = $input[$bg_key];
+	
+	// add DoB
 	$this->dob = $dob;
-	$this->name = $arr[0] . ' ' . $arr[1];
-
-	if($this->dob) $arr[$dob_key] = $this->htm_dob();
+	// preserve unrecognised dates
+	$val = $dob ? $this->htm_dob() : $input[$dob_key] ;
+	$arr[] = $val;
+	
+	
+	
+	
+	
+	// */
+	
+	
 	$this->csv = $namestring ? implode(', ', $arr) : '' ;
 }
 

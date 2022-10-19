@@ -10,7 +10,7 @@ $testdata = [
 	'123456, name1, name2, 12 aug 2010    ',
 	'123456, name1, name2, 12 aug 2021',
 	'123456, 12 aug 2010, name1, name2    ',
-	'name1, name2, 12346, dunno',
+	'2726528, Jessica, Mills, 04-Jun-2013',
 	'name1, name2, 12346',
 	'name1, name2, 0, dunno',
 	'',
