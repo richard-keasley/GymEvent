@@ -271,7 +271,7 @@ function __construct($namestring) {
 	foreach($input as $key=>$val) {
 		if(!(in_array($key, $used))) $arr[] = $val;
 	}
-	$this->name = implode(' ', $arr);
+	$this->name = trim(implode(' ', $arr));
 	
 	// add BG
 	$this->bg = $input[$bg_key];
@@ -282,14 +282,7 @@ function __construct($namestring) {
 	// preserve unrecognised dates
 	$val = $dob ? $this->htm_dob() : $input[$dob_key] ;
 	$arr[] = $val;
-	
-	
-	
-	
-	
-	// */
-	
-	
+		
 	$this->csv = $namestring ? implode(', ', $arr) : '' ;
 }
 
@@ -320,8 +313,8 @@ public function __toString(): string {
 
 function error() {
 	if(!$this->namestring) return "is empty";
-	if(!$this->name) return "has not been completed";
 	
+	if(!$this->name) return "has no name";
 	if(strlen($this->name)<6) return "has invalid name";
 	
 	if(empty($this->bg)) return "has no BG number";
@@ -341,6 +334,5 @@ function error() {
 static function is_bg($val) {
 	return ctype_digit($val);
 }
-
 
 }
