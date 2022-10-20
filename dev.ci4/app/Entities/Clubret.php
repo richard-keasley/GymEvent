@@ -233,57 +233,63 @@ public $dob = null; // unix timestamp
 public $csv = '';
 
 function __construct($namestring) {
-	$this->namestring = $namestring;
-	$input = preg_split("/ *[\t,] *+/", trim($namestring));
+	$this->namestring = trim($namestring);
+	$input = preg_split("/ *[\t,] *+/", trim($this->namestring), 4);
 	$input = array_pad($input, 4, '');
-	$input = array_slice($input, 0, 4);
 	
-	// BG should be 2
-	$bg_key = 2;
-	// DoB should be 3
-	$dob_key = 3;
-	$dob = self::input_dob($input[$dob_key]);
-
-	// look for BG in wrong place
-	if(!self::is_bg($input[$bg_key])) {
-		foreach([3, 0, 1] as $test) {
-			if(self::is_bg($input[$test])) {
-				$bg_key = $test;
-				break;
-			}
+	$used = [];
+	
+	// look for BG 
+	$bg_key = 2; // BG should be 2
+	$check_order = [2, 3, 0, 1];
+	$keys = array_diff($check_order, $used);
+	foreach($keys as $key) {
+		if(self::is_bg($input[$key])) {
+			$bg_key = $key;
+			break;
 		}
 	}
-	// look for DoB in wrong place
-	if(!$dob) {
-		foreach([0, 1] as $test) {
-			$dob = self::input_dob($input[$test]);
-			if($dob) {
-				$dob_key = $test;
-				break;
-			}
-		}
-	}
-	
-	$arr = [];
-	
-	// build name from unused input
-	$used = [$dob_key, $bg_key];
-	foreach($input as $key=>$val) {
-		if(!(in_array($key, $used))) $arr[] = $val;
-	}
-	$this->name = trim(implode(' ', $arr));
-	
-	// add BG
 	$this->bg = $input[$bg_key];
-	$arr[] = $input[$bg_key];
-	
-	// add DoB
-	$this->dob = $dob;
-	// preserve unrecognised dates
-	$val = $dob ? $this->htm_dob() : $input[$dob_key] ;
-	$arr[] = $val;
+	$used[] = $bg_key;
 		
-	$this->csv = $namestring ? implode(', ', $arr) : '' ;
+	// look for DoB 
+	$dob_key = 3; // DoB should be 3
+	$check_order = [3, 2, 0, 1];
+	$keys = array_diff($check_order, $used);
+	foreach($keys as $key) {
+		$dob = self::input_dob($input[$key]);
+		if($dob) {
+			$dob_key = $key;
+			break;
+		}
+	}
+	$this->dob = $dob;
+	$used[] = $dob_key;		
+
+	// build name from unused input
+	$names = [];
+	$check_order = [0, 1, 2, 3];
+	$keys = array_diff($check_order, $used);
+	foreach($keys as $key) {
+		$val = $input[$key];
+		if($val) $names[] = $val;
+	}
+	if(count($names)==1) {
+		$names = preg_split('#[\s,]+#', $names[0], 2);
+	}
+	$names = array_pad($names, 2, '');
+	$this->name = implode(' ', $names);
+	
+	// re-build CSV
+	// HTML recognised dates else preserve input
+	$htm_dob = $dob ? $this->htm_dob() : $input[$dob_key] ;
+	$csv = [
+		$names[0],
+		$names[1],
+		$input[$bg_key],
+		$dob ? $this->htm_dob() : $input[$dob_key]
+	];
+	$this->csv = $namestring ? implode(', ', $csv) : '' ;
 }
 
 function htm_dob() {
@@ -304,11 +310,15 @@ static function input_dob($str) {
 
 public function __toString(): string {
 	$arr = [
+		"<strong>{$this->namestring}</strong>",
 		"name: {$this->name}",
 		"bg: {$this->bg}",
-		"dob: {$this->dob} ({$this->htm_dob()})"
+		"dob: {$this->dob}",
+		$this->csv
 	];
-	return implode('<br>', $arr);
+	$error = $this->error();
+	if($error) $arr[] = sprintf('<span class="text-bg-danger">Entry %s</span>', $error);
+	return sprintf('<div class="border p-1 m-1">%s</div>', implode('<br>', $arr));
 }
 
 function error() {
@@ -327,7 +337,7 @@ function error() {
 		$yr = date('Y', $this->dob);
 		if($yr<$yr0 || $yr>$yr1) return "has invalid YoB";
 	}
-	
+	// no error
 	return '';
 }
 
