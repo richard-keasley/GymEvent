@@ -119,10 +119,18 @@ public function edit($event_id=0, $user_id=0) {
                 'filter' => FILTER_SANITIZE_STRING,
                 'flags'  => FILTER_FORCE_ARRAY
 			],
-			'opt' =>FILTER_SANITIZE_STRING
+			'opt' => FILTER_SANITIZE_STRING
 		];
 		foreach($participants as $rowkey=>$participant) {
-			$participants[$rowkey] = filter_var_array($participant, $filter);
+			$filtered = filter_var_array($participant, $filter);
+			$filtered['team'] = trim($filtered['team']);
+			// remove blank lines from input
+			$names = [];
+			foreach($filtered['names'] as $name) {
+				if($name) $names[] = $name;
+			}
+			$filtered['names'] = $names;
+			$participants[$rowkey] = $filtered;
 		}
 
 		// sort participants
