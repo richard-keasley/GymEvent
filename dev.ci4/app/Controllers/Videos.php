@@ -82,9 +82,7 @@ public function view($event_id=0) {
 		}
 	}
 	if(!count($cat_opts)) {
-		$status = session('user_id') ? 403 : 401 ;
-		$msg = "There are no videos to display";
-		throw new \RuntimeException($msg, $status);
+		throw new \RuntimeException("There are no videos to display", 403);
 	}
 
 	// view

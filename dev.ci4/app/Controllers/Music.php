@@ -34,12 +34,7 @@ public function index() {
 		if($perms) $this->data['events'][] = $event;
 	}
 	if(!count($this->data['events'])) {
-		if(session('user_id')) {
-			$this->data['messages'][] = ['There is no music available', 'danger'];
-		}
-		else {
-			throw new \RuntimeException('There is no music available', 401);
-		}
+		$this->data['messages'][] = ['There is no music available', 'danger'];
 	}
 	// view
 	$this->data['body'] = 'music';
@@ -92,9 +87,8 @@ public function view($event_id=0) {
 			$entries[] = $dis;
 		}
 	}
-	$err_status = session('user_id') ? 403 : 401 ;
 	if(!count($cat_opts)) {
-		throw new \RuntimeException("There is no music to display", $err_status);
+		throw new \RuntimeException("There is no music to display", 403);
 	}
 	# d($discats);
 	// view
