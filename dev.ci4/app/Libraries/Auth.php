@@ -116,6 +116,12 @@ static function login($name, $password) {
 	$user = self::$usr_model
 		->where('name', $name)
 		->first();
+	if(!$user) {
+		$user = self::$usr_model
+		->where('email', $name)
+		->first();
+	}		
+			
 	if($user) {
 		$login['user_id'] = $user->id ;
 		if(password_verify($password, $user->password)) {
