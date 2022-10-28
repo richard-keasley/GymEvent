@@ -89,11 +89,10 @@ public function htm($data = false) {
 	if(!$this->compiled) return;
 		
 	$table = \App\Views\Htm\Table::load($this->template_name);
+	
 	ob_start(); 
-	?>
-	<div class="cattables">
-	<?php foreach($this->compiled as $cattable) { ?>
-		<section><?php 
+	foreach($this->compiled as $cattable) { ?>
+		<section class="mw-100"><?php 
 		
 		foreach($cattable['headings'] as $level=>$heading) {
 			$hl = $level + 2; // heading level
@@ -112,9 +111,7 @@ public function htm($data = false) {
 		echo $table->generate($cattable['tbody']);
 		
 		?></section>
-	<?php } ?>
-	</div>
-	<?php
+	<?php }
 	return ob_get_clean();
 }
 

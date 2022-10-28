@@ -34,16 +34,12 @@ foreach($summary as $row) {
 	}
 	
 	foreach($row as $key=>$val) {
-		switch($key) {
-			case 'fees':
-				$val = \App\Views\Htm\Table::money($val);
-				break;
-			case 'club': 
-				break;
-			default:
-				$val = \App\Views\Htm\Table::number($val);
-		}
-		$tr[$key] = $val;
+		$tr[$key] = match($key) {
+			'fees' => \App\Views\Htm\Table::money($val),
+			'updated' => \App\Views\Htm\Table::time($val),
+			'club' => $val,
+			default => \App\Views\Htm\Table::number($val)
+		};		
 	}
 	$tbody[] = $tr;
 }

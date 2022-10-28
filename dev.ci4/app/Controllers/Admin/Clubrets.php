@@ -154,7 +154,8 @@ public function event($event_id=0) {
 	];
 	
 	// build summary table
-	$fees = []; $cols = []; $users = []; $count = [];
+	$fees = []; $cols = []; $count = []; $tbody = [];
+
 	foreach($clubrets as $rowkey=>$clubret) {
 		$user = $clubret->user();
 		if($download=='summary') {
@@ -172,7 +173,10 @@ public function event($event_id=0) {
 			$label = getlink($clubret->url('view', 'admin'), $label);
 			if($user) $label .= ' ' . $user->link();
 		}
-		$users[$rowkey] = $label;
+		$tbody[$rowkey] = [
+			'club' => $label,
+			'updated' => $clubret->updated
+		];
 				
 		$count[$rowkey] = [];
 		foreach($clubret->participants as $participant) {
@@ -185,9 +189,8 @@ public function event($event_id=0) {
 		$cr_fees = $clubret->fees('fees');
 		$fees[$rowkey] = array_sum(array_column($cr_fees, 1));
 	}
-	$tbody = [];
-	foreach($users as $rowkey=>$club) {
-		$tbody[$rowkey] = ['club' => $club];
+
+	foreach($tbody as $rowkey=>$row) {
 		foreach($cols as $colkey) {
 			$val = $count[$rowkey][$colkey] ?? 0;
 			$tbody[$rowkey][$colkey] = $val;

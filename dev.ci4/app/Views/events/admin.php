@@ -52,7 +52,7 @@ foreach($states as $fldname) {
 
 <?php if($event->clubrets==1) { ?>
 <section>
-<h4>Returns</h4>
+<h4>Returns' summary</h4>
 <div class="row">
 <?php 
 foreach($event->participants() as $dis) { ?>
