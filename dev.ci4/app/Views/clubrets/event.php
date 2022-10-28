@@ -20,16 +20,12 @@ foreach($summary as $row) {
 		foreach($row as $key=>$val) {
 			$thead[$key] = ($key);
 			$arr = array_column($summary, $key);
-			switch($key) {
-				case 'club' : 
-					$val = count($arr); break;
-				case 'fees' : 
-					$val = \App\Views\Htm\Table::money(array_sum($arr));
-					break;
-				default: 
-					$val = \App\Views\Htm\Table::number(array_sum($arr));
-			}
-			$tfoot[$key] = $val;
+			$tfoot[$key] = match($key) {
+				'club' => count($arr),
+				'updated' => '',
+				'fees' => \App\Views\Htm\Table::money(array_sum($arr)),
+				default => \App\Views\Htm\Table::number(array_sum($arr))
+			};
 		}
 	}
 	
