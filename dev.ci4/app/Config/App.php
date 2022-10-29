@@ -10,12 +10,13 @@ class App extends BaseConfig
     public function __construct() {
 		parent::__construct();
 		
-		if(!getenv('app.baseURL')) {
+		if(!$this->baseURL) {
 			// nothing set, work it out 
+			#echo getenv('app.baseURL') . ' # ' . getenv('app.indexPage') . ' # ' ; die;
 			$host = $_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR'];
 			$https = $_SERVER['HTTPS'] ?? false;
 			$scheme = $https ? 'https' : 'http' ;
-			$this->baseURL = "{$scheme}://{$host}/";
+			$this->baseURL = "{$scheme}://{$host}/{$this->indexPage}";
 			# echo $this->baseURL; die;
 		}
 	}
@@ -53,7 +54,7 @@ class App extends BaseConfig
      *
      * @var string
      */
-    public $indexPage = 'index.php';
+    public $indexPage = '';
 
     /**
      * --------------------------------------------------------------------------
