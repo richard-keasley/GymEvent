@@ -91,12 +91,11 @@ static function view_html($view, $return=1) {
 
 static function get_images() {
 	$path = realpath(FCPATH . self::get_var('settings', 'image_path'));
-	if(!$path) return [];
-	
 	$files = new \CodeIgniter\Files\FileCollection();
-	$files->addDirectory($path);
-	$retval = [];
+	if($path) $files->addDirectory($path);
 	$pos = strlen(FCPATH);
+
+	$retval = [];
 	foreach($files as $file) {
 		$retval[] = base_url(substr($file, $pos));
 	}
