@@ -73,7 +73,7 @@ Event specific files (and installation specific files) are in <?php echo path_la
 
 <h4>Installation edits</h4>
 
-<p>Edit <?php echo path_label('ROOTPATH', '.env');?> according to the specific set-up of each server. Include database connection information and base URL. Leave "base URL" blank for laptops / etc (an over-ride in <code>\App\Config\App</code> will calculate this).</p>
+<p>Edit <?php echo path_label('ROOTPATH', '.env');?> according to the specific set-up of each server. Include database connection information and base URL. Leave <code>app.baseURL</code> blank for laptops / etc (an over-ride in <code>\App\Config\App</code> will calculate this). If you are not using mod_rewrite (below) then include the line <code>app.indexPage = index.php</code>.</p>
 
 <p>Ensure the php.ini files (<?php echo path_label('FCPATH', 'php.ini');?> &amp; <?php echo path_label('FCPATH', '.user.ini');?> are appropriate for the server.</p>
 
@@ -91,16 +91,20 @@ $this->section('bottom'); ?>
 <p><a href="https://codeigniter.com/user_guide/general/common_functions.html#core-constants" title="CodeIgniter help">Read about CodeIgniter constants here</a>.</p>
 
 <h4>Enable Rewrite</h4>
-<p><?php echo path_label('FCPATH', '.htaccess');?> contains instructions for the "rewrite engine" to route requests for non-existent resources to the front controller (<code>/index.php</code>).</p>
+<p><?php echo path_label('FCPATH', '.htaccess');?> contains instructions for the "rewrite engine" to route requests for non-existent resources to the front controller (<?php echo path_label('FCPATH', 'index.php');?>).</p>
 
 <p>Make sure the server domain <em>allows</em> rewrite (it probably doesn't by default). Edit the httpd configuration<br>
-<code>sudo nano /etc/apache2/sites-available/default</code></p>
-<pre class="border p-1">&lt;Directory "/path/to/document/root/"&gt;
+<code>sudo nano /etc/apache2/sites-available/000-default.conf</code></p>
+<pre class="border p-1">
+DocumentRoot /var/www/html/public
+ 
+&lt;Directory /var/www/html/public&gt;
 	Options Indexes FollowSymLinks MultiViews
 	AllowOverride all
 	Order allow,deny
 	allow from all
 &lt;/Directory&gt;</pre>
+<p><strong>Note:</strong> DocumentRoot has been moved to "public" sub-folder.</p> 
 
 <p>Make sure the relevant Apache modules are enabled.<br>
 <code>sudo a2enmod rewrite<br>

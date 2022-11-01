@@ -90,30 +90,29 @@ foreach($ruleset->routine['groups'] as $group_num=>$group_val) {
 
 </div>
 
-<?php d($ruleset); ?>
-
-<?php $this->endSection(); 
+<?php 
+# d($ruleset); 
+$this->endSection(); 
 
 $this->section('top');
 
-$action = site_url('mag/routine');
 $attr = ['class' => "toolbar"];
 $hidden = ['rulesetname' => $rulesetname];
-echo form_open($action, $attr, $hidden);
+echo form_open('mag/routine', $attr, $hidden);
 echo \App\Libraries\View::back_link("mag");
 ?>
-<button type="submit" title="create routine" class="btn bi-plus btn-outline-primary"></button>
+<button type="submit" title="create routine" class="btn btn-outline-primary"><i class="bi-plus-circle-fill text-success"></i></button>
 <?php
 $names = array_keys($index);
 $key = array_search($rulesetname, $names);
 if($key!==false) {
 	if(isset($names[$key - 1])) {
 		$name = $names[$key - 1];
-		printf('<a class="btn btn-outline-dark bi-arrow-left" href="/mag/rules/%s" title="%s"></a>', $name, $index[$name]);
+		printf('<a class="btn btn-outline-dark bi-chevron-left" href="/mag/rules/%s" title="%s"></a>', $name, $index[$name]);
 	}
 	if(isset($names[$key + 1])) {
 		$name = $names[$key + 1];
-		printf('<a class="btn btn-outline-dark bi-arrow-right" href="/mag/rules/%s" title="%s"></a>', $name, $index[$name]);
+		printf('<a class="btn btn-outline-dark bi-chevron-right" href="/mag/rules/%s" title="%s"></a>', $name, $index[$name]);
 	}
 }
 echo form_close();
