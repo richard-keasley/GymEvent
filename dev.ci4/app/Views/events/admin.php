@@ -8,7 +8,7 @@ $this->section('top'); ?>
 $attr = [
 	'class' => "toolbar nav sticky-top"
 ];
-echo form_open(base_url(uri_string()), $attr);
+echo form_open(current_url(), $attr);
 
 echo \App\Libraries\View::back_link('admin/events');
 echo getlink("admin/events/edit/{$event->id}", 'edit');
@@ -75,7 +75,7 @@ foreach($event->participants() as $dis) { ?>
 
 <?php if($event->clubrets==2) { ?>
 <section>
-<?php echo form_open(base_url(uri_string())); ?>
+<?php echo form_open(current_url()); ?>
 <h4>Entries
 	<button type="submit" name="download" value="entries" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
 </h4>

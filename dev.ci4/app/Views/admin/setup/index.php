@@ -2,7 +2,7 @@
 
 $this->section('content'); 
 
-echo form_open(base_url(uri_string())); ?>
+echo form_open(current_url()); ?>
 
 <div class="toolbar">
 	<?php echo \App\Libraries\View::back_link("admin");?>

@@ -30,7 +30,7 @@ foreach($entries as $dis) { ?>
 				$video->entry_num = $entry->num;
 				$name = $entry->name;
 				if($entry->perm('videos', 'edit')) {
-					$name .= sprintf(' <a href="%s" class="btn btn-sm btn-outline-secondary bi-pencil-square" title="edit this entry"></a>', base_url($entry->url('videos')));
+					$name .= sprintf(' <a href="%s" class="btn btn-sm btn-outline-secondary bi-pencil-square" title="edit this entry"></a>', site_url($entry->url('videos')));
 				}
 				$tr = [
 					$entry->num,

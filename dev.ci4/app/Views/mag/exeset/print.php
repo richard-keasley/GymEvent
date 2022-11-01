@@ -243,7 +243,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 
 <footer>
 <?php 
-$action = base_url('mag/routine');
+$action = site_url('mag/routine');
 $attr = [];
 echo form_open($action, $attr, $post);
 ?>

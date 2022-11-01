@@ -6,7 +6,7 @@ $attr = [
 	'style' => "max-width:25em;",
 	'id' => 'runvars'
 ];
-echo form_open(base_url(uri_string()), $attr); ?>
+echo form_open(current_url(), $attr); ?>
 
 <fieldset class="collapse" id="topfields">
 
@@ -51,9 +51,11 @@ echo form_open(base_url(uri_string()), $attr); ?>
 	$methods = get_class_methods('\\App\\Controllers\\Control\\Teamtime');
 	$exclude = ['index', '__construct', 'initController'];
 	$methods = array_diff($methods, $exclude);
+	$query = http_build_query(['bl' => 'control/teamtime']);
+	$attrs = ['class' => "dropdown-item"];
 	foreach($methods as $method) {
-		$href = base_url("control/teamtime/{$method}") . '?bl=control/teamtime';
-		printf('<li><a class="dropdown-item" href="%s">%s</a></li>', $href, $method);
+		$link = anchor("control/teamtime/{$method}?{$query}", $method, $attrs);
+		echo "<li>{$link}</li>";
 	}	
 	?>
 	</ul> 
@@ -106,7 +108,7 @@ if($music_player=='local') {
 if($music_player=='remote') { ?>
 <div id="remoteplayer">
 <div>
-<?php echo anchor(base_url('control/player/auto'), 'remote player'); ?>&nbsp;&nbsp;&nbsp; 
+<?php echo anchor('control/player/auto', 'remote player'); ?>&nbsp;&nbsp;&nbsp; 
 <button type="button" class="btn btn-sm btn-primary bi bi-play-fill" onclick="remote_music('play')"></button>
 <button type="button" class="btn btn-sm btn-primary bi bi-stop-fill" onclick="remote_music('stop')"></button>
 </div>
@@ -116,7 +118,7 @@ const $remoteplayer = $('#remoteplayer')[0];
 const $remoteplayer_msg = $('#remoteplayer p')[0];
 
 function remote_music(state) {
-	url = '<?php echo base_url("/api/music/set_remote");?>';
+	url = '<?php echo site_url("/api/music/set_remote");?>';
 	postvar = {
 		event: event_id,
 		entry: progtable[runvars['row']][runvars['col']],
@@ -146,9 +148,10 @@ function remote_music(state) {
 echo form_close();
 $this->endSection(); 
 
-$this->section('content');?>
+$this->section('content');
+?>
 <div class="ratio ratio-16x9">
-<iframe src="/teamtime/display/0"></iframe>
+<iframe src="<?php echo site_url('teamtime/display/0');?>"></iframe>
 </div>
 <?php $this->endSection(); 
 
@@ -174,7 +177,7 @@ function set_runvars(cmd='') {
 		postvar[field.name] = field.value;
     });
 	// console.log(postvar);
-	url = '<?php echo base_url("/api/teamtime/control");?>';
+	url = '<?php echo site_url("/api/teamtime/control");?>';
 	$.post(url, postvar)
 	.done(function(response) {
 		show_runvars(response);
@@ -206,7 +209,7 @@ function show_runvars(arr) {
 		if(music_player=='local') {
 			entry = progtable[runvars['row']][runvars['col']];
 			exe = progtable[0][runvars['col']];
-			url = '<?php echo base_url("/api/music/track_url/");?>/'+event_id+'/'+entry+'/'+exe;
+			url = '<?php echo site_url("/api/music/track_url/");?>/'+event_id+'/'+entry+'/'+exe;
 			// console.log(url);
 			playtrack.pause();
 			$.get(url, function(response) {
@@ -261,7 +264,7 @@ function team_name(number) {
 
 $(function() {
 
-url = '<?php echo base_url("/api/teamtime/get/runvars");?>';
+url = '<?php echo site_url("/api/teamtime/get/runvars");?>';
 $.get(url, function(response) {
 	show_runvars(response);
 })

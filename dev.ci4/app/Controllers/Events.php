@@ -24,7 +24,7 @@ public function index() {
 	$this->data['events'] = $this->model->whereIn('clubrets', $clubrets)->orderBy('date')->findAll();
 
 	$this->data['body'] = 'events';
-	$this->data['base_url'] = base_url('events/view');
+	$this->data['base_url'] = site_url('events/view');
 	return view('events/index', $this->data);
 }
 

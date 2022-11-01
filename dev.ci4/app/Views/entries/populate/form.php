@@ -6,7 +6,7 @@
 $attr = [
 	'class' => "modal-content"
 ];
-echo form_open(base_url(uri_string()), $attr); ?>
+echo form_open(current_url(), $attr); ?>
 <input type="hidden" name="populate" value="1">
 <div class="modal-header">
 	<h5 class="modal-title">Create entries for <?php echo $event->title;?></h5>

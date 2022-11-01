@@ -8,7 +8,7 @@ $hidden = [
 	'links' => '',
 	'save' => 1
 ];
-echo form_open(base_url(uri_string()), $attr, $hidden); ?>
+echo form_open(current_url(), $attr, $hidden); ?>
 <h4>Create scoreboard links</h4>
 <p>These links appear on the scoreboard information pages.</p>
 <?php 
@@ -52,9 +52,9 @@ echo $table->generate($tbody);
 		'class' => "nav-link",
 		'title' =>"view scoreboard"
 	];
-	echo anchor(base_url('/scoreboard'), 'view', $attr);
+	echo anchor('scoreboard', 'view', $attr);
 	$attr['title'] = "View scoreboard data";
-	echo anchor(base_url('/setup/scoreboard/data'), 'data', $attr);
+	echo anchor('setup/scoreboard/data', 'data', $attr);
 	?>
 </div>
 

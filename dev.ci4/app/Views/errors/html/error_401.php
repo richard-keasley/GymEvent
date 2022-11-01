@@ -14,7 +14,7 @@ $hidden = [
 	'tabView' => '#existing',
 	'hp-info' => ''
 ];
-echo form_open(base_url(uri_string()), $attr, $hidden);
+echo form_open(current_url(), $attr, $hidden);
 
 ?>
 <p>Your user name is your club name. 
@@ -36,7 +36,7 @@ Please <strong>create an account</strong> if you have not used this service befo
 	<button type="button" class="btn btn-outline-secondary" onclick="tabShow('#create')">Create an account</button>
 	<?php } ?>
 	<?php if($show_reset) { ?>
-	<a title="forgot your password?" class="btn btn-outline-secondary" href="<?php echo base_url('reset');?>">Reset password</a>
+	<a title="forgot your password?" class="btn btn-outline-secondary" href="<?php echo site_url('reset');?>">Reset password</a>
 	<?php } ?>
 </p>
 <?php 
@@ -60,7 +60,7 @@ $hidden = [
 	'tabView' => '#create',
 	'hp-info' => ''
 ];
-echo form_open(base_url(uri_string()), $attr, $hidden);?>
+echo form_open(current_url(), $attr, $hidden);?>
 <p class="form-floating">
 	<input class="form-control" type="text" name="name" value="<?php echo $postval['name'];?>" id="newname" placeholder="" required autofocus>
 	<label for="newname" title="Club name" class="form-label">Club name</label>

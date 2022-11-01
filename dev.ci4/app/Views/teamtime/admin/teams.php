@@ -18,7 +18,7 @@ $this->section('bottom'); ?>
 $attr = [
 	'class' =>"modal-content"
 ];
-echo form_open(base_url(uri_string()), $attr); ?>
+echo form_open(current_url(), $attr); ?>
 <div class="modal-header">
 	<h5 class="modal-title" id="exampleModalLabel">Edit teams</h5>
 	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

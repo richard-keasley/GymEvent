@@ -15,7 +15,7 @@ $hidden = [
 	'displays' => '',
 	'views' => ''
 ];
-echo form_open(base_url(uri_string()), $attr, $hidden);
+echo form_open(current_url(), $attr, $hidden);
 ?>
 <section id="displays" class="mb-3">
 <h5>Displays</h5>
@@ -50,19 +50,27 @@ $inputs = [
 
 $tbody = [];
 $get_var = $tt_lib::get_var('displays');
+
+$view_label = '<i class="bi bi-eye"></i>';
+$view_attrs = [
+	'class' => "btn btn-small",
+	'title' => "View this display"
+];
+
 foreach($get_var->value as $ds_id=>$display) {
 	$inputs['title']['value'] = $display['title'];
 	$inputs['tick']['value'] = $display['tick'];
 	$inputs['view']['selected'] = strval($display['view']);
 	$inputs['style']['value'] = $display['style'];
-	$view_href = base_url("/teamtime/display/{$ds_id}");
+	
 	$tbody[] = [
 		$ds_id,
 		form_input($inputs['title']),
 		form_input($inputs['tick']),
 		form_dropdown($inputs['view']),
 		form_textarea($inputs['style']),
-		sprintf('<button name="del" type="button" class="btn bi-trash btn-danger btn-sm"></button> <a class="btn btn-small bi bi-eye" href="%s" title="view this display" target="displays"></a>', $view_href)
+		'<button name="del" type="button" class="btn bi-trash btn-danger btn-sm"></button> ' .
+		anchor("/teamtime/display/{$ds_id}", $view_label, $view_attrs)
 	];
 }
 

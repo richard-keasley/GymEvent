@@ -14,7 +14,7 @@ $attr = [
 	'tabindex' => "-1",
 	'aria-hidden' => "true"
 ];
-echo form_open(base_url(uri_string()), $attr, $hidden);
+echo form_open(current_url(), $attr, $hidden);
 ?>
 <div class="modal-dialog modal-dialog-scrollable">
 <div class="modal-content">

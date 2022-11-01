@@ -96,7 +96,7 @@ foreach($ruleset->routine['groups'] as $group_num=>$group_val) {
 
 $this->section('top');
 
-$action = base_url('mag/routine');
+$action = site_url('mag/routine');
 $attr = ['class' => "toolbar"];
 $hidden = ['rulesetname' => $rulesetname];
 echo form_open($action, $attr, $hidden);

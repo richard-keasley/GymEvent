@@ -17,16 +17,19 @@ $attr = [
 	'class' => "nav-link",
 	'title' =>"view scoreboard"
 ];
-echo anchor(base_url('/scoreboard'), 'view scoreboard', $attr);
+echo anchor('scoreboard', 'view scoreboard', $attr);
 ?>
 <div class="dropdown">
 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">View DB table</button>
 <ul class="dropdown-menu">
 <?php
+$attrs = [
+	'class' => "nav-link"
+];
 foreach($scoreboard->files as $file) {
 	$varname = $file->getBaseName('.php');
-	$href = base_url("/setup/scoreboard/data/{$varname}");
-	printf('<li class="dropdown-item"><a class="nav-link" href="%s">%s</a></li>', $href, $varname);
+	$link = anchor("/setup/scoreboard/data/{$varname}", $varname, $attrs);
+	printf('<li class="dropdown-item">%s</li>', $link);
 }
 ?>
 </ul>

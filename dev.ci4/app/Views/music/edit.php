@@ -26,7 +26,7 @@ echo $table->generate($tbody);
 
 $attr = ['id' => "upload"];
 $hidden = ['upload' => 1];
-echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
+echo form_open_multipart(current_url(), $attr, $hidden);
 ?>
 <fieldset><legend>Upload new track</legend>
 <div class="mb-3 row">

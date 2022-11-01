@@ -10,7 +10,7 @@ $attr = [
 $hidden = [
 	'saved' => $exeset->saved
 ];
-echo form_open_multipart(base_url(uri_string()), $attr, $hidden); 
+echo form_open_multipart(current_url(), $attr, $hidden); 
 ?>
 <section>
 <div class="input-group my-1">
@@ -310,7 +310,7 @@ echo $table->generate($tbody);
 </div>
 
 <script>
-const api = '<?php echo base_url("/api/mag/exevals");?>/';
+const api = '<?php echo site_url("/api/mag/exevals");?>/';
 const filter = <?php 
 	$arr = [];
 	foreach(\App\Libraries\Mag\Exeset::filter as $key=>$val) {

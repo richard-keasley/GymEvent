@@ -18,17 +18,20 @@ $this->endSection();
 $this->section('top');
 $attr = ['class' => "toolbar sticky-top"];
 $hidden = [];
-echo form_open(base_url(uri_string()), $attr, $hidden); 
+echo form_open(current_url(), $attr, $hidden); 
 echo \App\Libraries\View::back_link("setup/scoreboard/data");
 ?>
 <div class="dropdown">
 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
 <ul class="dropdown-menu">
 <?php
+$attrs = [
+	'class' => "nav-link"
+];
 foreach($scoreboard->files as $file) {
 	$varname = $file->getBaseName('.php');
-	$href = base_url("/setup/scoreboard/data/{$varname}");
-	printf('<li class="dropdown-item"><a class="nav-link" href="%s">%s</a></li>', $href, $varname);
+	$link = anchor("/setup/scoreboard/data/{$varname}", $varname, $attrs);
+	printf('<li class="dropdown-item">%s</li>', $link);
 }
 ?>
 </ul>

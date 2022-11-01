@@ -31,7 +31,7 @@ $attr = [
 	'class' => "toolbar"
 ];
 $hidden = [];
-echo form_open(base_url(uri_string()), $attr, $hidden); 
+echo form_open(current_url(), $attr, $hidden); 
 echo \App\Libraries\View::back_link("setup"); 
 ?>
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#dlgUpdate">apply</button>

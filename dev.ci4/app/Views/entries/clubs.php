@@ -3,7 +3,7 @@
 $this->section('content');
 
 $attr = [];
-echo form_open(base_url(uri_string()), $attr);
+echo form_open(current_url(), $attr);
 ?>
 <h4>Club summary
  <button type="submit" name="download" value="clubs" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>

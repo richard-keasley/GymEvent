@@ -19,7 +19,7 @@ $('[name=disid]').change(function() { $('[name=selector]').submit(); });
 </form>
 
 <?php 
-$action = base_url(uri_string()) . "?disid={$filter['disid']}";
+$action = current_url() . '?' . http_build_query(['disid'=>$filter['disid']]);
 $attr = [];
 $hidden = [
 	'save' => '1'

@@ -76,11 +76,13 @@ if($tbody) {
 </section>
 
 <?php $this->endSection(); 
+
 $this->section('top');
 $attr = [
 	'class' => "toolbar sticky-top"
 ];
-echo form_open(base_url(uri_string()), $attr);
+
+echo form_open(current_url(), $attr);
 echo implode(' ', $toolbar);
 echo form_close();
 $this->endSection(); 

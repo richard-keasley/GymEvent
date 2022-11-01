@@ -7,7 +7,7 @@ $this->section('content'); ?>
 $this->section('top');
 $attr = ['class' => 'toolbar sticky-top'];
 $hidden = ['cmd' => 'delete', 'logkey' => $logkey];
-echo form_open(base_url('setup/logs'), $attr, $hidden);
+echo form_open('setup/logs', $attr, $hidden);
 echo implode(' ', $buttons);
 echo form_close();
 $this->endSection(); 

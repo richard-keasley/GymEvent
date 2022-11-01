@@ -1,23 +1,18 @@
 <?php $this->extend('default');
-$base_url = base_url("/admin/music/clubs/{$event->id}");
 
 $this->section('content'); ?>
-<form class="toolbar" id="selform"><?php 
+<form method="GET" class="toolbar" id="selform"><?php 
 echo \App\Libraries\View::back_link("admin/music/view/{$event->id}"); 
 $attr = [
 	'name' => "status",
 	'selected' => $status, 
 	'options' => ['-'] + \App\Libraries\Track::state_labels,
-	'class' => "form-control"
+	'class' => "form-control",
+	'onchange' => 'this.form.submit();'
 ];
 echo form_dropdown($attr);
-?>
-<script>
-$('#selform [name=status]').change(function() {
-	$('#selform').submit();
-});
-</script>
-</form>
+?></form>
+
 <?php 
 # d($event);
 # d($entries);

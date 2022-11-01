@@ -44,7 +44,7 @@ function getlink($path, $label='') {
 			$attr['class'] = 'btn btn-outline-primary';
 		}
 	}
-	return anchor(base_url($path), $label, $attr);
+	return anchor($path, $label, $attr);
 }
 
 function formatBytes($bytes, $precision = 2) { 

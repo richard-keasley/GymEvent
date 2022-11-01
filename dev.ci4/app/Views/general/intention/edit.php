@@ -5,7 +5,7 @@ $this->section('content');
 $attr = [
 	'id' => "editform"
 ];
-echo form_open(base_url(uri_string()), $attr);
+echo form_open(current_url(), $attr);
 echo form_hidden('routine', $intention->encode()); ?>
 
 <header class="row">

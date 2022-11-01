@@ -16,7 +16,7 @@ class App extends BaseConfig
 			$host = $_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR'];
 			$https = $_SERVER['HTTPS'] ?? false;
 			$scheme = $https ? 'https' : 'http' ;
-			$this->baseURL = "{$scheme}://{$host}/{$this->indexPage}";
+			$this->baseURL = "{$scheme}://{$host}/";
 			# echo $this->baseURL; die;
 		}
 	}

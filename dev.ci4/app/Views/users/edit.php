@@ -57,7 +57,7 @@ $attr = [
 	'autocomplete' => "off",
 	'style' => "max-width:28em;"
 ];
-echo form_open(base_url(uri_string()), $attr);
+echo form_open(current_url(), $attr);
 foreach($inputs as $key=>$input) {
 	$input['id'] = "ctrl-$key";
 	$input['name'] = $key;

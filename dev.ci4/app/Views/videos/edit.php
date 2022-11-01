@@ -27,7 +27,7 @@ echo $table->generate($tbody);
 ?>
 <p>Remember; videos you post here will be viewable by everyone who has the link. Please be careful about what you are sharing!</p> 
 
-<?php echo form_open(base_url(uri_string())); ?>
+<?php echo form_open(current_url()); ?>
 <fieldset><legend>Video links for this entry</legend>
 <p>Copy the "share" link for each video into the relevant box. Click "save", then check your video will play.</p>
 <div class="row mb-3"><?php
@@ -54,7 +54,7 @@ foreach($exe_opts as $exe) {
 </fieldset>
 </form>
 
-<?php echo form_open_multipart(base_url(uri_string())); ?>
+<?php echo form_open_multipart(current_url()); ?>
 <fieldset><legend>Upload new video</legend>
 <p>Please only upload videos if you <em>really can't</em> share them (above).</p>
 

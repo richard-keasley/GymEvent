@@ -4,7 +4,7 @@ $this->section('content');
 $attr = [
 	'id' => "editform"
 ];
-echo form_open(base_url(uri_string()), $attr); ?>
+echo form_open(current_url(), $attr); ?>
 <p>While you <em title="death wish">can</em> edit this manually, it's designed to accept a pasted Excel spread-sheet.</p>
 <textarea class="form-control" rows="15" name="value"><?php 
 echo $textarea;

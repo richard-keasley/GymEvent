@@ -1,7 +1,7 @@
 <?php $this->extend('default');
 
 $this->section('content');
-echo form_open(base_url(uri_string()));
+echo form_open(current_url());
 $tbody = [];	
 
 foreach($logins as $login) { 

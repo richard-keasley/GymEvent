@@ -10,7 +10,7 @@ if($can_edit) {
 	$attr = [
 		'class' => "toolbar nav sticky-top"
 	];
-	echo form_open(base_url(uri_string()), $attr);
+	echo form_open(current_url(), $attr);
 	echo \App\Libraries\View::back_link("admin/events/view/{$event->id}");
 	echo getlink("admin/entries/edit/{$event->id}", 'edit');
 	if($format=='dob') {
@@ -46,7 +46,7 @@ if($can_edit) {
 <?php 
 $table = \App\Views\Htm\Table::load('responsive');
 
-$edit_base = base_url("/admin/entries/edit/{$event->id}");
+$edit_base = site_url("/admin/entries/edit/{$event->id}");
 $thead = ['num', 'club', 'name'];
 if($format=='dob') $thead[] = 'DoB';
 

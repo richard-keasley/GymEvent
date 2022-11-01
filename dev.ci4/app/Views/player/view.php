@@ -111,9 +111,11 @@ $track->exe = $round['exe'];
 <?php $this->endSection(); 
 
 $this->section('bottom');?>
-<div class="toolbar">
-	<?php printf('<a href="%s" class="bi bi-gear-fill btn btn-outline-secondary" title="Setup event"></a>', base_url("control/player/edit/{$event->id}"));?>
-</div>
+<div class="toolbar"><?php 
+	$label = '<i class="bi bi-gear-fill btn btn-outline-secondary"></i>';
+	$attrs = ['title' => "Setup event"];
+	echo anchor("control/player/edit/{$event->id}", $label, $attrs);
+?></div>
 
 <?php 
 $this->endSection(); 

@@ -7,7 +7,7 @@ $attr = [
 $hidden = [
 	'reset' => 1
 ];
-echo form_open(base_url('reset/reset'), $attr, $hidden);
+echo form_open('reset/reset', $attr, $hidden);
 ?>
 <p>Enter the 'reset key' (emailed to you) and your new password. The reset key is valid for 20 minutes.</p>
 <div class="mb-3">

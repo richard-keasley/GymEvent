@@ -23,7 +23,7 @@ modalHelp.addEventListener('show.bs.modal', function (event) {
 	var stub = button.getAttribute('data-stub');
 	var modalTitle = modalHelp.querySelector('.modal-title');
 	var modalBody = modalHelp.querySelector('.modal-body');
-	var url = '<?php echo base_url("api/help/view");?>/' + stub;
+	var url = '<?php echo site_url("api/help/view");?>/' + stub;
 	$.get(url, function(response) {
 		try {
 			modalBody.innerHTML = response;

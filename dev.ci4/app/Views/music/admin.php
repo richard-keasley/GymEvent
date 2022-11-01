@@ -7,11 +7,11 @@ $this->section('content');
 
 $user_options = [0 => '-'];
 foreach($users as $id=>$user) $user_options[$id] = $user->name;
-$self = base_url(sprintf('/%s?%s', uri_string(), http_build_query($filter)));
 
+$action = uri_string() . '?' . http_build_query($filter);
 $attr = ['id' => "control"];
 $hidden = ['cmd' => "update"];
-echo form_open($self, $attr, $hidden); 
+echo form_open($action, $attr, $hidden); 
 ?>
 <div class="toolbar nav row sticky-top">
 	<div class="input-group">
@@ -149,12 +149,13 @@ $this->section('bottom'); ?>
 <div class="modal fade" id="state_modeal" tabindex="-1">
 <div class="modal-dialog">
 <?php
+// same action as above
 $attr = [
 	'id' => "frmstate",
 	'class' => 'modal-content'
 ];
 $hidden = ['set_state' => 1];
-echo form_open($self, $attr, $hidden);
+echo form_open($action, $attr, $hidden);
 ?>
 <div class="modal-header">
 <h5 class="modal-title" id="exampleModalLabel">Event music state</h5>

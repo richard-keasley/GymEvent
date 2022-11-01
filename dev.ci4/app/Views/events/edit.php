@@ -12,7 +12,7 @@ $hidden = [
 	'cmd' => '',
 	'key' => ''
 ];
-echo form_open_multipart(base_url(uri_string()), $attr, $hidden); 
+echo form_open_multipart(current_url(), $attr, $hidden); 
  
 $acc = new \App\Views\Htm\Accordion;
 

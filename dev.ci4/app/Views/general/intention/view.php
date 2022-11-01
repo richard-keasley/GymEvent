@@ -169,7 +169,7 @@ echo $table->generate($tbody);
 <footer>
 
 <?php 
-echo form_open(base_url('general/intention'));
+echo form_open(site_url('general/intention'));
 echo form_hidden('routine', $intention->encode()); 
 ?>
 <p><button type="submit">edit</button> This is a printer friendly page containing the routine and judging notes. You can either print it or 

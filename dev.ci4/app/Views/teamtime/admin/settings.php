@@ -7,7 +7,7 @@ $attr = [
 $hidden = [
 	'save' => 1
 ];
-echo form_open(base_url(uri_string()), $attr, $hidden);
+echo form_open(current_url(), $attr, $hidden);
 $evt_model = new \App\Models\Events();
 $events = $evt_model->orderBy('date')->findAll();
 $event_opts = [];

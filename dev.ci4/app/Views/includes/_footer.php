@@ -4,10 +4,10 @@ if(empty($_SESSION['user_id'])) return;
 $attr = [
 	'class' => "alert alert-light p-1 d-print-none"
 ];
-echo form_open(base_url(), $attr); ?>
+echo form_open(site_url(), $attr); ?>
 <button class="btn btn-secondary" type="submit" name="logout" value="1">Logout</button>
 <?php echo getlink('/admin', 'admin'); ?> 
-<label>Logged in as <?php printf('<a href="%s">%s</a>', base_url('user'), $_SESSION['user_name']);?></label>
+<label>Logged in as <?php printf('<a href="%s">%s</a>', site_url('user'), $_SESSION['user_name']);?></label>
 <?php echo form_close();
 
 if(ENVIRONMENT != 'development') return;

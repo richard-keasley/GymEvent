@@ -33,7 +33,6 @@ public function htm() {
 }
 
 public function item($key, $file) {
-	$href = base_url(substr($file->getPathname(), self::$trimstart));
 	$ext = $file->getExtension();
 	
 	$label = humanize(urldecode($file->getBasename(".{$ext}")));
@@ -63,6 +62,7 @@ public function item($key, $file) {
 	}
 	$label = sprintf('<span class="bi bi-file%s pe-2"></span>%s', $icon, $label);
 	
+	$href = base_url(substr($file->getPathname(), self::$trimstart));
 	return 
 		sprintf($this->template['item_before'], $key) . 
 		anchor($href, $label) .

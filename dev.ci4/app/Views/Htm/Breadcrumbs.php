@@ -21,18 +21,18 @@ public function htm($items = false) {
 
 	foreach($this->items as $key=>$item) {
 		if(is_array($item)) {
-			$href = $item[0];
+			$link = $item[0];
 			$label = $item[1];
 		}
 		else {
-			$href = $item;
+			$link = $item;
 			$label = basename($item);
 			if(is_numeric($label)) $label = basename(dirname($item));
 			$pos = strrpos($label, "_");
 			if($pos) $label = substr($label, $pos + 1);
 		}
 		$retval .= $this->template['item_start'] . 
-			anchor(base_url($href), $label, $this->template['a_attr']) . 
+			anchor($link, $label, $this->template['a_attr']) . 
 			$this->template['item_end'] ;
 	}
 	

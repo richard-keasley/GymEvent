@@ -4,7 +4,7 @@ $this->section('content');
 $attr = [
 	'id' => "editform"
 ];
-echo form_open(base_url(uri_string()), $attr); 
+echo form_open(current_url(), $attr); 
 
 foreach($fields as $fldname=>$fldtype) { ?>
 	<div class="input-group my-1">

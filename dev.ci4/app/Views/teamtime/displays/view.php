@@ -41,7 +41,7 @@ let chk = 0;
 // get view from server
 get_view();
 function get_view() {
-	var url = '<?php echo base_url("/api/teamtime/display_view/{$ds_id}/{$ds_updated}");?>/'+view.updated;
+	var url = '<?php echo site_url("/api/teamtime/display_view/{$ds_id}/{$ds_updated}");?>/'+view.updated;
 	//console.log(url);
 	$.get(url, function(response) {
 		try {

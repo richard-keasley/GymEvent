@@ -14,7 +14,7 @@ $hidden = [
 	'player' => "",
 	'cmd' => 'update'
 ];
-echo form_open(base_url(uri_string()), $attr, $hidden);
+echo form_open(current_url(), $attr, $hidden);
 ?>
 <div class="container table-responsive">
 <div id="playervar" style="min-width:20em;">
@@ -153,7 +153,7 @@ $this->section('bottom'); ?>
 <?php 
 $attr = ['class' => "modal-content"];
 $hidden = ['cmd'=>'rebuild'];
-echo form_open(base_url(uri_string()), $attr, $hidden);
+echo form_open(current_url(), $attr, $hidden);
 ?>
 
 <div class="modal-header">
@@ -179,7 +179,7 @@ echo form_open(base_url(uri_string()), $attr, $hidden);
 <?php 
 $attr = ['class' => "modal-content"];
 $hidden = [];
-echo form_open_multipart(base_url(uri_string()), $attr, $hidden);
+echo form_open_multipart(current_url(), $attr, $hidden);
 ?>
 
 <div class="modal-header">

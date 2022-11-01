@@ -276,7 +276,7 @@ public function link($type, $user_id=0) {
 					}
 				}
 				else { // no user
-					return anchor(base_url("clubrets/add/{$this->id}"), 'enter this event', ['class'=>'btn btn-outline-primary']);
+					return anchor("clubrets/add/{$this->id}", 'enter this event', ['class'=>'btn btn-outline-primary']);
 				}
 				break;
 				
@@ -290,7 +290,7 @@ public function link($type, $user_id=0) {
 		if(!\App\Libraries\Video::enabled()) return '';
 		switch($this->videos) {
 			case self::states['edit']:
-				$href = base_url("videos/view/{$this->id}");
+				$href = "videos/view/{$this->id}";
 				$label = "videos";
 				if($user_id) {
 					$attr = [
@@ -319,7 +319,7 @@ public function link($type, $user_id=0) {
 		switch($this->music) {
 			case self::states['edit']:
 			case self::states['view']:
-				$href = base_url("music/view/{$this->id}");
+				$href = "music/view/{$this->id}";
 				$label = "music";
 				if($user_id) {
 					$attr = [
@@ -359,7 +359,7 @@ public function link($type, $user_id=0) {
 				'class' => 'nav-link', 
 				'title' => "View music player"
 			];
-			return anchor(base_url($path), 'player', $attr);            
+			return anchor($path, 'player', $attr);            
 		}
 		break;
 		

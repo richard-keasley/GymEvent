@@ -7,7 +7,7 @@ $this->endSection();
 $this->section('top'); ?>
 <div class="toolbar sticky-top"> 
 	<?php echo \App\Libraries\View::back_link('control/teamtime'); ?>
-	<button class="btn btn-primary bi bi-pencil" title="view programme" type="button" data-bs-toggle="modal" data-bs-target="#pageModal"></button>
+	<button class="btn btn-primary bi bi-pencil" title="edit programme" type="button" data-bs-toggle="modal" data-bs-target="#pageModal"></button>
 </div>
 <?php $this->endSection(); 
 
@@ -18,7 +18,7 @@ $this->section('bottom'); ?>
 $attr = [
 	'class' =>"modal-content"
 ];
-echo form_open(base_url(uri_string()), $attr); ?>
+echo form_open(current_url(), $attr); ?>
 <div class="modal-header">
 	<h5 class="modal-title" id="exampleModalLabel">Edit programme</h5>
 	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

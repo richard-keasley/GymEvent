@@ -15,7 +15,7 @@ $this->section('sidebar'); ?>
 <?php 
 $nav = [];
 foreach($channels as $key=>$val) {
-	$nav[] = [ base_url("control/player/auto/{$key}"), $val ];
+	$nav[] = [ "control/player/auto/{$key}", $val ];
 }
 $navbar = new \App\Views\Htm\Navbar($nav);
 echo $navbar->htm();
@@ -57,7 +57,7 @@ $player.addEventListener("error", function(err) {
 
 if(ch_id) {
 	var tt = setInterval(function() {
-		var url = '<?php echo base_url("api/music/auto");?>/' + ch_id;
+		var url = '<?php echo site_url("api/music/auto");?>/' + ch_id;
 		$.get(url, function(response) {
 			var store = JSON.stringify(response);
 			if(current_store!=store) {

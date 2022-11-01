@@ -6,7 +6,7 @@ public function __construct() {
 	$this->usr_model = new \App\Models\Users();
 	$this->data['breadcrumbs'][] = 'admin';
 	$this->data['breadcrumbs'][] = 'admin/users';
-	$this->data['base_url'] = base_url(['admin', 'users']);
+	$this->data['base_url'] = site_url(['admin', 'users']);
 	$this->data['user_self'] = false;
 }
 
@@ -107,7 +107,7 @@ public function view($user_id=0) {
 				$this->data['messages'][] = [$message, 'success'];
 				$session = \Config\Services::session();
 				$session->setFlashdata('messages', $this->data['messages']);
-				return redirect()->to(base_url());
+				return redirect()->to(site_url());
 			}
 			else $this->data['messages'][] = "Couldn't login as $user_id";
 		}
@@ -147,7 +147,7 @@ public function view($user_id=0) {
 	
 	if(!$this->data['user']->deleted_at) {
 		$this->data['toolbar'][] = getlink("admin/users/edit/{$user_id}", 'edit');
-		$this->data['toolbar'][] = sprintf('<a href="%s/%u" class="btn btn-outline-secondary">logins</a>', base_url('admin/users/logins/user_id'), $user_id);
+		$this->data['toolbar'][] = sprintf('<a href="%s/%u" class="btn btn-outline-secondary">logins</a>', site_url('admin/users/logins/user_id'), $user_id);
 		$this->data['toolbar'][] = '<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUser" title="Merge data from another user"><span class="bi bi-layer-backward"></span></button>';
 	}
 	

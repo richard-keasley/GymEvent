@@ -26,7 +26,7 @@ private function find($event_id) {
 	
 public function index() {
 	$this->data['body'] = 'admin_events';
-	$this->data['base_url'] = base_url('admin/events/view');
+	$this->data['base_url'] = site_url('admin/events/view');
 	$this->data['events'] = $this->mdl_events->orderBy('date')->withDeleted()->findAll();
 	return view('events/index', $this->data);
 }
@@ -78,7 +78,7 @@ public function view($event_id=0) {
 			$this->data['messages'][] = ["Event {$item_id} deleted", 'success'];
 			$session = \Config\Services::session();
 			$session->setFlashdata('messages', $this->data['messages']);
-			return redirect()->to(base_url('admin/events'));
+			return redirect()->to(site_url('admin/events'));
 		}
 		else {
 			$this->data['messages'] = $this->mdl_events->errors();
@@ -123,7 +123,7 @@ public function view($event_id=0) {
 						'disid' => $dis->id,
 						'catid' =>$cat->id
 					];
-					$href = base_url($base_edit .'?' . http_build_query($params));
+					$href = $base_edit .'?' . http_build_query($params);
 					$label = anchor($href, $label, ['title' => 'Edit category']);
 				}
 				$cats[] = [

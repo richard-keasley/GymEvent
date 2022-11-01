@@ -1,6 +1,6 @@
 <?php $this->extend('default');
 
-$self = base_url(sprintf('/%s?%s', uri_string(), http_build_query($filter)));
+$self = sprintf('%s?%s', current_url(), http_build_query($filter));
 $user_options = [];
 foreach($users as $id=>$user) $user_options[$id] = $user->name;
 
@@ -23,7 +23,6 @@ $this->section('content');
 # d($filter);
 # d($entries);
 # d($self);
-
 ?>
 
 <form name="selector" method="GET">

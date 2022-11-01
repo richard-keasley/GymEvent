@@ -7,7 +7,7 @@ foreach($logfiles as $key=>$file) {
 	$path = "setup/logs/view/{$key}";
 	$label = $file->getBasename();
 	$attr = [];
-	printf('<li>%s</li>', anchor(base_url($path), $label, $attr));
+	printf('<li>%s</li>', anchor($path, $label, $attr));
 }
 ?>
 </ul>
