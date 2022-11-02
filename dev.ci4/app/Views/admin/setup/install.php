@@ -52,6 +52,7 @@ $this->section('sidebar'); ?>
 <?php $this->endSection();
 
 $this->section('content'); ?>
+<section>
 <h4>Directory structure</h4>
 
 <p>CodeIgniter sits in <?php echo $paths['ROOTPATH'];?>. This path sits outside the document root.</p>
@@ -70,18 +71,9 @@ is used for downloads and files accessible to the public. All front-end <abbr ti
 Event specific files (and installation specific files) are in <?php echo path_label('FCPATH', 'public/events');?>.</p>
 
 <p>Read about CodeIgniter's <a href="https://codeigniter.com/user_guide/concepts/structure.html">directory structure</a>.</p>
+</section>
 
-<h4>Installation edits</h4>
-
-<p>Edit <?php echo path_label('ROOTPATH', '.env');?> according to the specific set-up of each server. Include database connection information and base URL. Leave <code>app.baseURL</code> blank for laptops / etc (an over-ride in <code>\App\Config\App</code> will calculate this). If you are not using mod_rewrite (below) then include the line <code>app.indexPage = index.php</code>.</p>
-
-<p>Ensure the php.ini files (<?php echo path_label('FCPATH', 'php.ini');?> &amp; <?php echo path_label('FCPATH', '.user.ini');?> are appropriate for the server.</p>
-
-<p>Edit the front controller (<?php echo path_label('FCPATH', 'index.php');?>) to make <code>$pathsPath</code> point to <?php echo path_label('APPPATH', 'Config/Paths.php');?>.<br>Example: <code>$pathsPath = FCPATH . '../<em>{ci4}</em>/app/Config/Paths.php';</code></p>
-
-<?php $this->endSection();
-
-$this->section('bottom'); ?>
+<section>
 <h4>Core Constants</h4>
 <ul class="list-unstyled">
 <?php foreach($consts as $const) {
@@ -89,7 +81,23 @@ $this->section('bottom'); ?>
 } ?>
 </ul>
 <p><a href="https://codeigniter.com/user_guide/general/common_functions.html#core-constants" title="CodeIgniter help">Read about CodeIgniter constants here</a>.</p>
+</section>
+<?php $this->endSection();
 
+$this->section('bottom'); ?>
+<section>
+<h4>Installation edits</h4>
+
+<p>Ensure <?php echo $paths['WRITEPATH'];?> is writeable. You may also need to create specific folders (e.g. cache).</p>
+
+<p>Edit <?php echo path_label('ROOTPATH', '.env');?> according to the specific set-up of each server. Include database connection information and base URL. Leave <code>app.baseURL</code> blank for laptops / etc (an over-ride in <code>\App\Config\App</code> will calculate this). If you are not using mod_rewrite (below) then include the line <code>app.indexPage = index.php</code>.</p>
+
+<p>Ensure the php.ini files (<?php echo path_label('FCPATH', 'php.ini');?> &amp; <?php echo path_label('FCPATH', '.user.ini');?> are appropriate for the server.</p>
+
+<p>Edit the front controller (<?php echo path_label('FCPATH', 'index.php');?>) to make <code>$pathsPath</code> point to <?php echo path_label('APPPATH', 'Config/Paths.php');?>.<br>Example: <code>$pathsPath = FCPATH . '../<em>{ci4}</em>/app/Config/Paths.php';</code></p>
+</section>
+
+<section>
 <h4>Enable Rewrite</h4>
 <p><?php echo path_label('FCPATH', '.htaccess');?> contains instructions for the "rewrite engine" to route requests for non-existent resources to the front controller (<?php echo path_label('FCPATH', 'index.php');?>).</p>
 
@@ -103,12 +111,34 @@ DocumentRoot /var/www/html/public
 	AllowOverride all
 	Order allow,deny
 	allow from all
-&lt;/Directory&gt;</pre>
-<p><strong>Note:</strong> DocumentRoot has been moved to "public" sub-folder.</p> 
+&lt;/Directory&gt;
+</pre>
+<p><strong>NB:</strong> 
+App is installed in <code>/var/www/html</code> (<mark>APPPATH</mark>). 
+DocumentRoot is <code>/var/www/html/public</code> (<mark>FCPATH</mark>).</p> 
 
 <p>Make sure the relevant Apache modules are enabled.<br>
 <code>sudo a2enmod rewrite<br>
 sudo service apache2 restart</code></p>
+</section>
+
+<section>
+<h4>Set-up database</h4>
+<p>Use MySQL to insert users and data to database.<br>
+<code>sudo mysql -u root</code></p>
+<pre class="border p-1">
+CREATE USER 'db_user'@'localhost' IDENTIFIED BY 'db_password';
+CREATE DATABASE 'gymevent_main';
+GRANT ALL PRIVILEGES ON 'gymevent_main'.* To 'db_user'@'localhost';
+FLUSH PRIVILEGES;
+</pre>
+<p><strong>NB:</strong> <q>db_user</q> and <q>db_password</q> need to be entered into 
+<?php echo path_label('ROOTPATH', '.env');?>.</p>
+
+<p>Export database from live website (phpMyAdmin). Copy it into Richard’s documents.</p>
+<p><code>cd  [wherever the MySQL script was saved]<br>
+sudo mysql -u root gymevent_main &lt; gymevent_main.sql</code></p>
+</section>
 
 <script>
 $(function() {

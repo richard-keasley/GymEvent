@@ -3,7 +3,7 @@
 $this->section('content'); ?>
 <ul class="list-unstyled">
 <?php 
-foreach($logfiles as $key=>$file) {
+foreach($tempfiles as $key=>$file) {
 	$path = "setup/logs/view/{$key}";
 	$label = $file->getBasename();
 	$attr = [];

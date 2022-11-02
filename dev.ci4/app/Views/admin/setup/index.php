@@ -69,6 +69,7 @@ echo getlink('setup/dev', 'Development notes');
 if($device=='development') echo getlink('setup/update', 'Update the App');
 echo getlink('setup/install', 'Installation notes');
 echo getlink('setup/logs', 'Error logs');
+echo getlink('setup/session', 'Session files');
 ?>
 </nav>
 
