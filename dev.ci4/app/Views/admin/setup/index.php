@@ -59,6 +59,13 @@ echo form_dropdown($input);
 <code><?php echo $device;?></code> -
 <code><?php echo base_url();?></code>.</p>
 
+<section>
+<h5>Login checks</h5>
+<?php
+echo new \App\Views\Htm\Vartable(\App\Models\Logins::$config);
+?>
+</section>
+
 <nav class="nav flex-column">
 <?php 
 echo getlink('admin/help/stub?view=setup', 'Permissions');

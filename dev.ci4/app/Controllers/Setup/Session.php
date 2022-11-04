@@ -1,7 +1,7 @@
 <?php namespace App\Controllers\Setup;
 class Session extends \App\Controllers\BaseController {
 public function __construct() {	$this->data['breadcrumbs'][] = 'admin';	$this->data['breadcrumbs'][] = 'setup';	$this->data['breadcrumbs'][] = ['setup/session', 'Session'];	$this->get_files();}
-private function get_files() {	$this->data['tempfiles'] = new \CodeIgniter\Files\FileCollection();	$path = realpath(WRITEPATH . '/session');	if($path) {		$this->data['tempfiles']->addDirectory($path);		$this->data['tempfiles']->removePattern('index.*');	}}
+private function get_files() {	$this->data['tempfiles'] = new \CodeIgniter\Files\FileCollection();	$path = realpath(config('App')->sessionSavePath);	if($path) {		$this->data['tempfiles']->addDirectory($path);		$this->data['tempfiles']->removePattern('index.*');	}}
 public function index() {	$config = config('Security');	$max_lifetime = $config->expires ?? 0;	$del_time = time() - $max_lifetime;	if($this->request->getPost('cmd')=='purge') {		$count = 0;		foreach($this->data['tempfiles'] as $file) {			$time = $file->getMTime();			if($time<$del_time) {				unlink($file->getPathname());				$count++;			}		}		if($count) $this->get_files();		$this->data['messages'][] = ["{$count} session files purged", 'info'];	}	if(!count($this->data['tempfiles'])) $this->data['messages'][] = ["No session files found", 'light'];
 	// view	$this->data['del_time'] = $del_time;	$this->data['title'] = 'Session';	$this->data['heading'] = $this->data['title'];	return view('admin/setup/session', $this->data);}
 }

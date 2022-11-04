@@ -31,16 +31,31 @@ function block_ip($ip) {
 	return $this->insert(['ip' => $ip, 'error' => 'blocked']) ;
 }
 
-const ip_time = 'P2D'; // amount of time to remove records
-const ip_errors = 6; // max number of errors allowed per IP address
 private $_ip_checks = [];
+static $config = null;
+
 function check_ip($ip) {
+	if(!self::$config) {
+		$config = config('Auth');
+		$ttl = intval($config->errors['ttl']);
+		if($ttl) {
+			self::$config = [
+				'del_time' =>  new \CodeIgniter\I18n\Time("-{$ttl} hours"),
+				'max' => intval($config->errors['max'])
+			];
+		}
+		else {
+			self::$config = [
+				'ignore' => 'No IP checks made'
+			];
+		}
+	}
+	
+	if(isset(self::$config['ignore'])) return true;
+		
 	if(!isset($this->_ip_checks[$ip])) {
 		// delete old records (remove temporary blocks)
-		$dt = new \DateTime(); 
-		// check this far back (older ones deleted)
-		$dt->sub(new \DateInterval(self::ip_time)); 
-		$this->where('updated <', $dt->format('Y-m-d H:i:s'))
+		$this->where('updated <', self::$config['del_time'])
 			->where('error <>', 'blocked')
 			->delete();
 				
@@ -52,7 +67,7 @@ function check_ip($ip) {
 		$retval = true;
 		
 		// temporary block
-		if(count($logins)>self::ip_errors) $retval = false;
+		if(count($logins)>self::$config['max']) $retval = false;
 		else {
 			foreach($logins as $login) {
 				// permanent block
@@ -60,10 +75,6 @@ function check_ip($ip) {
 			}
 		}
 		
-		// reserved addresses
-		if(strpos($ip, '127.')===0) $retval = true;
-		# if(strpos($ip, '86.')===0) $retval = true;
-			
 		$this->_ip_checks[$ip] = $retval;
 		# d($this->_ip_checks);
 	}
