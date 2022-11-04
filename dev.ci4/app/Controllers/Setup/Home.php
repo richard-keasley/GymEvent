@@ -58,7 +58,7 @@ public function index() {
 	}
 
 	// view
-	$this->data['heading'] = 'System setup';
+	$this->data['heading'] = "System setup - {$this->data['device']}";
 	$this->data['controllers'] = $controllers;
 	$this->data['locked_controllers'] = $locked_controllers;
 	return view('admin/setup/index', $this->data);

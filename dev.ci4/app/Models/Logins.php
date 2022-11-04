@@ -40,6 +40,7 @@ function check_ip($ip) {
 		$ttl = intval($config->errors['ttl']);
 		if($ttl) {
 			self::$config = [
+				'TTL' => $ttl . ' hours',
 				'del_time' =>  new \CodeIgniter\I18n\Time("-{$ttl} hours"),
 				'max' => intval($config->errors['max'])
 			];

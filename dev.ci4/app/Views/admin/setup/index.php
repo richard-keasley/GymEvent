@@ -1,10 +1,9 @@
 <?php $this->extend('default');
 
 $this->section('content'); 
-
 echo form_open(current_url()); ?>
 
-<div class="toolbar">
+<div class="toolbar sticky-top">
 	<?php echo \App\Libraries\View::back_link("admin");?>
 	<button name="save" value="1" type="submit" class="btn btn-primary">save</button>
 </div>
@@ -32,39 +31,12 @@ foreach($controllers as $controller=>$enabled) { ?>
 	?>
 	</div>
 <?php } ?>
-
-<div class="my-2 border rounded border-secondary p-1">
-<label for="min_role" class="form-label">Minimum login</label>
-<?php 
-$options = [];
-foreach(\App\Libraries\Auth::roles as $role) {
-	$options[$role] = $role;
-}
-$input = [
-	'class' => 'form-select',
-	'selected' => \App\Libraries\Auth::$min_role,
-	'title' => 'Minimum login role',
-	'name' => "min_role",
-	'id' => "min_role",
-	'options' => $options
-];
-echo form_dropdown($input);
-?>
-</div>
-
 </div>
 
 <div class="col-auto">
-<p>You are viewing device 
-<code><?php echo $device;?></code> -
-<code><?php echo base_url();?></code>.</p>
-
-<section>
-<h5>Login checks</h5>
-<?php
-echo new \App\Views\Htm\Vartable(\App\Models\Logins::$config);
-?>
-</section>
+<p>You are viewing device:<br> 
+<code><?php echo $device;?><br>
+<?php echo base_url();?></code></p>
 
 <nav class="nav flex-column">
 <?php 
@@ -80,6 +52,41 @@ echo getlink('setup/session', 'Session files');
 ?>
 </nav>
 
+</div>
+
+<div class="col-auto">
+<div class="card bg-light">
+<div class="card-header">Login checks</div>
+<div class="card-body">
+<?php
+echo new \App\Views\Htm\Vartable(\App\Models\Logins::$config);
+?>
+
+<div class="row">
+<div class="col-auto">
+<label for="min_role" class="form-label"><strong>Minimum login</strong></label>
+</div>
+<div class="col-auto">
+<?php 
+$options = [];
+foreach(\App\Libraries\Auth::roles as $role) {
+	$options[$role] = $role;
+}
+$input = [
+	'class' => 'form-select bg-light',
+	'selected' => \App\Libraries\Auth::$min_role,
+	'title' => 'Minimum login role',
+	'name' => "min_role",
+	'id' => "min_role",
+	'options' => $options
+];
+echo form_dropdown($input);
+?>
+</div>
+</div>
+</div>
+	
+</div>
 </div>
 
 <div class="col-auto">

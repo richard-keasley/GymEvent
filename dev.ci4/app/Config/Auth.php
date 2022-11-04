@@ -6,8 +6,8 @@ class Auth extends BaseConfig {
 
 /* check IP address for errors */
 public $errors = [
-	'ttl' => 0, // amount of hours to remove records
-	'max' => 0  // max number of errors allowed per IP address
+	'ttl' => 36, // amount of hours to remove records
+	'max' => 6  // max number of errors allowed per IP address
 ];
 
 }
