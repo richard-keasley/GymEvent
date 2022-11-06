@@ -343,7 +343,13 @@ public function link($type, $user_id=0) {
 		break;
 		
 		case 'player':
-		$path = "control/player/view/{$this->id}";
+		$appvars = new \App\Models\Appvars();
+		$teamtime  = $appvars->get_value('teamtime.settings');
+		$tt_event = $teamtime['event_id'] ?? 0;
+		$path = $tt_event==$this->id ?
+			'control/teamtime/player' : 
+			"control/player/view/{$this->id}";
+
 		switch($this->music) {
 			case self::states['finished']:
 			case self::states['waiting']:
