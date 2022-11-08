@@ -2,13 +2,14 @@
 <?php 
 $tt_lib = new \App\Libraries\Teamtime;
 $get_var = $tt_lib::get_var('progtable');
+$progtable = $get_var->value;
 
-if($get_var->value) { ?>
+if($$progtable) { ?>
 <table class="table text-center" style="table-layout:fixed;">
 <?php
 $key = 0; // in case there's no body
-foreach($get_var->value as $key=>$row) {
-	$mode = array_shift($row);
+foreach($$progtable as $key=>$row) {
+	$mode = array_shift($row); // remove mode item from row
 	if($key==0) { // thead
 		$col_count = count($row);
 		printf('<thead><tr><th>%s</th></tr></thead>', implode('</th><th>', $row));
@@ -36,4 +37,3 @@ if($key) echo '</tbody>'; // $key>0 if there was a body
 <p class="alert alert-warning">Programme appears to be empty</p>
 <?php } ?>
 </div>
-
