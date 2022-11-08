@@ -3,7 +3,8 @@ $event_id = $tt_lib::get_var("settings", "event_id");
 
 $this->section('sidebar');
 $attr = [
-	'style' => "max-width:25em;",
+	'class' => "mw-100",
+	'style' => "width:21em;",
 	'id' => 'runvars'
 ];
 echo form_open(current_url(), $attr); ?>
