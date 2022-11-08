@@ -1,9 +1,12 @@
 <div class="progtable">
-<table class="table text-center" style="table-layout:fixed;">
 <?php 
 $tt_lib = new \App\Libraries\Teamtime;
 $get_var = $tt_lib::get_var('progtable');
-if($get_var) { 
+
+if($get_var->value) { ?>
+<table class="table text-center" style="table-layout:fixed;">
+<?php
+$key = 0; // in case there's no body
 foreach($get_var->value as $key=>$row) {
 	$mode = array_shift($row);
 	if($key==0) { // thead
