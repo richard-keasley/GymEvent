@@ -7,10 +7,8 @@ if($layout && $source) {
 	echo match($source) {
 		'score_table' => 'Manual score sheets',
 		'scoreboard' => 'Data for importing into the scoreboard app',
-		'run_order' => 'Running order',
-		'entries' => 'Entries in this event',
 		'entry_list' => 'Numbered list of entries',
-		default => "Export {$source}"
+		default => humanize($source)
 	};
 	?></p>
 	<?php

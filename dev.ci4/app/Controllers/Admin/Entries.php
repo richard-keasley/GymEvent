@@ -582,7 +582,7 @@ public function export($event_id=0, $download=0) {
 		$this->data['table_header'] = false;
 		break;
 		
-		case 'run_order':
+		case 'running_order':
 		$sort = [];
 		foreach($this->data['entries'] as $dis) {
 			foreach($dis->cats as $cat) {
@@ -616,6 +616,36 @@ public function export($event_id=0, $download=0) {
 		$this->data['headings'] = ['runorder', 'dis', 'cat'];
 		break;
 		
+		case 'round_summary':
+		$sort = [];
+		foreach($this->data['entries'] as $dis) {
+			foreach($dis->cats as $cat) {
+				foreach($cat->entries as $rowkey=>$entry) {
+					$this_sort = [
+						$entry->get_rundata('order'),
+						$dis->abbr,
+						$cat->sort
+					];
+					$key = array_search($this_sort, $sort);
+					if($key===false) {
+						$key = count($sort);
+						$row = $entry->get_rundata('export');
+						$row['dis'] = $dis->name;
+						$row['cat'] = $cat->name;
+						$row['count'] = 0;
+						$export_table[$key] = $row;
+						$sort[$key] = $this_sort;
+					}
+					$export_table[$key]['count']++ ;
+				}
+			}
+		}
+		array_multisort($sort, $export_table);
+		# d($sort);
+				
+		$this->data['layout'] = 'table';
+		break;
+				
 		default:
 		$source = 'scoreboard';
 		$sort = [];
@@ -645,7 +675,7 @@ public function export($event_id=0, $download=0) {
 					$row['order'] = '';#$entry->get_rundata('order');
 					$row['run'] = $entry->get_rundata('export');
 					$export_table[] = $row;
-					// NB: same sort as run_order
+					// NB: same sort as running_order
 					$sort[] = [
 						$entry->get_rundata('order'),
 						$dis->abbr,
@@ -679,7 +709,7 @@ public function export($event_id=0, $download=0) {
 	$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
 
 	// valid sources
-	$arr = ['scoreboard', 'score_table', 'run_order', 'entries', 'entry_list'];
+	$arr = ['scoreboard', 'score_table', 'running_order', 'round_summary', 'entries', 'entry_list'];
 	$this->data['source_opts'] = [];
 	foreach($arr as $key) {
 		$this->data['source_opts'][$key] = humanize($key);
