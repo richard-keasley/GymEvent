@@ -1,10 +1,11 @@
 <?php $this->extend('default');
+use \App\Libraries\Teamtime as tt_lib;
 
 $this->section('content');
 
 $table = \App\Views\Htm\Table::load('responsive');
-$get_var = $tt_lib::get_var('progtable');
-$progtable = $get_var ? $get_var->value : [] ;
+$progtable = tt_lib::get_value('progtable');
+
 $exes = [];
 if($progtable) {
 	$exes = $progtable[0];
@@ -19,13 +20,12 @@ else { ?>
 <p class="alert alert-danger">Programme appears to be empty</p>
 <?php } 
 
-$get_var = $tt_lib::get_var('teams');
-$teams = $get_var ? $get_var->value : [] ;
+$teams = tt_lib::get_value('teams');
 if(!$teams) { ?>
 <p class="alert alert-danger">Teams are not set-up</p>
 <?php }
 
-$event_id = $tt_lib::get_var('settings', 'event_id');
+$event_id = tt_lib::get_var('settings', 'event_id');
 $track = new \App\Libraries\Track();
 $track->event_id = $event_id;
 

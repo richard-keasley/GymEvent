@@ -1,13 +1,13 @@
+<?php
+use \App\Libraries\Teamtime as tt_lib;
+?>
 <script>
-const progtable = <?php 
-$get_var = $tt_lib::get_var('progtable');
-echo json_encode($get_var->value);?>;
+const progtable = <?php echo json_encode(tt_lib::get_value('progtable'));?>;
 const teams = <?php 
-$get_var = $tt_lib::get_var('teams');
-$teams = [];
-foreach($get_var->value as $row) $teams[$row[0]] = $row[1];
-echo json_encode($teams);
-?>;
+	$teams = [];
+	foreach(tt_lib::get_value('teams') as $row) $teams[$row[0]] = $row[1];
+	echo json_encode($teams);
+	?>;
 
 const timeticker = {
 	duration: 0,

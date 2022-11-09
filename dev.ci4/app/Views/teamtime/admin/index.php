@@ -1,5 +1,7 @@
 <?php $this->extend('default');
-$event_id = $tt_lib::get_var("settings", "event_id");
+use \App\Libraries\Teamtime as tt_lib;
+
+$event_id = tt_lib::get_var("settings", "event_id");
 
 $this->section('sidebar');
 $attr = [
@@ -14,8 +16,7 @@ echo form_open(current_url(), $attr); ?>
 <div class="input-group my-1">
 	<label class="input-group-text">View</label>
 	<select name="view" class="form-control" onchange="set_runvars()"><?php 
-	$get_var = $tt_lib::get_var('views');
-	foreach($get_var->value as $key=>$view) {
+	foreach(tt_lib::get_value('views') as $key=>$view) {
 		$label = $view ? $view['title'] : 'default' ;
 		printf('<option value="%u">%s</option>', $key, $label);
 	}
@@ -100,7 +101,7 @@ echo form_open(current_url(), $attr); ?>
 
 <div class="cmode-only my-2 p-1 border">
 <?php 
-$music_player = $tt_lib::get_var("settings", "music_player");
+$music_player = tt_lib::get_var("settings", "music_player");
 
 if($music_player=='local') {
 	echo $this->include('Htm/Playtrack');
@@ -154,7 +155,13 @@ $this->section('content');
 <div class="ratio ratio-16x9">
 <iframe src="<?php echo site_url('teamtime/display/0');?>"></iframe>
 </div>
-<?php $this->endSection(); 
+
+<section class="border my-1">
+<div><button class="btn btn-warning btn-sm dropdown-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#debug" aria-expanded="false" aria-controls="debug"><i class="bi-wrench"></i></button></div>
+<pre id="debug" class="collapse p-1"></pre>
+</section>
+<?php 
+$this->endSection(); 
 
 $this->section('bottom'); 
 echo $this->include('teamtime/js');
@@ -181,6 +188,7 @@ function set_runvars(cmd='') {
 	url = '<?php echo site_url("/api/teamtime/control");?>';
 	$.post(url, postvar)
 	.done(function(response) {
+		//console.log(response);
 		show_runvars(response);
 	})
 	.fail(function(jqXHR) {
@@ -192,6 +200,8 @@ function show_runvars(arr) {
 	runvars = arr;
 	runvars['row'] = parseInt(runvars['row']);
 	runvars['col'] = parseInt(runvars['col']);
+		
+	$('#debug').html(JSON.stringify(runvars, null, 1));
 	
 	$('[name=col]').val(runvars['col']);
 	$('[name=row]').val(runvars['row']);
@@ -210,7 +220,7 @@ function show_runvars(arr) {
 		if(music_player=='local') {
 			entry = progtable[runvars['row']][runvars['col']];
 			exe = progtable[0][runvars['col']];
-			url = '<?php echo site_url("/api/music/track_url/");?>/'+event_id+'/'+entry+'/'+exe;
+			url = '<?php echo site_url("/api/music/track_url/{$event_id}");?>/'+entry+'/'+exe;
 			// console.log(url);
 			playtrack.pause();
 			$.get(url, function(response) {

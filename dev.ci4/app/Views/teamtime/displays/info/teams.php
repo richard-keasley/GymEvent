@@ -1,15 +1,15 @@
-<div class="teams">
-<table class="table table-striped"><tbody>
-<?php 
-$tt_lib = new \App\Libraries\Teamtime;
-$get_var = $tt_lib::get_var('teams');
-if($get_var) { 
-foreach($get_var->value as $row) {
-	printf('<tr><th>%s</th><td>%s</td</tr>', $row[0], $row[1]);
-} 
+<?php
+use \App\Libraries\Teamtime as tt_lib;
+$teams = tt_lib::get_value('teams');
 ?>
-</tbody></table>
-<?php } else { ?>
-<p class="alert alert-warning">'Teams' appears to be empty</p>
+<div class="teams">
+<?php
+if($teams) {
+	$table = \App\Views\Htm\Table::load('striped');
+	$table->autoHeading = false;
+	echo $table->generate($teams);
+}
+else { ?>
+	<p class="alert alert-warning">'Teams' appears to be empty</p>
 <?php } ?>
 </div>

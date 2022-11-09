@@ -1,4 +1,5 @@
 <?php $this->extend('default');
+use \App\Libraries\Teamtime as tt_lib;
 
 $this->section('content');  ?>
 <p>This app displays the current state of a Team-gym event on many screens across a venue. Messaging, timers and music playback are included.</p>
@@ -22,7 +23,7 @@ if($displays) {
 <h5>Information</h5>
 <?php 
 $nav = [];
-$viewpath = \App\Libraries\Teamtime::get_viewpath() . '*.php';
+$viewpath = tt_lib::get_viewpath() . '*.php';
 foreach(glob($viewpath) as $view) {
 	$nav[] = sprintf('teamtime/info/%s', basename($view, '.php'));
 }

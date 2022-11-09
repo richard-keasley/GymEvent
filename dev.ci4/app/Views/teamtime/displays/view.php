@@ -1,7 +1,8 @@
 <?php $this->extend('teamtime/displays/layout');
+use \App\Libraries\Teamtime as tt_lib;
 
 $this->section('body'); 
-$images = $tt_lib::get_images();
+$images = tt_lib::get_images();
 ?>
 <div id="display">
 <div id="images">

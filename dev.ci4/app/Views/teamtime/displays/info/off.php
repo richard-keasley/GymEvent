@@ -1,6 +1,8 @@
 <?php 
+use \App\Libraries\Teamtime as tt_lib;
+$images = tt_lib::get_images();
+
 $index = '';
-$images = \App\Libraries\Teamtime::get_images();
 foreach($images as $image) {
 	$basename = basename($image);
 	$basename = substr($basename, 0, strpos($basename, '.'));

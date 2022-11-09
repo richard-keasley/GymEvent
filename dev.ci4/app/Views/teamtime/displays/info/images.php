@@ -1,6 +1,6 @@
 <?php
-$tt_lib = new \App\Libraries\Teamtime;
-$images = $tt_lib::get_images();
+use \App\Libraries\Teamtime as tt_lib;
+$images = tt_lib::get_images();
 ?>
 <div>
 <div id="carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
@@ -18,7 +18,7 @@ $images = $tt_lib::get_images();
 	<span class="carousel-control-next-icon" aria-hidden="true"></span>
 </button>
 </div>
-<p>Image path: <?php echo $tt_lib::get_var('settings', 'image_path');?></p>
+<p>Image path: <?php echo tt_lib::get_var('settings', 'image_path');?></p>
 <ol><?php foreach($images as $image) {
 	printf('<li>%s</li>', basename($image));
 } ?></ol>

@@ -1,10 +1,10 @@
 <?php namespace App\Controllers;
+use \App\Libraries\Teamtime as tt_lib;
 
 class Teamtime extends \App\Controllers\BaseController {
 	
 public function __construct() {
 	$this->data['breadcrumbs'][] = 'teamtime';
-	$this->data['tt_lib'] = new \App\Libraries\Teamtime();
 }
 	
 public function index() {
@@ -58,14 +58,14 @@ public function info($var_name) {
 }
 
 public function display($ds_id=0) {
-	$this->data['display'] = $this->data['tt_lib']::get_var('displays', $ds_id);
+	$this->data['display'] = tt_lib::get_var('displays', $ds_id);
 	$this->data['ds_id'] = $ds_id;
 	if(!$this->data['display']) {
 		$this->data['message'] = "Invalid display ({$ds_id})";
 		return view('teamtime/displays/error', $this->data);
 	}
-	$get_var = $this->data['tt_lib']::get_var('displays');
-	$this->data['ds_updated'] = $this->data['tt_lib']::timestamp($get_var->updated_at);
+	$get_var = tt_lib::get_var('displays');
+	$this->data['ds_updated'] = tt_lib::timestamp($get_var->updated_at);
 	$this->data['title'] = $this->data['display']['title'];
 	$this->data['style'] = $this->data['display']['style'];
 	return view('teamtime/displays/view', $this->data);

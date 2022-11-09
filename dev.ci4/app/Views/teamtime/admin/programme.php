@@ -1,7 +1,8 @@
 <?php $this->extend('default');
+use \App\Libraries\Teamtime as tt_lib;
 
 $this->section('content');
-echo \App\Libraries\Teamtime::view_html('programme');
+echo tt_lib::view_html('programme');
 $this->endSection(); 
 
 $this->section('top'); ?>
@@ -27,8 +28,7 @@ echo form_open(current_url(), $attr); ?>
 	<p>Multiple words in section headers (e.g. "Orientation 1") must be joined with an underscore (e.g. <code>orientation_1</code>).</p>
 	<?php 
 	$value = [];
-	$get_var = $tt_lib::get_var('progtable');
-	foreach($get_var->value as $row) {
+	foreach(tt_lib::get_value('progtable') as $row) {
 		array_shift($row); // remove run mode
 		$value[] = implode("\t\t\t", $row);
 	}

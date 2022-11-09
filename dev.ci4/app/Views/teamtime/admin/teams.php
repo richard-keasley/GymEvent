@@ -1,7 +1,8 @@
 <?php $this->extend('default');
+use \App\Libraries\Teamtime as tt_lib;
 
 $this->section('content'); 
-echo \App\Libraries\Teamtime::view_html('teams');
+echo tt_lib::view_html('teams');
 $this->endSection(); 
 
 $this->section('top'); ?>
@@ -28,8 +29,7 @@ echo form_open(current_url(), $attr); ?>
 <p>Each row is <code>number team_name</code>. Do not use column headers. Team names with multiple words is allowed (no underscore needed).</p>
 <?php 
 $value = [];
-$get_var = $tt_lib::get_var('teams');
-foreach($get_var->value as $row) {
+foreach(tt_lib::get_value('teams') as $row) {
 	$value[] = implode("\t", $row);
 }
 

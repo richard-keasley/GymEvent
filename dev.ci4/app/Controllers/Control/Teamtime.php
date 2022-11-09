@@ -1,11 +1,11 @@
 <?php namespace App\Controllers\Control;
+use \App\Libraries\Teamtime as tt_lib;
 
 class Teamtime extends \App\Controllers\BaseController {
 	
 function __construct() {
 	$this->data['breadcrumbs'][] = 'teamtime';
 	$this->data['breadcrumbs'][] = ['control/teamtime', 'control'];
-	$this->data['tt_lib'] = new \App\Libraries\Teamtime();
 }
 
 function index() {
@@ -31,7 +31,7 @@ function settings() {
 		#d($appvar);
 		$appvars->save_var($appvar);
 		// reload
-		$this->data['tt_lib'] = new \App\Libraries\Teamtime();
+		tt_lib::init();
 		$this->data['messages'][] = ['Settings updated', 'success'];
 	}
 	// view 
@@ -65,7 +65,7 @@ function programme() {
 		$appvar->value = $value;
 		$appvars->save_var($appvar);
 		// reload
-		$this->data['tt_lib'] = new \App\Libraries\Teamtime();
+		tt_lib::init();
 		$this->data['messages'][] = ['Programme updated', 'success'];
 	}
 	// view
@@ -93,7 +93,7 @@ function teams() {
 		$appvar->value = $value;
 		$appvars->save_var($appvar);
 		// reload
-		$this->data['tt_lib'] = new \App\Libraries\Teamtime();
+		tt_lib::init();
 		$this->data['messages'][] = ['Teams updated', 'success'];
 	}
 	// view
@@ -120,7 +120,7 @@ function displays() {
 		$appvar->value = $value;
 		$appvars->save_var($appvar);
 		// reload
-		$this->data['tt_lib'] = new \App\Libraries\Teamtime();
+		tt_lib::init();
 		$this->data['messages'][] = ['Displays and views updated', 'success'];
 	}
 	// view

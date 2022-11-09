@@ -1,5 +1,5 @@
 <?php namespace App\Controllers\Api;
-
+use \App\Libraries\Teamtime as tt_lib;
 use CodeIgniter\API\ResponseTrait;
 
 class Teamtime extends \App\Controllers\BaseController {
@@ -11,8 +11,7 @@ public function index() {
 }
 
 public function get($varname='', $key=null) {
-	$tt_lib = new \App\Libraries\Teamtime;
-	$response = $tt_lib::get_var($varname, $key);
+	$response = tt_lib::get_var($varname, $key);
 	if($response && $key===null) $response = $response->value;
 	if(!$response) return $this->fail("{$varname}/{$key} not found");
 	return $this->respond($response);
@@ -23,17 +22,12 @@ public function control() {
 		return $this->failUnauthorized('Permission denied');
 	}
 	
-	$tt_lib = new \App\Libraries\Teamtime;
-	
-	$get_var = $tt_lib->get_var("progtable");
-	$progtable = $get_var ? $get_var->value : null;
+	$progtable = tt_lib::get_value("progtable");
 	if(!$progtable) return $this->fail("No programme set");
 	
-	// get current runvars
-	$get_var = $tt_lib->get_var("runvars");
-	$runvars = $get_var ? $get_var->value : [];
+	$runvars = tt_lib::get_value("runvars");
 	// modify runvars according to post
-	$getPost = $this->request->getPost();
+	$getPost = $this->request->getPost(null, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	foreach($getPost as $key=>$val) {
 		$runvars[$key] = $val;
 	}
@@ -104,49 +98,54 @@ public function control() {
 	}
 		
 	$id = "teamtime.runvars";
-	$appvar = $tt_lib::$appvars->find($id);
+	$appvar = tt_lib::$appvars->find($id);
+	$updated = false;
 	// don't write to DB unless necessary
 	if($appvar) {
 		$appvar->value = $runvars;
-		if($appvar->hasChanged()) $tt_lib::$appvars->save($appvar);
+		if($appvar->hasChanged()) {
+			tt_lib::$appvars->save($appvar);
+			$updated = true;
+		}
 	}
-	else { // key doesn't exist; create it
+	else { // appvar doesn't exist; create it
 		$appvar = new \App\Entities\Appvar;
 		$appvar->id = $id;
 		$appvar->value = $runvars;
-		$tt_lib::$appvars->save_var($appvar);
+		tt_lib::$appvars->save_var($appvar);
+		$updated = true;
 	}
-	
-	$tt_lib = new \App\Libraries\Teamtime;
-	$get_var = $tt_lib->get_var("runvars");
-	return $this->respond($get_var->value);
+	if($updated) {
+		tt_lib::init();
+		$runvars = tt_lib::get_value("runvars");
+	}
+		
+	return $this->respond($runvars);
 }
 
 public function display_view($ds_id=0, $dupd_request=0, $vupd_request=0) {
-	$tt_lib = new \App\Libraries\Teamtime();
-	
-	$displays_var = $tt_lib::get_var('displays');
-	$upd_check = $tt_lib::timestamp($displays_var->updated_at);
+	$displays_var = tt_lib::get_var('displays');
+	$upd_check = tt_lib::timestamp($displays_var->updated_at);
 	if($upd_check>$dupd_request) {
 		return $this->respond(['reload' => 'display'], 200);
 	}
 	
-	$views = $tt_lib::get_var('views');
-	$runvars = $tt_lib::get_var('runvars');
+	$views_var = tt_lib::get_var('views');
+	$runvars_var = tt_lib::get_var('runvars');
 	$upd_check = [
-		$tt_lib::timestamp($views->updated_at),
-		$tt_lib::timestamp($runvars->updated_at)
+		tt_lib::timestamp($views_var->updated_at),
+		tt_lib::timestamp($runvars_var->updated_at)
 	];
 	$upd_check = max($upd_check);
 	
 	if($upd_check>$vupd_request) {
 		// look up display and view
-		$display = $tt_lib::get_var('displays', $ds_id);
+		$display = tt_lib::get_var('displays', $ds_id);
 		if(!$display) return $this->fail("Display {$ds_id} not found");
-		$view = $tt_lib::display_view($display);
+		$view = tt_lib::display_view($display);
 		if(!$view) return $this->fail("Can't find view for display {$ds_id}");
 		// compile HTML for this view
-		$view['html'] = $tt_lib::view_html($view['html']);
+		$view['html'] = tt_lib::view_html($view['html']);
 		$response = [
 			'reload' => 'view',
 			'updated' => $upd_check,

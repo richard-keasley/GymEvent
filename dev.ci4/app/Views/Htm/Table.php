@@ -8,6 +8,9 @@ const templates = [
 'small' => [
 	'table_open' => '<table class="table table-sm">'
 ],
+'striped' => [
+	'table_open' => '<table class="table table-striped">'
+],
 'responsive' => [
 	'table_open' => '<div class="table-responsive"><table class="table">',
 	'table_close' => '</table></div>'

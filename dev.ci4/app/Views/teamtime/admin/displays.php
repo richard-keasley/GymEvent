@@ -1,12 +1,18 @@
-<?php $this->extend('default');
-$table = new \CodeIgniter\View\Table();
-$views_var = $tt_lib::get_var('views');
-$view_opts = [];
-foreach($views_var->value as $key=>$view) {
-	if($key) $view_opts[$key] = $view['title'];
-}
+<?php
+$this->extend('default');
+use \App\Libraries\Teamtime as tt_lib;
 	
 $this->section('content');
+
+$table = new \CodeIgniter\View\Table();
+$views = tt_lib::get_value('views');
+$displays = tt_lib::get_value('displays');
+
+$view_opts = [];
+foreach($views as $key=>$view) {
+	if($key) $view_opts[$key] = $view['title'];
+}
+
 $attr = [
 	'id' => "editform"
 ];
@@ -49,7 +55,6 @@ $inputs = [
 ];
 
 $tbody = [];
-$get_var = $tt_lib::get_var('displays');
 
 $view_label = '<i class="bi bi-eye"></i>';
 $view_attrs = [
@@ -57,7 +62,7 @@ $view_attrs = [
 	'title' => "View this display"
 ];
 
-foreach($get_var->value as $ds_id=>$display) {
+foreach($displays as $ds_id=>$display) {
 	$inputs['title']['value'] = $display['title'];
 	$inputs['tick']['value'] = $display['tick'];
 	$inputs['view']['selected'] = strval($display['view']);
@@ -114,7 +119,7 @@ $inputs = [
 	]
 ];
 $tbody = [];
-foreach($views_var->value as $vw_id=>$view) {
+foreach($views as $vw_id=>$view) {
 	if($vw_id) { // don't show default
 		$inputs['title']['value'] = $view['title'];
 		$inputs['info']['value'] = $view['info'];

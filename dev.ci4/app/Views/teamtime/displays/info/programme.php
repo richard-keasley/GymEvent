@@ -1,14 +1,15 @@
-<div class="progtable">
 <?php 
-$tt_lib = new \App\Libraries\Teamtime;
-$get_var = $tt_lib::get_var('progtable');
-$progtable = $get_var->value;
+use \App\Libraries\Teamtime as tt_lib;
+$progtable = tt_lib::get_value('progtable');
+?>
+<div class="progtable">
+<?php
 
-if($$progtable) { ?>
+if($progtable) { ?>
 <table class="table text-center" style="table-layout:fixed;">
 <?php
 $key = 0; // in case there's no body
-foreach($$progtable as $key=>$row) {
+foreach($progtable as $key=>$row) {
 	$mode = array_shift($row); // remove mode item from row
 	if($key==0) { // thead
 		$col_count = count($row);

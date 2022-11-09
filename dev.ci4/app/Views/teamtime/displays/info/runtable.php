@@ -1,12 +1,11 @@
 <div class="runtable"><?php 
-$tt_lib = new \App\Libraries\Teamtime;
-$get_var = $tt_lib::get_var('progtable');
-$progtable = $get_var->value;
-$get_var = $tt_lib::get_var('runvars');
-$runvars = $get_var->value;
-$get_var = $tt_lib::get_var('settings');
-$settings = $get_var->value;
-$run_rows = $settings['run_rows'];
+use \App\Libraries\Teamtime as tt_lib;
+
+$progtable = tt_lib::get_value('progtable');
+$runvars = tt_lib::get_value('runvars');
+$settings = tt_lib::get_value('settings');
+
+$run_rows = $settings['run_rows'] ?? [];
 $row_count = count($run_rows);
 
 $thead = $progtable[0];
@@ -18,7 +17,7 @@ do {
 $thead[0] = humanize($progtable[$row_num][1]);
 
 $tbody = array_slice($progtable, $runvars['row'], $row_count);
-$mode = $tbody[0][0];
+$mode = $tbody[0][0] ?? '';
 ?>
 <table>
 <thead><tr><?php 
@@ -74,10 +73,5 @@ var tt = setInterval(function() {
 if($runvars['message']) {
 	printf('<p class="message">%s</p>', htmlspecialchars($runvars['message']));
 }
-
 ?>
 </div>
-
-
-
-

@@ -1,9 +1,9 @@
 <?php $this->extend('default');
-$tt_lib = new \App\Libraries\Teamtime();
+use \App\Libraries\Teamtime as tt_lib;
 
 $this->section('content'); 
 $acc = new \App\Views\Htm\Accordion;
-foreach($tt_lib::get_vars() as $appvar) {
+foreach(tt_lib::get_vars() as $appvar) {
 	$htm = sprintf('<p>Updated %s</p>%s', $appvar->updated_at, $appvar->htm());
 	$acc->set_item(substr($appvar->id, 9), $htm);
 }

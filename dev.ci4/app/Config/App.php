@@ -364,19 +364,6 @@ class App extends BaseConfig
 
     /**
      * --------------------------------------------------------------------------
-     * CSRF Token Name
-     * --------------------------------------------------------------------------
-     *
-     * The token name.
-     *
-     * @deprecated Use `Config\Security` $tokenName property instead of using this property.
-     *
-     * @var string
-     */
-    public $CSRFTokenName = 'csrf_test_name';
-
-    /**
-     * --------------------------------------------------------------------------
      * CSRF Header Name
      * --------------------------------------------------------------------------
      *
