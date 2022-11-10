@@ -1,6 +1,22 @@
 <?php $this->extend('default');
 
 $this->section('content');
+
+
+use \App\Libraries\Teamtime as tt_lib;
+
+foreach(['nothing', 'displays'] as $varname) {
+	foreach([null, 1, 99] as $key) {
+		echo "<h3>{$varname} / {$key}</h3>";
+		d(tt_lib::get_value($varname, $key));
+
+	}
+}
+
+
+
+
+
 $clubret = new \App\Entities\Clubret;
 
 $test_string = 

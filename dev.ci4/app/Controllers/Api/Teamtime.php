@@ -11,10 +11,10 @@ public function index() {
 }
 
 public function get($varname='', $key=null) {
-	$response = tt_lib::get_var($varname, $key);
-	if($response && $key===null) $response = $response->value;
-	if(!$response) return $this->fail("{$varname}/{$key} not found");
-	return $this->respond($response);
+	$response = tt_lib::get_value($varname, $key);
+	return is_null($response) ?
+		$this->fail("{$varname}/{$key} not found") :
+		$this->respond($response) ;
 }
 
 public function control() {
@@ -96,30 +96,8 @@ public function control() {
 	else { // cancel timer
 		$runvars['timer_start'] = 0;
 	}
-		
-	$id = "teamtime.runvars";
-	$appvar = tt_lib::$appvars->find($id);
-	$updated = false;
-	// don't write to DB unless necessary
-	if($appvar) {
-		$appvar->value = $runvars;
-		if($appvar->hasChanged()) {
-			tt_lib::$appvars->save($appvar);
-			$updated = true;
-		}
-	}
-	else { // appvar doesn't exist; create it
-		$appvar = new \App\Entities\Appvar;
-		$appvar->id = $id;
-		$appvar->value = $runvars;
-		tt_lib::$appvars->save_var($appvar);
-		$updated = true;
-	}
-	if($updated) {
-		tt_lib::init();
-		$runvars = tt_lib::get_value("runvars");
-	}
-		
+	
+	tt_lib::save_value('runvars', $runvars);
 	return $this->respond($runvars);
 }
 
@@ -140,7 +118,7 @@ public function display_view($ds_id=0, $dupd_request=0, $vupd_request=0) {
 	
 	if($upd_check>$vupd_request) {
 		// look up display and view
-		$display = tt_lib::get_var('displays', $ds_id);
+		$display = tt_lib::get_value('displays', $ds_id);
 		if(!$display) return $this->fail("Display {$ds_id} not found");
 		$view = tt_lib::display_view($display);
 		if(!$view) return $this->fail("Can't find view for display {$ds_id}");

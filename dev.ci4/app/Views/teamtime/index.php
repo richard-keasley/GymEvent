@@ -1,7 +1,13 @@
 <?php $this->extend('default');
 use \App\Libraries\Teamtime as tt_lib;
 
-$this->section('content');  ?>
+$this->section('content');  
+$event_id = tt_lib::get_value('settings', 'event_id');
+$mdl_events = new \App\Models\Events;
+$event = $mdl_events->find($event_id);
+$title = $event->title ?? '' ;
+echo "<h2>{$title}</h2>";
+?>
 <p>This app displays the current state of a Team-gym event on many screens across a venue. Messaging, timers and music playback are included.</p>
 <?php $this->endSection(); 
 

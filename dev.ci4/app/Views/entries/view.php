@@ -20,9 +20,8 @@ if($can_edit) {
 		$suffix = 'dob'; $label = 'DoB';
 	}
 	$attr = ['class'=>"nav-link"];
-	$url = "admin/entries/view/{$event->id}";
+
 	echo anchor("admin/entries/view/{$event->id}/{$suffix}", $label, $attr);
-	
 	echo getlink("admin/entries/categories/{$event->id}", 'categories');
 	echo getlink("admin/entries/clubs/{$event->id}", 'clubs');
 	echo getlink("admin/entries/import/{$event->id}", 'import');

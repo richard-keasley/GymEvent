@@ -58,7 +58,7 @@ public function info($var_name) {
 }
 
 public function display($ds_id=0) {
-	$this->data['display'] = tt_lib::get_var('displays', $ds_id);
+	$this->data['display'] = tt_lib::get_value('displays', $ds_id);
 	$this->data['ds_id'] = $ds_id;
 	if(!$this->data['display']) {
 		$this->data['message'] = "Invalid display ({$ds_id})";

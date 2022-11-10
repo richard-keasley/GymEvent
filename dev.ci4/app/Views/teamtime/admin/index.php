@@ -1,7 +1,7 @@
 <?php $this->extend('default');
 use \App\Libraries\Teamtime as tt_lib;
 
-$event_id = tt_lib::get_var("settings", "event_id");
+$event_id = tt_lib::get_value("settings", "event_id");
 
 $this->section('sidebar');
 $attr = [
@@ -101,7 +101,7 @@ echo form_open(current_url(), $attr); ?>
 
 <div class="cmode-only my-2 p-1 border">
 <?php 
-$music_player = tt_lib::get_var("settings", "music_player");
+$music_player = tt_lib::get_value("settings", "music_player");
 
 if($music_player=='local') {
 	echo $this->include('Htm/Playtrack');

@@ -25,7 +25,7 @@ if(!$teams) { ?>
 <p class="alert alert-danger">Teams are not set-up</p>
 <?php }
 
-$event_id = tt_lib::get_var('settings', 'event_id');
+$event_id = tt_lib::get_value('settings', 'event_id');
 $track = new \App\Libraries\Track();
 $track->event_id = $event_id;
 

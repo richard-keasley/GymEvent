@@ -18,20 +18,21 @@ function index() {
 
 function settings() {
 	if($this->request->getPost('save')) {
-		// update
-		$appvars = new \App\Models\Appvars();
-		$appvar = new \App\Entities\Appvar;
 		// displays
-		$value = $this->request->getPost();
-		unset($value['save']);
+		$inputs = [
+			'event_id' => FILTER_SANITIZE_NUMBER_INT,
+			'music_player' => FILTER_SANITIZE_STRING,
+			'image_path' => FILTER_SANITIZE_URL,
+			'run_rows' => FILTER_SANITIZE_STRING
+		];
+		$value = [];
+		foreach($inputs as $key=>$filter) {
+			$value[$key] = $this->request->getPost($key, $filter);
+		}
 		$value['run_rows'] = csv_array($value['run_rows']);
 		$value['image_path'] = '/' . trim($value['image_path'], "/\\");
-		$appvar->id = 'teamtime.settings';
-		$appvar->value = $value;
-		#d($appvar);
-		$appvars->save_var($appvar);
-		// reload
-		tt_lib::init();
+		// update
+		tt_lib::save_value('settings', $value);
 		$this->data['messages'][] = ['Settings updated', 'success'];
 	}
 	// view 
@@ -59,13 +60,7 @@ function programme() {
 				}
 			}
 		}
-		$appvars = new \App\Models\Appvars();
-		$appvar = new \App\Entities\Appvar;
-		$appvar->id = 'teamtime.progtable';
-		$appvar->value = $value;
-		$appvars->save_var($appvar);
-		// reload
-		tt_lib::init();
+		tt_lib::save_value('progtable', $value);
 		$this->data['messages'][] = ['Programme updated', 'success'];
 	}
 	// view
@@ -76,51 +71,46 @@ function programme() {
 }
 
 function teams() {
-	if($this->request->getPost('save')) {
+	$event_id = tt_lib::get_value('settings', 'event_id');
+	
+	if($this->request->getPost('reload')) {
 		// update
-		$getPost = $this->request->getPost('teams');
-		$value = [];
-		foreach(explode("\n", $getPost) as $row) {
-			$row = trim($row);
-			if($row) {
-				$arr = csv_array($row, 2);
-				if($arr[1]) $value[] = $arr;
+		$model = new \App\Models\Entries;
+		$entries = $model->evt_discats($event_id);
+		if($entries) {
+			$sort = []; $value = [];
+			foreach($entries as $dis) {
+				foreach($dis->cats as $cat) {
+					foreach($cat->entries as $rowkey=>$entry) {
+						$value[] = [$entry->num, $entry->name];
+						$sort[] = $entry->num;
+					}
+				}
 			}
+			array_multisort($sort, $value);
+			tt_lib::save_value('teams', $value);
+			$this->data['messages'][] = ['Teams updated', 'success'];
 		}
-		$appvars = new \App\Models\Appvars();
-		$appvar = new \App\Entities\Appvar;
-		$appvar->id = 'teamtime.teams';
-		$appvar->value = $value;
-		$appvars->save_var($appvar);
-		// reload
-		tt_lib::init();
-		$this->data['messages'][] = ['Teams updated', 'success'];
 	}
+	
 	// view
 	$this->data['breadcrumbs'][] = 'control/teamtime/teams';
 	$this->data['title'] = 'teams';
 	$this->data['heading'] = 'Teamtime teams';		
+	$this->data['event_id'] = $event_id;		
 	return view('teamtime/admin/teams', $this->data);
 }
 
 function displays() {
 	if($this->request->getPost('save')) {
-		// update
-		$appvars = new \App\Models\Appvars();
-		$appvar = new \App\Entities\Appvar;
 		// displays
 		$value = json_decode($this->request->getPost('displays'), 1);
-		$appvar->id = 'teamtime.displays';
-		$appvar->value = $value;
-		$appvars->save_var($appvar);
+		tt_lib::save_value('displays', $value);
 		// views
 		$value = json_decode($this->request->getPost('views'), 1);
 		array_unshift($value, null); // add default view 
-		$appvar->id = 'teamtime.views';
-		$appvar->value = $value;
-		$appvars->save_var($appvar);
-		// reload
-		tt_lib::init();
+		tt_lib::save_value('views', $value);
+		
 		$this->data['messages'][] = ['Displays and views updated', 'success'];
 	}
 	// view

@@ -22,24 +22,24 @@ $inputs = [
 'event_id' => [
 	'type' => 'select',
 	'class' => 'form-control',
-	'value' => tt_lib::get_var('settings', 'event_id'),
+	'value' => tt_lib::get_value('settings', 'event_id'),
 	'options' => $event_opts
 ],
 'music_player' => [
 	'type' => 'select',
 	'class' => 'form-control',
-	'value' => tt_lib::get_var('settings', 'music_player'),
+	'value' => tt_lib::get_value('settings', 'music_player'),
 	'options' => $player_opts
 ],
 'image_path' => [
 	'type' => 'text',
 	'class' => 'form-control',
-	'value' => tt_lib::get_var('settings', 'image_path')
+	'value' => tt_lib::get_value('settings', 'image_path')
 ],
 'run_rows' => [
 	'type' => 'text',
 	'class' => 'form-control',
-	'value' => tt_lib::get_var('settings', 'run_rows')
+	'value' => tt_lib::get_value('settings', 'run_rows')
 ]
 ];
 
