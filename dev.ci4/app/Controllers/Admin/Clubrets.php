@@ -265,6 +265,47 @@ public function event($event_id=0) {
 	return view('clubrets/event', $this->data);
 }
 
+public function names($event_id=0) {
+	$mdl_events = new \App\Models\Events();
+	$this->data['event'] = $mdl_events->find($event_id);
+	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
+	
+	$download = $this->request->getPost('download');
+	
+	// build participants table
+	$mdl_users = new \App\Models\Users();
+	$tbody = [];
+	foreach($this->data['event']->clubrets() as $clubret) {
+		$user = $mdl_users->withDeleted()->find($clubret->user_id);
+		foreach($clubret->participants as $rowkey=>$row) {
+			foreach($row['names'] as $key=>$name) {
+				$namestring = new \App\Entities\namestring($name);
+				$tbody[] = [
+					'club' => $user ? $user->abbr : '?',
+					'row' => $rowkey + 1,
+					'dis' => $row['dis'],
+					'cat' => implode(' ', $row['cat']),
+					'name' => $namestring->name,
+					'BG' => $namestring->bg,
+					'DoB' => $namestring->htm_dob()
+				];
+			}
+		}
+	}
+	if($download=='names') return $this->export($tbody, 'names');
+	$this->data['names'] = $tbody;
+	
+	// view
+	$this->data['back_link'] = "/admin/clubrets/event/{$event_id}";
+	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
+	$this->data['breadcrumbs'][] = ["admin/clubrets/event/{$event_id}", 'Returns'];
+	$this->data['breadcrumbs'][] = ["admin/clubrets/names/{$event_id}", 'Name check'];
+	$this->data['title'] = $this->data['event']->title;
+	$this->data['heading'] = $this->data['event']->title . ' - name check';
+	
+	return view('clubrets/names', $this->data);
+}
+
 private function export($tbody, $suffix='') {
 	$filetitle = $this->data['event']->title;
 	if($suffix) $filetitle .= "_{$suffix}";
