@@ -31,10 +31,10 @@ if($event->deleted_at) { ?>
 	}
 	if($event->link('music')) {
 		echo getlink("admin/music/view/{$event->id}", 'music');
-
 	}
 	echo $event->link('player');
 	echo $event->link('videos');
+	echo $event->link('teamtime');
 } 
 
 echo form_close();

@@ -370,7 +370,13 @@ public function link($type, $user_id=0) {
 		break;
 		
 		case 'admin':
-		return getlink("admin/events/view/{$this->id}", 'admin');	
+		return getlink("admin/events/view/{$this->id}", 'admin');
+
+		case 'teamtime':
+		if(in_array($this->clubrets, [1, 2])) {
+			$event_id = \App\Libraries\Teamtime::get_value('settings', 'event_id');
+			return $event_id==$this->id ? getlink("control/teamtime") : '';
+		}
 	}
 	return '' ;
 }
