@@ -112,9 +112,14 @@ $track->exe = $round['exe'];
 
 $this->section('bottom');?>
 <div class="toolbar"><?php 
-	$label = '<i class="bi bi-gear-fill btn btn-outline-secondary"></i>';
-	$attrs = ['title' => "Setup event"];
+	$label = '<i class="bi bi-gear-fill "></i>';
+	$attrs = [
+		'title' => "Setup event",
+		'class' => "btn btn-outline-secondary"
+	];
 	echo anchor("control/player/edit/{$event->id}", $label, $attrs);
+	$attrs['title'] = 'Start auto-player';
+	echo anchor("control/player/auto", 'Auto', $attrs);
 ?></div>
 
 <?php 

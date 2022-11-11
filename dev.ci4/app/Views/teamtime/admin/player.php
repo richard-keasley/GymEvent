@@ -58,6 +58,15 @@ $this->section('top'); ?>
 <div style="width:100%; max-width:30em;">
 <?php echo $this->include('Htm/Playtrack'); ?>
 </div>
+
+<div><?php
+$attrs = [
+	'title' => "Start auto-player",
+	'class' => "btn btn-outline-secondary"
+];
+echo anchor("control/player/auto", 'Auto', $attrs);
+?></div>
+	
 <script>
 $(function(){
 

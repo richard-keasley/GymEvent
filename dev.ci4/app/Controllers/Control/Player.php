@@ -38,7 +38,7 @@ public function index() {
 	$this->data['title'] = 'Music player';
 	$this->data['heading'] = 'Music player';
 	$this->data['events'] = $this->mdl_events->where('music', 2)->findAll();
-	$this->data['breadcrumbs'][] = "player";
+	$this->data['breadcrumbs'][] = "control/player";
 	$this->data['base_url'] = 'control/player/view';
 	$this->data['body'] = 'control_player';
 	return view('events/index', $this->data);
@@ -173,7 +173,8 @@ public function auto($ch_id=0) {
 	//view
 	$this->data['ch_id'] = $ch_id;
 	$this->data['channels'] = $channels;
-	$this->data['breadcrumbs'][] = ["payer/auto", 'auto-player'];
+	$this->data['breadcrumbs'][] = "control/player";
+	$this->data['breadcrumbs'][] = ["control/player/auto", 'auto-player'];
 	$this->data['title'] = 'Auto player';
 	$this->data['heading'] = 'Auto player';
 	return view("player/auto", $this->data);

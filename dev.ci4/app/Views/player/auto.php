@@ -67,7 +67,12 @@ if(ch_id) {
 					if(!response.url) throw 'Track not found';
 					show_message(response.state, 1);
 					$player.src = response.url;
-					$('#playtrack p')[0].innerHTML = response.url;
+					var temp = response.url.split('/').pop(); // filename
+					var html = temp.split('?')[0]; // remove query
+					html = html.replace(/^0+/, ''); // trim leading zeros
+					html = html.replace('.', ' (') + ')'; // separate extension into bracket
+					html = html.replace('_', ' ');
+					$('#playtrack p')[0].innerHTML = html;
 					if(response.state=='play') {
 						playpromise = $player.play();
 						playpromise.catch((error) => {
