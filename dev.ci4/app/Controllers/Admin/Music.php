@@ -84,16 +84,82 @@ public function view($event_id=0) {
 
 public function clubs($event_id=0) {
 	$this->find($event_id);
-	
-	$this->data['breadcrumbs'][] = ["admin/music/clubs/{$event_id}", 'clubs'];
+	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
+	$this->data['entries'] = $this->data['event']->entries();
 	
 	$status = $this->request->getGet('status');
 	if(!isset(\App\Libraries\Track::state_labels[$status])) $status = 0;
 	$this->data['state_labels'] = $status ? [$status] : \App\Libraries\Track::state_labels;
 	$this->data['status'] = $status;
 		
-	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
-	$this->data['entries'] = $this->data['event']->entries();
+	// build table
+	$mailto = [];
+	$tbody = []; $orderby = [];
+	$track = new \App\Libraries\Track();
+	$track->event_id = $event_id;
+	$new_row = ['club' => ''];
+	foreach($this->data['state_labels'] as $state_label) $new_row[$state_label] = 0;
+	foreach($this->data['entries'] as $dis) {
+		foreach($dis->cats as $cat) {
+			foreach($cat->entries as $entry) {
+				$user_id = $entry->user_id;
+				$track->entry_num = $entry->num;
+				foreach($entry->music as $exe=>$check_state) {
+					$track->exe = $exe;
+					$track->check_state = $check_state;
+					$state_label = $track->status();
+					
+					if(in_array($state_label, $this->data['state_labels'])) {
+						if(!isset($tbody[$user_id])) {
+							$tbody[$user_id] = $new_row;
+							$user = $this->data['users'][$user_id] ?? null ;
+							if($user) {
+								$club = anchor("/admin/music/view/{$event_id}?user={$user_id}", $user->name) . ' ' . $user->link() ;
+								if($user->email) {
+									$club .= ' ' . mailto($user->email, '<i class="bi-envelope"></i>', ['title' => $user->email]);
+									$mailto[] = $user->email;
+								}
+								$orderby[$user_id] = $user->name;
+								$tbody[$user_id]['club'] = $club;
+							}
+							else {
+								$tbody[$user_id]['club'] = '[unkown]';
+								$orderby[$user_id] = '';
+							}
+						}
+						$tbody[$user_id][$state_label]++;
+					}
+				}
+			}
+		}
+	}
+	array_multisort($orderby, $tbody);
+	$this->data['tbody'] = $tbody;
+	
+	if($this->request->getPost('sendmail')) {
+		$email = \Config\Services::email();
+		$count = 0;
+		$email->setSubject($this->request->getPost('subject'));
+		$email->setMessage($this->request->getPost('body'));
+		$email->setBCC('richard@hawthgymnastics.co.uk');
+		
+		foreach($mailto as $email_to) {
+			if(ENVIRONMENT != 'production') $email_to = 'richard@base-camp.org.uk';
+			$email->setTo($email_to);
+			# d($email);
+			if($email->send(false)) {
+				$count++; 
+			}
+			else { 
+				$this->data['messages'][] = ["Email error ({$email_to})", 'danger'];
+			}
+		}
+		$this->data['messages'][] = ["{$count} emails sent", 'success'];
+	}
+	
+	// view
+	$this->data['breadcrumbs'][] = ["admin/music/clubs/{$event_id}", 'clubs'];
+			
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title;
 	
