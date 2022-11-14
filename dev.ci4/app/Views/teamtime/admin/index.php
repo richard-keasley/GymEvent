@@ -268,6 +268,7 @@ function show_runvars(arr) {
 }
 
 function team_name(number) {
+	if(number==='-') return number;
 	var team_name = teams[number];
 	if(typeof team_name==='undefined') team_name = '<em>no name</em>';
 	return number + '. ' + team_name;

@@ -32,57 +32,57 @@ public function control() {
 		$runvars[$key] = $val;
 	}
 	
-	$last_row = count($progtable) - 1 ;
-	if($runvars['row']<1) $runvars['row'] = 1;
-	if($runvars['row']>$last_row) $runvars['row'] = $last_row;
-	$run_row = $progtable[$runvars['row']];
-	$last_col = count($run_row) - 1;
-	$mode = $run_row[0];
-	
 	// update run place 
+	$mode = $progtable[$runvars['row']][0];
 	$start_place = "{$runvars['row']}-{$runvars['col']}";
-	switch($runvars['cmd']) {
-		case 'prev':
-			if($mode=='o' || $mode=='t') {
-				$runvars['row']--; 
-				$runvars['col'] = 1;
-			}
-			else {
-				$runvars['col']--;
-				if($runvars['col']<1) {
-					$runvars['col'] = $last_col;
-					$runvars['row']--;
+	do {
+		switch($runvars['cmd']) {
+			case 'prev':
+				if($mode=='o' || $mode=='t') {
+					$runvars['row']--; 
+					$runvars['col'] = 99;
 				}
-			}
-			break;
-		case 'next':
-			if($mode=='o' || $mode=='t') {
-				$runvars['row']++; 
-				$runvars['col'] = 1;
-			}
-			else {
-				$runvars['col']++;
-				if($runvars['col']>$last_col) {
+				else {
+					$runvars['col']--;
+					if($runvars['col']<1) {
+						$runvars['row']--;
+						$runvars['col'] = 99;
+					}
+				}
+				break;
+			case 'next':
+				if($mode=='o' || $mode=='t') {
+					$runvars['row']++; 
 					$runvars['col'] = 1;
-					$runvars['row']++;
 				}
-			}
-			break;
-		case 'restart':
-			$runvars['row'] = 1;
-			$runvars['col'] = 1;
-			break;
-		case 'timer0':
-			break;
-	}
-	if($runvars['row']<1) $runvars['row'] = 1;
-	if($runvars['row']>$last_row) $runvars['row'] = $last_row;
-	$runvars['mode'] = $progtable[$runvars['row']][0];
-	$last_col = count($progtable[$runvars['row']]) - 1 ;
-	if($runvars['col']<1) $runvars['col'] = 1;
-	if($runvars['col']>$last_col) $runvars['col'] = $last_col;
-
-	// timer move all this to library
+				else {
+					$runvars['col']++;
+					$last_col = count($progtable[$runvars['row']]) - 1 ;
+					if($runvars['col']>$last_col) {
+						$runvars['row']++;
+						$runvars['col'] = 1;
+					}
+				}
+				break;
+			case 'restart':
+				$runvars['row'] = 1;
+				$runvars['col'] = 1;
+				break;
+		}
+		// ensure we're still in the table
+		$last_row = count($progtable) - 1 ;
+		if($runvars['row']<1) $runvars['row'] = 1;
+		if($runvars['row']>$last_row) $runvars['row'] = $last_row;
+		$last_col = count($progtable[$runvars['row']]) - 1 ;
+		if($runvars['col']<1) $runvars['col'] = 1;
+		if($runvars['col']>$last_col) $runvars['col'] = $last_col;
+		$mode = $progtable[$runvars['row']][0];
+		// if competing, are we in empty cell?
+		$empty_cell = $mode=='c' && $progtable[$runvars['row']][$runvars['col']]=='-';
+	} while($empty_cell);
+	$runvars['mode'] = $mode;
+		
+	// update timer
 	$runvars['timer'] = intval($runvars['timer']);
 	if($runvars['mode']=='o') { // orientation
 		$end_place = "{$runvars['row']}-{$runvars['col']}";
