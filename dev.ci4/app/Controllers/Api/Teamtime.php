@@ -38,37 +38,40 @@ public function control() {
 	do {
 		switch($runvars['cmd']) {
 			case 'prev':
-				if($mode=='o' || $mode=='t') {
-					$runvars['row']--; 
+			if($mode=='o' || $mode=='t') {
+				$runvars['row']--; 
+				$runvars['col'] = 99;
+			}
+			else {
+				$runvars['col']--;
+				if($runvars['col']<1) {
+					$runvars['row']--;
 					$runvars['col'] = 99;
 				}
-				else {
-					$runvars['col']--;
-					if($runvars['col']<1) {
-						$runvars['row']--;
-						$runvars['col'] = 99;
-					}
-				}
-				break;
+			}
+			break;
+				
 			case 'next':
-				if($mode=='o' || $mode=='t') {
-					$runvars['row']++; 
+			if($mode=='o' || $mode=='t') {
+				$runvars['row']++; 
+				$runvars['col'] = 1;
+			}
+			else {
+				$runvars['col']++;
+				$last_col = count($progtable[$runvars['row']]) - 1 ;
+				if($runvars['col']>$last_col) {
+					$runvars['row']++;
 					$runvars['col'] = 1;
 				}
-				else {
-					$runvars['col']++;
-					$last_col = count($progtable[$runvars['row']]) - 1 ;
-					if($runvars['col']>$last_col) {
-						$runvars['row']++;
-						$runvars['col'] = 1;
-					}
-				}
-				break;
+			}
+			break;
+				
 			case 'restart':
-				$runvars['row'] = 1;
-				$runvars['col'] = 1;
-				break;
+			$runvars['row'] = 1;
+			$runvars['col'] = 1;
+			break;
 		}
+		
 		// ensure we're still in the table
 		$last_row = count($progtable) - 1 ;
 		if($runvars['row']<1) $runvars['row'] = 1;
@@ -77,27 +80,32 @@ public function control() {
 		if($runvars['col']<1) $runvars['col'] = 1;
 		if($runvars['col']>$last_col) $runvars['col'] = $last_col;
 		$mode = $progtable[$runvars['row']][0];
-		// if competing, are we in empty cell?
-		$empty_cell = $mode=='c' && $progtable[$runvars['row']][$runvars['col']]=='-';
-	} while($empty_cell);
+		
+		// stepping through competition?
+		if(in_array($runvars['cmd'], ['next', 'prev']) && $mode=='c') {
+			// skip empty cells
+			$skip = $progtable[$runvars['row']][$runvars['col']]=='-';
+		}
+		else $skip = false;
+		
+	} while($skip);
 	$runvars['mode'] = $mode;
 		
 	// update timer
 	$runvars['timer'] = intval($runvars['timer']);
+	$runvars['timer_start'] = intval($runvars['timer_start']);
 	if($runvars['mode']=='o') { // orientation
 		$end_place = "{$runvars['row']}-{$runvars['col']}";
-		if($end_place!=$start_place || $runvars['cmd']=='timer0') { 
-			$runvars['timer_start'] = time(); // start timer
-		}
-		elseif(empty($runvars['timer_start'])) { // create start time if not there
-			$runvars['timer_start'] = time();
-		}
+		if($end_place!=$start_place) $runvars['timer_start'] = time();
+		if($runvars['cmd']=='timer0') $runvars['timer_start'] = time();
+		if(!$runvars['timer_start']) $runvars['timer_start'] = time();
 	}
 	else { // cancel timer
 		$runvars['timer_start'] = 0;
 	}
 	
 	tt_lib::save_value('runvars', $runvars);
+	$runvars = tt_lib::get_value("runvars");
 	return $this->respond($runvars);
 }
 
