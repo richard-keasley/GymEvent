@@ -3,7 +3,8 @@ use \App\Libraries\Teamtime as tt_lib;
 
 $this->section('content'); 
 $attr = [
-	'id' => "editform"
+	'id' => "editform",
+	'style' => "max-width:45em;"
 ];
 $hidden = [
 	'save' => 1
@@ -44,12 +45,14 @@ $inputs = [
 ];
 
 foreach($inputs as $key=>$input) { ?>
-	<div class="my-1 row"><?php
+	<div class="my-1 row">
+		<?php
 		$input['id'] = "ctrl-$key";
 		$input['name'] = $key;
 		$label = humanize($key);
 		$class = $input['type']=='checkbox' ? 'col-form-check-label' : 'col-form-label' ;
-		printf('<label for="%s" class="col-sm-3 %s">%s</label>', $input['id'], $class, $label); ?>
+		printf('<label for="%s" class="col-sm-3 text-end %s">%s</label>', $input['id'], $class, $label); 
+		?>
 		<div class="col-sm-9">
 		<?php switch($input['type']) {
 			case 'select':

@@ -32,7 +32,7 @@ public function track($event_id=0, $entry_num=0, $exe='') {
 }
 
 public function set_remote() {
-	if(!\App\Libraries\Auth::check_role('admin')) {
+	if(!\App\Libraries\Auth::check_role('controller')) {
 		return $this->failUnauthorized('Permission denied');
 	}
 	
@@ -50,7 +50,8 @@ public function set_remote() {
 	$track->entry_num = $getPost['entry'];
 	$track->exe = $getPost['exe'];
 	$getPost['url'] = $track->url();
-	
+	$getPost['label'] = $track->label();
+		
 	$appvars = new \App\Models\Appvars();
 	$appvar = new \App\Entities\Appvar;
 	$appvar->id = 'music.remote';
@@ -61,7 +62,7 @@ public function set_remote() {
 		return $this->respond($appvar->value);
 	}
 	else {
-		return $this->fail(sprintf('No music for %s-%s', $getPost['entry'], $getPost['exe']));
+		return $this->failNotfound("No music found for {$getPost['entry']} {$getPost['exe']}");
 	}
 }
 

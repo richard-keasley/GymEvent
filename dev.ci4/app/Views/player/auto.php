@@ -62,17 +62,13 @@ if(ch_id) {
 			var store = JSON.stringify(response);
 			if(current_store!=store) {
 				try {
+					//console.log(response);
 					current_store = store;
 					$player.pause();
 					if(!response.url) throw 'Track not found';
 					show_message(response.state, 1);
 					$player.src = response.url;
-					var temp = response.url.split('/').pop(); // filename
-					var html = temp.split('?')[0]; // remove query
-					html = html.replace(/^0+/, ''); // trim leading zeros
-					html = html.replace('.', ' (') + ')'; // separate extension into bracket
-					html = html.replace('_', ' ');
-					$('#playtrack p')[0].innerHTML = html;
+					$('#playtrack p')[0].innerHTML = response.label;
 					if(response.state=='play') {
 						playpromise = $player.play();
 						playpromise.catch((error) => {

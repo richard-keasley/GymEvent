@@ -103,52 +103,16 @@ echo form_open(current_url(), $attr); ?>
 </div>
 </div>
 
-<div class="cmode-only my-2 p-1 border">
-<?php 
+<div class="cmode-only my-2 p-1 border"><?php 
 $music_player = tt_lib::get_value("settings", "music_player");
-
-if($music_player=='local') {
-	echo $this->include('Htm/Playtrack');
-}
-
-if($music_player=='remote') { ?>
-<div id="remoteplayer">
-<div>
-<?php echo anchor('control/player/auto', 'remote player'); ?>&nbsp;&nbsp;&nbsp; 
-<button type="button" class="btn btn-sm btn-primary bi bi-play-fill" onclick="remote_music('play')"></button>
-<button type="button" class="btn btn-sm btn-primary bi bi-stop-fill" onclick="remote_music('stop')"></button>
-</div>
-<p class="m-0">ready&hellip;</p>
-<script>
-const $remoteplayer = $('#remoteplayer')[0];
-const $remoteplayer_msg = $('#remoteplayer p')[0];
-
-function remote_music(state) {
-	url = '<?php echo site_url("/api/music/set_remote");?>';
-	postvar = {
-		event: event_id,
-		entry: progtable[runvars['row']][runvars['col']],
-		exe: progtable[0][runvars['col']],
-		state: state
-	};
-	postvar[csrf_token] = csrf_hash;
-	
-	// console.log(postvar);
-	$.post(url, postvar)
-	.done(function(response) {
-		$remoteplayer_msg.innerHTML = response.state + ': ' + response.url;
-		$remoteplayer.className = 'm-0 p-1 alert alert-success';
-	})
-	.fail(function(jqXHR) {
-		$remoteplayer_msg.innerHTML = get_error(jqXHR);
-		$remoteplayer.className = 'm-0 p-1 alert alert-danger';
-	});
-}
-</script>
-</div>
-<?php } ?>
-
-</div>
+$include = match($music_player) {
+	'local' => 'Htm/Playtrack',
+	'remote' => 'player/remote',
+	default => null
+};
+if($include) echo $this->include($include);
+else echo $include;
+?></div>
 
 <?php 
 echo form_close();

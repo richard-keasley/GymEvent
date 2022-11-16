@@ -150,6 +150,12 @@ public function status() {
 	}
 } 
 
+public function label() {
+	$file = $this->file();
+	$ext = $file ? $file->getExtension() : 'not found' ;
+	return "{$this->entry_num} {$this->exe} ({$ext})";
+}
+
 public function url() {
 	$file = $this->file();
 	if(!$file) return '';
