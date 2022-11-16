@@ -18,6 +18,9 @@ const templates = [
 'bordered' => [
 	'table_open' => '<div class="table-responsive"><table class="table table-bordered border-primary">',
 	'table_close' => '</table></div>'
+],
+'fixed' => [
+	'table_open' => '<table class="table text-center" style="table-layout:fixed;">'
 ]
 ];
 

@@ -4,37 +4,60 @@ $progtable = tt_lib::get_value('progtable');
 ?>
 <div class="progtable">
 <?php
+if($progtable) { 
 
-if($progtable) { ?>
-<table class="table text-center" style="table-layout:fixed;">
-<?php
-$key = 0; // in case there's no body
+$tbody = []; 
 foreach($progtable as $key=>$row) {
-	$mode = array_shift($row); // remove mode item from row
-	if($key==0) { // thead
-		$col_count = count($row);
-		printf('<thead><tr><th>%s</th></tr></thead>', implode('</th><th>', $row));
-		continue;
+	$mode = array_shift($row);
+	if(!$key) {
+		$colspan = count($row);
+		$tr = [[
+			'class' => "border-0 text-muted small px-1", 
+			'data' => '&nbsp;'
+		]];
 	}
-	if($key==1) echo '<tbody>'; // tbody start
-	$class = 'default';
+	else {
+		$tr = [[
+			'class' => "border-0 text-muted small px-1", 
+			'data' => $key
+		]];
+	}
+	
 	switch($mode) {
-		case 't': 
-			$class = 'info';
-			$tr = sprintf('<td class="table-info" colspan="%u">%s</td>', $col_count, humanize($row[0]));
-			break;
+		case 't':
+		foreach($row as $td) {
+			$tr[] = [
+				'class' => "table-info fw-bold px-3",
+				'colspan' => $colspan,
+				'data' => humanize($td)
+			];
+		}
+		break;
+		
 		case 'o':
-			$class = 'light';
-		case 'c':
+		foreach($row as $td) {
+			$tr[] = [
+				'class' => "table-light px-4",
+				'data' => $td
+			];
+		}
+		break;
+		
 		default:
-			$tr = sprintf('<td>%s</td>', implode('</td><td>', $row));
+		foreach($row as $td) {
+			$tr[] = [
+				'class' => "px-4",
+				'data' => $td
+			];
+		}
 	}
-	printf('<tr class="table-%s">%s</tr>', $class, $tr);
-} 
-if($key) echo '</tbody>'; // $key>0 if there was a body
-?>
-</table>
-<?php } else { ?>
+	
+	$tbody[] = $tr;
+}
+$table = \App\Views\Htm\Table::load('fixed');
+echo $table->generate($tbody);
+
+} else { ?>
 <p class="alert alert-warning">Programme appears to be empty</p>
 <?php } ?>
 </div>
