@@ -44,8 +44,12 @@ echo form_open(current_url(), $attr); ?>
 
 <button type="button" class="btn btn-primary bi bi-arrow-repeat" onclick="set_runvars()" title="refresh displays"></button>
 
+
 <span>
 <?php echo \App\Libraries\View::back_link('teamtime'); ?>
+
+<button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#debug" title="View API replies"><i class="bi-wrench"></i></button>
+
 <span class="dropdown">
 	<button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi bi-list"></span></button>
 	<ul class="dropdown-menu dropdown-menu-end bg-light" aria-labelledby="dropdownMenuButton1">
@@ -156,9 +160,8 @@ $this->section('content');
 <iframe src="<?php echo site_url('teamtime/display/0');?>"></iframe>
 </div>
 
-<section class="border my-1">
-<div><button class="btn btn-warning btn-sm dropdown-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#debug" aria-expanded="false" aria-controls="debug"><i class="bi-wrench"></i></button></div>
-<pre id="debug" class="collapse p-1"></pre>
+<section id="debug" class="collapse">
+<pre class="border my-1 p-1"></pre>
 </section>
 <?php 
 $this->endSection(); 
@@ -201,7 +204,7 @@ function show_runvars(arr) {
 	runvars['row'] = parseInt(runvars['row']);
 	runvars['col'] = parseInt(runvars['col']);
 		
-	$('#debug').html(JSON.stringify(runvars, null, 1));
+	$('#debug pre').html(JSON.stringify(runvars, null, 1));
 	
 	$('[name=col]').val(runvars['col']);
 	$('[name=row]').val(runvars['row']);
