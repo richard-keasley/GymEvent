@@ -111,7 +111,7 @@ $include = match($music_player) {
 	default => null
 };
 if($include) echo $this->include($include);
-else echo $include;
+else echo $music_player;
 ?></div>
 
 <?php 
