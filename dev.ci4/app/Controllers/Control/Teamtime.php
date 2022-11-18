@@ -73,24 +73,37 @@ function programme() {
 function teams() {
 	$event_id = tt_lib::get_value('settings', 'event_id');
 	
+	$updated = [];
 	if($this->request->getPost('reload')) {
-		// update
 		$model = new \App\Models\Entries;
 		$entries = $model->evt_discats($event_id);
 		if($entries) {
-			$sort = []; $value = [];
 			foreach($entries as $dis) {
 				foreach($dis->cats as $cat) {
 					foreach($cat->entries as $rowkey=>$entry) {
-						$value[] = [$entry->num, $entry->name];
-						$sort[] = $entry->num;
+						$updated[] = [$entry->num, $entry->name];
 					}
 				}
 			}
-			array_multisort($sort, $value);
-			tt_lib::save_value('teams', $value);
-			$this->data['messages'][] = ['Teams updated', 'success'];
 		}
+	}
+	
+	if($this->request->getPost('save')) {
+		$getPost = trim($this->request->getPost('teams'));
+		foreach(explode("\n", $getPost) as $row) {
+			$row = trim($row);
+			if($row) {
+				$arr = csv_array($row, 2);
+				if($arr) $updated[] = $arr;
+			}
+		}
+	}
+	
+	if($updated) {
+		// update
+		array_multisort($updated);
+		tt_lib::save_value('teams', $updated);
+		$this->data['messages'][] = ['Teams updated', 'success'];
 	}
 	
 	// view
