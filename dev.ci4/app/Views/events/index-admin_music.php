@@ -6,3 +6,9 @@
 <li>list event's music by discipline / club / status</li>
 <li>see disk space used</li>
 </ul>
+<div class="bg-light"><?php
+$items = [
+	['control/player', 'Player']
+];
+echo new \App\Views\Htm\Navbar($items);
+?></div>

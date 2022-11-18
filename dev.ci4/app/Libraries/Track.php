@@ -23,20 +23,13 @@ static function enabled() {
 }
 
 // class names for buttons
-const BUTTON_PLAY = 'btn bi m-1 btn-success bi-play-fill';
-const BUTTON_UNCHECKED = 'btn bi m-1 btn-warning bi-play-fill';
-const BUTTON_REPEAT = 'btn bi m-1 btn-info bi-arrow-repeat';
-const BUTTON_PAUSE = 'btn bi m-1 btn-primary bi-pause-fill';
-const BUTTON_MISSING = 'btn bi m-1 btn-danger bi-x';
-
-static function js_buttons() {
-	return implode("\n", [
-		"const BUTTON_PLAY = '" . self::BUTTON_PLAY . "';",
-		"const BUTTON_REPEAT = '" . self::BUTTON_REPEAT . "';",
-		"const BUTTON_PAUSE = '" . self::BUTTON_PAUSE . "';",
-		"const BUTTON_MISSING = '" . self::BUTTON_MISSING . "';"
-	]);
-}
+const BUTTONS = [
+	'play' => 'btn bi m-1 btn-success bi-play-fill',
+	'unchecked' => 'btn bi m-1 btn-warning bi-play-fill',
+	'repeat' => 'btn bi m-1 btn-info bi-arrow-repeat',
+	'pause' => 'btn bi m-1 btn-primary bi-pause-fill',
+	'missing' => 'btn bi m-1 btn-danger bi-x'
+];
 
 static function ini_size($ini_size) {
 	$suffix = strtoupper(substr($ini_size, -1));
@@ -54,19 +47,13 @@ public function playbtn($opts=[]) {
 		$label = $this->entry_num;
 		$tag = 'button';
 		$attrs = [
-			'title' => sprintf('%s %s', $this->entry_num, strtoupper($this->exe)),
+			'title' => $this->label(),
 			'type' => 'button',
 			'data-url' => $track_url,
 			'name' => "trk",
-			'style' => "min-width:4em;"
+			'style' => "min-width:4em;",
+			'class' => $track_url ? self::BUTTONS['play'] : self::BUTTONS['missing'] 
 		];
-		if($track_url) {
-			$attrs['class'] = self::BUTTON_PLAY;
-		}
-		else {
-			$attrs['class'] = self::BUTTON_MISSING;
-			$attrs['title'] .= ' (missing)';
-		}	
 	}
 	else {
 		$label = '';
@@ -77,7 +64,7 @@ public function playbtn($opts=[]) {
 			$attrs = [
 				'title' => 'This track has not been checked',
 				'type' => 'button',
-				'class' => self::BUTTON_UNCHECKED,
+				'class' => self::BUTTONS['unchecked'],
 				'onClick' => sprintf("playtrack.load('%s');", $track_url)
 			];
 			break;
@@ -87,7 +74,7 @@ public function playbtn($opts=[]) {
 			$attrs = [
 				'title' => "This track is ready for the event",
 				'type' => 'button',
-				'class' => self::BUTTON_PLAY,
+				'class' => self::BUTTONS['play'],
 				'onClick' => sprintf("playtrack.load('%s');", $track_url)
 			];
 			break;
@@ -152,8 +139,8 @@ public function status() {
 
 public function label() {
 	$file = $this->file();
-	$ext = $file ? $file->getExtension() : 'not found' ;
-	return "{$this->entry_num} {$this->exe} ({$ext})";
+	$ext = $file ? $file->getExtension() : 'missing' ;
+	return sprintf('%s %s (%s)', $this->entry_num, strtoupper($this->exe), $ext);
 }
 
 public function url() {

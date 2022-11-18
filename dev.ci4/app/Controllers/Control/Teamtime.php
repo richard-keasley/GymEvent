@@ -126,7 +126,7 @@ function player() {
 	$this->data['heading'] = 'Teamtime music';
 	$this->data['breadcrumbs'][] = "control/teamtime/player";
 	$this->data['back_link'] = "control/teamtime";
-	return view("teamtime/admin/player", $this->data);
+	return view("player/teamtime", $this->data);
 }
 
 function appvars() {

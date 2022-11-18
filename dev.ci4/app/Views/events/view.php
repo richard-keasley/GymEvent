@@ -26,17 +26,13 @@ $files->removePattern($pattern);
 </section>
 
 <?php if($event->clubrets==1) { ?>
-<section class="alert alert-success">
-<p><strong>We are accepting entries for this event</strong></p>
-<p>You are advised to open an entry <em>as soon as possible</em> if you intend to enter this event. You can continue to make edits until entries are closed. We will use the details within your return at that point (there is no "submit" button).</p>
-</section>
+<p class="alert alert-success"><strong>We are accepting entries for this event.</strong><br>
+You are advised to open an entry <em>as soon as possible</em> if you intend to enter this event. You can continue to make edits until entries are closed. We will use the details within your return at that point (there is no "submit" button).</p>
 <?php } ?>
 
 <?php if($event->clubrets==2) { ?>
-<section class="alert alert-warning">
-<p><strong>Entries for this event are now closed</strong></p>
-<p>If you find an error in the entries, <em>inform the event organisers as soon as possible</em>. There is no guarantee entries can be corrected if you wait too long.</p>
-</section>
+<p class="alert alert-warning"><strong>Entries for this event are now closed.</strong><br>
+If you find an error in the entries, <em>inform the event organisers as soon as possible</em>. There is no guarantee entries can be corrected if you wait too long.</p>
 <?php } ?>
 
 <?php if($event->clubrets<2 && $event->payment) { ?>
@@ -47,10 +43,13 @@ $files->removePattern($pattern);
 <?php } ?>
 
 <?php if($event->music==1) { ?>
-<section class="alert alert-success">
-<p><strong>You can now upload your music</strong></p>
-<p>Please upload your music as soon as you can, give us time to check your music can be played! You can alter tracks as often as you like until the music service is closed.</p> 
-</section>
+<p class="alert alert-success"><strong>You can now upload your music.</strong><br>
+Please upload your music as soon as you can, give us time to check your music can be played! You can alter tracks as often as you like until the music service is closed.</p>
+<?php } ?>
+
+<?php if($event->music==2) { ?>
+<p class="alert alert-warning"><strong>Music upload for this event is now complete.</strong><br>
+If you need to change your music, place the track on a USB stick and bring it to us <em>as soon as you possibly can</em>.</p>
 <?php } ?>
 
 <?php if(count($files)) { ?>

@@ -13,19 +13,18 @@ foreach($files as $file) $notlisted[] = $file->getFilename();
 # d($notlisted);
 # d($event);
 # d($event->player);
-?>
 
+?>
 <div class="toolbar sticky-top">
 <?php echo $this->include('Htm/Playtrack');?>
+<?php echo $this->include('player/js_buttons');?>
 <script>
-<?php echo \App\Libraries\Track::js_buttons();?>
-var active_btn = 0;
 var active_tab = 0; 
 
 $(function() {
 $('button[name=trk]').click(function() {
-	var track_url = this.dataset.url;
-	if(!track_url) return;
+	var success = playbutton(this);
+	if(!success) return;
 	
 	// highlight selected tab
 	if(active_tab) {
@@ -39,22 +38,6 @@ $('button[name=trk]').click(function() {
 	else {
 		active_tab = 0;
 	}
-	
-	// is a button active?
-	if(active_btn) {
-		active_btn.className = BUTTON_REPEAT;
-		playtrack.pause();
-		if(active_btn.title==this.title) {
-			// stopping current track
-			active_btn = 0;
-			return;
-		}
-	}
-	
-	// play new track
-	active_btn = this;
-	active_btn.className = BUTTON_PAUSE;
-	playtrack.load(track_url);
 });
 });
 </script>

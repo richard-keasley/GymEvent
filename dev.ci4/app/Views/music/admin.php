@@ -45,39 +45,37 @@ foreach($entries as $dis) {
 			foreach($cat->entries as $key=>$entry) {
 				$track->entry_num = $entry->num;
 				if($filter['user'] && $filter['user']!=$entry->user_id) continue;
-				$tr = [
+				$ent_row = [
 					$entry->num,
 					$users[$entry->user_id]->abbr ?? '?',
 					$entry->name
 				];
 				
-				$show_entry = 0; $ent_tracks = [];
+				$show_entry = 0; $ent_states = [];
 				foreach($entry->music as $exe=>$check_state) {
+					if(!$key) $thead[] = $track->exe;	
+					
 					$track->exe = $exe;
 					$track->check_state = $check_state;
-					$ent_tracks[] = $track;
-					if(!$key) $thead[] = $track->exe;	
-					if(!$filter['status'] || $filter['status']==$track->status()) $show_entry = 1;
+					$ent_row[] = $track->playbtn(['checkbox']);
+					$status = $track->status();
+					$ent_states[] = $status;
+					if(!$filter['status'] || $filter['status']==$status) $show_entry = 1;
 				}
 				
 				if($show_entry) {
 					$count_entries++;
-					foreach($entry->music as $exe=>$check_state) {
-						$track->exe = $exe;
-						$track->check_state = $check_state;
-						$tr[] = $track->playbtn(['checkbox']);
-						$tracks_table[$track->status()] ++;
-					}
-					$tr[] = getlink($entry->url('music'), '<span class="bi bi-pencil"></span>');
-					$tbody[] = $tr;
+					foreach($ent_states as $status) $tracks_table[$status] ++;
+					$ent_row[] = getlink($entry->url('music'), '<span class="bi bi-pencil"></span>');
+					$tbody[] = $ent_row;
 				}
 			}
-			$thead[] = '' ;		
 				
 			if($tbody) {
 				if(!$dis_title) printf('<h4>%s</h4>', $dis->name);
 				$dis_title = 1;
 				printf('<h6>%s</h6>', $cat->name);
+				$thead[] = '' ;	// edit column
 				$table->setHeading($thead);
 				echo $table->generate($tbody);
 			}

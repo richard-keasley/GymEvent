@@ -1,6 +1,6 @@
 <?php namespace App\Views\Htm;
 
-class Navbar {
+class Navbar implements \Stringable {
 public $items = [];
 public $template = [
 	'items_start' => '<ul class="nav flex-column">',
@@ -12,6 +12,10 @@ public $template = [
 
 public function __construct($items=[]) {
 	$this->items = $items;
+}
+
+public function __toString() {
+	return $this->htm();
 }
 
 public function htm($items = false) {
