@@ -200,7 +200,7 @@ static function check_role($role, $user_role=null) {
 static function path_role($path) {
 	$segments = array_pad(explode('/', $path), 7, '');
 	
-	$zones = ['user', 'admin', 'api', 'control'];
+	$zones = ['help', 'admin', 'api', 'control'];
 	$zone = in_array($segments[0], $zones) ? array_shift($segments) : 'home';
 	if($zone=='api' && $segments[0]=='help') {
 		$zone = array_shift($segments); // $zone=help

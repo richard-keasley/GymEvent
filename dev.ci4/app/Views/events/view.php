@@ -71,5 +71,6 @@ echo $event->link('clubrets');
 echo $event->link('videos');
 echo $event->link('music');
 echo $event->link('player');
+echo $event->link('teamtime');
 ?></div>
 <?php  $this->endSection(); 

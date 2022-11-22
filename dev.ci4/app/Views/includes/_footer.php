@@ -6,8 +6,12 @@ $attr = [
 ];
 echo form_open(site_url(), $attr); ?>
 <button class="btn btn-secondary" type="submit" name="logout" value="1">Logout</button>
-<?php echo getlink('/admin', 'admin'); ?> 
-<label>Logged in as <?php printf('<a href="%s">%s</a>', site_url('user'), $_SESSION['user_name']);?></label>
+<?php echo getlink('admin', 'admin'); ?> 
+<label><?php 
+$label = "Logged in as {$_SESSION['user_name']}";
+$link = getlink('user', $label);
+echo $link ? $link : $label;
+?></label>
 <?php echo form_close();
 
 if(ENVIRONMENT != 'development') return;

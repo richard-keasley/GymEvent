@@ -16,7 +16,6 @@ $hidden = ['reload' => 1];
 echo form_open(current_url(), $attr, $hidden);
 echo \App\Libraries\View::back_link('control/teamtime'); ?>
 <button class="btn btn-primary bi bi-pencil" title="edit team names" type="button" data-bs-toggle="modal" data-bs-target="#pageModal"></button>
-<button class="btn btn-primary bi bi-arrow-clockwise" title="reload team names" type="submit" name="refresh"></button>
 <?php 
 echo getlink("admin/entries/view/{$event_id}", 'entries');
 echo form_close();
@@ -27,9 +26,7 @@ $this->section('bottom'); ?>
 <div class="modal fade" id="pageModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
 <?php 
-$attr = [
-	'class' =>"modal-content"
-];
+$attr = ['class' =>"modal-content"];
 echo form_open(current_url(), $attr); ?>
 <div class="modal-header">
 	<h5 class="modal-title">Edit team names</h5>
@@ -51,10 +48,13 @@ echo form_open(current_url(), $attr); ?>
 	echo form_textarea($input);
 	?>
 </div>
+
 <div class="modal-footer">
-	<button class="btn btn-primary" type="submit" name="save" value="1">Save</button>
-	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+<button class="btn me-4 btn-primary bi bi-arrow-clockwise" title="reload from event entries" type="submit" name="reload" value="1"></button>
+<button class="btn btn-primary" type="submit" name="save" value="1">Save</button>
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 </div>
+
 <?php echo form_close(); ?>
 </div>
 </div>

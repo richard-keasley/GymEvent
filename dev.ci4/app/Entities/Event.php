@@ -375,8 +375,12 @@ public function link($type, $user_id=0) {
 		case 'teamtime':
 		if(in_array($this->clubrets, [1, 2])) {
 			$event_id = \App\Libraries\Teamtime::get_value('settings', 'event_id');
-			return $event_id==$this->id ? getlink("control/teamtime") : '';
+			if($event_id==$this->id) {
+				$link = getlink("control/teamtime");
+				return $link ? $link : getlink("teamtime");
+			}
 		}
+		break;
 	}
 	return '' ;
 }
