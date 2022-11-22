@@ -11,8 +11,9 @@ public function __construct() {
 }
 
 private function find($user_id) {
+	$user_id = intval($user_id);
 	$this->data['user'] = $this->usr_model->withDeleted()->find($user_id);
-	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
+	if(!$this->data['user']) throw new \RuntimeException("Can't find user {$user_id}", 404);
 	$this->data['user_self'] = $this->data['user']->self();
 	$this->data['title'] = $this->data['user']->name;
 }

@@ -7,7 +7,7 @@ class User extends \App\Controllers\BaseController {
 function __construct() {
 	$this->usr_model = new \App\Models\Users();
 	$this->data['breadcrumbs'][] = 'user';
-	$user_id = session('user_id');
+	$user_id = intval(session('user_id'));
 	// compare to /admin/users/find
 	$this->data['user'] = $this->usr_model->find($user_id);
 	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
