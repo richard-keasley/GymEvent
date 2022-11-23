@@ -5,29 +5,37 @@ $this->section('content');
 
 $table = \App\Views\Htm\Table::load('responsive');
 $progtable = tt_lib::get_value('progtable');
+$teams = tt_lib::get_value('teams');
+$event_id = tt_lib::get_value('settings', 'event_id');
 
-$exes = [];
+$exes = []; $execheck = [];
 if($progtable) {
-	$exes = $progtable[0];
-	$thead = [];
+	$exes = array_shift($progtable);
+	$mode = array_shift($exes); // discard mode
+	$thead = [''];
 	foreach($exes as $exe) {
 		$thead[] = \App\Views\Htm\Table::centre($exe);
 	}
 	$table->setHeading($thead);
-	array_shift($exes);
+
+	foreach($progtable as $row) {
+		$mode = array_shift($row);
+		if($mode=='c') {
+			foreach($row as $key=>$val) {
+				$entry_num = intval($val);
+				$exe = $exes[$key] ?? false;
+				if($entry_num && $exe) $execheck[$entry_num][$exe] = 1;
+			}
+		}
+	}
 }
 else { ?>
 <p class="alert alert-danger">Programme appears to be empty</p>
 <?php } 
 
-$teams = tt_lib::get_value('teams');
 if(!$teams) { ?>
 <p class="alert alert-danger">Teams are not set-up</p>
 <?php }
-
-$event_id = tt_lib::get_value('settings', 'event_id');
-$track = new \App\Libraries\Track();
-$track->event_id = $event_id;
 
 $mdl_events = new \App\Models\Events;
 $event = $mdl_events->find($event_id);
@@ -36,13 +44,20 @@ printf('<h2>%s</h2>', $title);
 
 #printf('<p>%s</p>', $track->urlpath());
 
-$tr = []; $tbody = [];
+# d($execheck);
+
+$track = new \App\Libraries\Track();
+$track->event_id = $event_id;
+$tbody = [];
 foreach($teams as $team) {
-	$tr[0] = implode('. ', $team);
-	$track->entry_num = $team[0];
+	$tr = ['team' => implode('. ', $team)];
+	$entry_num = $team[0];
+	$track->entry_num = $entry_num;
 	foreach($exes as $exe) {
 		$track->exe = $exe;
-		$tr[$exe] = $track->playbtn(['player']);
+		$tr[$exe] = isset($execheck[$entry_num][$exe]) ? 
+			$track->playbtn(['player']) : 
+			\App\Views\Htm\Table::centre('<i class="text-danger bi-x" title="this track does not appear in the programme"></i>');
 	}
 	$tbody[] = $tr;
 }
@@ -79,5 +94,4 @@ $('button[name=trk]').click(function() {
 </script>
 
 </div>
-
 <?php $this->endSection();
