@@ -9,7 +9,7 @@
 <?php 
 if(!empty($title)) printf('<title>%s</title>', $title);
 echo $this->include('teamtime/js');
-if($style) echo "<style>{$style}</style>";
+if(!empty($style)) echo "<style>{$style}</style>";
 ?>
 </head>
 <body><?php 

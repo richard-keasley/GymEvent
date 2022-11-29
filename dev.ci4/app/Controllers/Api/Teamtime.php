@@ -102,7 +102,14 @@ public function control() {
 	if($runvars['cmd']=='refresh' && $moved) {
 		$runvars['cmd'] = 'moved';
 	}
-			
+	
+	if($runvars['cmd']=='reload' ) {
+		$displays = tt_lib::get_value('displays');
+		// add invalid display to force displays to be re-saved
+		$displays['reload'] = [time()];
+		tt_lib::save_value('displays', $displays);
+	}
+				
 	// update timer
 	$runvars['timer'] = intval($runvars['timer']);
 	$runvars['timer_start'] = intval($runvars['timer_start']);
@@ -120,37 +127,41 @@ public function control() {
 	return $this->respond($runvars);
 } 
 
-public function display_view($ds_id=0, $dupd_request=0, $vupd_request=0) {
-	$displays_var = tt_lib::get_var('displays');
-	$upd_check = tt_lib::timestamp($displays_var->updated_at);
-	if($upd_check>$dupd_request) {
-		return $this->respond(['reload' => 'display'], 200);
-	}
+public function display_view($ds_id=0, $ds_updated=0, $vw_updated=0) {
+	$reload = false;
 	
+	// when were displays updated?
+	$displays_var = tt_lib::get_var('displays');
+	$updated = tt_lib::timestamp($displays_var->updated_at);
+	if($updated>$ds_updated) $reload = true;
+	if($reload) return $this->respond(['reload' => 'display'], 200);
+		
+	// when were views or runvars updated?
 	$views_var = tt_lib::get_var('views');
 	$runvars_var = tt_lib::get_var('runvars');
-	$upd_check = [
+	$updated = [
 		tt_lib::timestamp($views_var->updated_at),
 		tt_lib::timestamp($runvars_var->updated_at)
 	];
-	$upd_check = max($upd_check);
-	
-	if($upd_check>$vupd_request) {
-		// look up display and view
-		$display = tt_lib::get_value('displays', $ds_id);
-		if(!$display) return $this->fail("Display {$ds_id} not found");
-		$view = tt_lib::display_view($display);
-		if(!$view) return $this->fail("Can't find view for display {$ds_id}");
-		// compile HTML for this view
-		$view['html'] = tt_lib::view_html($view['html']);
-		$response = [
-			'reload' => 'view',
-			'updated' => $upd_check,
-			'view' => $view
-		];
-		return $this->respond($response, 200);
-	}
-	return $this->respond(['reload' => 0], 200);
+	$updated = max($updated);
+	if($updated>$vw_updated) $reload = true;
+		
+	// nothing to update
+	if(!$reload) return $this->respond(['reload' => false], 200);
+		
+	// look up display and view
+	$display = tt_lib::get_value('displays', $ds_id);
+	if(!$display) return $this->fail("Display {$ds_id} not found");
+	$view = tt_lib::display_view($display);
+	if(!$view) return $this->fail("Can't find view for display {$ds_id}");
+	// compile HTML for this view
+	$view['html'] = tt_lib::view_html($view['html']);
+	$response = [
+		'reload' => 'view',
+		'updated' => $updated,
+		'view' => $view
+	];
+	return $this->respond($response, 200);
 }
 
 }

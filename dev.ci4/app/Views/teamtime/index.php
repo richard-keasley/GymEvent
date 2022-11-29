@@ -15,8 +15,7 @@ $this->section('sidebar'); ?>
 <h5>Displays</h5>
 <?php
 $navbar = new \App\Views\Htm\Navbar(); 
-$appvars = new \App\Models\Appvars();
-$displays = $appvars->get_value('teamtime.displays');
+$displays = tt_lib::get_value('displays');
 if($displays) {
 	$nav = [];
 	foreach($displays as $key=>$display) {

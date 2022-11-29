@@ -42,13 +42,14 @@ echo form_open(current_url(), $attr); ?>
 
 <div class="navbar my-1">
 
-<button type="button" class="btn btn-primary bi bi-arrow-repeat" onclick="set_runvars('refresh')" title="refresh displays"></button>
-
+<button type="button" class="btn btn-primary bi bi-arrow-repeat" onclick="set_runvars('refresh')" title="update view"></button>
 
 <span>
 <?php echo \App\Libraries\View::back_link('teamtime'); ?>
 
 <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#debug" title="View API replies"><i class="bi-wrench"></i></button>
+
+<button type="button" class="btn btn-warning bi bi-arrow-counterclockwise" onclick="set_runvars('reload')" title="reload displays"></button>
 
 <span class="dropdown">
 	<button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi bi-list"></span></button>

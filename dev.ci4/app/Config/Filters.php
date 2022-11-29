@@ -37,16 +37,19 @@ class Filters extends BaseConfig
 			'auth',
 			'csrf' => [
 				'except' => [
-					'general/intention',
-					'mag/routine'
+					'general/intention/*',
+					'mag/routine/*'
 				]
 			]
 		],
 		'after' => [
 			'toolbar' => [
-				'except' => 'api'
+				'except' => [
+					'api/*',
+					'teamtime/display/*'
+				]
 			]
-			//'honeypot'
+			// 'honeypot'
 		],
 	];
 
@@ -59,7 +62,9 @@ class Filters extends BaseConfig
      *
      * @var array
      */
-    public $methods = [];
+    public $methods = [
+		// 'post' => []
+	];
 
     /**
      * List of filter aliases that should run on any

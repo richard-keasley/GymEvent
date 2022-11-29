@@ -17,6 +17,8 @@ array_multisort($sort, $items);
 <mark><?php echo date("Y-m-d H:i:s", $del_time);?></mark>
 are considered expired.</p>
 
+<p>There are <?php echo count($debugfiles);?> debug files stored.</p>
+
 <dl class="list-unstyled">
 <?php foreach($items as $item) {
 	echo "<dt>{$item['dt']}</dt>";

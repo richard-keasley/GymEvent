@@ -43,26 +43,28 @@ let chk = 0;
 get_view();
 function get_view() {
 	var url = '<?php echo site_url("/api/teamtime/display_view/{$ds_id}/{$ds_updated}");?>/'+view.updated;
-	//console.log(url);
+	// console.log(url);
 	$.get(url, function(response) {
 		try {
 			var reload = response.reload;
-			//console.log(reload);
-			switch(reload) {
-				case 'view':
-    				view.updated = response.updated;
-    				view.info = response.view.info;
-    				view.images = response.view.images;
-    				$('#info').html(response.view.html);
-    				//console.log(response);
-    				//console.log(view);
-				break;
-    				case 'display':
-    				location.reload()
-				break;
+			if(reload) {
+				<?php if(ENVIRONMENT == 'development') { ?>
+				console.log(response);
+				// console.log(view);
+				<?php } ?>
+				switch(reload) {
+					case 'view':
+					view.updated = response.updated;
+					view.info = response.view.info;
+					view.images = response.view.images;
+					$('#info').html(response.view.html);
+					break;
+
+					case 'display':
+					location.reload()
+					break;
+				}
 			}
-			//console.log(response);
-			//console.log(view);
 			show_msg('');
 		}
 		catch(errorThrown) {
