@@ -15,7 +15,7 @@ echo form_open(current_url(), $attr); ?>
 
 <div class="input-group my-1">
 	<label class="input-group-text">View</label>
-	<select name="view" class="form-control" onchange="set_runvars()"><?php 
+	<select name="view" class="form-control" onchange="set_runvars('refresh')"><?php 
 	foreach(tt_lib::get_value('views') as $key=>$view) {
 		$label = $view ? $view['title'] : 'default' ;
 		printf('<option value="%u">%s</option>', $key, $label);
@@ -42,7 +42,7 @@ echo form_open(current_url(), $attr); ?>
 
 <div class="navbar my-1">
 
-<button type="button" class="btn btn-primary bi bi-arrow-repeat" onclick="set_runvars()" title="refresh displays"></button>
+<button type="button" class="btn btn-primary bi bi-arrow-repeat" onclick="set_runvars('refresh')" title="refresh displays"></button>
 
 
 <span>
@@ -183,13 +183,18 @@ function show_runvars(arr) {
 		timeticker.init(runvars['timer'], runvars['timer_current']);
 	}
 	else $('.omode-only').hide();
+	
 	if(runvars.mode=='c') {
-		if(music_player=='local') {
-			entry = progtable[runvars['row']][runvars['col']];
-			exe = progtable[0][runvars['col']];
+		$('.cmode-only').show(); 
+	}
+	else $('.cmode-only').hide();
+	
+	if(music_player=='local' && runvars.cmd!='refresh') {
+		playtrack.pause();
+		if(runvars.mode=='c') {
+			entry = progtable[runvars.row][runvars.col];
+			exe = progtable[0][runvars.col];
 			url = '<?php echo site_url("/api/music/track_url/{$event_id}");?>/'+entry+'/'+exe;
-			// console.log(url);
-			playtrack.pause();
 			$.get(url, function(response) {
 				// console.log(response);
 				playtrack.load(response, 0); // NB: no autoplay
@@ -198,9 +203,7 @@ function show_runvars(arr) {
 				playtrack.msg(get_error(jqXHR), 'danger');
 			});
 		}
-		$('.cmode-only').show(); 
 	}
-	else $('.cmode-only').hide();
 		
 	$('#run_place h6').html(prog_section(runvars['row']));
 	var row_num = runvars['row'];
@@ -245,6 +248,7 @@ $(function() {
 
 url = '<?php echo site_url("/api/teamtime/get/runvars");?>';
 $.get(url, function(response) {
+	response.cmd = 'reload';
 	show_runvars(response);
 })
 .fail(function(jqXHR) {
@@ -256,16 +260,28 @@ var tt = setInterval(function(){
 }, 1000);
 
 // short cut keys for buttons
-$(".runnav").keyup(function(event) {
+$("body").keyup(function(event) {
+	if(event.ctrlKey && event.altKey) {
+		switch(event.key) {
+			case 'ArrowRight':
+				set_runvars('next');
+				break;
+			case 'ArrowLeft':
+				set_runvars('prev');
+				break;
+			case 'ArrowUp':
+				if(runvars.mode=='c') {
+					playtrack.player.trigger('play');
+				}
+				break;
+			case 'ArrowDown':
+				playtrack.player.trigger('pause');
+				break;
+		}
+	}
 	switch(event.key) {
-		case 'ArrowRight':
-		case 'ArrowDown':
-		case ' ':
-			set_runvars('next');
-			break;
-		case 'ArrowUp':
-		case 'ArrowLeft':
-			set_runvars('prev');
+		case 'Enter': 
+			set_runvars('refresh');
 			break;
 	}
 });

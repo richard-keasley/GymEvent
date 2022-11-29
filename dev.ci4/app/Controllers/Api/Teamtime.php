@@ -26,6 +26,10 @@ public function control() {
 	if(!$progtable) return $this->fail("No programme set");
 	
 	$runvars = tt_lib::get_value("runvars");
+	$row = $runvars['row'] ?? '#';
+	$col = $runvars['col'] ?? '#';
+	$start_place = "{$row}-{$col}";
+		
 	// modify runvars according to post
 	$getPost = $this->request->getPost(null, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	foreach($getPost as $key=>$val) {
@@ -34,7 +38,6 @@ public function control() {
 	
 	// update run place 
 	$mode = $progtable[$runvars['row']][0];
-	$start_place = "{$runvars['row']}-{$runvars['col']}";
 	do {
 		switch($runvars['cmd']) {
 			case 'prev':
@@ -90,13 +93,21 @@ public function control() {
 		
 	} while($skip);
 	$runvars['mode'] = $mode;
-		
+
+	// have we moved?
+	$end_place = "{$runvars['row']}-{$runvars['col']}";
+	$moved = $end_place != $start_place;
+	$runvars['moved'] = $moved;
+	
+	if($runvars['cmd']=='refresh' && $moved) {
+		$runvars['cmd'] = 'moved';
+	}
+			
 	// update timer
 	$runvars['timer'] = intval($runvars['timer']);
 	$runvars['timer_start'] = intval($runvars['timer_start']);
 	if($runvars['mode']=='o') { // orientation
-		$end_place = "{$runvars['row']}-{$runvars['col']}";
-		if($end_place!=$start_place) $runvars['timer_start'] = time();
+		if($moved) $runvars['timer_start'] = time();
 		if($runvars['cmd']=='timer0') $runvars['timer_start'] = time();
 		if(!$runvars['timer_start']) $runvars['timer_start'] = time();
 	}
@@ -107,7 +118,7 @@ public function control() {
 	tt_lib::save_value('runvars', $runvars);
 	$runvars = tt_lib::get_value("runvars");
 	return $this->respond($runvars);
-}
+} 
 
 public function display_view($ds_id=0, $dupd_request=0, $vupd_request=0) {
 	$displays_var = tt_lib::get_var('displays');

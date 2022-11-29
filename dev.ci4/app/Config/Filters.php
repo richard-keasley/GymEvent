@@ -43,7 +43,9 @@ class Filters extends BaseConfig
 			]
 		],
 		'after' => [
-			'toolbar'
+			'toolbar' => [
+				'except' => 'api'
+			]
 			//'honeypot'
 		],
 	];
@@ -70,4 +72,3 @@ class Filters extends BaseConfig
      */
     public $filters = [];
 }
-

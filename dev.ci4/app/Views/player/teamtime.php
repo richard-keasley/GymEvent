@@ -7,8 +7,10 @@ $table = \App\Views\Htm\Table::load('responsive');
 $progtable = tt_lib::get_value('progtable');
 $teams = tt_lib::get_value('teams');
 $event_id = tt_lib::get_value('settings', 'event_id');
+$rundata = tt_lib::get_rundata();
+# d($rundata);
 
-$exes = []; $execheck = [];
+$exes = [];
 if($progtable) {
 	$exes = array_shift($progtable);
 	$mode = array_shift($exes); // discard mode
@@ -17,17 +19,6 @@ if($progtable) {
 		$thead[] = \App\Views\Htm\Table::centre($exe);
 	}
 	$table->setHeading($thead);
-
-	foreach($progtable as $row) {
-		$mode = array_shift($row);
-		if($mode=='c') {
-			foreach($row as $key=>$val) {
-				$entry_num = intval($val);
-				$exe = $exes[$key] ?? false;
-				if($entry_num && $exe) $execheck[$entry_num][$exe] = 1;
-			}
-		}
-	}
 }
 else { ?>
 <p class="alert alert-danger">Programme appears to be empty</p>
@@ -44,20 +35,20 @@ printf('<h2>%s</h2>', $title);
 
 #printf('<p>%s</p>', $track->urlpath());
 
-# d($execheck);
-
 $track = new \App\Libraries\Track();
 $track->event_id = $event_id;
 $tbody = [];
+$empty = \App\Views\Htm\Table::centre('<i class="text-danger bi-x" title="this track does not appear in the programme"></i>');
+
 foreach($teams as $team) {
 	$tr = ['team' => implode('. ', $team)];
 	$entry_num = $team[0];
 	$track->entry_num = $entry_num;
 	foreach($exes as $exe) {
 		$track->exe = $exe;
-		$tr[$exe] = isset($execheck[$entry_num][$exe]) ? 
-			$track->playbtn(['player']) : 
-			\App\Views\Htm\Table::centre('<i class="text-danger bi-x" title="this track does not appear in the programme"></i>');
+		$tr[$exe] = empty($rundata[$entry_num][$exe]) ? 
+			$empty : 
+			$track->playbtn(['player']) ;
 	}
 	$tbody[] = $tr;
 }

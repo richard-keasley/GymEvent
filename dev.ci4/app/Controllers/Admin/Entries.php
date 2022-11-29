@@ -1,5 +1,7 @@
 <?php namespace App\Controllers\Admin;
 
+use \App\Libraries\Teamtime as tt_lib;
+
 class Entries extends \App\Controllers\BaseController {
 	
 private $ent_model = null;
@@ -486,7 +488,9 @@ public function import($event_id=0) {
 
 public function export($event_id=0, $download=0) {
 	$this->find($event_id);
-
+	$tg_id = tt_lib::get_value('settings', 'event_id');
+	$teamgym = ($tg_id==$event_id);
+	
 	// build user table
 	$usr_model = new \App\Models\Users();
 	$ent_users = [];
@@ -583,37 +587,56 @@ public function export($event_id=0, $download=0) {
 		break;
 		
 		case 'running_order':
-		$sort = [];
-		foreach($this->data['entries'] as $dis) {
-			foreach($dis->cats as $cat) {
-				foreach($cat->entries as $rowkey=>$entry) {
-					$row = [
-						'runorder' => implode(', ', $entry->get_rundata('export')),
-						'dis' => $dis->name,
-						'cat' => $cat->name,
-						'num' => $entry->num,
-						'club' => $ent_users[$entry->user_id]->abbr ?? '?',
-						'name' => $entry->name
-					];
-					if(!$rowkey) $has_opt = $entry->opt;
-					if($has_opt) $row['opt'] = humanize($entry->opt);
-					$export_table[] = $row;
-					
-					$sort[] = [
-						$entry->get_rundata('order'),
-						$dis->abbr,
-						$cat->sort,
-						$entry->num
-					];
+		if($teamgym) {
+			$progtable = tt_lib::get_value('progtable');
+			if($progtable) {
+				$keys = array_shift($progtable);
+				$keys[0] = 'mode';
+				$export_row = [];
+				foreach($progtable as $rowkey=>$row) {
+					foreach($keys as $int=>$key) {
+						$export_row[$key] = $row[$int] ?? '' ;
+					}
+					$export_table[] = $export_row;
+				}
+				# d($export_table);
+			}
+			$this->data['layout'] = 'table';
+		}
+		else {
+			$sort = [];
+			foreach($this->data['entries'] as $dis) {
+				foreach($dis->cats as $cat) {
+					foreach($cat->entries as $rowkey=>$entry) {
+						$row = [
+							'runorder' => implode(', ', $entry->get_rundata('export')),
+							'dis' => $dis->name,
+							'cat' => $cat->name,
+							'num' => $entry->num,
+							'club' => $ent_users[$entry->user_id]->abbr ?? '?',
+							'name' => $entry->name
+						];
+						if(!$rowkey) $has_opt = $entry->opt;
+						if($has_opt) $row['opt'] = humanize($entry->opt);
+						$export_table[] = $row;
+						
+						$sort[] = [
+							$entry->get_rundata('order'),
+							$dis->abbr,
+							$cat->sort,
+							$entry->num
+						];
+					}
 				}
 			}
+			array_multisort($sort, $export_table);
+			# d($sort);
+			$this->data['layout'] = 'cattable';
+			$this->data['table_header'] = false;
+			$this->data['headings'] = ['runorder', 'dis', 'cat'];
 		}
-		array_multisort($sort, $export_table);
-		# d($sort);
 				
-		$this->data['layout'] = 'cattable';
-		$this->data['table_header'] = false;
-		$this->data['headings'] = ['runorder', 'dis', 'cat'];
+
 		break;
 		
 		case 'round_summary':
@@ -648,8 +671,14 @@ public function export($event_id=0, $download=0) {
 				
 		default:
 		$source = 'scoreboard';
+				
+		if($teamgym) {
+			$rundata = tt_lib::get_rundata();
+			# d($rundata);
+		}
+	
 		$sort = [];
-		$row = []; 
+		$row = []; $run = [];
 		foreach($this->data['entries'] as $dis) { 
 			$row['dis'] = [
 				'name' => $dis->name,
@@ -673,15 +702,22 @@ public function export($event_id=0, $download=0) {
 						'dob' => $entry->dob
 					];
 					$row['order'] = '';#$entry->get_rundata('order');
-					$row['run'] = $entry->get_rundata('export');
+					if($teamgym) {
+						$run = $rundata[$entry->num] ?? $rundata[0] ;
+						$row['run'] = $run;
+						$sort[] = $run;
+					}
+					else {
+						$row['run'] = $entry->get_rundata('export');
+						// NB: same sort as running_order
+						$sort[] = [
+							$entry->get_rundata('order'),
+							$dis->abbr,
+							$cat->sort,
+							$entry->num
+						];						
+					}
 					$export_table[] = $row;
-					// NB: same sort as running_order
-					$sort[] = [
-						$entry->get_rundata('order'),
-						$dis->abbr,
-						$cat->sort,
-						$entry->num
-					];
 				}		
 				// end cat 
 			} 
