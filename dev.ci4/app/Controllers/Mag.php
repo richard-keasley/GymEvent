@@ -41,7 +41,7 @@ public function routine($name='') {
 	$getPost = $this->request->getPost();
 	$this->data['exeset'] = new \App\Libraries\Mag\Exeset($getPost);
 	$gymnast_name = $this->data['exeset']->name ? 
-		this->data['exeset']->name : 
+		$this->data['exeset']->name : 
 		humanize($name);
 	if($gymnast_name) {
 		$this->data['title'] = $gymnast_name;
