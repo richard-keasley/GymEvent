@@ -37,12 +37,20 @@ public function routineSW() {
 	return view('mag/exeset/sw', $this->data);
 }
 
-public function routine() {
+public function routine($name='') {
 	$getPost = $this->request->getPost();
 	$this->data['exeset'] = new \App\Libraries\Mag\Exeset($getPost);
-	$this->data['title'] = $this->data['exeset']->name ? $this->data['exeset']->name  : 'Routine sheet';
-	$this->data['heading'] = $this->data['title'];
-	
+	$gymnast_name = $this->data['exeset']->name ? 
+		this->data['exeset']->name : 
+		humanize($name);
+	if($gymnast_name) {
+		$this->data['title'] = $gymnast_name;
+		$this->data['heading'] = $gymnast_name; 
+	}
+	else {
+		$this->data['title'] = $this->data['exeset']->ruleset->title;
+		$this->data['heading'] = $this->data['exeset']->ruleset->description;
+	}
 	$this->data['breadcrumbs'][] = ['mag/routine', "Routine sheet"];
 	
 	$cmd = $this->request->getPost('cmd');		

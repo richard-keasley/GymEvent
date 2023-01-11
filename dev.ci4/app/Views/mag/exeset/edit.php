@@ -308,7 +308,11 @@ echo $table->generate($tbody);
 </div>
 </div>
 </div>
+<?php
+# d($exeset);
 
+
+?>
 <script>
 const api = '<?php echo site_url("/api/mag/exevals");?>/';
 const filter = <?php 
