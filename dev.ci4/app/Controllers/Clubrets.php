@@ -127,6 +127,7 @@ public function edit($event_id=0, $user_id=0) {
 			// remove blank lines from input
 			$names = [];
 			foreach($filtered['names'] as $name) {
+				$name = trim($name, " ',.-_");
 				if($name) $names[] = $name;
 			}
 			$filtered['names'] = $names;
