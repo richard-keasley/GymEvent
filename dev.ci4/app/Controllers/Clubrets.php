@@ -150,13 +150,17 @@ public function edit($event_id=0, $user_id=0) {
 			'cat' => FILTER_SANITIZE_STRING,
 			'name' => FILTER_SANITIZE_STRING
 		];
+		$filtered = [];
 		foreach($clubret->staff as $rowkey=>$row) {
-			$staff[$rowkey] = filter_var_array($row, $filter);
+			$row = filter_var_array($row, $filter);
+			// skip blanks
+			if($row['name']) $filtered[] = $row;
 		}
+		$staff = $filtered;
 		// sort staff
 		$staffcats = $this->data['event']->staffcats;
 		$sort = [[],[]];
-		foreach($clubret->staff as $rowkey=>$row) {
+		foreach($staff as $rowkey=>$row) {
 			$catkey = array_search($row['cat'], $staffcats);
 			$sort[0][$rowkey] = $catkey===false ? 99 : $catkey ;
 			$sort[1][$rowkey] = $row['name'];
