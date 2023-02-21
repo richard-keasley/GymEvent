@@ -14,8 +14,6 @@ class Filters extends BaseConfig
     /**
      * Configures aliases for Filter classes to
      * make reading things nicer and simpler.
-     *
-     * @var array
      */
     public $aliases = [
         'csrf'          => CSRF::class,
@@ -23,7 +21,7 @@ class Filters extends BaseConfig
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
-		'auth'     => \App\Filters\Auth::class
+		'auth'          => \App\Filters\Auth::class
     ];
 
     /**
