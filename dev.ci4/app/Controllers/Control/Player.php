@@ -9,7 +9,10 @@ function __construct() {
 
 private function find($event_id) {
 	$event = $this->mdl_events->find($event_id);
-	if(!$event) throw new \RuntimeException("Can't find event $event_id", 404);
+	if(!$event) {
+		$message = "Can't find event {$event_id}";
+		\App\Libraries\Exception::not_found($this->request, $message);
+	}
 	return $event;
 }
 

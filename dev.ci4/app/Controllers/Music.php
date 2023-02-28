@@ -47,7 +47,10 @@ public function index() {
 
 public function view($event_id=0) {
 	$this->data['event'] = $this->mdl_events->find($event_id);
-	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
+	if(!$this->data['event']) {
+		$message = "Can't find event {$event_id}";
+		\App\Libraries\Exception::not_found($this->request, $message);
+	}
 	
 	$this->data['heading'] = $this->data['event']->title . ' - music';
 	
@@ -88,8 +91,10 @@ public function view($event_id=0) {
 		}
 	}
 	if(!count($cat_opts)) {
-		throw new \RuntimeException("There is no music to display", 403);
+		$message = "There is no music to display";
+		\App\Libraries\Exception::die_nice($this->request, $message, 403);
 	}
+	
 	# d($discats);
 	// view
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb();
@@ -115,12 +120,26 @@ public function view($event_id=0) {
 
 public function edit($entry_id=0) {
 	$entry = $this->mdl_entries->find($entry_id);
-	if(!$entry) throw new \RuntimeException("Can't find music $entry_id", 404);
+	if(!$entry) {
+		$message = "Can't find music {$entry_id}";
+		\App\Libraries\Exception::not_found($this->request, $message);
+	}
+		
+	if(!$entry->perm('music', 'edit')) {
+		$message = 'Music is not available for editing';
+		\App\Libraries\Exception::die_nice($this->request, $message, 403);
+	}
 	
-	if(!$entry->perm('music', 'edit')) throw new \RuntimeException('Music is not available for editing', 403);
 	$category = $entry->get_category();	
-	if(!$category) throw new \RuntimeException("Category not found", 404); 
-	if(!$category->music) throw new \RuntimeException("There is no music for this category", 400);
+	if(!$category) {
+		$message = "Category not found";
+		\App\Libraries\Exception::not_found($this->request, $message);
+	}
+
+	if(!$category->music) {
+		$message = "There is no music for this category";
+		\App\Libraries\Exception::die_nice($this->request, $message, 400);
+	}
 	
 	$event = $entry->get_event();
 

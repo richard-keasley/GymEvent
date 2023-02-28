@@ -31,14 +31,25 @@ public function index() {
 public function view($event_id=0) {
 	if(!$event_id) return $this->index();
 	$this->data['event'] = $this->model->find($event_id);
- 	if(!$this->data['event']) throw new \RuntimeException("Can't find event {$event_id}", 404);
-    
+ 	if(!$this->data['event']) {
+		$message = "Can't find event {$event_id}";
+		\App\Libraries\Exception::not_found($this->request, $message);
+	}
+	
+	// back_link query
+	$query = [];
+	$query['f'] = match($this->data['event']->clubrets) {
+		'0' => 'future',
+		'3' => 'past',
+		default => 'current'
+	};
+	    
 	// view
 	$this->data['id'] = $event_id;
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title;
 	$this->data['state_labels'] = [];
-	$this->data['back_link'] = 'events';
+	$this->data['back_link'] = sprintf('events?%s', http_build_query($query));
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb();
 	$this->data['clubrets'] = $this->data['event']->clubrets();
 	$this->data['entries'] = $this->data['event']->entries();

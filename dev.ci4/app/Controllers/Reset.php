@@ -79,8 +79,12 @@ public function index() {
 	$email->setBCC('richard@hawthgymnastics.co.uk');
 	$email->setTo($email_to);
 	# d($email);
-	$email->send();
-	
+	if(!$email->send()) {
+		$message = ENVIRONMENT == 'production' ? null : $email->printDebugger(['header']) ;
+		if(!$message) $message = "Sorry! Email service is unavailable!"; 
+		\App\Libraries\Exception::die_nice($this->request, $message);
+	}
+		
 	// view
 	$this->data['key'] = '';
 	return view('users/reset/reset', $this->data);

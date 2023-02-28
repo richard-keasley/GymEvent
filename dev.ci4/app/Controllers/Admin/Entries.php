@@ -19,7 +19,11 @@ function __construct() {
 	
 private function find($event_id, $orderby='num') {
 	$this->data['event'] = $this->evt_model->find($event_id);
-	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
+	if(!$this->data['event']) {
+		$message = "Can't find event {$event_id}";
+		\App\Libraries\Exception::not_found($this->request, $message);
+	}
+	
 	$this->data['entries'] = $this->ent_model->evt_discats($event_id, 1, $orderby);
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title;
@@ -141,7 +145,7 @@ public function edit($event_id=0) {
 			foreach($col_names as $col_name) {
 				$fldname = "ent{$entry->id}_{$col_name}";
 				$fld_val = $this->request->getPost($fldname);
-				$data[$col_name] = $fld_val;
+				$data[$col_name] = trim($fld_val);
 			}
 			$runorder = [];
 			foreach($entry->runorder as $key=>$val) {
@@ -609,7 +613,7 @@ public function export($event_id=0, $download=0) {
 				foreach($dis->cats as $cat) {
 					foreach($cat->entries as $rowkey=>$entry) {
 						$row = [
-							'runorder' => implode(', ', $entry->get_rundata('export')),
+							'runorder' => implode(', ', $entry->get_rundata('runorder')),
 							'dis' => $dis->name,
 							'cat' => $cat->name,
 							'num' => $entry->num,

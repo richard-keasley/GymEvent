@@ -36,7 +36,8 @@ public function edit($exe='', $varname='') {
 	// rules uses different file structure
 	if($varname=='rules') return $this->edit_rules($exe);
 	if(!in_array($varname, ['skills', 'specials', 'bonuses', 'composition'])) {
-		throw new \RuntimeException("Can't find table {$title}", 404);
+		$message = "Can't find table {$title}";
+		\App\Libraries\Exception::not_found($this->request, $message);
 	}
 				
 	$appvars = new \App\Models\Appvars();

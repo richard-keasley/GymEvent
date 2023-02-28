@@ -13,11 +13,14 @@ https://codeigniter4.github.io/userguide/incoming/filters.html
 
 public function before(RequestInterface $request, $arguments = null) {
 	\App\Libraries\Auth::init();
-	
+
+	$request_path = $request->uri->getPath();
 	$messages = [];
 	
 	$check_ip = \App\Libraries\Auth::$lgn_model->check_ip($request->getIPAddress());
-	if(!$check_ip) throw new \RuntimeException('Oops! Overuse injury', 423);
+	if(!$check_ip) {
+		\App\Libraries\Exception::die_nice($request, 'Oops! Overuse injury', 423);
+	}
 	
 	// check for existing login / logout
 	if($request->getPost('logout')) {
@@ -66,8 +69,7 @@ public function before(RequestInterface $request, $arguments = null) {
 	}
 		
 	// check permissions
-	$path = $request->uri->getPath();
-	$allowed = \App\Libraries\Auth::check_path($path);
+	$allowed = \App\Libraries\Auth::check_path($request_path);
 	
 	if($messages) {	
 		$session = \Config\Services::session();
@@ -77,31 +79,23 @@ public function before(RequestInterface $request, $arguments = null) {
 	if($allowed) return;
 
 	/* access denied */
-	$disabled = \App\Libraries\Auth::check_path($path, 0)=='disabled';
+	$disabled = \App\Libraries\Auth::check_path($request_path, 0)=='disabled';
 	if($disabled) {
 		$message = "Service unavailable"; 
-		$status = 423;
+		$code = 423;
 	}
 	else {
 		if(session('user_id')) {
 			$message = "You do not have permission to view this page";
-			$status = 403;
+			$code = 403;
 		}
 		else {
 			$message = "You need to be logged in to view this page";
-			$status = 401;
+			$code = 401;
 		}
 	}
 	
-	if(strpos($path, 'api/')===0) {
-		$response = new \CodeIgniter\HTTP\Response(new \Config\App());
-		$response->setContentType('application/json');
-		$response->setStatusCode($status, $message);
-		$response->setJSON(['message'=>$message, 'status'=>$status]);
-		$response->send();
-		die;
-	}
-	throw new \RuntimeException($message, $status);
+	\App\Libraries\Exception::die_nice($request, $message, $code);
 }
 
 public function after(RequestInterface $request, ResponseInterface $response, $arguments = null) {

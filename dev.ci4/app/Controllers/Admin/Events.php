@@ -13,7 +13,11 @@ public function __construct() {
 	
 private function find($event_id) {
 	$this->data['event'] = $this->mdl_events->withDeleted()->find($event_id);
-	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
+	if(!$this->data['event']) {
+		$message = "Can't find event {$event_id}";
+		\App\Libraries\Exception::not_found($this->request, $message);
+	}
+
 	$this->data['states'] = [];
 	if(\App\Entities\Clubret::enabled()) $this->data['states'][] = 'clubrets';
 	if(\App\Libraries\Track::enabled()) $this->data['states'][] = 'music';

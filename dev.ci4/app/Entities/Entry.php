@@ -148,12 +148,15 @@ public function get_rundata($datakey=null) {
 I need which exercise entries start on and assume they enter the competition in the first rotation of their round. Its a bit more complex if the competition is big enough that some entries start their competition in a different rotation. In which case I would need to know which exercise and which rotation they begin. 
 
 read help / entries / edit
+
+NB: teamgym export calculates rundata according to progtable
+look in controllers/admin/entries->export()
 */
 	
 	
 	if($this->_rundata===null) {
 		$scoreboard = new \App\ThirdParty\scoreboard;
-		$runorder = $this->runorder;		
+		$rundata = $this->runorder;		
 		$cat = $this->get_category();
 						
 		$exe = [];
@@ -161,28 +164,36 @@ read help / entries / edit
 		foreach($scoreboard->get_exesets() as $sb_exeset) {
 			if($sb_exeset['SetId']==$exeset_id) {
 				$sb_exes = $sb_exeset['children'];
-				$key = $runorder['exe'] - 1;
+				$key = $rundata['exe'] - 1;
 				if(isset($sb_exes[$key])) $exe = $sb_exes[$key];
 			}
 		}
 		
 		// this is the working group
-		$arr = $runorder; // [round, start rotation, start exercise]
+		$arr = $rundata; // [round, start rotation, start exercise]
 		// in case there is more than one apparatus in the group
 		$arr[] = $exe['Order'] ?? 999;
 		// in case 2 disciplines have same apparatus order
 		$arr[] = $exe['ExerciseId'] ?? 999;
 		$order = '';
 		foreach($arr as $val) $order .= sprintf('%03d', $val);
-				
-		$export = $runorder;
+		
+		// scoreboard export
+		$export = $rundata;
 		$export['exe'] = $exe['ShortName'] ?? '?' ;
-				
+		
+		// friendly version of scoreboard
+		$runorder = [
+			'round' => "Round {$rundata['rnd']}/{$rundata['rot']}",
+			'exercise' => $exe['Name'] ?? '?' 
+		];
+								
 		$this->_rundata = [
 			'order' => $order,
 			'exe' => $exe,
-			'group' => implode('.', $runorder),
-			'export' => $export
+			'group' => implode('.', $rundata),
+			'export' => $export,
+			'runorder' => $runorder
 		];
 	}
 	return $this->_rundata[$datakey] ?? $this->_rundata;

@@ -65,7 +65,10 @@ public function index() {
 
 public function view($logkey=0) {
 	$logfile = $this->findlog($logkey);
-	if(!$logfile) throw new \RuntimeException("Can't find log file {$logkey}", 404);
+	if(!$logfile) {
+		$message = "Can't find log file {$logkey}";
+		\App\Libraries\Exception::not_found($this->request, $message);
+	}
 
 	// view
 	$this->data['buttons'] = [\App\Libraries\View::back_link("setup/logs")];

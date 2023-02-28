@@ -48,7 +48,11 @@ public function index() {
 
 public function view($event_id=0) {
 	$this->data['event'] = $this->mdl_events->find($event_id);
-	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
+	if(!$this->data['event']) {
+		$message = "Can't find event {$event_id}";
+		\App\Libraries\Exception::not_found($this->request, $message);
+	}
+	
 	$this->data['heading'] = $this->data['event']->title . ' - videos';
 		
 	$flds = ['catid']; $filter = [];
@@ -82,7 +86,8 @@ public function view($event_id=0) {
 		}
 	}
 	if(!count($cat_opts)) {
-		throw new \RuntimeException("There are no videos to display", 403);
+		$message = "There are no videos to display";
+		\App\Libraries\Exception::die_nice($this->request, $message, 403);
 	}
 
 	// view
@@ -108,11 +113,21 @@ public function view($event_id=0) {
 
 public function edit($entry_id=0) {
 	$entry = $this->model->find($entry_id);
-	if(!$entry) throw new \RuntimeException("Can't find entry $entry_id", 404);
+	if(!$entry) {
+		$message = "Can't find entry {$entry_id}";
+		\App\Libraries\Exception::not_found($this->request, $message);
+	}
 	
 	$category = $entry->get_category();	
-	if(!$category) throw new \RuntimeException("Category not found", 404); 
-	if(!$category->videos) throw new \RuntimeException("There are no videos for this category", 400);
+	if(!$category) {
+		$message = "Category not found";
+		\App\Libraries\Exception::not_found($this->request, $message);
+	}
+	
+	if(!$category->videos) if(!$category->music) {
+		$message = "There are no videos for this category";
+		\App\Libraries\Exception::die_nice($this->request, $message, 400);
+	}
 	
 	$event = $entry->get_event();
 	
