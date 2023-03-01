@@ -12,7 +12,7 @@ function __construct() {
 	$this->data['user'] = $this->usr_model->find($user_id);
 	if(!$this->data['user']) {
 		$message = "Can't find user {$user_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	$this->data['user_id'] = $user_id;

@@ -33,7 +33,7 @@ public function view($event_id=0) {
 	$this->data['event'] = $this->model->find($event_id);
  	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	// back_link query

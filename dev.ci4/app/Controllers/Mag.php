@@ -19,7 +19,7 @@ public function index() {
 public function rules($rulesetname = null) {
 	if(!\App\Libraries\Mag\Rules::exists($rulesetname)) {
 		$message = "Can't find MAG rule set {$rulesetname}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	$this->data['index'] = \App\Libraries\Mag\Rules::index;

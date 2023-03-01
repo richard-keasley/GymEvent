@@ -47,7 +47,7 @@ public function skills($exe='fx') {
 	$this->data['skills'] = new \App\Libraries\General\Skills($exe);
 	if(empty($this->data['skills']->list)) {
 		$message = "Can't find exercise '{$exe_title}'";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	$this->data['back_link'] = 'general';

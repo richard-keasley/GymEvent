@@ -11,7 +11,7 @@ private function find($event_id) {
 	$this->data['event'] = $this->mdl_events->find($event_id);
 	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');

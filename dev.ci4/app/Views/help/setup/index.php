@@ -15,7 +15,7 @@ echo $table->generate($tbody);
 <div class="row">
 <div class="col-6"><div class="border p-1">
 <p>Roles are columns 0-3. Column headings denote the event states. Event states are:</p>
-<ol>
+<ol start="0">
 <li>waiting</li>
 <li>edit</li>
 <li>view</li>
@@ -24,10 +24,10 @@ echo $table->generate($tbody);
 </div></div>
 <div class="col-6"><div class="border p-1">
 <p>Defined roles (in order of authority):</p>
-<ol><?php 
-foreach(\App\Libraries\Auth::roles as $role) {
-	printf('<li>%s</li>', $role);
-} ?></ol>
+<ul class="list-unstyled ms-3"><?php 
+foreach(\App\Libraries\Auth::roles as $key=>$role) {
+	echo "<li><strong>{$key}:</strong> {$role}</li>";
+} ?></ul>
 </div></div>
 </div>
 

@@ -16,7 +16,7 @@ private function find($event_id) {
 	$this->data['event'] = $mod_events->find($event_id);
 	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	$this->data['entries'] = $this->model->evt_discats($event_id);
 	$this->data['heading'] = $this->data['event']->title;

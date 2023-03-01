@@ -37,7 +37,7 @@ public function edit($exe='', $varname='') {
 	if($varname=='rules') return $this->edit_rules($exe);
 	if(!in_array($varname, ['skills', 'specials', 'bonuses', 'composition'])) {
 		$message = "Can't find table {$title}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 				
 	$appvars = new \App\Models\Appvars();

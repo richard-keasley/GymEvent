@@ -21,7 +21,7 @@ private function lookup($event_id, $user_id) {
 	$this->data['clubret'] = $this->model->where('event_id', $event_id)->where('user_id', $user_id)->first();
 	if(!$this->data['clubret']) {
 		$message = "Can't find entry {$event_id}/{$user_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	$this->data['user'] = $this->data['clubret']->user();
@@ -103,7 +103,7 @@ public function event($event_id=0) {
 	$this->data['event'] = $mdl_events->find($event_id);
 	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	$download = $this->request->getPost('download');
@@ -277,7 +277,7 @@ public function names($event_id=0) {
 	$this->data['event'] = $mdl_events->find($event_id);
 	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	$download = $this->request->getPost('download');

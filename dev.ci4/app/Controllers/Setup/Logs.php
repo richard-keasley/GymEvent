@@ -67,7 +67,7 @@ public function view($logkey=0) {
 	$logfile = $this->findlog($logkey);
 	if(!$logfile) {
 		$message = "Can't find log file {$logkey}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 
 	// view

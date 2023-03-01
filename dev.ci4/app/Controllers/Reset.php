@@ -82,7 +82,7 @@ public function index() {
 	if(!$email->send()) {
 		$message = ENVIRONMENT == 'production' ? null : $email->printDebugger(['header']) ;
 		if(!$message) $message = "Sorry! Email service is unavailable!"; 
-		\App\Libraries\Exception::die_nice($this->request, $message);
+		\App\Exceptions\Exception::exception($message);
 	}
 		
 	// view

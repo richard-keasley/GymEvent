@@ -15,7 +15,7 @@ private function find($user_id) {
 	$this->data['user'] = $this->usr_model->withDeleted()->find($user_id);
 	if(!$this->data['user']) {
 		$message = "Can't find user {$user_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	
@@ -186,7 +186,7 @@ public function edit($user_id=0) {
 
 	if(!\App\Libraries\Auth::check_role($this->data['user']->role)) {
 		$message = "You can not edit this user";
-		\App\Libraries\Exception::die_nice($this->request, $message, 403);
+		throw \App\Exceptions\Exception::forbidden($message);
 	}
 		
 	if($this->request->getPost('save')) {

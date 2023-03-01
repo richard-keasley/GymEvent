@@ -15,7 +15,7 @@ private function find($event_id) {
 	$this->data['event'] = $this->mdl_events->withDeleted()->find($event_id);
 	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 
 	$this->data['states'] = [];

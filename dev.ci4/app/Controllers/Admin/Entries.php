@@ -21,7 +21,7 @@ private function find($event_id, $orderby='num') {
 	$this->data['event'] = $this->evt_model->find($event_id);
 	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	$this->data['entries'] = $this->ent_model->evt_discats($event_id, 1, $orderby);

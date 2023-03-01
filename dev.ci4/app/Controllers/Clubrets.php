@@ -14,7 +14,7 @@ private function lookup($event_id, $user_id) {
 	$this->data['clubret'] = $this->model->lookup($event_id, $user_id);
 	if(!$this->data['clubret']) {
 		$message = "Can't find entry {$event_id}/{$user_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	$this->data['user'] = $this->data['clubret']->user();
@@ -33,7 +33,7 @@ public function index() {
 	$this->data['user'] = $this->usr_model->find($user_id);
 	if(!$this->data['user']) {
 		$message = "Can't find user {$user_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 			
 	$this->data['clubrets'] = $this->model->where('user_id', $user_id)->findAll();
@@ -47,14 +47,14 @@ public function add($event_id=0, $user_id=0) {
 	$this->data['event'] = $this->events->find($event_id);
 	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	// lookup user
 	if(!$user_id) $user_id = session('user_id');
 	$this->data['user'] = $this->usr_model->find($user_id);
 	if(!$this->data['user']) {
 		$message = "Can't find user {$user_id}";
-		\App\Libraries\Exception::not_found($this->request, $message);
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	// lookup clubret
