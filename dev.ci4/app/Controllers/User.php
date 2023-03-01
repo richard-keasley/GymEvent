@@ -10,7 +10,11 @@ function __construct() {
 	$user_id = intval(session('user_id'));
 	// compare to /admin/users/find
 	$this->data['user'] = $this->usr_model->find($user_id);
-	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
+	if(!$this->data['user']) {
+		$message = "Can't find user {$user_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
+	
 	$this->data['user_id'] = $user_id;
 	$this->data['user_self'] = $this->data['user']->self();
 }

@@ -14,7 +14,10 @@ function __construct() {
 private function find($event_id) {
 	$mod_events = new \App\Models\Events();
 	$this->data['event'] = $mod_events->find($event_id);
-	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
+	if(!$this->data['event']) {
+		$message = "Can't find event {$event_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
 	$this->data['entries'] = $this->model->evt_discats($event_id);
 	$this->data['heading'] = $this->data['event']->title;
 }

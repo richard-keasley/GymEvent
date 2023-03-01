@@ -18,7 +18,8 @@ public function index() {
 
 public function rules($rulesetname = null) {
 	if(!\App\Libraries\Mag\Rules::exists($rulesetname)) {
-		throw new \RuntimeException("Can't find MAG rule set $rulesetname", 404);
+		$message = "Can't find MAG rule set {$rulesetname}";
+		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	$this->data['index'] = \App\Libraries\Mag\Rules::index;

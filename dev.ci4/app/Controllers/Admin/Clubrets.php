@@ -19,7 +19,11 @@ function __construct() {
 private function lookup($event_id, $user_id) {
 	// don't use model->lookup() because we want to include deleted events and users 
 	$this->data['clubret'] = $this->model->where('event_id', $event_id)->where('user_id', $user_id)->first();
-	if(!$this->data['clubret']) throw new \RuntimeException("Can't find entry {$event_id}/{$user_id}", 404);
+	if(!$this->data['clubret']) {
+		$message = "Can't find entry {$event_id}/{$user_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
+	
 	$this->data['user'] = $this->data['clubret']->user();
 	$this->data['event'] = $this->data['clubret']->event();
 	$this->data['heading'] = sprintf('Return for %s / %s', $this->data['user']->name, $this->data['event']->title);
@@ -97,7 +101,10 @@ public function view($event_id=0, $user_id=0) {
 public function event($event_id=0) {
 	$mdl_events = new \App\Models\Events();
 	$this->data['event'] = $mdl_events->find($event_id);
-	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
+	if(!$this->data['event']) {
+		$message = "Can't find event {$event_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
 	
 	$download = $this->request->getPost('download');
 
@@ -268,7 +275,10 @@ public function event($event_id=0) {
 public function names($event_id=0) {
 	$mdl_events = new \App\Models\Events();
 	$this->data['event'] = $mdl_events->find($event_id);
-	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
+	if(!$this->data['event']) {
+		$message = "Can't find event {$event_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
 	
 	$download = $this->request->getPost('download');
 	

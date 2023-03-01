@@ -5,21 +5,21 @@ namespace Config;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Session\Handlers\FileHandler;
 
-class App extends BaseConfig
-{
-    public function __construct() {
-		parent::__construct();
-		
-		if(!$this->baseURL) {
-			// nothing set, work it out 
-			#echo getenv('app.baseURL') . ' # ' . getenv('app.indexPage') . ' # ' ; die;
-			$host = $_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR'];
-			$https = $_SERVER['HTTPS'] ?? false;
-			$scheme = $https ? 'https' : 'http' ;
-			$this->baseURL = "{$scheme}://{$host}/";
-			# echo $this->baseURL; die;
-		}
+class App extends BaseConfig {
+    
+public function __construct() {
+	parent::__construct();
+	
+	if(!$this->baseURL) {
+		// nothing set, work it out 
+		#echo getenv('app.baseURL') . ' # ' . getenv('app.indexPage') . ' # ' ; die;
+		$host = $_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR'];
+		$https = $_SERVER['HTTPS'] ?? false;
+		$scheme = $https ? 'https' : 'http' ;
+		$this->baseURL = "{$scheme}://{$host}/";
+		# echo $this->baseURL; die;
 	}
+}
 
 	// name of this device
 	public $device = '';
@@ -42,6 +42,20 @@ class App extends BaseConfig
      * @var string
      */
     public $baseURL = '';
+	
+	/**
+     * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
+     * If you want to accept multiple Hostnames, set this.
+     *
+     * E.g. When your site URL ($baseURL) is 'http://example.com/', and your site
+     *      also accepts 'http://media.example.com/' and
+     *      'http://accounts.example.com/':
+     *          ['media.example.com', 'accounts.example.com']
+     *
+     * @var string[]
+     * @phpstan-var list<string>
+     */
+    public array $allowedHostnames = [];    
 
     /**
      * --------------------------------------------------------------------------

@@ -176,7 +176,7 @@ static function check_paths() {
 
 // can path be viewed by current user
 static function check_path($path, $index=1) {
-	// $index=1 returns permission (bOol)
+	// $index=1 returns permission (bool)
 	// $index=0 returns role (string)
 	if(!isset(self::$check_paths[$path])) {
 		$role = self::path_role($path);

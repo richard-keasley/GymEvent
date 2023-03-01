@@ -9,7 +9,11 @@ private function find($event_id) {
 	$this->mdl_events = new \App\Models\Events;
 	$this->mdl_entries = new \App\Models\Entries;
 	$this->data['event'] = $this->mdl_events->find($event_id);
-	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
+	if(!$this->data['event']) {
+		$message = "Can't find event {$event_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
+	
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['breadcrumbs'][] = ["admin/music/view/{$event_id}", 'music'];
 }
@@ -143,6 +147,7 @@ public function clubs($event_id=0) {
 		$email->setMessage($this->request->getPost('body'));
 		$email->setBCC('richard@hawthgymnastics.co.uk');
 		
+		$error = null;
 		foreach($mailto as $email_to) {
 			if(ENVIRONMENT != 'production') $email_to = 'richard@base-camp.org.uk';
 			$email->setTo($email_to);
@@ -150,11 +155,13 @@ public function clubs($event_id=0) {
 			if($email->send(false)) {
 				$count++; 
 			}
-			else { 
-				$this->data['messages'][] = ["Email error ({$email_to})", 'danger'];
+			else { 			
+				$error = $email->printDebugger(['header']);
+				if(!$error) $error = "Email error ({$email_to})";
 			}
 		}
-		$this->data['messages'][] = ["{$count} emails sent", 'success'];
+		if($error) $this->data['messages'][] = [$error, 'danger'];
+		if($count) $this->data['messages'][] = ["{$count} emails sent", 'success'];
 	}
 	
 	// view

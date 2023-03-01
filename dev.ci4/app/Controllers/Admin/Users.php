@@ -13,7 +13,12 @@ public function __construct() {
 private function find($user_id) {
 	$user_id = intval($user_id);
 	$this->data['user'] = $this->usr_model->withDeleted()->find($user_id);
-	if(!$this->data['user']) throw new \RuntimeException("Can't find user {$user_id}", 404);
+	if(!$this->data['user']) {
+		$message = "Can't find user {$user_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
+	
+	
 	$this->data['user_self'] = $this->data['user']->self();
 	$this->data['title'] = $this->data['user']->name;
 }
@@ -179,7 +184,10 @@ public function edit($user_id=0) {
 	// compare to /user/edit
 	$this->find($user_id);
 
-	if(!\App\Libraries\Auth::check_role($this->data['user']->role)) throw new \RuntimeException("You can not edit this user", 403);
+	if(!\App\Libraries\Auth::check_role($this->data['user']->role)) {
+		$message = "You can not edit this user";
+		throw \App\Exceptions\Exception::forbidden($message);
+	}
 		
 	if($this->request->getPost('save')) {
 		$postUser = $this->request->getPost();

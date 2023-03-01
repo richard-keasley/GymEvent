@@ -12,7 +12,11 @@ function __construct() {
 	
 private function lookup($event_id, $user_id) {
 	$this->data['clubret'] = $this->model->lookup($event_id, $user_id);
-	if(!$this->data['clubret']) throw new \RuntimeException("Can't find entry {$event_id}/{$user_id}", 404);
+	if(!$this->data['clubret']) {
+		$message = "Can't find entry {$event_id}/{$user_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
+	
 	$this->data['user'] = $this->data['clubret']->user();
 	$this->data['event'] = $this->data['clubret']->event();
 	$this->data['heading'] = sprintf('Return for %s / %s', $this->data['user']->name, $this->data['event']->title);
@@ -27,7 +31,10 @@ public function index() {
 	}
 	
 	$this->data['user'] = $this->usr_model->find($user_id);
-	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
+	if(!$this->data['user']) {
+		$message = "Can't find user {$user_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
 			
 	$this->data['clubrets'] = $this->model->where('user_id', $user_id)->findAll();
 	
@@ -38,11 +45,18 @@ public function index() {
 public function add($event_id=0, $user_id=0) {
 	// lookup event
 	$this->data['event'] = $this->events->find($event_id);
-	if(!$this->data['event']) throw new \RuntimeException("Can't find event $event_id", 404);
+	if(!$this->data['event']) {
+		$message = "Can't find event {$event_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
 	// lookup user
 	if(!$user_id) $user_id = session('user_id');
 	$this->data['user'] = $this->usr_model->find($user_id);
-	if(!$this->data['user']) throw new \RuntimeException("Can't find user $user_id", 404);
+	if(!$this->data['user']) {
+		$message = "Can't find user {$user_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
+	
 	// lookup clubret
 	$clubret = $this->model->lookup($event_id, $user_id);
 	if($clubret) return $this->edit($event_id, $user_id);

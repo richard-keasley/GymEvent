@@ -1,171 +1,114 @@
 <?php
+
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
 
 class Email extends BaseConfig
 {
-
-	/**
-	 * @var string
-	 */
 	public $fromEmail = 'website@gymevent.uk';
-
-	/**
-	 * @var string
-	 */
 	public $fromName = 'GymEvent';
-
-	/**
-	 * @var string
-	 */
-	public $recipients;
-
-	/**
-	 * The "user agent"
-	 *
-	 * @var string
-	 */
 	public $userAgent = 'GymEvent website';
-
-	/**
-	 * The mail sending protocol: mail, sendmail, smtp
-	 *
-	 * @var string
-	 */
-	public $protocol = 'mail';
-
-	/**
-	 * The server path to Sendmail.
-	 *
-	 * @var string
-	 */
-	public $mailPath = '/usr/sbin/sendmail';
-
-	/**
-	 * SMTP Server Address
-	 *
-	 * @var string
-	 */
-	public $SMTPHost;
-
-	/**
-	 * SMTP Username
-	 *
-	 * @var string
-	 */
-	public $SMTPUser;
-
-	/**
-	 * SMTP Password
-	 *
-	 * @var string
-	 */
-	public $SMTPPass;
-
-	/**
-	 * SMTP Port
-	 *
-	 * @var integer
-	 */
-	public $SMTPPort = 25;
-
-	/**
-	 * SMTP Timeout (in seconds)
-	 *
-	 * @var integer
-	 */
-	public $SMTPTimeout = 5;
-
-	/**
-	 * Enable persistent SMTP connections
-	 *
-	 * @var boolean
-	 */
-	public $SMTPKeepAlive = false;
-
-	/**
-	 * SMTP Encryption. Either tls or ssl
-	 *
-	 * @var string
-	 */
-	public $SMTPCrypto = 'tls';
-
-	/**
-	 * Enable word-wrap
-	 *
-	 * @var boolean
-	 */
-	public $wordWrap = true;
-
-	/**
-	 * Character count to wrap at
-	 *
-	 * @var integer
-	 */
-	public $wrapChars = 76;
-
-	/**
-	 * Type of mail, either 'text' or 'html'
-	 *
-	 * @var string
-	 */
 	public $mailType = 'html';
+	
+	
+	
+    public string $recipients = '';
 
-	/**
-	 * Character set (utf-8, iso-8859-1, etc.)
-	 *
-	 * @var string
-	 */
-	public $charset = 'UTF-8';
+    
+    /**
+     * The mail sending protocol: mail, sendmail, smtp
+     */
+    public string $protocol = 'mail';
 
-	/**
-	 * Whether to validate the email address
-	 *
-	 * @var boolean
-	 */
-	public $validate = false;
+    /**
+     * The server path to Sendmail.
+     */
+    public string $mailPath = '/usr/sbin/sendmail';
 
-	/**
-	 * Email Priority. 1 = highest. 5 = lowest. 3 = normal
-	 *
-	 * @var integer
-	 */
-	public $priority = 3;
+    /**
+     * SMTP Server Address
+     */
+    public string $SMTPHost = '';
 
-	/**
-	 * Newline character. (Use “\r\n” to comply with RFC 822)
-	 *
-	 * @var string
-	 */
-	public $CRLF = "\r\n";
+    /**
+     * SMTP Username
+     */
+    public string $SMTPUser = '';
 
-	/**
-	 * Newline character. (Use “\r\n” to comply with RFC 822)
-	 *
-	 * @var string
-	 */
-	public $newline = "\r\n";
+    /**
+     * SMTP Password
+     */
+    public string $SMTPPass = '';
 
-	/**
-	 * Enable BCC Batch Mode.
-	 *
-	 * @var boolean
-	 */
-	public $BCCBatchMode = false;
+    /**
+     * SMTP Port
+     */
+    public int $SMTPPort = 25;
 
-	/**
-	 * Number of emails in each BCC batch
-	 *
-	 * @var integer
-	 */
-	public $BCCBatchSize = 200;
+    /**
+     * SMTP Timeout (in seconds)
+     */
+    public int $SMTPTimeout = 5;
 
-	/**
-	 * Enable notify message from server
-	 *
-	 * @var boolean
-	 */
-	public $DSN = false;
+    /**
+     * Enable persistent SMTP connections
+     */
+    public bool $SMTPKeepAlive = false;
 
+    /**
+     * SMTP Encryption. Either tls or ssl
+     */
+    public string $SMTPCrypto = 'tls';
+
+    /**
+     * Enable word-wrap
+     */
+    public bool $wordWrap = true;
+
+    /**
+     * Character count to wrap at
+     */
+    public int $wrapChars = 76;
+
+   
+    /**
+     * Character set (utf-8, iso-8859-1, etc.)
+     */
+    public string $charset = 'UTF-8';
+
+    /**
+     * Whether to validate the email address
+     */
+    public bool $validate = false;
+
+    /**
+     * Email Priority. 1 = highest. 5 = lowest. 3 = normal
+     */
+    public int $priority = 3;
+
+    /**
+     * Newline character. (Use “\r\n” to comply with RFC 822)
+     */
+    public string $CRLF = "\r\n";
+
+    /**
+     * Newline character. (Use “\r\n” to comply with RFC 822)
+     */
+    public string $newline = "\r\n";
+
+    /**
+     * Enable BCC Batch Mode.
+     */
+    public bool $BCCBatchMode = false;
+
+    /**
+     * Number of emails in each BCC batch
+     */
+    public int $BCCBatchSize = 200;
+
+    /**
+     * Enable notify message from server
+     */
+    public bool $DSN = false;
 }
