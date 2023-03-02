@@ -13,7 +13,7 @@ https://codeigniter4.github.io/userguide/incoming/filters.html
 
 public function before(RequestInterface $request, $arguments = null) {
 	\App\Libraries\Auth::init();
-	
+		
 	$request_path = $request->uri->getPath();
 	$messages = [];
 	
@@ -94,7 +94,6 @@ public function before(RequestInterface $request, $arguments = null) {
 			$code = 401;
 		}
 	}
-	
 	self::die_nice($request_path, $message, $code);
 }
 

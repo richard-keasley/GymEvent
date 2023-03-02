@@ -11,34 +11,33 @@ class Exception
 
 use Exceptions\DebugTraceableTrait;
 
-public static function exception(string $message='Application error', $code=500) {
-	switch($code) {
-		case 401: return self::unauthorized($message);
-		case 403: return self::forbidden($message);
-		case 404: return self::not_found($message);
-		case 423: return self::locked($message);
+public static function exception(string $message='', $code=500) {
+	if(!$message) {
+		$message = match($code) {
+			401 => 'Login required',
+			403 => 'Permission denied',
+			404 => 'Not found',
+			423 => 'Service unavailable',
+			default => 'Application error'
+		};
 	}
 	return new static($message, $code);
 }
 
-public static function unauthorized(string $message=null) {
-	if(!$message) $message = 'Login required';
-	return new static($message, 401);
+public static function unauthorized(string $message='') {
+	return self::exception($message, 401);
 }
 
-public static function forbidden(string $message=null) {
-	if(!$message) $message = 'Permission denied';
-	return new static($message, 403);
+public static function forbidden(string $message='') {
+	return self::exception($message, 403);
 }
 
-public static function not_found(string $message=null) {
-	if(!$message) $message = 'Not found';
-	return new static($message, 404);
+public static function not_found(string $message='') {
+	return self::exception($message, 404);
 }
 
-public static function locked(string $message=null) {
-	if(!$message) $message = 'Service unavailable';
-	return new static($message, 423);
+public static function locked(string $message='') {
+	return self::exception($message, 423);
 }
 
 }
