@@ -12,31 +12,22 @@ class Exception
 use Exceptions\DebugTraceableTrait;
 
 public static function exception(string $message='', $code=500) {
-	if(!$message) {
-		$message = match($code) {
-			401 => 'Login required',
-			403 => 'Permission denied',
-			404 => 'Not found',
-			423 => 'Service unavailable',
-			default => 'Application error'
-		};
-	}
 	return new static($message, $code);
 }
 
-public static function unauthorized(string $message='') {
+public static function unauthorized(string $message='Login required') {
 	return self::exception($message, 401);
 }
 
-public static function forbidden(string $message='') {
+public static function forbidden(string $message='Permission denied') {
 	return self::exception($message, 403);
 }
 
-public static function not_found(string $message='') {
+public static function not_found(string $message='Not found') {
 	return self::exception($message, 404);
 }
 
-public static function locked(string $message='') {
+public static function locked(string $message='Service unavailable') {
 	return self::exception($message, 423);
 }
 

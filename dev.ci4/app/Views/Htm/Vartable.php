@@ -79,6 +79,7 @@ private function htm_item($varname, $varvalue) {
 	else {
 		$data = $varvalue;
 	}
+	# d($pattern, $data);
 	$retval .= sprintf($pattern, $data);
 	
 	$retval .= $this->template['item_end'];

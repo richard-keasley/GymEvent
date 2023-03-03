@@ -1,6 +1,5 @@
 <?php $this->extend('default');
 
-$this->section('content'); 
 $items = []; $sort = [];
 foreach($tempfiles as $key=>$file) {
 	$time = $file->getMTime();
@@ -11,8 +10,8 @@ foreach($tempfiles as $key=>$file) {
 	];
 }
 array_multisort($sort, $items);
-?>
 
+$this->section('content'); ?>
 <p>There are currently <?php echo count($items);?> files stored. Sessions older than 
 <mark><?php echo date("Y-m-d H:i:s", $del_time);?></mark>
 are considered expired.</p>
@@ -32,6 +31,33 @@ $this->section('top');
 $attrs = ['class' => "toolbar sticky-top"];
 echo form_open(current_url(), $attrs);
 echo \App\Libraries\View::back_link("setup");
-echo '<button type="submit" name="cmd" value="purge" class="btn btn-danger"><i class="bi-trash"></i></button>';
+?>
+<button type="submit" name="cmd" value="purge" class="btn btn-danger"><i class="bi-trash"></i></button>
+<button type="button" class="btn bg-info" data-bs-toggle="modal" data-bs-target="#modalInfo"><i class="bi bi-question-square"></i></button>
+<?php 
 echo form_close();
 $this->endSection(); 
+
+$this->section('bottom'); ?>
+<div class="modal fade" id="modalInfo" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-scrollable modal-lg">
+<div class="modal-content">
+<div class="modal-header">
+	<h5 class="modal-title">Session INI values</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body"><?php
+$tbody = [];
+foreach($inis as $key=>$val) {
+	$key = substr($key, 8);
+	$tbody[$key] = $val;
+}
+# d($tbody);
+echo new \App\Views\Htm\Vartable($tbody);
+?></div>
+
+</div>
+</div>
+</div>
+<?php $this->endSection();

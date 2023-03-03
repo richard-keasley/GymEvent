@@ -1,7 +1,6 @@
 <?php
 helper('form');
 
-if(empty($message) || $message=='(null)') $message = "Sorry! We can't do that!";
 if(empty($code)) $code = 500;
 
 $title = match($code) {
@@ -13,6 +12,7 @@ $title = match($code) {
 	default => 'Error'
 };
 	
+if(empty($message) || $message=='(null)') $message = "Sorry! We can't do that!";
 if($code==401) {
 	// make it less scary to login
 	$heading = 'Please log-in';
