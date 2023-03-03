@@ -35,6 +35,7 @@ class Filters extends BaseConfig
 			'auth',
 			'csrf' => [
 				'except' => [
+					'/',
 					'general/intention',
 					'mag/routine'
 				]
