@@ -43,6 +43,19 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	// Do Not Edit This Line
 	parent::initController($request, $response, $logger);
 	
+	// garbage collection
+	// https://www.php.net/manual/en/function.session-gc.php
+	$gc_file = WRITEPATH . 'php_session_last_gc';
+	$gc_period = 1800; // 30 minutes
+	if(file_exists($gc_file)) {
+		if(filemtime($gc_file) < time() - $gc_period) {
+			# d('Garbage collection');
+			session_gc();
+			touch($gc_file);
+		}
+	}
+	else touch($gc_file);
+		
 	// look for help file
 	$stub = $this->request->uri->getSegments();
 	foreach(array_reverse($stub) as $segment) {
