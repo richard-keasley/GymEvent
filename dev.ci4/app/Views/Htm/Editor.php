@@ -1,7 +1,7 @@
 <?php namespace App\Views\Htm;
 
 class Editor {
-const version = '6.2.0'; 
+const version = '6.3.2'; 
 
 public $attr = [
 	'name' => 'html',

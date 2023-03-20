@@ -280,7 +280,8 @@ public function categories($event_id=0) {
 						$fld_name = "cat{$cat->id}_{$col_name}";
 						$fld_val = trim($this->request->getPost($fld_name));
 						$cat_arr[$col_name] = $fld_val;
-					}
+					}					
+					$cat_arr['sort'] = sprintf('%03d', $cat_arr['sort']);
 					
 					if($cat_arr['name']=='#delrow') {
 						$cat_entries = $this->ent_model->cat_entries($cat->id);
@@ -310,6 +311,7 @@ public function categories($event_id=0) {
 				}
 				if($cat_arr['name']) {
 					$cat_arr['discipline_id'] = $dis->id;
+					$cat_arr['sort'] = sprintf('%03d', $cat_arr['sort']);
 					$new_id = $this->ent_model->entrycats->insert($cat_arr);
 					if($new_id) $this->data['messages'][] = ['Created new category', 'success'];
 				}

@@ -86,13 +86,22 @@ Event specific files (and installation specific files) are in <?php echo path_la
 
 $this->section('bottom'); ?>
 <section>
-<h4>Installation edits</h4>
+<h4>Prepare PHP for CodeIgniter</h4>
+<p>Ensure the php.ini files (<?php echo path_label('FCPATH', 'php.ini');?> &amp; <?php echo path_label('FCPATH', '.user.ini');?>) are appropriate for the server.</p>
 
-<p>Ensure <?php echo $paths['WRITEPATH'];?> is writeable. You may also need to create specific folders (e.g. cache).</p>
+<p>PHP requirements<br>
+<code>sudo apt-get install php-intl<br>
+sudo apt-get install php-xml<br>
+sudo apt-get install php-curl<br>
+sudo apt-get install php-mbstring<br>
+sudo systemctl restart apache2</code></p>
+
+<h4>Installation edits</h4>
+<p>Ensure <?php echo $paths['WRITEPATH'];?> is writeable. You may also need to create specific folders (e.g. cache).<br>
+<code>chmod 777 -R writable</code></p>
 
 <p>Edit <?php echo path_label('ROOTPATH', '.env');?> according to the specific set-up of each server. Include database connection information and base URL. Leave <code>app.baseURL</code> blank for laptops / etc (an over-ride in <code>\App\Config\App</code> will calculate this). If you are not using mod_rewrite (below) then include the line <code>app.indexPage = index.php</code>.</p>
 
-<p>Ensure the php.ini files (<?php echo path_label('FCPATH', 'php.ini');?> &amp; <?php echo path_label('FCPATH', '.user.ini');?> are appropriate for the server.</p>
 
 <p>Edit the front controller (<?php echo path_label('FCPATH', 'index.php');?>) to make <code>$pathsPath</code> point to <?php echo path_label('APPPATH', 'Config/Paths.php');?>.<br>Example: <code>$pathsPath = FCPATH . '../<em>{ci4}</em>/app/Config/Paths.php';</code></p>
 </section>

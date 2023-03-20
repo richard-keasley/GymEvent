@@ -99,6 +99,10 @@ if($dis->id==$filter['disid']) { ?>
 		<?php echo form_input("dis{$dis->id}_name", $dis->name, 'class="form-control"');?> 
 		<label class="input-group-text">abbreviated</label><?php echo form_input("dis{$dis->id}_abbr", $dis->abbr, 'class="form-control"');?>
 	</fieldset>
+	<p>
+	Sort should be padded integer (<code>000</code>). 
+	Music is comma separated list of tracks to be collected for each entry.
+	</p>
 	<?php 
 	foreach($dis->cats as $cat) {
 		foreach($inputs as $key=>$input) {
