@@ -200,9 +200,9 @@ public function fees($op=1) {
 		$fees[$dis][1] += $fee;
 	}
 	
-	$extra = floatval($event->stafffee);
-	if($extra && !$this->stafffee) {
-		$fees['x'] = ['Extra', $extra];
+	$stafffee = floatval($event->stafffee);
+	if($stafffee && !$this->stafffee) {
+		$fees['_stafffee'] = ['Staff', $stafffee];
 	}
 		
 	if($op=='fees') return $fees;

@@ -106,7 +106,8 @@ $this->endSection();
 
 $this->section('bottom'); 
 echo $this->include('entries/populate/form');
-d($event->participants());
+
+# d($event->participants());
 # d($event);
 
 $this->endSection(); 

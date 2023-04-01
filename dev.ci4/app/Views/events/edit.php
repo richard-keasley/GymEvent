@@ -63,8 +63,10 @@ if($edit_locked) $input['readonly'] = "readonly";
 echo form_input($input);
 
 ?>
-<p class="input-group mt-1">
-<label class="input-group-text">Opt-in staff fee &pound;</label>
+<section class="my-2 p-1 border">
+<div>Staff fee is applied to the club return fee calculation unless the user agrees all staffing requirements have been met.</div>
+<div class="input-group">
+<label class="input-group-text">Staff fee &pound;</label>
 <?php
 $input = [
 	'name' => "stafffee",
@@ -76,8 +78,9 @@ $input = [
 ];
 if($edit_locked) $input['readonly'] = "readonly";
 echo form_input($input);
-?>
-</p>
+?></div>
+</section>
+
 <?php
 $acc->set_item('Staff', ob_get_clean());
 
