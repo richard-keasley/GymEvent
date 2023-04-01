@@ -45,19 +45,42 @@ $attr = [
 ];
 $editor = new \App\Views\Htm\Editor($attr);
 echo $editor->htm();
-?>
+
+$edit_locked = $event->clubrets > 0;
+if($edit_locked) { ?>
+<p class="alert alert-danger">Staff categories can only be altered when the event state 'clubrets' is set to 'waiting'.</p>
+<?php } ?>
+
 <p>A comma separated list of all staff categories. E.g. <code>coach, judge, helper</code>. Items should not include spaces or special characters.</p>
 <?php 
+
 $input = [
 	'name' => "staffcats",
 	'value' => implode(', ', $event->staffcats),
 	'class' => "form-control"
 ];
-if($event->clubrets) $input['readonly'] = "readonly";
+if($edit_locked) $input['readonly'] = "readonly";
 echo form_input($input);
 
-# echo form_input('staffcats', implode(', ', $event->staffcats), 'class="form-control"'); 
+?>
+<p class="input-group mt-1">
+<label class="input-group-text">Opt-in staff fee &pound;</label>
+<?php
+$input = [
+	'name' => "stafffee",
+	'value' => $event->stafffee,
+	'type' => "number",
+	'step' => "0.01",
+	'class' => "form-control text-end",
+	'style' => "max-width: 10em;"
+];
+if($edit_locked) $input['readonly'] = "readonly";
+echo form_input($input);
+?>
+</p>
+<?php
 $acc->set_item('Staff', ob_get_clean());
+
 
 ob_start(); // disciplines / categories 
 
@@ -71,7 +94,7 @@ echo $editor->htm();
 $edit_locked = $event->clubrets > 0;
 
 if($edit_locked) { ?>
-<p class="alert alert-danger">This section can only be altered while the event sate 'clubrets' is set to 'waiting'.</p>
+<p class="alert alert-danger">This section can only be altered while the event state 'clubrets' is set to 'waiting'.</p>
 <?php } 
 
 else { 

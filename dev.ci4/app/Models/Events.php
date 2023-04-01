@@ -22,6 +22,7 @@ protected $allowedFields = [
 	'videos', 
 	'discats', 
 	'staffcats', 
+	'stafffee', 
 	'deleted_at'
 ];
 protected $validationRules = [

@@ -118,6 +118,7 @@ public function edit($event_id=0, $user_id=0) {
 			$val = empty($val) ? [] : json_decode($val, 1);
 			$getPost[$key] = $val;
 		}
+		$getPost['stafffee'] = empty($getPost['stafffee']) ? 0 : 1;
 		$clubret = new \App\Entities\Clubret($getPost);
 				
 		// filter participants 

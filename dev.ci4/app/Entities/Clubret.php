@@ -199,6 +199,12 @@ public function fees($op=1) {
 		if(!isset($fees[$dis])) $fees[$dis] = [$dis, 0];
 		$fees[$dis][1] += $fee;
 	}
+	
+	$extra = floatval($event->stafffee);
+	if($extra && !$this->stafffee) {
+		$fees['x'] = ['Extra', $extra];
+	}
+		
 	if($op=='fees') return $fees;
 	
 	$total = array_sum(array_column($fees, 1));

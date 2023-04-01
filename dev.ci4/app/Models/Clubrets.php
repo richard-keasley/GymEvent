@@ -7,7 +7,14 @@ protected $table      = 'clubrets';
 protected $primaryKey = 'id';
 protected $returnType    = 'App\Entities\Clubret';
 protected $updatedField  = 'updated';
-protected $allowedFields = ['event_id', 'user_id', 'name', 'address', 'phone', 'other', 'participants', 'staff', 'updated'];
+protected $allowedFields = [
+	'event_id', 
+	'user_id', 'name', 'address', 'phone', 'other', 
+	'participants', 
+	'staff', 
+	'stafffee', 
+	'updated'
+];
 
 public function tidy() {
 	$return = [];
