@@ -2,7 +2,7 @@
 
 $this->section('content');
 
-
+/*
 use \App\Libraries\Teamtime as tt_lib;
 
 foreach(['nothing', 'displays'] as $varname) {
@@ -13,7 +13,7 @@ foreach(['nothing', 'displays'] as $varname) {
 	}
 }
 
-
+*/
 
 
 
@@ -22,6 +22,8 @@ $clubret = new \App\Entities\Clubret;
 $test_string = 
 'name1, name2, 12346, 7-8-2010
 name1, name2, 12346, 12 aug 2021    
+name1, name2, 12346, 12 aug 2011, another, name, 76575, 8-aug-90  
+name1, name2, 12346, 12 aug 2011    
 123456, name1, name2, 12 aug 2010    
 123456, 12 aug 2010, name1, name2    
 Anaya Akisanya, , 2845451, 23-Jan-2009
@@ -37,10 +39,6 @@ name1,name2
 3 aug 1990
 465, 5/3/90';
 
-?>
-<pre class="border p-1 bg-light"><?php echo $test_string;?></pre>
-
-<?php
 $test_data = explode("\n", $test_string);
 
 foreach($test_data as $key=>$row) {

@@ -240,14 +240,23 @@ public $csv = '';
 
 function __construct($namestring) {
 	$this->namestring = trim($namestring);
-	$input = preg_split("/ *[\t,] *+/", trim($this->namestring), 4);
-	$input = array_pad($input, 4, '');
+	/*
+	the ongoing battle against stupidity
+	assume users
+	- input data in wrong order
+	- add middle name as a separate data item
+	- include more than one name 
+	- don't separate name with comma
+	*/
+	
+	$input = preg_split("/ *[\t,] */", $this->namestring);
+	$input = array_pad($input, 8, '');
 	
 	$used = [];
 	
 	// look for BG 
 	$bg_key = 2; // BG should be 2
-	$check_order = [2, 3, 0, 1];
+	$check_order = [2, 3, 0, 1, 4, 5, 6, 7];
 	$keys = array_diff($check_order, $used);
 	foreach($keys as $key) {
 		if(self::is_bg($input[$key])) {
@@ -260,7 +269,7 @@ function __construct($namestring) {
 		
 	// look for DoB 
 	$dob_key = 3; // DoB should be 3
-	$check_order = [3, 2, 0, 1];
+	$check_order = [3, 2, 0, 1, 4, 5, 6, 7];
 	$keys = array_diff($check_order, $used);
 	foreach($keys as $key) {
 		$dob = self::input_dob($input[$key]);
