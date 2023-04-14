@@ -289,10 +289,18 @@ function __construct($namestring) {
 		$val = $input[$key];
 		if($val) $names[] = $val;
 	}
+	
+	// ensure 2 names are present
 	if(count($names)==1) {
 		$names = preg_split('#[\s,]+#', $names[0], 2);
 	}
-	$names = array_pad($names, 2, '');
+	if(count($names)<2) $names = array_pad($names, 2, '');
+	if(count($names)>2) {
+		$names = [
+			$names[0],
+			implode(' ', array_slice($names, 1))
+		];
+	}		
 	$this->name = implode(' ', $names);
 	
 	// re-build CSV

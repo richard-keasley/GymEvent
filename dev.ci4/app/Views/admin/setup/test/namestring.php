@@ -2,21 +2,6 @@
 
 $this->section('content');
 
-/*
-use \App\Libraries\Teamtime as tt_lib;
-
-foreach(['nothing', 'displays'] as $varname) {
-	foreach([null, 1, 99] as $key) {
-		echo "<h3>{$varname} / {$key}</h3>";
-		d(tt_lib::get_value($varname, $key));
-
-	}
-}
-
-*/
-
-
-
 $clubret = new \App\Entities\Clubret;
 
 $test_string = 
@@ -49,5 +34,12 @@ foreach($test_data as $key=>$row) {
 $this->endSection();
 
 $this->section('top'); ?>
-<p class="alert alert-light">Random page to allow you to test ideas.</p>
+<pre class="alert alert-light">
+the ongoing battle against stupidity
+assume users
+	- input data in wrong order
+	- add middle name as a separate data item
+	- include more than one name 
+	- don't separate name with comma
+</pre>
 <?php $this->endSection();

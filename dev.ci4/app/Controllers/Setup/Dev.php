@@ -14,11 +14,27 @@ public function index() {
 	return view('admin/setup/dev', $this->data);
 }
 
-public function test() {
-	$this->data['title'] = 'Test page';
-	$this->data['heading'] = $this->data['title'];
-	$this->data['breadcrumbs'][] = ['setup/dev/test', $this->data['title']];
-	return view('admin/setup/test', $this->data);
+public function test($test_name='index') {
+	$this->data['breadcrumbs'][] = ['setup/dev/test', 'Test'];
+	
+	$test_path = 'admin/setup/test';
+	$view_path = realpath(config('Paths')->viewDirectory); 
+	$view_file = "{$view_path}/{$test_path}/{$test_name}.php";
+	if(!is_file($view_file)) {
+		$test_name = 'index';
+		$view_file = "{$view_path}/{$test_path}/{$test_name}.php";
+	}
+	
+	if($test_name=='index') {
+		$this->data['title'] = 'Test pages';
+	}
+	else {
+		$this->data['title'] = $test_name;
+		$this->data['breadcrumbs'][] = ["setup/dev/test/{$test_name}", $test_name];
+	}
+	
+	$this->data['heading'] = $this->data['title'];	
+	return view("{$test_path}/{$test_name}", $this->data);
 }
 
 }
