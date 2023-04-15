@@ -239,17 +239,23 @@ public $dob = null; // unix timestamp
 public $csv = '';
 
 function __construct($namestring) {
-	$this->namestring = trim($namestring);
 	/*
 	the ongoing battle against stupidity
 	assume users
+	- blank lines
 	- input data in wrong order
 	- add middle name as a separate data item
 	- include more than one name 
 	- don't separate name with comma
+	
+	See setup/test/namestring
 	*/
 	
-	$input = preg_split("/ *[\t,] */", $this->namestring);
+	$namestring = trim($namestring, ", \n\r\t\v\x00");
+	if(!$namestring) return;
+	
+	$this->namestring = $namestring;
+	$input = preg_split("/ *[\t,] */", $namestring);
 	$input = array_pad($input, 8, '');
 	
 	$used = [];
@@ -312,7 +318,7 @@ function __construct($namestring) {
 		$input[$bg_key],
 		$dob ? $this->htm_dob() : $input[$dob_key]
 	];
-	$this->csv = $namestring ? implode(', ', $csv) : '' ;
+	$this->csv = implode(', ', $csv);
 }
 
 function htm_dob() {

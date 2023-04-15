@@ -36,7 +36,8 @@ $this->endSection();
 $this->section('top'); ?>
 <pre class="alert alert-light">
 the ongoing battle against stupidity
-assume users
+	assume users
+	- blank lines
 	- input data in wrong order
 	- add middle name as a separate data item
 	- include more than one name 
