@@ -203,19 +203,22 @@ public function edit($event_id=0) {
 		#d($event->discats);
 		
 		// delete file
+		
 		if($getPost['cmd']=='delfile' && $getPost['key']!=='') {
 			$key = intval($getPost['key']);
 			foreach($this->data['event']->files as $fkey=>$file) {
 				if($fkey==$key) {
-					$fnum = $key + 1;
+					$filename = sprintf('<code>%s</code>', $file->getBasename());
 					if(unlink($file->getRealPath())) {
-						$this->data['messages'][] = ["File {$fnum} deleted", 'success'];
-					} else {
-						$this->data['messages'][] = "Error deleting file {$fnum}";
+						$this->data['messages'][] = ["File {$filename} deleted", 'success'];
+					} 
+					else { 
+						$this->data['messages'][] = "Error deleting file {$filename}";
 					};
 				}
 			}
 		}
+		
 		// upload file 
 		if($getPost['cmd']=='upload') {
 			$file = $this->request->getFile('file');

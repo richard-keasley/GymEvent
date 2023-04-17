@@ -102,36 +102,7 @@ if($edit_locked) { ?>
 
 else { 
 ?> 
-<p>Do not use spaces, commas or special characters within discipline and categories. Try to use the same abbreviations as <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#sbdis">scoreboard</button>.</p>
-<div class="modal" id="sbdis" tabindex="-1">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-	<h5 class="modal-title">Discipline abbreviations</h5>
-	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-<div class="modal-body">
-	<ul class="list-group">
-	<?php
-	$scoreboard = new \App\ThirdParty\scoreboard;
-	foreach($scoreboard->get_discats() as $category) { ?>
-		<li class="list-group-item">
-		<strong><?php echo $category['Description']; ?></strong>
-		<ul><?php 
-		foreach($category['disciplines'] as $dis) {
-			printf('<li><strong>%s</strong> %s</li>', $dis['ShortName'], $dis['Name']);
-		} 
-		?></ul>
-		</li>
-	<?php } ?>
-	</ul>
-</div>
-<div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-</div>
-</div>
-</div>
-</div>
+<p>Do not use spaces, commas or special characters within discipline and categories.</p>
 
 <?php } ?>
 
@@ -148,25 +119,29 @@ if(!$discats) { // provide one blank row
 $input = [
 'name' => [
 	'name' => 'name',
-	'class' => 'form-control'
+	'class' => 'form-control',
+	'style' => "min-width:4em;"
 ],
 'inf' => [
 	'name' => 'inf',
 	'class' => 'form-control',
 	'cols' => 5,
-	'rows' => 5
+	'rows' => 5,
+	'style' => "min-width:5em;"
 ],
 'cats' => [
 	'name' => 'cats',
 	'class' => 'form-control',
 	'cols' => 30,
-	'rows' =>5
+	'rows' =>5,
+	'style' => "min-width:6em;"
 ],
 'opts' => [
 	'name' => 'opts',
 	'class' => 'form-control',
 	'cols' => 5,
-	'rows' =>5
+	'rows' =>5,
+	'style' => "min-width:6em;"
 ]
 ];
 
@@ -197,14 +172,62 @@ foreach($discats as $key=>$discat) {
 		'<button type="button" name="del" class="btn bi-trash btn-danger" title="delete"></button>'
 	];
 }
-$template = ['table_open' => '<table class="discats" style="min-width:30em;">'];
+$template = ['table_open' => '<table class="discats">'];
 $table = new \CodeIgniter\View\Table($template);
-$table->setHeading('dis', 'inf', 'cats', 'options', '');
+
+$opt_heading = 'options <a tabindex="0" role="button" class="popover-dismiss btn btn-sm btn-info" data-bs-toggle="popover" title="Entry options" data-bs-content="Single words, each on a separate line">?</a>';
+
+$cat_heading = 'cats <a tabindex="0" role="button" class="popover-dismiss btn btn-sm btn-info" data-bs-toggle="popover" title="Categories options" data-bs-content="Comma separated lines of single words. Each line is a set of options.">?</a>';
+
+$dis_heading = 'dis <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#sbdis">?</button>';
+
+$table->setHeading($dis_heading, 'inf', $cat_heading, $opt_heading, '');
 echo $table->generate($tbody);
 echo form_hidden('discats', '');?>
 <button name="add" type="button" class="btn bi-plus-square btn-success" title="add row"></button>
+
+<script>
+$(function() {
+var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl, {trigger:'focus'});
+});
+});
+</script>
+</div>
+
+<div class="modal" id="sbdis" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+	<h5 class="modal-title">Discipline abbreviations</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+<p>Use the same abbreviations as used in score-board as much as possible.</p>
+	<ul class="list-group">
+	<?php
+	$scoreboard = new \App\ThirdParty\scoreboard;
+	foreach($scoreboard->get_discats() as $category) { ?>
+		<li class="list-group-item">
+		<strong><?php echo $category['Description']; ?></strong>
+		<ul><?php 
+		foreach($category['disciplines'] as $dis) {
+			printf('<li><strong>%s</strong> %s</li>', $dis['ShortName'], $dis['Name']);
+		} 
+		?></ul>
+		</li>
+	<?php } ?>
+	</ul>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
 </div>
 <?php 
+
 $acc->set_item('Participants', ob_get_clean());
 
 ob_start(); // Payment
@@ -247,7 +270,7 @@ ob_start(); // Downloads
 
 <?php 
 $downloads = new \App\Views\Htm\Downloads($event->files);
-$downloads->template['item_after'] = ' <button type="button" name="cmd" value="delfile" data-key="*%1$u" class="btn btn-sm btn-danger bi-trash"></button>';
+$downloads->template['item_after'] = ' <button type="button" name="cmd" value="delfile" data-key="%1$u" class="btn btn-sm btn-danger bi-trash"></button>';
 echo $downloads->htm();
 ?>
 
@@ -288,6 +311,7 @@ $('#discats [name=add]').click(function() {
 	$clone.find('textarea').val('');
 	$tr.after($clone);
 });
+
 $('#discats [name=del]').click(function() {
 	var count = $('#discats tbody tr').length;
 	console.log(count);
@@ -296,8 +320,9 @@ $('#discats [name=del]').click(function() {
 	console.log($tr);	
 	$tr.remove();
 });
+
 // submit form
-$('[name=cmd]').click(function() {
+$('button[name=cmd]').click(function() {
 	var discats = [];
 	$('#discats tbody tr').each(function() {
 		var discat = {
@@ -308,10 +333,10 @@ $('[name=cmd]').click(function() {
 		};	
 		discats.push(discat);
 	});
-	$('[name=discats]').val(JSON.stringify(discats));
+	$('input[name=discats]').val(JSON.stringify(discats));
 	
-	$('input[name=cmd]').val($(this).val());
-	if('key' in this.dataset) $('input[name=key]').val(parseInt(this.dataset.key));
+	$('input[name=cmd]').val($(this).val());	
+	$('input[name=key]').val(this.dataset.key ?? '');
 
 	$('#editform').submit();
 });

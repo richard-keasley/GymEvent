@@ -110,8 +110,9 @@ public function edit($event_id=0, $user_id=0) {
 	$this->lookup($event_id, $user_id);
 	
 	if($this->request->getPost('save')) {
+		$php_filter = FILTER_SANITIZE_STRING;
 		// get POST
-		$getPost = $this->request->getPost(null, FILTER_SANITIZE_STRING);
+		$getPost = $this->request->getPost(null, $php_filter);
 		$getPost['id'] = $this->data['clubret']->id;
 		foreach(['participants', 'staff'] as $key) {
 			$val = $this->request->getPost($key);
@@ -124,17 +125,17 @@ public function edit($event_id=0, $user_id=0) {
 		// filter participants 
 		$participants = $clubret->participants;
 		$filter = [
-			'dis' => FILTER_SANITIZE_STRING,
+			'dis' => $php_filter,
 			'cat' => [
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => $php_filter,
                 'flags'  => FILTER_FORCE_ARRAY
 				],
-			'team' => FILTER_SANITIZE_STRING,
+			'team' => $php_filter,
 			'names' => [
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => $php_filter,
                 'flags'  => FILTER_FORCE_ARRAY
 			],
-			'opt' => FILTER_SANITIZE_STRING
+			'opt' => $php_filter
 		];
 		foreach($participants as $rowkey=>$participant) {
 			$filtered = filter_var_array($participant, $filter);
@@ -162,8 +163,8 @@ public function edit($event_id=0, $user_id=0) {
 		// filter staff 
 		$staff = $clubret->staff; 
 		$filter = [
-			'cat' => FILTER_SANITIZE_STRING,
-			'name' => FILTER_SANITIZE_STRING
+			'cat' => $php_filter,
+			'name' => $php_filter
 		];
 		$filtered = [];
 		foreach($clubret->staff as $rowkey=>$row) {
