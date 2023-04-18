@@ -61,8 +61,7 @@ static function versions() {
 	
 static function decode($json) {
 	// read input
-	$arr = json_decode($json, 1);
-	if(!is_array($arr)) $arr = [];
+	$arr = filter_json($json);
 	$data = filter_var_array($arr, self::filter);
 	foreach(self::filter as $key=>$filter) {
 		if(!$data[$key]) $data[$key] = $filter['default'];

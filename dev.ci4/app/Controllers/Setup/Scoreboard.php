@@ -15,8 +15,7 @@ public function index() {
 
 	if($this->request->getPost('save')) {
 		$links = [];
-		$post = $this->request->getPost('links');
-		$post = $post ? json_decode($post, 1): [] ;
+		$post = filter_json($this->request->getPost('links'));
 		foreach($post as $link) {
 			if(!empty($link[0]) && !empty($link[1])) {
 				$links[] = $link;

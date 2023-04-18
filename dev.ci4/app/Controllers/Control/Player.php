@@ -66,8 +66,7 @@ public function edit($event_id=0) {
 	
 	if($cmd=='update') { 
 		//save player
-		$player = $this->request->getPost('player');
-		$player = json_decode($player);
+		$player = filter_json($this->request->getPost('player'), 0);
 		foreach($player as $round_id=>$round) {
 			$nums = [];
 			$val = $round->entry_nums ?? '';

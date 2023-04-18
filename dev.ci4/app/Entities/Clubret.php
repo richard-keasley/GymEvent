@@ -9,9 +9,7 @@ static function enabled() {
 }
 
 public function getStaff() {
-	#d($this); die;
-	$db_val = $this->attributes['staff'] ?? '[]';
-	$db_val = json_decode($db_val, 1) ?? [];
+	$db_val = filter_json($this->attributes['staff'] ?? null);
 	$entity_val = [];
 	foreach($db_val as $db_row) {
 		if(empty($db_row['cat'])) $db_row['cat'] = '';
@@ -48,7 +46,7 @@ public function event() {
 
 private $_user = null;
 public function user() {
-	if(!$this->_user) {
+	if(!$this->_user && $this->user_id) {
 		$model = new \App\Models\Users();
 		$this->_user = $model->withDeleted()->find($this->user_id);
 	}
@@ -58,7 +56,7 @@ public function user() {
 function breadcrumb($method='view', $controller='') {
 	if($method=='view') {
 		$user = $this->user();
-		$label = $user->name;
+		$label = $user ? $user->name : '[not found]';
 	}
 	else $label = $method;
 	return [$this->url($method, $controller), $label];
@@ -89,8 +87,7 @@ function errors($err_type=null) {
 }
 
 public function getParticipants() {
-	$db_val = $this->attributes['participants'] ?? '[]';
-	$db_val = json_decode($db_val, 1) ?? [];
+	$db_val = filter_json($this->attributes['participants'] ?? null);
 	$entity_val = []; $arr = [];
 	foreach($db_val as $row) {
 		foreach(['dis', 'cat', 'team', 'names', 'opt'] as $key) {

@@ -172,7 +172,7 @@ public function edit($event_id=0) {
 				
 		// ToDo - convert discats to be stored as JSON
 		$discats = [];
-		$formval = json_decode($getPost['discats'], 1);
+		$formval = filter_json($getPost['discats']);
 		foreach($formval as $discat) {
 			$discat['name'] = trim($discat['name']);
 			$discat['cats'] = trim($discat['cats']);

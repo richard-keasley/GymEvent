@@ -88,8 +88,7 @@ public function get_event() {
 }
 
 public function getVideos() {
-	$db_val = json_decode($this->attributes['videos'], 1);
-	if(!$db_val) $db_val = [];
+	$db_val = filter_json($this->attributes['videos'] ?? null);
 	$entity_val = [];
 	$cat = $this->get_category();
 	foreach($cat->videos as $exe) {
@@ -110,8 +109,7 @@ public function updateVideos() {
 }
 
 public function getMusic() {
-	$db_val = json_decode($this->attributes['music'], 1);
-	if(!$db_val) $db_val = [];
+	$db_val = filter_json($this->attributes['music'] ?? null);
 	$entity_val = [];
 	$cat = $this->get_category();
 	foreach($cat->music as $exe) {
@@ -132,7 +130,7 @@ public function updateMusic() {
 }
 
 public function getRunorder() {
-	$db_val = json_decode($this->attributes['runorder'], 1) ?? [];
+	$db_val = filter_json($this->attributes['runorder'] ?? null);
 	$entity_val = [
 		'rnd' => intval($db_val['rnd'] ?? 0),
 		'rot' => intval($db_val['rot'] ?? 1), // normally start on first rotation

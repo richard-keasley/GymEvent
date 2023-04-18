@@ -63,15 +63,15 @@ public function add($event_id=0, $user_id=0) {
 	
 	if($this->request->getPost('save')) {
 		// get POST
-		$getPost = $this->request->getPost();
-		foreach(['staff', 'participants'] as $key) {
-			$getPost[$key] = empty($getPost[$key]) ? [] : json_decode($getPost[$key], 1);
-		}
-		$clubret = new \App\Entities\Clubret($getPost);
-		$clubret->event_id = $event_id;
-		$clubret->user_id = $user_id;
+		$getPost = $this->request->getPost(null, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+		// overwrite POST 
+		$getPost['event_id'] = $event_id;
+		$getPost['user_id'] = $user_id;
+		$getPost['participants'] = filter_json($this->request->getPost('participants'));
+		$getPost['staff'] = filter_json($this->request->getPost('staff'));
 		
 		// update
+		$clubret = new \App\Entities\Clubret($getPost);
 		$id = $this->model->insert($clubret);
 		if($id) {
 			$this->data['messages'][] = ["Created new entry", 'success'];
@@ -110,32 +110,32 @@ public function edit($event_id=0, $user_id=0) {
 	$this->lookup($event_id, $user_id);
 	
 	if($this->request->getPost('save')) {
-		$php_filter = FILTER_SANITIZE_STRING;
 		// get POST
-		$getPost = $this->request->getPost(null, $php_filter);
+		$getPost = $this->request->getPost(null, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+		// overwrite POST with these
 		$getPost['id'] = $this->data['clubret']->id;
-		foreach(['participants', 'staff'] as $key) {
-			$val = $this->request->getPost($key);
-			$val = empty($val) ? [] : json_decode($val, 1);
-			$getPost[$key] = $val;
-		}
+		$getPost['event_id'] = $event_id;
+		$getPost['user_id'] = $user_id;
 		$getPost['stafffee'] = empty($getPost['stafffee']) ? 0 : 1;
-		$clubret = new \App\Entities\Clubret($getPost);
-				
+		
 		// filter participants 
-		$participants = $clubret->participants;
+		$participants = filter_json($this->request->getPost('participants'));
 		$filter = [
-			'dis' => $php_filter,
+			'dis' => FILTER_SANITIZE_SPECIAL_CHARS,
 			'cat' => [
-                'filter' => $php_filter,
+                'filter' => FILTER_SANITIZE_SPECIAL_CHARS,
                 'flags'  => FILTER_FORCE_ARRAY
 				],
-			'team' => $php_filter,
-			'names' => [
-                'filter' => $php_filter,
-                'flags'  => FILTER_FORCE_ARRAY
+			'team' => [
+                'filter' => FILTER_CALLBACK,
+				'options' => 'strip_tags'
 			],
-			'opt' => $php_filter
+			'names' => [
+                'filter' => FILTER_CALLBACK,
+                'flags'  => FILTER_FORCE_ARRAY,
+				'options' => 'strip_tags'
+			],
+			'opt' => FILTER_SANITIZE_SPECIAL_CHARS
 		];
 		foreach($participants as $rowkey=>$participant) {
 			$filtered = filter_var_array($participant, $filter);
@@ -149,7 +149,6 @@ public function edit($event_id=0, $user_id=0) {
 			$filtered['names'] = $names;
 			$participants[$rowkey] = $filtered;
 		}
-
 		// sort participants
 		$discats = $this->data['event']->discats;
 		$sort = [[],[]];
@@ -158,16 +157,19 @@ public function edit($event_id=0, $user_id=0) {
 			$sort[1][$rowkey] = \App\Entities\Clubret::discat_sort($discats, $participant['dis'], $participant['cat']);
 		}
 		array_multisort($sort[0], $sort[1], $participants);
-		$clubret->participants = $participants;
-			
+		$getPost['participants'] = $participants;
+		
 		// filter staff 
-		$staff = $clubret->staff; 
+		$staff = filter_json($this->request->getPost('staff'));
 		$filter = [
-			'cat' => $php_filter,
-			'name' => $php_filter
+			'cat' => FILTER_SANITIZE_SPECIAL_CHARS,
+			'name' => [
+                'filter' => FILTER_CALLBACK,
+				'options' => 'strip_tags'
+			]
 		];
 		$filtered = [];
-		foreach($clubret->staff as $rowkey=>$row) {
+		foreach($staff as $rowkey=>$row) {
 			$row = filter_var_array($row, $filter);
 			// skip blanks
 			if($row['name']) $filtered[] = $row;
@@ -182,9 +184,10 @@ public function edit($event_id=0, $user_id=0) {
 			$sort[1][$rowkey] = $row['name'];
 		}
 		array_multisort($sort[0], $sort[1], $staff);
-		$clubret->staff = $staff;
+		$getPost['staff'] = $staff;
 		
 		// update clubret
+		$clubret = new \App\Entities\Clubret($getPost);
 		$save = $this->model->save($clubret);
 		if($save) { // read
 			$this->data['messages'][] = ["Updated entry", 'success'];
@@ -195,7 +198,7 @@ public function edit($event_id=0, $user_id=0) {
 			$this->data['messages'] = $this->model->errors();
 			$this->data['messages'][] = ["Couldn't update entry", 'danger'];
 		}
-
+		
 		// update user info
 		$user = [];
 		foreach($getPost as $key=>$val) {

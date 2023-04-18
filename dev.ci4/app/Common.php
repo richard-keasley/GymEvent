@@ -70,3 +70,10 @@ function csv_array($csv, $limit=null) {
 	}
 	return $csv ? preg_split("/[\s,]+/", $csv) : [] ;
 }
+
+function filter_json($val, $array=1) {
+	// convert POSTED json string to array
+	$val = is_string($val) ? json_decode($val, $array) : null;
+	if($val) return $val;
+	return $array ? [] : new stdClass();
+}

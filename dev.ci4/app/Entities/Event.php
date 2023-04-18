@@ -16,8 +16,8 @@ protected $casts = [
 ];
 
 public function getDiscats() {
-	$db_val = json_decode($this->attributes['discats'], 1);
-	if(!$db_val) return [];
+	$db_val = filter_json($this->attributes['discats'] ?? null);
+
 	$entity_val = [];
 	foreach($db_val as $db_row) {
 		if(empty($db_row['name'])) $db_row['name'] = '';
@@ -36,8 +36,8 @@ public function setDiscats($entity_val) {
 }
 
 public function getPlayer() {
-	$db_val = json_decode($this->attributes['player'], 1);
-	if(!$db_val) $db_val = [];
+	$db_val = filter_json($this->attributes['player'] ?? null);
+
 	$entity_val = [];
 	$entity_row = [];
 	foreach($db_val as $db_row) {

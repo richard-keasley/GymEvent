@@ -117,10 +117,10 @@ function teams() {
 function displays() {
 	if($this->request->getPost('save')) {
 		// displays
-		$value = json_decode($this->request->getPost('displays'), 1);
+		$value = filter_json($this->request->getPost('displays'));
 		tt_lib::save_value('displays', $value);
 		// views
-		$value = json_decode($this->request->getPost('views'), 1);
+		$value = filter_json($this->request->getPost('views'));
 		array_unshift($value, null); // add default view 
 		tt_lib::save_value('views', $value);
 		

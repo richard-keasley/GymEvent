@@ -23,6 +23,27 @@ foreach(['nothing', 'displays'] as $varname) {
 
 */
 
+/*
+
+echo "<pre>filter_json";
+$arr = [
+	null,
+	1245,
+	'string',
+	[1,2,3],
+	new stdClass(),
+	'[1,2,3]',
+	'{"fred":"name", "lsat":"name2"}',
+	'[1, [20, 21, 22], 3]',
+	'["error", [20, 21, 22] 3]'
+];
+foreach($arr as $json) {
+	echo "\n===\nsend:\n"; var_dump($json);
+	echo "array\n"; var_dump(filter_json($json));
+	echo "object\n"; var_dump(filter_json($json, 0));
+}
+echo '</pre>';
+// */
 
 
 $this->endSection();
