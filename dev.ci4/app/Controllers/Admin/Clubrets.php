@@ -107,7 +107,8 @@ public function event($event_id=0) {
 	}
 	
 	$download = $this->request->getPost('download');
-
+	$clubrets = $this->data['event']->clubrets();
+	
 	// create entries from returns
 	// see also App\Controllers\Admin\Events->event
 	if($this->request->getPost('populate')) {
@@ -122,7 +123,6 @@ public function event($event_id=0) {
 	
 	// exclude users who have a return for this event
 	$exclude = [0];
-	$clubrets = $this->data['event']->clubrets();
 	foreach($clubrets as $clubret) $exclude[] = $clubret->user_id;
 	$model = new \App\Models\Users;
 	$users = $model->orderby('name')->whereNotIn('id', $exclude)->findAll();
@@ -141,12 +141,12 @@ public function event($event_id=0) {
 			];
 			$clubret = new \App\Entities\Clubret($data);
 			$newid = $this->model->insert($clubret);
-			
 		}
 		if($newid) {
 			$this->data['messages'][] = ["Created new entry", 'success'];
-			$clubret->id = $newid;
-			$this->data['event'] = $mdl_events->find($event_id);			
+			// reload event
+			$this->data['event'] = $mdl_events->find($event_id);
+			$clubrets = $this->data['event']->clubrets();
 		}
 		else {
 			$this->data['messages'][] = ["Couldn't create new entry", 'danger'];
