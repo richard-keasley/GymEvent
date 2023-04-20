@@ -355,10 +355,10 @@ public function import($event_id=0) {
 		'cat' => 'category (abbr)',
 		'num' => 'number',
 		'name' => 'name',
-		'club' => 'club name',
+		'club' => 'club',
 		'dob' => 'DoB (d-M-Y)'
 	];
-	
+
 	$getPost = trim($this->request->getPost('csv'));
 	if($getPost) {
 		try {
@@ -368,8 +368,10 @@ public function import($event_id=0) {
 			$map = array_keys($this->data['columns']);
 			$count_map = count($map);
 			foreach($lines as $line_num=>$line) {
-				if(!$line_num) continue;
-				$vals = explode("\t", trim($line));
+				if(!$line_num) continue; // skip first line
+				$vals = preg_split("/ *[\t,] */", trim($line));
+
+				# $vals = explode("\t", trim($line));
 				$count_vals = count($vals);
 				if($count_vals!=$count_map) {
 					throw new \Exception("{$count_vals} columns on line {$line_num}");
@@ -475,7 +477,6 @@ public function import($event_id=0) {
 					}
 				}
 			}
-			
 			$this->data['messages'][] = ['Import successful', 'success'];			
 		}
 		catch (\Exception $e) {
@@ -486,7 +487,7 @@ public function import($event_id=0) {
 
 	// read from database
 	$this->find($event_id);
-		
+			
 	$this->data['breadcrumbs'][] = ["admin/entries/import/{$event_id}", 'import'];
 
 	return view('entries/import', $this->data);

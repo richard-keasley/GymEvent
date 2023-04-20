@@ -5,6 +5,7 @@ $cmd = $modal_delete['cmd'] ?? 'del_item';
 $item_id = $modal_delete['item_id'] ?? 0;
 $title = $modal_delete['title'] ?? 'Delete item';
 $description = $modal_delete['description'] ?? '<p>Delete this item?</p>';
+$icon = $modal_delete['icon'] ?? 'trash';
 ?>
 <div id="<?php echo $id;?>" class="modal" tabindex="-1">
 <div class="modal-dialog">
@@ -26,8 +27,8 @@ echo form_open($action, $attr, $hidden);
 	<?php echo $description;?>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-secondary bi-x-circle-fill" data-bs-dismiss="modal"></button>
-	<button type="submit" class="btn btn-danger bi-trash" title="delete this item"></button>
+	<button type="button" class="btn btn-secondary bi-x-circle-fill" data-bs-dismiss="modal"title="cancel"></button>
+	<button type="submit" class="btn btn-danger bi-<?php echo $icon;?>" title="proceed"></button>
 </div>
 <?php echo form_close();?>
 </div>
