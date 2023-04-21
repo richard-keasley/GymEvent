@@ -41,7 +41,7 @@ echo form_close();
 $this->endSection();
 
 $this->section('content'); ?>
-<section class="mb-3 row"><?php
+<section class="my-2 row"><?php
 foreach($states as $fldname) {
 	$state = $event->$fldname;
 	$label = \App\Entities\Event::state_label($state);
@@ -49,6 +49,19 @@ foreach($states as $fldname) {
 	printf('<div class="col-auto mx-1">%s <span class="badge bg-%s">%s</span></div>', $fldname, $colour, $label);
 } 
 ?></section>
+
+<section class="my-2 row">
+<label class="col-auto me-1 fw-bold">Current disk usage:</label>
+<?php foreach($disk_space as $key=>$val) { ?>
+<div class="col-auto mx-2">
+<?php
+if($key=='size') $val = formatBytes($val);
+printf('%s: %s</div>', humanize($key), $val);
+?>
+</div>
+<?php } ?>
+</section>
+
 
 <?php if($event->clubrets==1) { ?>
 <section>

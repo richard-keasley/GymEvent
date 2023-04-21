@@ -102,6 +102,29 @@ public function getFiles() {
 	return $files;
 }
 
+public function disk_space($path = null) {
+	if(!$path) $path = FCPATH . "public/events/{$this->id}/";
+	$retval = ['count' => 0, 'size' => 0];
+	$path = rtrim(realpath($path), '/');
+	if(!$path) return $retval;
+	
+	$files = glob("{$path}/*");
+	foreach($files as $file) {
+		if(is_dir($file)) {
+			$sub = $this->disk_space($file);
+			foreach($sub as $key=>$val) {
+				$retval[$key] += $sub[$key];
+			}
+		}
+		if(is_file($file)) {
+			$file = new \CodeIgniter\Files\File($file);
+			$retval['size'] += $file->getSize();
+			$retval['count'] ++;			
+		}
+	}
+	return($retval);
+}
+
 private $_clubrets = null;
 public function clubrets() {
 	if(is_null($this->_clubrets)) {

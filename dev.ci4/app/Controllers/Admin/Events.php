@@ -59,8 +59,6 @@ public function add() {
 public function view($event_id=0) {
 	$this->find($event_id);
 
-	$download = $this->request->getPost('download');
-
 	// create entries from returns
 	// see also App\Controllers\Admin\Clubrets->event
 	if($this->request->getPost('populate')) {
@@ -112,6 +110,8 @@ public function view($event_id=0) {
 		'item_id' => $event_id
 	];
 	
+	$download = $this->request->getPost('download');
+	
 	// build entries table
 	$tbody = [];
 	if($this->data['event']->clubrets==2) { 
@@ -154,6 +154,7 @@ public function view($event_id=0) {
 	$this->data['entries'] = $tbody;
 			
 	// view
+	$this->data['disk_space'] = $this->data['event']->disk_space();
 	$this->data['back_link'] = "/admin/events";
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['clubrets'] = $this->data['event']->clubrets();
@@ -203,7 +204,6 @@ public function edit($event_id=0) {
 		#d($event->discats);
 		
 		// delete file
-		
 		if($getPost['cmd']=='delfile' && $getPost['key']!=='') {
 			$key = intval($getPost['key']);
 			foreach($this->data['event']->files as $fkey=>$file) {
@@ -243,7 +243,7 @@ public function edit($event_id=0) {
 		}
 		$this->find($event_id);
 	}
-	
+			
 	// view
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb('edit', 'admin');
