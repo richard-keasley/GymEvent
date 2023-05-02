@@ -9,7 +9,7 @@ Track::$max_filesize = Track::ini_size(ini_get('upload_max_filesize'));
 class Track { 
 
 const type_allowed = 'audio';
-const exts_allowed = ['aac','aif','aiff','m4a','mp2','mp3','ogg','wav','wma'];
+const exts_allowed = ['mp3','ogg','wav','m4a','aac','aif','aiff','mp2','wma'];
 static $max_filesize = 0; // max upload size [B]
 
 // need these to work out file path
@@ -151,9 +151,18 @@ public function url() {
 } 
 
 public function file() {
-	// return first file for this track
-	$files = $this->files();
-	return count($files) ? $files->getIterator()->current() : null;
+	// return preferred file for this track
+	$ret_file = null; $ret_rank = 99;
+	foreach($this->files() as $file) {
+		$ext = strtolower($file->getExtension());
+		$file_rank = array_search($ext, self::exts_allowed);
+		if($file_rank===false) $file_rank = 99;
+		if($file_rank<$ret_rank) {
+			$ret_rank = $file_rank;
+			$ret_file = $file;
+		}		
+	}
+	return $ret_file;	
 }
 
 public function files($event=false) {
@@ -166,7 +175,33 @@ public function files($event=false) {
 	$files = new \CodeIgniter\Files\FileCollection();
 	$files->addDirectory($filepath);
 	$files->retainPattern($regex);
-	return $files;
+	
+	if(!$event) return $files;
+	
+	// remove duplicate tracks with preferred extension
+	$ranks = []; 
+	$ret_files = [];
+	foreach($files as $file) {
+		$ext = $file->getExtension();
+		$key = $file->getBaseName(".{$ext}");
+		$ext = strtolower($ext);
+		$file_rank = array_search($ext, self::exts_allowed);
+		if($file_rank===false) $file_rank = 99; // unsupported extension
+		$done_rank = $ranks[$key] ?? 99 ; // 99 = not done yet
+
+		if($file_rank<$done_rank) {
+			// retain this file
+			$ranks[$key] = $file_rank;
+			$ret_files[$key] = $file;
+		}
+		# d($key, $ext, $file_rank, $done_rank);
+	}
+	# d($files->get(), $ranks, $ret_files);
+	
+	// rebuild file collection
+	$files = new \CodeIgniter\Files\FileCollection();
+	foreach($ret_files as $file) $files->addFile($file);
+	return($files);
 }
 
 public function filebase($extension='') {

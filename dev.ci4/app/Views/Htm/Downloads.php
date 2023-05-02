@@ -2,7 +2,20 @@
 
 class Downloads {
 
-static $trimstart = 0; // used for item href
+static $trimstart = null; // used for item href
+
+// used for downloads
+static $icons = [
+	'pdf' => 'pdf',
+	'docx' => 'richtext',
+	'xlsx' => 'spreadsheet',
+	'csv' => 'spreadsheet',
+	'png' => 'image',
+	'jpg' => 'image',
+	'svg' => 'image',
+	'sql' => 'code',
+	'html' => 'code'
+];
 	
 public $template = [
 	'items_start' => '<ul class="list-group">',
@@ -17,7 +30,13 @@ public $files = [];
 
 public function __construct($files=[]) {
 	$this->files = $files;
-	if(!self::$trimstart) self::$trimstart = strlen(FCPATH);
+	if(!self::$trimstart) {
+		// initialise global settings
+		self::$trimstart = strlen(FCPATH);
+		foreach(\App\Libraries\Track::exts_allowed as $key) {
+			self::$icons[$key] = 'music';
+		}
+	}
 }
 
 public function htm() {
@@ -35,32 +54,10 @@ public function htm() {
 public function item($key, $file) {
 	$ext = $file->getExtension();
 	
+	$icon = self::$icons[strtolower($ext)] ?? '';
+	if($icon) $icon = "-{$icon}"; 
 	$label = humanize(urldecode($file->getBasename(".{$ext}")));
-	switch(strtolower($ext)) {
-		case 'pdf': 
-			$icon = '-pdf'; break;
-		case 'docx':
-			$icon = '-richtext'; break;
-		case 'xlsx': 
-		case 'csv':
-			$icon = '-spreadsheet'; break;
-		case 'png':
-		case 'jpg':
-		case 'svg':
-			$icon = '-image'; break;
-		case 'sql':
-		case 'xml':
-		case 'html':
-			$icon = '-code'; break;
-		case 'mp3':
-		case 'wma':
-		case 'wav':
-		case 'm4a':
-			$icon = '-music'; break;
-		default:
-			$icon = '';
-	}
-	$label = sprintf('<span class="bi bi-file%s pe-2"></span>%s', $icon, $label);
+	$label = sprintf('<span class="bi-file%s pe-2"></span>%s', $icon, $label);
 	
 	$href = base_url(substr($file->getPathname(), self::$trimstart));
 	return 
