@@ -10,8 +10,8 @@ if($user->deleted_at) { ?>
 $vartable = new \App\Views\Htm\Vartable;
 $tbody = [
 	'ID' => $user->id,
-	'Name' => $user->name,
-	'Short name' => $user->abbr,
+	'Name' => esc($user->name),
+	'Short name' => esc($user->abbr),
 	'E-mail' => \App\Views\Htm\Table::email($user->email),
 	'Role' => $user->role,
 	'Disabled' => \App\Views\Htm\Table::time($user->deleted_at),

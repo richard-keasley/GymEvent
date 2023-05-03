@@ -50,7 +50,7 @@ foreach($users as $user) {
 				'<span title="user enabled" class="bi-check-circle text-success"></span>',
 			$base_url, 
 			$user->id, 
-			$user->name
+			esc($user->name)
 		),
 		$user->role,
 		$btns

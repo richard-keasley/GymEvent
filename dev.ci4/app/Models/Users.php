@@ -13,14 +13,19 @@ protected $beforeUpdate = ['clean_save'];
 protected $beforeInsert = ['clean_save'];
 
 protected $validationRules = [
-	'name'  => 'required|min_length[5]|is_unique[users.name,id,{id}]',
+	'name'  => 'required|min_length[5]|alpha_numeric_punct|is_unique[users.name,id,{id}]',
+	'abbr' => 'max_length[5]|alpha_numeric_punct',
 	'email' => 'valid_email|is_unique[users.email,id,{id}]',
 	'password' => 'required|min_length[6]'
 ];
 
 protected $validationMessages = [
 	'name' => [
-		'is_unique' => 'That user name has already been used.'
+		'is_unique' => 'That user name has already been used.',
+		'alpha_numeric_punct' => 'The user name should only contain letters and numbers'
+	],
+	'abbr' => [
+		'alpha_numeric_punct' => 'The short name (abbr) contains invalid characters'
 	],
 	'email' => [
 		'valid_email' => 'Please enter a valid email address',
