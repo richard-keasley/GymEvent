@@ -31,4 +31,4 @@ $filebase = $track->filebase($track_type);
 
 <p>Use this information to manually add tracks to the play list.</p>
 
-<p>If the track has been converted, the original track should be here: <code><?php echo base_url() . $track->urlpath() . 'orig/' . $track->filebase('*');;?></code></p>
+<p>If the track has been converted, the original track should be here: <code><?php echo base_url() . $track->urlpath() . $track->filebase('orig');?></code></p>
