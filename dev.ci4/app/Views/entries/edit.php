@@ -1,8 +1,6 @@
 <?php $this->extend('default');
 
 $self = sprintf('%s?%s', current_url(), http_build_query($filter));
-$user_options = [];
-foreach($users as $id=>$user) $user_options[$id] = $user->name;
 
 $selector = []; $dis_options = []; $cat_options = [];
 foreach($entries as $dis) { 
@@ -19,7 +17,7 @@ foreach($entries as $dis) {
 }
 
 $this->section('content');
-# d($users);
+# d($user_options);
 # d($filter);
 # d($entries);
 # d($self);

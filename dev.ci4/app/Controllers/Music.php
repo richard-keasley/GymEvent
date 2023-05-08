@@ -103,7 +103,8 @@ public function view($event_id=0) {
 	$this->data['filter'] = $filter;
 	$this->data['cat_opts'] = $cat_opts;
 	$this->data['entries'] = $entries;
-	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
+	$this->data['users'] = $this->data['event']->users();
+
 	switch($this->data['event']->music) {
 		case 1: // edit
 			$this->data['messages'][] = ['Clubs may upload new music for this event', 'info'];

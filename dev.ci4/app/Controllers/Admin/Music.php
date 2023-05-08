@@ -79,7 +79,7 @@ public function view($event_id=0) {
 	$flds = ['dis', 'cat', 'user', 'status'];
 	foreach($flds as $fld) $this->data['filter'][$fld] = $this->request->getGet($fld);
 		
-	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
+	$this->data['users'] = $this->data['event']->users();
 	$this->data['entries'] = $this->data['event']->entries();
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title;
@@ -88,7 +88,7 @@ public function view($event_id=0) {
 
 public function clubs($event_id=0) {
 	$this->find($event_id);
-	$this->data['users'] = $this->mdl_entries->evt_users($event_id);
+	$this->data['users'] = $this->data['event']->users();
 	$this->data['entries'] = $this->data['event']->entries();
 	
 	$status = $this->request->getGet('status');

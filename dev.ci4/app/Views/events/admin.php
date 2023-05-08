@@ -5,6 +5,10 @@ $this->section('top'); ?>
 <h5><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></h5>
 
 <?php 
+# d($event);
+# d($event->users('', false));
+# d($event->users('clubrets', false));
+
 $attr = [
 	'class' => "toolbar nav sticky-top"
 ];

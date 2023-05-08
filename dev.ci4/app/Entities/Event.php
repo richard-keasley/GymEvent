@@ -151,6 +151,43 @@ public function clubrets() {
 	return $this->_clubrets;
 }
 
+function users($source='entries', $entity=true) {
+
+switch($source) {
+	case 'clubrets':
+	$sql = "SELECT DISTINCT `users`.* 
+	FROM `users` 
+	INNER JOIN `clubrets` ON `users`.`id`=`clubrets`.`user_id`
+	INNER JOIN `events` ON `clubrets`.`event_id` = `events`.`id`
+	WHERE `events`.`id`={$this->id}
+	ORDER BY `users`.`name`";
+	break;
+	
+	default:
+	// list all users who have entries in this event
+	$sql = "SELECT DISTINCT `users`.* 
+	FROM `users` 
+	INNER JOIN `evt_entries` ON `users`.`id`=`evt_entries`.`user_id` 
+	INNER JOIN `evt_categories` ON `evt_entries`.`category_id`= `evt_categories`.`id` 
+	INNER JOIN `evt_disciplines` ON `evt_categories`.`discipline_id`=`evt_disciplines`.`id` 
+	INNER JOIN `events` ON `evt_disciplines`.`event_id`=`events`.`id` 
+	WHERE `events`.`id`={$this->id}
+	ORDER BY `users`.`name`";
+}
+	
+	$model = new \App\Models\Users;
+	$query = $model->query($sql);
+	$res = $query->getResultArray();
+	
+	$retval = [];
+	foreach($res as $row) {
+		$retval[$row['id']] = $entity ?
+			new \App\Entities\User($row) : 
+			$row['name'];
+	}
+	return $retval;
+} 
+
 public function entries() {
 	$model = new \App\Models\Entries();
 	return $model->evt_discats($this->id);

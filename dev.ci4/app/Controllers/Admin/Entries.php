@@ -73,7 +73,7 @@ public function view($event_id=0, $format='plain') {
 		$this->data['messages'][] = $error;
 	}
 	$this->data['format'] = $format;
-	$this->data['users'] = $this->ent_model->evt_users($event_id);
+	$this->data['users'] = $this->data['event']->users();
 	if($this->data['event']->clubrets==0) $this->data['messages'][] = ['Returns have not started for this event', 'warning'];
 	if($this->data['event']->clubrets==1) $this->data['messages'][] = ['Returns for this event are still open', 'warning'];
 	return view('entries/view', $this->data);
@@ -83,9 +83,8 @@ public function clubs($event_id=0) {
 	$this->find($event_id);
 	$this->data['heading'] .= ' - clubs';
 	$this->data['breadcrumbs'][] = ["admin/entries/clubs/{$event_id}", 'clubs'];
+	$this->data['users'] = $this->data['event']->users();
 	
-	$this->data['users'] = $this->ent_model->evt_users($event_id);
-
 	$counts = [];
 	foreach($this->data['entries'] as $dis) { 
 		foreach($dis->cats as $cat) {
@@ -241,7 +240,7 @@ public function edit($event_id=0) {
 		$this->data['messages'][] = $error;
 	}
 	$this->data['breadcrumbs'][] = "admin/entries/edit/{$event_id}";
-	$this->data['users'] = $this->ent_model->evt_users($event_id);
+	$this->data['user_options'] = $this->data['event']->users('clubrets', false);
 	$this->data['filter'] = $filter;
 	return view('entries/edit', $this->data);
 }
