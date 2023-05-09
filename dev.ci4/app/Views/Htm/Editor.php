@@ -25,7 +25,9 @@ public function htm() {
 	<script>
 	$(function(){
 	tinymce.init({
-		relative_urls : false,
+		relative_urls: false,
+		remove_script_host: false,
+		document_base_url: '<?php echo base_url();?>',
 		selector: '#<?php echo $id;?> textarea',
 		promotion: false,
 		branding: false,
@@ -33,7 +35,7 @@ public function htm() {
 		browser_spellcheck: true,
 		plugins: 'link code lists help',
 		toolbar: 'Undo Redo | Blocks | Bold Italic bullist | link code | help',
-		content_css: '/app/gymevent.css'
+		content_css: '<?php echo site_url('/app/gymevent.css');?>'
 	});
 	});
 	</script>

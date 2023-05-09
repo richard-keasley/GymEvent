@@ -34,7 +34,7 @@ if($tbody) {
 if($tbody && $status) { // email dialogue
 ?>
 <div class="toolbar">
-<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#email">	<i class="bi bi-envelope"></i></button>
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#email"><i class="bi bi-envelope"></i></button>
 </div>
 	
 <div class="modal fade" id="email" tabindex="-1" aria-hidden="true">
