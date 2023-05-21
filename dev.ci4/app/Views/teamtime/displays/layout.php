@@ -5,8 +5,8 @@
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="/app/teamtime/display.css" rel="stylesheet" type="text/css">
-<script src="/app/jquery-3.6.1/jquery.min.js" type="text/javascript"></script>
 <?php 
+echo \App\ThirdParty\jquery::script(); 
 if(!empty($title)) printf('<title>%s</title>', $title);
 echo $this->include('teamtime/js');
 if(!empty($style)) echo "<style>{$style}</style>";

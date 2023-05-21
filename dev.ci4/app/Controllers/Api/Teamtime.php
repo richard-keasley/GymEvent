@@ -31,9 +31,8 @@ public function control() {
 	$start_place = "{$row}-{$col}";
 		
 	// modify runvars according to post
-	$getPost = $this->request->getPost(null, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-	foreach($getPost as $key=>$val) {
-		$runvars[$key] = $val;
+	foreach($this->request->getPost() as $key=>$val) {
+		$runvars[$key] = strip_tags($val);
 	}
 	
 	// update run place 
