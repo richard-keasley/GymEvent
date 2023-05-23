@@ -11,6 +11,9 @@ $this->section('content');
 	<li>provide an estimate of resources needed (e.g. judges, labour, seating)</li>
 	<li>allow event specific announcements (before, during and after the event)</li>
 </ul>
+<p>We will not use the data for any other purpose than listed above.</p>
+<p>This data may be shared with competition organisers. It will not be shared with anyone else.</p>
+
 <p>The data we hold:</p>
 <ul>
 <li>For the entrant:<ul>
@@ -42,7 +45,7 @@ $this->section('content');
 echo $nav;
 $this->endSection();
 
-if(\App\Libraries\Auth::check_role('admin')) { 
+if(\App\Libraries\Auth::check_role('controller')) { 
 $this->section('bottom'); ?>
 <section class="card text-dark bg-light">
 <h3 class="card-header">Risks</h3>
