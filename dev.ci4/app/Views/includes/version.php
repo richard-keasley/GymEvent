@@ -16,7 +16,7 @@ echo $table->generate($tbody);
 ?>
 <script>
 $(function(){
-$('#jqv').text(jQuery(). jquery);
+$('#jqv').text(jQuery().jquery);
 $('#bsv').text(bootstrap.Tooltip.VERSION);
 });
 </script>

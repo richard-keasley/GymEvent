@@ -151,7 +151,7 @@ public function populate($event_id) {
 			$cat_arr = [
 				'discipline_id' => $dis_id, 
 				'name' => $cat['name'], 
-				'sort' => sprintf('%03u', $sort)
+				'sort' => sprintf('%03u', $sort * 5)
 			];
 			$cat_id = $this->entrycats->insert($cat_arr);
 			if($cat_id) {
