@@ -11,7 +11,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/app/icons/favicon-16x16.png">
 <link rel="stylesheet" type="text/css" href="/app/gymevent.css">
 <link rel="stylesheet" type="text/css" href="/app/custom.css">
-<script src="/app/jquery-3.6.4/jquery.min.js" type="text/javascript"></script>
+<?php echo \App\ThirdParty\jquery::script(); ?>
 <title><?php echo $title;?></title>
 <?php if(!empty($head)) echo $head;?>
 </head>
