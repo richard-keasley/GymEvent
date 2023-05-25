@@ -181,6 +181,21 @@ public function edit($event_id=0) {
 		$this->find($event_id);
 	}
 	
+	if($this->request->getPost('update_exeset')) {
+		$exercises = intval($this->request->getPost('exercises'));
+		if($exercises) {
+			$cat_arr = [
+				'id' => $filter['catid'],
+				'exercises' => $exercises
+			];
+			// update
+			$entrycat = new \App\Entities\Entrycat($cat_arr);
+			$this->ent_model->entrycats->save($entrycat);
+			// read 
+			$this->find($event_id);
+		}
+	}
+	
 	$batch = $this->request->getPost('batch');
 	if($batch) {
 		$update = null;

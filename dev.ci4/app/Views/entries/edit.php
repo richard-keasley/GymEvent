@@ -1,13 +1,16 @@
 <?php $this->extend('default');
 
+$this->section('content');
 $self = sprintf('%s?%s', current_url(), http_build_query($filter));
 
 $selector = []; $dis_options = []; $cat_options = [];
+$this_cat = [];
 foreach($entries as $dis) { 
 	$dis_options[$dis->id] = $dis->name;
 	$selector[$dis->id] = [];
 	foreach($dis->cats as $cat) {
 		$selector[$dis->id][] = [$cat->id, $cat->name];
+		if($cat->id==$filter['catid']) $this_cat = $cat;
 	}
 	if($dis->id==$filter['disid']) {
 		foreach($selector[$dis->id] as $row) {
@@ -16,7 +19,6 @@ foreach($entries as $dis) {
 	}
 }
 
-$this->section('content');
 # d($user_options);
 # d($filter);
 # d($entries);
@@ -149,11 +151,9 @@ function delrow(el) {
 	tr.style.display = "none";
 }
 </script>
-<?php } 
+<?php } ?>
 
-if($filter['disid'] && $filter['catid']) { ?>
-
-<div id="newrow">
+<div id="newrow" class="table-responsive">
 <button class="btn btn-success bi bi-plus-circle" type="button" onclick="newrow(1)"></button>
 <?php 
 $tr = [];
@@ -173,14 +173,15 @@ foreach($inputs as $key=>$input) {
 }
 $tr['last'] = '<button class="btn btn-danger bi bi-x-circle" type="button" onclick="newrow(0)"></button>';
 
-$template = ['table_open' => '<table class="table d-none bg-light">'];
+$template = ['table_open' => '<table class="table d-none bg-light" style="min-width:50em">'];
 $table = new \CodeIgniter\View\Table($template);
+
 $table->autoHeading = false;
 echo $table->generate([$tr]);
 ?>
 <script>
 function newrow(show) {
-	var table = document.querySelector('#newrow > table');
+	var table = document.querySelector('#newrow table');
 	var button = document.querySelector('#newrow > button');
 	if(show) {
 		table.classList.remove("d-none"); 
@@ -194,20 +195,6 @@ function newrow(show) {
 </script>
 </div>
 
-<p><strong>Exercise set for this category: </strong><?php 
-$scoreboard = new \App\ThirdParty\scoreboard;
-foreach($scoreboard->get_exesets() as $exeset) {
-	if($exeset['SetId']==$exeset_id) {
-		$exe_names = array_column($exeset['children'], 'Name');
-		printf('%u. %s: <em>(%s)</em>', $exeset['SetId'], $exeset['Name'], implode(', ', $exe_names));
-		
-		# d($exeset);
-	}
-}
-?></p>
-
-<?php } ?>
-
 <div class="toolbar">
 <?php echo \App\Libraries\View::back_link("entries/view/{$event->id}");?>
 <?php if($filter['disid'] && $filter['catid']) { ?>
@@ -215,9 +202,91 @@ foreach($scoreboard->get_exesets() as $exeset) {
 <?php } ?>
 </div>
 
+<?php echo form_close(); ?>
+
 <?php
-echo form_close();
+$scoreboard = new \App\ThirdParty\scoreboard;
+
+$exeset_opts = [0 => '[none]'];
+foreach($scoreboard->get_exesets() as $exeset) {
+	$exeset_opts[$exeset['SetId']] = $exeset['Name'];
+}
+$input = [
+	'name' => 'exercises',
+	'type' => 'select',
+	'options' => $exeset_opts,
+	'selected' => $this_cat->exercises ?? 0,
+	'class' => 'float-start me-1 form-control',
+	'style' => 'width:12em;',
+	'onChange' => "$('#exeset').submit();"
+];
+
+$attr = ['id' => "exeset"];
+$hidden = ['update_exeset' => '1'];
+echo form_open($self, $attr, $hidden); 
 ?>
+<p>
+
+<?php echo form_dropdown($input); ?>
+
+<strong>Exercises for this category:</strong> 
+
+<em><?php 
+foreach($scoreboard->get_exesets() as $exeset) {
+	if($exeset['SetId']==$exeset_id) {
+		$exe_names = array_column($exeset['children'], 'Name');
+		echo implode(', ', $exe_names);
+	}
+} ?></em>
+
+</p>
+<?php echo form_close(); ?>
+
+<?php 
+$music = $this_cat->music;
+if($music) { ?>
+<p><strong>Music required for this category:</strong>
+<?php echo implode(' ', $music);?>.</p>
+<?php } 
+
+
+$this->endSection(); 
+
+$this->section('bottom'); ?>
+
+<div class="modal fade" id="catmerge">
+<div class="modal-dialog modal-sm">
+<?php 
+$attr = ['class' => "modal-content"];
+$hidden = ['batch' => 'catmerge'];
+echo form_open($self, $attr, $hidden); 
+?>
+<div class="modal-header">
+	<h5 class="modal-title">Merge category</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+	<p>Move <em>all</em> these entries to another category?</p>
+	<p><?php
+	$input = [
+		'name' => 'category_id',
+		'selected' => $filter['catid'],
+		'options' => $cat_options,
+		'class' => "form-control"
+	];
+	echo form_dropdown($input);
+	?></p>
+</div>
+
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+	<button type="submit" class="btn btn-primary">Update</button>
+</div>
+
+<?php echo form_close();?>
+</div>
+</div>
 
 <div class="modal fade" id="runorder">
 <div class="modal-dialog modal-sm">
@@ -266,39 +335,6 @@ if($fields) { ?>
 </div>
 </div>
 
-<div class="modal fade" id="catmerge">
-<div class="modal-dialog modal-sm">
-<?php 
-$attr = ['class' => "modal-content"];
-$hidden = ['batch' => 'catmerge'];
-echo form_open($self, $attr, $hidden); 
-?>
-<div class="modal-header">
-	<h5 class="modal-title">Merge category</h5>
-	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
+ 
+<?php $this->endSection(); 
 
-<div class="modal-body">
-	<p>Move <em>all</em> these entries to another category?</p>
-	<p><?php
-	$input = [
-		'name' => 'category_id',
-		'selected' => $filter['catid'],
-		'options' => $cat_options,
-		'class' => "form-control"
-	];
-	echo form_dropdown($input);
-	?></p>
-</div>
-
-<div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-	<button type="submit" class="btn btn-primary">Update</button>
-</div>
-
-<?php echo form_close();?>
-</div>
-</div>
-
-<?php
-$this->endSection(); 
