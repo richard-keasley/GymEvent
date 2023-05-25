@@ -13,6 +13,7 @@ protected $beforeUpdate = ['clean_save'];
 protected $beforeInsert = ['clean_save'];
 
 protected $validationRules = [
+	'id'    => 'required',
 	'name'  => 'required|min_length[5]|alpha_numeric_punct|is_unique[users.name,id,{id}]',
 	'email' => 'valid_email|is_unique[users.email,id,{id}]',
 	'password' => 'required|min_length[6]'
