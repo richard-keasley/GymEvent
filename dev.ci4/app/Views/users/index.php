@@ -28,7 +28,7 @@ echo $filter->htm();
 
 $table = \App\Views\Htm\Table::load('default');
 
-$thead = ['Name', 'role', ''];
+$thead = ['Name', 'active', 'role', ''];
 $table->setHeading($thead);
 
 $tbody = [];
@@ -42,7 +42,8 @@ foreach($users as $user) {
 		$btns = $user->deleted_at ? 
 			sprintf($btn_enable, $user->id, $username) : 
 			sprintf($btn_disable, $user->id, $username);
-	}		
+	}
+	$updated = new \datetime($user->updated);
 	$tbody[] = [
 		sprintf('%s <a href="%s/view/%u">%s</a>',
 			$user->deleted_at ? 
@@ -52,6 +53,7 @@ foreach($users as $user) {
 			$user->id, 
 			esc($user->name)
 		),
+		$updated->format('d M y'),
 		$user->role,
 		$btns
 	];

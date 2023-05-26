@@ -204,6 +204,18 @@ function newrow(show) {
 
 <?php echo form_close(); ?>
 
+<section>
+<h4>Category information</h4>
+<?php 
+$attr = [
+	'id' => "exeset",
+	'class' => "d-flex mw-100 my-1"
+];
+$hidden = ['update_exeset' => '1'];
+echo form_open($self, $attr, $hidden); 
+?>
+<label class="form-label"><strong>Exercises</strong></label> 
+
 <?php
 $scoreboard = new \App\ThirdParty\scoreboard;
 
@@ -216,20 +228,12 @@ $input = [
 	'type' => 'select',
 	'options' => $exeset_opts,
 	'selected' => $this_cat->exercises ?? 0,
-	'class' => 'float-start me-1 form-control',
+	'class' => 'mx-2 form-control',
 	'style' => 'width:12em;',
 	'onChange' => "$('#exeset').submit();"
 ];
-
-$attr = ['id' => "exeset"];
-$hidden = ['update_exeset' => '1'];
-echo form_open($self, $attr, $hidden); 
+echo form_dropdown($input); 
 ?>
-<p>
-
-<?php echo form_dropdown($input); ?>
-
-<strong>Exercises for this category:</strong> 
 
 <em><?php 
 foreach($scoreboard->get_exesets() as $exeset) {
@@ -237,16 +241,22 @@ foreach($scoreboard->get_exesets() as $exeset) {
 		$exe_names = array_column($exeset['children'], 'Name');
 		echo implode(', ', $exe_names);
 	}
-} ?></em>
+} 
+?></em>
 
-</p>
 <?php echo form_close(); ?>
 
 <?php 
 $music = $this_cat->music;
 if($music) { ?>
-<p><strong>Music required for this category:</strong>
-<?php echo implode(' ', $music);?>.</p>
+<div class="d-flex mw-100 my-1">
+<label class="form-label"><strong>Music</strong></label> 
+
+<div class="mx-2"></div>
+
+<em><?php echo implode(' ', $music);?></em>
+
+</div>
 <?php } 
 
 
