@@ -11,13 +11,23 @@ public function __construct() {
 	parent::__construct();
 	
 	if(!$this->baseURL) {
-		// nothing set, work it out 
-		#echo getenv('app.baseURL') . ' # ' . getenv('app.indexPage') . ' # ' ; die;
-		$host = $_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR'];
-		$https = $_SERVER['HTTPS'] ?? false;
-		$scheme = $https ? 'https' : 'http' ;
-		$this->baseURL = "{$scheme}://{$host}/";
-		# echo $this->baseURL; die;
+		// nothing set, work it out
+		$https = filter_input(INPUT_SERVER, 'HTTPS');
+		$scheme = $https ? 'https:' : 'http:';
+		
+		$host = filter_input(INPUT_SERVER, 'SERVER_NAME') ?? 
+				filter_input(INPUT_SERVER, 'HTTP_HOST') ?? 
+				filter_input(INPUT_SERVER, 'SERVER_ADDR');
+				
+		$url = ["{$scheme}//{$host}"];
+				
+		$doc_root = filter_input(INPUT_SERVER, 'DOCUMENT_ROOT') ?? '';
+		$strlen = strlen($doc_root);
+		$url[] = ltrim(substr(FCPATH, $strlen), DIRECTORY_SEPARATOR);
+				
+		$this->baseURL = implode(DIRECTORY_SEPARATOR, $url);
+		
+		# print_r($url); echo $this->baseURL; die;
 	}
 }
 
