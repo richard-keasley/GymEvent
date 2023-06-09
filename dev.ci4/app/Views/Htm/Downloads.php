@@ -62,7 +62,7 @@ public function item($key, $file) {
 	$href = base_url(substr($file->getPathname(), self::$trimstart));
 	return 
 		sprintf($this->template['item_before'], $key) . 
-		anchor($href, $label) .
+		anchor($href, $label, ['download'=>""]) .
 		sprintf($this->template['item_after'], $key) ; 
 }
 	
