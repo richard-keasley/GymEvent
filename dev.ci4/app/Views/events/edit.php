@@ -100,10 +100,8 @@ if($edit_locked) { ?>
 <p class="alert alert-danger">This section can only be altered while the event state 'clubrets' is set to 'waiting'.</p>
 <?php } 
 
-else { 
-?> 
-<p>Do not use spaces, commas or special characters within discipline and categories.</p>
-
+else { ?> 
+<p>Only use alpha-numeric characters, dashes and under-scores in disciplines and categories. No spaces, &amp;, commas, etc.</p> 
 <?php } ?>
 
 <div id="discats">
@@ -175,13 +173,15 @@ foreach($discats as $key=>$discat) {
 $template = ['table_open' => '<table class="discats">'];
 $table = new \CodeIgniter\View\Table($template);
 
-$opt_heading = 'options <a tabindex="0" role="button" class="popover-dismiss btn btn-sm btn-info" data-bs-toggle="popover" title="Entry options" data-bs-content="Single words, each on a separate line">?</a>';
+$dis_heading = 'dis <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#help-dis">?</button>';
+
+$inf_heading = 'inf <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#help-inf">?</button>';
 
 $cat_heading = 'cats <a tabindex="0" role="button" class="popover-dismiss btn btn-sm btn-info" data-bs-toggle="popover" title="Categories options" data-bs-content="Comma separated lines of single words. Each line is a set of options.">?</a>';
 
-$dis_heading = 'dis <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#sbdis">?</button>';
+$opt_heading = 'options <a tabindex="0" role="button" class="popover-dismiss btn btn-sm btn-info" data-bs-toggle="popover" title="Entry options" data-bs-content="Single words, each on a separate line">?</a>';
 
-$table->setHeading($dis_heading, 'inf', $cat_heading, $opt_heading, '');
+$table->setHeading($dis_heading, $inf_heading, $cat_heading, $opt_heading, '');
 echo $table->generate($tbody);
 echo form_hidden('discats', '');?>
 <button name="add" type="button" class="btn bi-plus-square btn-success" title="add row"></button>
@@ -196,7 +196,31 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 </script>
 </div>
 
-<div class="modal" id="sbdis" tabindex="-1">
+<div class="modal" id="help-inf" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+	<h5 class="modal-title">Discipline / Category inf</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+<p>Format like a regular <code>ini</code> file.</p>
+<dl>
+<dt>fe</dt><dd>Fee per entry</dd>
+<dt>fg</dt><dd>Fee per gymnast</dd>
+<dt>team</dt><dd>Request team name</dd>
+<dt>n</dt><dd>Number of lines per entry (size of text area)</dd>
+<dt>cat</dt><dd>Format for DoB appended to entry's category (e.g. <code>cat = y-m</code>).</dd>
+</dl>	
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="help-dis" tabindex="-1">
 <div class="modal-dialog">
 <div class="modal-content">
 <div class="modal-header">

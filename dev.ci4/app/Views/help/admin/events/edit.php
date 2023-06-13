@@ -1,15 +1,3 @@
-<h3>Participants</h3>
-<h5>disciplines / categories</h5>
-<p>Only use alpha-numeric characters, dashes and under-scores in disciplines and categories. No spaces, &amp;, commas, etc.</p> 
-<h5>inf settings</h5>
-<dl>
-<dt>fe</dt><dd>Fee per entry</dd>
-<dt>fg</dt><dd>Fee per gymnast</dd>
-<dt>team</dt><dd>Request team name</dd>
-<dt>n</dt><dd>Number of lines per entry (size of text area)</dd>
-<dt>cat</dt><dd>Append Year / month of birth to category. Hint: it adds the DoB in the given format. e.g. "y-m".</dd>
-</dl>
-
 <h3>Permissions and states</h3>
 <?php 
 // compare to help\setup\index
