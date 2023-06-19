@@ -90,8 +90,32 @@ public function renumber($event_id) {
 		foreach($entrycats as $entrycat) {
 			$entries = $this
 				->where('category_id', $entrycat->id)
-				->orderBy('user_id', 'ASC')
 				->findAll();
+			/*
+			renumber is sorted by clubs, 
+			but shuffle the order clubs appear in	
+			*/
+			$clubsort = []; $sort = [];
+			foreach($entries as $entry) {
+				$user_id = $entry->user_id;
+				$sort[] = $user_id;
+				if(!in_array($user_id, $clubsort)) $clubsort[] = $user_id;
+			}
+			# d($clubsort, $sort);
+			shuffle($clubsort);
+			$clubsort = array_flip($clubsort);
+			foreach($sort as $key=>$user_id) {
+				$sort[$key] = $clubsort[$user_id];
+			}
+			array_multisort($sort, $entries);
+			# d($clubsort, $sort);
+			
+			foreach($entries as $entry) {
+				$entry->num = $num;
+				$this->save($entry);
+				$num++;
+			}
+							
 			foreach($entries as $entry) {
 				$entry->num = $num;
 				$this->save($entry);
