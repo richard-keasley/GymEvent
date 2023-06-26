@@ -381,11 +381,10 @@ public function import($event_id=0) {
 			$lines = explode("\n", $getPost);
 			$map = array_keys($this->data['columns']);
 			$count_map = count($map);
-			foreach($lines as $line_num=>$line) {
+			foreach($lines as $line_num=>$line) {			
 				if(!$line_num) continue; // skip first line
+				
 				$vals = preg_split("/ *[\t,] */", trim($line));
-
-				# $vals = explode("\t", trim($line));
 				$count_vals = count($vals);
 				if($count_vals!=$count_map) {
 					throw new \Exception("{$count_vals} columns on line {$line_num}");
