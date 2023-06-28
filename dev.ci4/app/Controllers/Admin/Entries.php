@@ -366,11 +366,12 @@ public function categories($event_id=0) {
 public function import($event_id=0) {
 	$this->data['columns'] = [
 		'dis' => 'discipline (abbr)',
-		'cat' => 'category (abbr)',
+		'cat' => 'category (full)',
 		'num' => 'number',
 		'name' => 'name',
 		'club' => 'club',
-		'dob' => 'DoB (d-M-Y)'
+		'dob' => 'DoB (d-M-Y)',
+		'runorder' => 'Running order (int-int-int)'
 	];
 
 	$getPost = trim($this->request->getPost('csv'));
@@ -412,6 +413,7 @@ public function import($event_id=0) {
 					$cat_key = -1;
 					$cat_name = null;
 				}
+				
 				if($line['cat']!==$cat_name) {
 					$cat_key++;
 					$cat_name = $line['cat'];
@@ -420,10 +422,23 @@ public function import($event_id=0) {
 						'entries' => []
 					];
 				}
+
+				$val = new \datetime($line['dob']);			
+				$line['dob'] = $val->format('Y-m-d');
+				
+				$val = explode('-', $line['runorder']);
+				$runorder = [
+					'rnd' => $val[0] ?? null,
+					'rot' => $val[1] ?? null,
+					'exe' => $val[2] ?? null
+				];
+				$line['runorder'] = json_encode($runorder);
+				# d($line['runorder']);
+								
 				$discat[$dis_key]['cats'][$cat_key]['entries'][] = $line;		
 			}
-			# d($discat);
-			# throw new \Exception('not finished yet');
+			
+			# d($discat); throw new \Exception('not finished yet');
 			
 			// delete existing data
 			$this->ent_model->delete_event($event_id);
@@ -456,7 +471,7 @@ public function import($event_id=0) {
 					}
 					foreach($cat['entries'] as $entry) {
 						$entry['category_id'] = $cat_id;
-						$entry['dob'] = date('Y-m-d', strtotime($entry['dob']));
+
 						$club = $usr_model->withDeleted()->where('name', $entry['club'])->first();
 						if(!$club) $club = $usr_model->withDeleted()->where('abbr', $entry['club'])->first();
 						if($club) {
