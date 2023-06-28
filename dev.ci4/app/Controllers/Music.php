@@ -36,6 +36,7 @@ public function index() {
 	if(!count($this->data['events'])) {
 		$this->data['messages'][] = ['There is no music available', 'danger'];
 	}
+	
 	// view
 	$this->data['body'] = 'music';
 	$this->data['back_link'] = 'events';

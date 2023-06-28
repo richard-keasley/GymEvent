@@ -268,6 +268,24 @@ $acc->set_item('Payment', ob_get_clean());
 
 
 ob_start(); // Event states
+?>
+
+<div class="form-check form-switch my-2">
+<label class="form-check-label" title="Private events will not appear on the public website"><?php
+$input = [
+	'name' => "private",
+	'value' => "1",
+	'class' => "form-check-input",
+	'type' => "checkbox",
+	'role' => "switch"
+];
+if($event->private) $input['checked'] = "checked";
+echo form_input($input);
+?> make this event private
+</label>
+</div>
+
+<?php
 $colours = \App\Entities\Event::state_colours;
 $input = ['class' => 'btn-check'];
 foreach($states as $fieldname) { ?>
@@ -285,8 +303,9 @@ foreach($states as $fieldname) { ?>
 	} ?>
 	</div>
 	</div>
-<?php } 
+<?php }
 $acc->set_item('Event states', ob_get_clean());
+
 
 ob_start(); // Downloads
 ?>

@@ -16,13 +16,19 @@ echo getlink('admin/events/add', 'create new event');
 $this->section('sidebar');
 $nav = [];
 foreach($events as $event) {
-	$icon = $event->deleted_at ?
-		\App\Entities\Event::icons['hidden'] :
-		match(intval($event->clubrets)) {
+	if($event->deleted_at) {
+		$icon = \App\Entities\Event::icons['hidden'];
+	}
+	elseif($event->private) {
+		$icon = \App\Entities\Event::icons['private'];
+	}
+	else {
+		$icon = match(intval($event->clubrets)) {
 			0 => \App\Entities\Event::icons['future'],
 			3 => \App\Entities\Event::icons['past'],
 			default => \App\Entities\Event::icons['current']
 		};
+	}
 	
 	$date = new DateTime($event->date);
 	$nav[] = [

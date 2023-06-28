@@ -6,14 +6,16 @@ private $model = null;
 
 function __construct() {
 	$this->data['breadcrumbs'][] = 'events';
-	$this->model = new \App\Models\Entries();
+	$this->model = new \App\Models\Entries;
 	$this->data['title'] = "entries";
 	$this->data['heading'] = "Event entries";
 }
 	
 private function find($event_id) {
-	$mod_events = new \App\Models\Events();
-	$this->data['event'] = $mod_events->find($event_id);
+	$mod_events = new \App\Models\Events;
+	$this->data['event'] = $mod_events
+		->where('private', 0)
+		->find($event_id);
 	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
 		throw \App\Exceptions\Exception::not_found($message);

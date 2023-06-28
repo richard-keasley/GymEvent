@@ -4,6 +4,16 @@ class Events extends \App\Controllers\BaseController {
 	
 private $model = null;
 
+private function find($event_id) {
+	$this->data['event'] = $this->model
+		->where('private', 0)
+		->find($event_id);
+ 	if(!$this->data['event']) {
+		$message = "Can't find event {$event_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
+}
+
 public function __construct() {
 	$this->data['breadcrumbs'][] = 'events';
 	$this->model = new \App\Models\Events();
@@ -21,7 +31,11 @@ public function index() {
 	};
 	$this->data['option'] = $option;
 
-	$this->data['events'] = $this->model->whereIn('clubrets', $clubrets)->orderBy('date')->findAll();
+	$this->data['events'] = $this->model
+		->where('private', 0)
+		->whereIn('clubrets', $clubrets)
+		->orderBy('date')
+		->findAll();
 
 	$this->data['body'] = 'events';
 	$this->data['base_url'] = site_url('events/view');
@@ -30,12 +44,8 @@ public function index() {
 
 public function view($event_id=0) {
 	if(!$event_id) return $this->index();
-	$this->data['event'] = $this->model->find($event_id);
- 	if(!$this->data['event']) {
-		$message = "Can't find event {$event_id}";
-		throw \App\Exceptions\Exception::not_found($message);
-	}
-	
+	$this->find($event_id);
+		
 	// back_link query
 	$query = [];
 	$query['f'] = match($this->data['event']->clubrets) {

@@ -23,7 +23,8 @@ protected $allowedFields = [
 	'discats', 
 	'staffcats', 
 	'stafffee', 
-	'deleted_at'
+	'deleted_at',
+	'private'
 ];
 protected $validationRules = [
 	'title' => 'required|alpha_numeric_punct|min_length[5]',

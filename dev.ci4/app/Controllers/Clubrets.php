@@ -10,15 +10,26 @@ function __construct() {
 	$this->data['clubret'] = new \App\Entities\Clubret();
 }
 	
-private function lookup($event_id, $user_id) {
+private function lookup($event_id, $user_id=null) {
+	// lookup event
+	$this->data['event'] = $this->events->withDeleted()->find($event_id);
+	$not_found = $this->data['event'] ? 
+		$this->data['event']->private :
+		true;
+	if($not_found) {
+		$message = "Can't find event {$event_id}";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
+	if($user_id===null) return;
+
 	$this->data['clubret'] = $this->model->lookup($event_id, $user_id);
+	
 	if(!$this->data['clubret']) {
 		$message = "Can't find entry {$event_id}/{$user_id}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
 	$this->data['user'] = $this->data['clubret']->user();
-	$this->data['event'] = $this->data['clubret']->event();
 	$this->data['heading'] = sprintf('Return for %s / %s', $this->data['user']->name, $this->data['event']->title);
 	$this->data['title'] = $this->data['event']->title;
 }
@@ -36,19 +47,23 @@ public function index() {
 		throw \App\Exceptions\Exception::not_found($message);
 	}
 			
-	$this->data['clubrets'] = $this->model->where('user_id', $user_id)->findAll();
+	$this->data['clubrets'] = [];
+	$clubrets = $this->model->where('user_id', $user_id)->findAll();
+	foreach($clubrets as $clubret) {
+		$event = $clubret->event();
+		if(!$event) continue;
+		if($event->deleted_at) continue;
+		if($event->private) continue;
+		$this->data['clubrets'][] = $clubret;
+	}
 	
 	$this->data['breadcrumbs'][] = 'clubrets';
 	return view('clubrets/index', $this->data);
 }
 
 public function add($event_id=0, $user_id=0) {
-	// lookup event
-	$this->data['event'] = $this->events->find($event_id);
-	if(!$this->data['event']) {
-		$message = "Can't find event {$event_id}";
-		throw \App\Exceptions\Exception::not_found($message);
-	}
+	$this->lookup($event_id);
+
 	// lookup user
 	if(!$user_id) $user_id = session('user_id');
 	$this->data['user'] = $this->usr_model->find($user_id);

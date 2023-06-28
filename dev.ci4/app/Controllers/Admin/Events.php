@@ -26,6 +26,9 @@ private function find($event_id) {
 	$this->data['id'] = $event_id;
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title;
+	if($this->data['event']->private) {
+		$this->data['heading'] .= ' (private)';
+	}
 }
 	
 public function index() {
@@ -170,6 +173,9 @@ public function edit($event_id=0) {
 		$getPost['id'] = $event_id;
 		// convert form values to arrays
 		$getPost['staffcats'] = csv_array($getPost['staffcats']);
+		
+		// check-boxes
+		$getPost['private'] = $getPost['private'] ?? 0 ;
 				
 		// ToDo - convert discats to be stored as JSON
 		$discats = [];
