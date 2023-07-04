@@ -241,51 +241,61 @@ static function path_role($path) {
 	if($controller=='music') {
 		switch($method) {
 			case 'view':
-			$events = new \App\Models\Events();
+			$events = new \App\Models\Events;
 			$event = $events->find($param1);
-			$state = $event ? $event->music : null;
-			switch($state) {
-				case \App\Entities\Event::states['edit']: 
-				case \App\Entities\Event::states['view']: 
-					return 'club' ;
-					break;
-				default: // waiting / finished
-					return 'admin';
+			if($event) {
+				if($event->private) return 'controller';
+				return match(intval($event->music)) {
+					\App\Entities\Event::states['edit'] => 'club',
+					\App\Entities\Event::states['view'] => 'club',
+					default => 'admin'
+				};
 			}
-			
+			break;
+				
 			case 'edit':
-			$model = new \App\Models\Entries();
-			$entry = $model->find($param1);
-			return $entry ? $entry->role($controller, 'edit') : 'none';
+			$entries = new \App\Models\Entries;
+			$entry = $entries->find($param1);
+			if($entry) {
+				$event = $entry->get_event();
+				if($event->private) return 'controller';
+				return $entry->role($controller, 'edit');
+			}
+			break;
 			
 			case 'track_url':
 			return self::roles[0];
 			
 			default:
-				return 'club';
+			return 'club';
 		}
 	}
 				
 	if($controller=='videos') {
 		switch($method) {
 			case 'view':
-			$events = new \App\Models\Events();
+			$events = new \App\Models\Events;
 			$event = $events->find($param1);
-			$state = $event ? $event->videos : null ;
-			switch($state) {
-				case \App\Entities\Event::states['edit']: 
-					return "club";
-				case \App\Entities\Event::states['view']: 
-					return self::roles[0];
-				default: // waiting / finished
-					return 'admin';
+			if($event) {
+				if($event->private) return 'controller';
+				return match(intval($event->videos)) {
+					\App\Entities\Event::states['edit'] => 'club',
+					\App\Entities\Event::states['view'] => self::roles[0],
+					default => 'admin'
+				};
 			}
-			
+			break;
+						
 			case 'edit':
-			$model = new \App\Models\Entries();
-			$entry = $model->find($param1);
-			return $entry ? $entry->role($controller, 'edit') : 'none';
-			
+			$entries = new \App\Models\Entries;
+			$entry = $entries->find($param1);
+			if($entry) {
+				$event = $entry->get_event();
+				if($event->private) return 'controller';
+				return $entry->role($controller, 'edit');
+			}
+			break;
+						
 			default:
 			return self::roles[0];
 		}
@@ -294,17 +304,17 @@ static function path_role($path) {
 	if($controller=='entries') {
 		switch($method) {
 			case 'view':
-			$events = new \App\Models\Events();
+			$events = new \App\Models\Events;
 			$event = $events->find($param1);
-			$state = $event ? $event->clubrets : null ;
-			switch($state) {
-				case \App\Entities\Event::states['edit']: 
-					return self::roles[99];
-				case \App\Entities\Event::states['view']: 
-					return self::roles[0];
-				default: // closed
-					return self::roles[99];
+			if($event) {
+				if($event->private) return 'controller';
+				return match(intval($event->clubrets)) {
+					\App\Entities\Event::states['edit'] => self::roles[99],
+					\App\Entities\Event::states['view'] => self::roles[0],
+					default => self::roles[99]
+				};
 			}
+			break;
 			
 			default:
 			return self::roles[0];
@@ -316,21 +326,31 @@ static function path_role($path) {
 			case 'add':
 			case 'view':
 			case 'edit':
-			if($param2 && $param2!==$session_user) return 'admin';
-			$events = new \App\Models\Events();
+			$events = new \App\Models\Events;
 			$event = $events->find($param1);
-			$state = $event ? $event->clubrets : null;
-			switch($state) {
-				case \App\Entities\Event::states['edit']: 
-					return "club";
-				case \App\Entities\Event::states['view']: 
-					return 'none';
-				default: // closed
-					return 'admin';
+			if($event) {
+				if($event->private) return 'none';
+				if($param2 && $param2!==$session_user) return 'admin';
+				return match(intval($event->clubrets)) {
+					\App\Entities\Event::states['edit'] => "club",
+					\App\Entities\Event::states['view'] => 'none',
+					default => 'admin'
+				};
 			}
 			
 			default:
 			return 'club';
+		}
+	}
+	
+	if($controller=='events') {
+		switch($method) {
+			case 'view':
+			$events = new \App\Models\Events;
+			$event = $events->find($param1);
+			if($event) {
+				return $event->private ? 'controller' : self::roles[0];
+			}
 		}
 	}
 		

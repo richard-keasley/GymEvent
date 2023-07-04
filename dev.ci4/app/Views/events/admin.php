@@ -26,19 +26,25 @@ if($event->deleted_at) { ?>
 	<button type="submit" name="state" value="hide" title="hide this event" class="btn btn-danger bi-x-circle"></button>
 	<?php	
 	echo getlink("events/view/{$event->id}", '<span class="bi-eye" title="customer view of this event"></span>');
-	if(in_array($event->clubrets, [1, 2, 3])) {
-		echo getlink("admin/clubrets/event/{$event->id}", 'returns');
+	
+	if(!$event->private) {
+		if(in_array($event->clubrets, [1, 2, 3])) {
+			echo getlink("admin/clubrets/event/{$event->id}", 'returns');
+		}
+		if(in_array($event->clubrets, [2])) {
+			echo $this->include('entries/populate/button');
+		}
 	}
-	if(in_array($event->clubrets, [2])) {
-		echo $this->include('entries/populate/button');
-	}
+	
 	if(in_array($event->clubrets, [2, 3])) {
 		echo getlink("admin/entries/view/{$event->id}", 'entries');
 		echo getlink("admin/entries/export/{$event->id}", 'export');
 	}
+
 	if($event->link('music')) {
 		echo getlink("admin/music/view/{$event->id}", 'music');
 	}
+
 	echo $event->link('player');
 	echo $event->link('videos');
 	echo $event->link('teamtime');

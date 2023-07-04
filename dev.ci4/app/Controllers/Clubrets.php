@@ -13,10 +13,7 @@ function __construct() {
 private function lookup($event_id, $user_id=null) {
 	// lookup event
 	$this->data['event'] = $this->events->withDeleted()->find($event_id);
-	$not_found = $this->data['event'] ? 
-		$this->data['event']->private :
-		true;
-	if($not_found) {
+	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}

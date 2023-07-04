@@ -13,10 +13,12 @@ $nothing = '<i class="bi bi-dash"></i>';
 ?>
 <h5>Clubret states</h5>
 <?php 
+$view_all = '<abbr title="view event entries">view all</abbr>';
+$edit_all = '<abbr title="edit event entries">edit all</abbr>';
 $tbody = [
-	['guest', $nothing, $nothing, $nothing, $nothing],
-	['club', $nothing, 'edit own', '<abbr title="view event entries">view all</abbr>', $nothing],
-	['admin', 'edit all', 'edit all', 'edit all', $nothing]
+	['public', $nothing,  $nothing, $view_all, $nothing],
+	['club',   $nothing,  'edit own', $view_all, $nothing],
+	['admin',  $edit_all, $edit_all, $edit_all, $nothing]
 ];
 $table->setHeading($thead);
 echo $table->generate($tbody);
@@ -26,7 +28,7 @@ echo $table->generate($tbody);
 <h5>Video states</h5>
 <?php 
 $tbody = [
-	['guest', $nothing, $nothing, 'view all', $nothing],
+	['public', $nothing, $nothing, 'view all', $nothing],
 	['club', $nothing, 'edit own', 'view all', $nothing],
 	['admin', 'edit all', 'edit all', 'edit all', $nothing]
 ];
@@ -38,7 +40,7 @@ echo $table->generate($tbody);
 <?php 
 
 $tbody = [
-	['guest', $nothing, $nothing, 'view all', $nothing],
+	['public', $nothing, $nothing, 'view all', $nothing],
 	['club', $nothing, 'upload', 'view own', $nothing],
 	['admin', 'edit all', 'edit all', 'edit all', $nothing],
 	['player', $no, $yes, $yes, $no]
@@ -47,3 +49,9 @@ $table->setHeading($thead);
 echo $table->generate($tbody);
 ?>
 
+<h5>Private events</h5>
+<ul>
+<li>Are not accessible by the public</li>
+<li>Have no returns (entries by import)</li>
+<li>Accept no music uploads by public (use admin interface)</li>
+</ul>

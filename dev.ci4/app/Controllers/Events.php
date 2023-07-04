@@ -5,13 +5,14 @@ class Events extends \App\Controllers\BaseController {
 private $model = null;
 
 private function find($event_id) {
-	$this->data['event'] = $this->model
-		->where('private', 0)
-		->find($event_id);
+	$this->data['event'] = $this->model->find($event_id);
  	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
+	$this->data['title'] = $this->data['event']->title;
+	$this->data['heading'] = $this->data['event']->title;
+	if($this->data['event']->private) $this->data['heading'] .= ' (private)';
 }
 
 public function __construct() {
@@ -56,8 +57,6 @@ public function view($event_id=0) {
 	    
 	// view
 	$this->data['id'] = $event_id;
-	$this->data['title'] = $this->data['event']->title;
-	$this->data['heading'] = $this->data['event']->title;
 	$this->data['state_labels'] = [];
 	$this->data['back_link'] = sprintf('events?%s', http_build_query($query));
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb();
