@@ -17,7 +17,7 @@ echo $link ? $link : $label;
 if(ENVIRONMENT != 'development') return;
 if(!empty($exception)) return;
 ?>
-<footer class="row border-top bg-light text-secondary">
+<footer class="row border-top bg-light text-secondary d-print-none">
 
 <div class="col"><?php 
 $links = [
