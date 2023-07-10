@@ -6,7 +6,7 @@ $this->section('content'); ?>
 <p class="pb-1 px-1 m-0">track&hellip;</p>
 <p class="p-1 m-0">looking up channel&hellip;</p>
 </section>
-<p class="my-3"><strong>Important:</strong> This service will only work if the browser is set to allow "autoplay" from this website. Otherwise <span class="bg-opacity-25 bg-danger">NotAllowedError</span> will be shown.</p>
+<p class="my-3"><strong>Important:</strong> This service will only work if the browser is set to allow "autoplay" from this website. Otherwise <span class="bg-danger-subtle">NotAllowedError</span> will be shown.</p>
 <?php $this->endSection(); 
 
 $this->section('sidebar'); ?>

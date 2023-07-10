@@ -74,7 +74,7 @@ printf('%s: %s</div>', humanize($key), $val);
 </div>
 <?php }
 if($disk_space['count'] && $event->deleted_at) { ?>
-<div class="col-auto bg-info bg-opacity-25">Clear event files to delete this event</div>
+<div class="col-auto bg-info-subtle">Clear event files to delete this event</div>
 <?php } ?>
 </section>
 

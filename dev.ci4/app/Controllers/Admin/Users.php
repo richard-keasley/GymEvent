@@ -140,7 +140,7 @@ public function view($user_id=0) {
 		'title' => 'Merge data from another user',
 		'user_id' => $this->data['user']->user_id,
 		'users' => $this->usr_model->orderby('name')->whereNotIn('id', $exclude)->findAll(),
-		'description' => sprintf('Select user to merge from. User data will be pulled into <em>%s</em>. <span class="bg-opacity-25 bg-danger">The selected user will be deleted</span>.', $this->data['user']->name)
+		'description' => sprintf('Select user to merge from. User data will be pulled into <em>%s</em>. <span class="bg-danger-subtle">The selected user will be deleted</span>.', $this->data['user']->name)
 	];
 		
 	// view
