@@ -31,12 +31,13 @@ function write($filename) {
 	$fp = fopen($filename, 'w');
 	if(!$fp) return false;
 	foreach($this->data as $rowkey=>$row) {
-		$row_addr = $rowkey + 1;
+		$row_idx = $rowkey + 1;
 		foreach($row as $colkey=>$cell) {
 			if(preg_match('#^\{.*\}$#i', $cell)) {
 				$func = null;
 				$params = [];
 				$arr = explode(' ', trim($cell, '{}'));
+				$arr = preg_split('#[\s*]#', trim($cell, '{}'));
 				foreach($arr as $key=>$val) {
 					if(!$key) $func = trim($val);
 					elseif(strlen($val)) {
@@ -46,36 +47,22 @@ function write($filename) {
 				
 				switch($func) {
 					case 'sum':
-					if(count($params)==2) {
-						$range = [];
-						foreach($params as $key=>$val) {
-							$cell_addr = chr($val+64) . $row_addr;
-							$range[] = $cell_addr;
-						}
-						$row[$colkey] = sprintf('=SUM(%s)', implode(':', $range));
-					}
+					if(count($params)!=2) break;
+					$xy0 = [$params[0], $row_idx];
+					$xy1 = [$params[1], $row_idx];
+					$range = self::xl_range($xy0, $xy1);
+					$row[$colkey] = "=SUM({$range})";
 					break;
 					
 					case 'rank':
-					if(count($params)==3) {
-						$range = [];
-						foreach($params as $key=>$val) {
-							switch($key) {
-								case 0:
-								$col_addr = chr($val+64);
-								$source = $col_addr . $row_addr;
-								break;
-								case 1:
-								$range[] = $col_addr . $row_addr - $val;
-								break;
-								case 2:
-								$range[] = $col_addr . $row_addr + $val;
-								break;
-								
-							}
-						}						
-						$row[$colkey] = sprintf('=RANK(%s, %s)', $source, implode(':', $range));
-					}
+					if(count($params)!=3) break;
+					$xy_src = [$params[0], $row_idx];
+					$xy0 = [$params[0], $row_idx + $params[1]];
+					$xy1 = [$params[0], $row_idx + $params[2]];
+					$source = self::xl_address($xy_src);
+					$range = self::xl_range($xy0, $xy1);
+					$row[$colkey] = "=RANK({$source},{$range})";
+					break;
 				}
 			}
 		}
@@ -84,6 +71,21 @@ function write($filename) {
 	}
 	fclose($fp);
 	return true;
+}
+
+static function xl_address($xy) {
+	return chr($xy[0] + 64) . $xy[1];
+}
+
+static function xl_range($xy0, $xy1) {
+	$range = [
+		self::xl_address($xy0),
+		self::xl_address($xy1)
+	];
+	return implode(':', $range);
+	
+	
+	
 }
 
 }

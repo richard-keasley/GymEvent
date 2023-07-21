@@ -91,19 +91,14 @@ protected function download($data, $layout='table', $filetitle='download', $file
 	$filename = "{$filetitle}.{$filetype}";
 
 	$response = view("export/{$layout}", $data);
-	// remove DEBG comments from view
+	// remove DEBUG comments from view
 	$response = preg_replace('#<!--.*-->[\r\n]#', '', $response);
-		
-	$content_type = match($filetype) {
-		'csv' => 'application/csv',
-		default => null
-	};
 	
-	/*
-	// view response for debug
-	$this->response->setHeader('content-type', 'text/plain;charset=UTF-8'); 
-	return $response;
-	//*/
+	if(0) {
+		// view response for debug
+		$this->response->setHeader('content-type', 'text/plain;charset=UTF-8'); 
+		return $response;
+	}
 	
 	/* https://stackoverflow.com/questions/33592518/how-can-i-setting-utf-8-to-csv-file-in-php-codeigniter
 	prepend this to UTF8 file downloads

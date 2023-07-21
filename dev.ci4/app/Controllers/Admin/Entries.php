@@ -558,9 +558,9 @@ public function export($event_id=0, $download=0) {
 				$tr = [
 					'dis' => $dis->name,
 					'cat' => $cat->name,
-					'num' => 'num',
-					'club' => 'club',
-					'name' => 'name'
+					'Num' => 'num',
+					'Club' => 'club',
+					'Name' => 'name'
 				];
 				$exe0 = count($tr) - 1;
 				$exeset = $exesets[$cat->exercises] ?? [] ;
@@ -571,18 +571,18 @@ public function export($event_id=0, $download=0) {
 						$tr[$exe['ShortName']] = '';
 					}
 					$exe1 = count($tr) - 2;
-					$tr['tot'] = "{sum {$exe0} {$exe1}}";
+					$tr['Tot'] = "{sum {$exe0} {$exe1}}";
 					$tot_col = count($tr) - 2;
-					$tr['pos'] = '';
+					$tr['Pos'] = '';
 					$last = count($cat->entries) - 1;
 				}
 													
 				foreach($cat->entries as $rowkey=>$entry) {
-					$tr['num'] = $entry->num;
-					$tr['club'] = $ent_users[$entry->user_id]->abbr ?? '?';
-					$tr['name'] = $entry->name;
+					$tr['Num'] = $entry->num;
+					$tr['Club'] = $ent_users[$entry->user_id]->abbr ?? '?';
+					$tr['Name'] = $entry->name;
 					if($has_totals) {
-						$tr['pos'] = sprintf('{rank %u %u %u}', $tot_col, $rowkey, $last - $rowkey);
+						$tr['Pos'] = sprintf('{rank %d %d %d}', $tot_col, 0-$rowkey, $last-$rowkey);
 					}
 					$export_table[] = $tr;
 				}
