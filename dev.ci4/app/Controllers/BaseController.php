@@ -84,19 +84,34 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	}
 }
 
-protected function download($data, $layout='table', $filetitle='') {
-	$filetype = 'csv';
+protected function download($data, $layout='table', $filetitle='download', $filetype='csv') {
+
 	$data['format'] = $filetype;
-	$response = view("export/{$layout}", $data);
 	$filetitle = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $filetitle));
+	$filename = "{$filetitle}.{$filetype}";
+
+	$response = view("export/{$layout}", $data);
+	// remove DEBG comments from view
+	$response = preg_replace('#<!--.*-->[\r\n]#', '', $response);
+		
+	$content_type = match($filetype) {
+		'csv' => 'application/csv',
+		default => null
+	};
 	
-// https://stackoverflow.com/questions/33592518/how-can-i-setting-utf-8-to-csv-file-in-php-codeigniter
-// prepend this to UTF8 file downloads
-# define('UTF8_BOM', chr(239) . chr(187) . chr(191)); 
-	$prepend = "\xEF\xBB\xBF"; 
+	/*
+	// view response for debug
+	$this->response->setHeader('content-type', 'text/plain;charset=UTF-8'); 
+	return $response;
+	//*/
 	
-	# return $prepend . '<pre>' . $response . '</pre>';
-	return $this->response->download("{$filetitle}.{$filetype}", $prepend . $response);
+	/* https://stackoverflow.com/questions/33592518/how-can-i-setting-utf-8-to-csv-file-in-php-codeigniter
+	prepend this to UTF8 file downloads
+	*/
+	$response = "\xEF\xBB\xBF" . $response; 
+	
+	// send download
+	return $this->response->download($filename, $response);
 }
 
 }
