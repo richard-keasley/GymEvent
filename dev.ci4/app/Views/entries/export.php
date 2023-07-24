@@ -1,6 +1,7 @@
 <?php $this->extend('default');
 
 $this->section('content');
+#d($source);
 if($layout && $source) {
 	?>
 	<p class="alert alert-light p-1"><?php

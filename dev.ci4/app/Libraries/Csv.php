@@ -30,39 +30,31 @@ function write($filename) {
 	if(!$this->data) return false;
 	$fp = fopen($filename, 'w');
 	if(!$fp) return false;
+	
+	$cellrow = 0;
 	foreach($this->data as $rowkey=>$row) {
-		$row_idx = $rowkey + 1;
+		$cellrow++;
+		$cellcol = 0;
+		
 		foreach($row as $colkey=>$cell) {
-			if(preg_match('#^\{.*\}$#i', $cell)) {
-				$func = null;
-				$params = [];
-				$arr = explode(' ', trim($cell, '{}'));
-				$arr = preg_split('#[\s*]#', trim($cell, '{}'));
-				foreach($arr as $key=>$val) {
-					if(!$key) $func = trim($val);
-					elseif(strlen($val)) {
-						$params[] = intval($val);
-					}
-				}
-				
-				switch($func) {
-					case 'sum':
-					if(count($params)!=2) break;
-					$xy0 = [$params[0], $row_idx];
-					$xy1 = [$params[1], $row_idx];
-					$range = self::xl_range($xy0, $xy1);
-					$row[$colkey] = "=SUM({$range})";
-					break;
-					
-					case 'rank':
-					if(count($params)!=3) break;
-					$xy_src = [$params[0], $row_idx];
-					$xy0 = [$params[0], $row_idx + $params[1]];
-					$xy1 = [$params[0], $row_idx + $params[2]];
-					$source = self::xl_address($xy_src);
-					$range = self::xl_range($xy0, $xy1);
-					$row[$colkey] = "=RANK({$source},{$range})";
-					break;
+			$cellcol++;
+			
+			if(preg_match('#^=.*\)$#i', $cell)) {
+				$xlcell = new xlcell([$cellcol, $cellrow]);
+				// extract parameter string
+				preg_match('#\(.*\)#', $cell, $params);
+				$params = $params[0] ?? '';
+				$params = trim($params, '()');
+				# echo $params;
+
+				// get all cell coordinates
+				preg_match_all('#\[[^\]]+\]#', $cell, $addrs);
+				$addrs = $addrs[0] ?? [];
+				// covert [x,y] to A1 
+				foreach($addrs as $key=>$val) {
+					$dxy = explode(',', trim($val, '[]'));
+					$address = $xlcell->address($dxy);
+					$row[$colkey] = str_replace($val, $address, $row[$colkey]);  
 				}
 			}
 		}
@@ -73,19 +65,29 @@ function write($filename) {
 	return true;
 }
 
-static function xl_address($xy) {
-	return chr($xy[0] + 64) . $xy[1];
 }
 
-static function xl_range($xy0, $xy1) {
-	$range = [
-		self::xl_address($xy0),
-		self::xl_address($xy1)
+class xlcell implements \stringable{
+
+private $xy = [];
+
+function __construct($xy) {
+	$this->xy = [
+		intval($xy[0] ?? 1),
+		intval($xy[1] ?? 1)
 	];
-	return implode(':', $range);
-	
-	
-	
+}
+
+function __toString() {
+	return $this->address();
+}
+
+function address($dxy=[0,0]) {
+	$xy = [
+		$this->xy[0] + $dxy[0] ?? 0,
+		$this->xy[1] + $dxy[1] ?? 0
+	];
+	return chr($xy[0] + 64) . $xy[1];
 }
 
 }
