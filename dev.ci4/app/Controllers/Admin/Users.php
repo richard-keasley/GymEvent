@@ -292,7 +292,8 @@ public function logins($filter='', $id='') {
 			break;
 		default:
 			$id = "";
-			$where = 'error >';
+			# $where = 'error >';
+			$where = 'id >';
 	}
 	
 	$user_names = [];
@@ -329,7 +330,7 @@ public function logins($filter='', $id='') {
 			$this->data['heading'] = sprintf('Logins from IP %s', $id);
 			break;
 		default:
-			$this->data['heading'] = 'Login errors';
+			$this->data['heading'] = 'Logins';
 	}
 		
 	if($filter) $this->data['breadcrumbs'][] = ["admin/users/logins/{$filter}/{$id}", "{$filter}={$id}"];
