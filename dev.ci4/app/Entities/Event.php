@@ -431,7 +431,9 @@ public function link($type, $user_id=0) {
 		break;
 		
 		case 'admin':
-		return getlink("admin/events/view/{$this->id}", 'admin');
+		$link = getlink("admin/events/view/{$this->id}", 'admin');
+		if(!$link) $link = getlink("control/events/view/{$this->id}", 'admin');
+		return $link;
 
 		case 'teamtime':
 		if(in_array($this->clubrets, [1, 2])) {

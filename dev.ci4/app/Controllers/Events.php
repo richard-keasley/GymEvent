@@ -17,7 +17,7 @@ private function find($event_id) {
 
 public function __construct() {
 	$this->data['breadcrumbs'][] = 'events';
-	$this->model = new \App\Models\Events();
+	$this->model = new \App\Models\Events;
 }
 	
 public function index() {
@@ -33,20 +33,20 @@ public function index() {
 	$this->data['option'] = $option;
 
 	$this->data['events'] = $this->model
-		->where('private', 0)
+		//->where('private', 0)
 		->whereIn('clubrets', $clubrets)
 		->orderBy('date')
 		->findAll();
 
 	$this->data['body'] = 'events';
-	$this->data['base_url'] = site_url('events/view');
+	$this->data['base_url'] = 'events/view';
 	return view('events/index', $this->data);
 }
 
 public function view($event_id=0) {
 	if(!$event_id) return $this->index();
 	$this->find($event_id);
-		
+
 	// back_link query
 	$query = [];
 	$query['f'] = match($this->data['event']->clubrets) {

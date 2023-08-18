@@ -22,7 +22,7 @@ private function lookup($event_id, $user_id=null) {
 	$this->data['clubret'] = $this->model->lookup($event_id, $user_id);
 	
 	if(!$this->data['clubret']) {
-		$message = "Can't find entry {$event_id}/{$user_id}";
+		$message = "Can't find return {$event_id}/{$user_id}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
 	

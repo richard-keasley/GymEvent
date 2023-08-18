@@ -1,5 +1,6 @@
 <?php $this->extend('default');
 $table = \App\Views\Htm\Table::load('small');
+$can_edit = \App\Libraries\Auth::check_path("admin/events/edit/{$event->id}");
 
 $this->section('top'); ?>
 <h5><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></h5>
@@ -15,6 +16,10 @@ $attr = [
 echo form_open(current_url(), $attr);
 
 echo \App\Libraries\View::back_link('admin/events');
+
+// edit controls
+if($can_edit) {
+	
 echo getlink("admin/events/edit/{$event->id}", 'edit');
 
 if($event->deleted_at) { ?>
@@ -24,7 +29,10 @@ if($event->deleted_at) { ?>
 	<?php } ?>
 <?php } else { ?>
 	<button type="submit" name="state" value="hide" title="hide this event" class="btn btn-danger bi-x-circle"></button>
-	<?php	
+<?php }
+}
+
+if(!$event->deleted_at) {	 
 	echo getlink("events/view/{$event->id}", '<span class="bi-eye" title="customer view of this event"></span>');
 	
 	if(!$event->private) {
