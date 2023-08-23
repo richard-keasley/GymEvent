@@ -321,7 +321,7 @@ public function logins($filter='', $id='') {
 		$this->data['logins'][] = $login;
 	}
 		
-	$this->data['breadcrumbs'][] = ['admin/users/logins', 'login errors'];
+	$this->data['breadcrumbs'][] = ['admin/users/logins', 'logins'];
 	switch($filter) {
 		case 'user_id':
 			$this->data['heading'] = sprintf('Logins for %s', $this->data['user']->name);
