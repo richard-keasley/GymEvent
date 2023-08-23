@@ -98,7 +98,7 @@ foreach($tbody as $rowkey=>$row) {
 	}
 }
 	
-$table = \App\Views\Htm\Table::load('small');
+$table = \App\Views\Htm\Table::load('responsive');
 $table->setHeading($thead);
 $table->setFooting($tfoot);	
 # d($tbody);
@@ -107,7 +107,8 @@ echo $table->generate($tbody);
 ?>
 <h3>Participants</h3>
 <div class="row">
-<?php 
+<?php
+$table = \App\Views\Htm\Table::load('small');
 foreach($event->participants() as $dis) { ?>
 	<div class="col-auto">
 	<?php 
