@@ -577,12 +577,12 @@ public function export($event_id=0, $download=0) {
 					$tr['Club'] = $ent_users[$entry->user_id]->abbr ?? '?';
 					$tr['Name'] = $entry->name;
 					if($exe_count) {
-						$tr['Tot'] = "=SUM([-{$exe_count},0]:[-1,0])";
+						$tr['Tot'] = "=SUM([-{$exe_count}]:[-1])";
 
 						$tot_pos = -1;
-						$row_start = 0-$rowkey;
-						$row_last = $last-$rowkey;
-						$tr['Pos'] = "=RANK([{$tot_pos},0],[{$tot_pos},{$row_start}]:[{$tot_pos},{$row_last}])";
+						$row_start = 0 - $rowkey;
+						$row_last = $last - $rowkey;
+						$tr['Pos'] = "=RANK([{$tot_pos}],[{$tot_pos},{$row_start}]:[{$tot_pos},{$row_last}])";
 					}
 					$export_table[] = $tr;
 				}

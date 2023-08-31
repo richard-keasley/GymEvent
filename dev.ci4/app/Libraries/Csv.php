@@ -38,25 +38,8 @@ function write($filename) {
 		
 		foreach($row as $colkey=>$cell) {
 			$cellcol++;
-			
-			if(preg_match('#^=.*\)$#i', $cell)) {
-				$xlcell = new xlcell([$cellcol, $cellrow]);
-				// extract parameter string
-				preg_match('#\(.*\)#', $cell, $params);
-				$params = $params[0] ?? '';
-				$params = trim($params, '()');
-				# echo $params;
-
-				// get all cell coordinates
-				preg_match_all('#\[[^\]]+\]#', $cell, $addrs);
-				$addrs = $addrs[0] ?? [];
-				// covert [x,y] to A1 
-				foreach($addrs as $key=>$val) {
-					$dxy = explode(',', trim($val, '[]'));
-					$address = $xlcell->address($dxy);
-					$row[$colkey] = str_replace($val, $address, $row[$colkey]);  
-				}
-			}
+			$xlcell = new xlcell($cellcol, $cellrow, $cell);
+			$row[$colkey] = $xlcell->text;
 		}
 					
 		fputcsv($fp, $row);
@@ -67,27 +50,45 @@ function write($filename) {
 
 }
 
-class xlcell implements \stringable{
+class xlcell implements \stringable {
 
-private $xy = [];
+private $attributes = [];
 
-function __construct($xy) {
-	$this->xy = [
-		intval($xy[0] ?? 1),
-		intval($xy[1] ?? 1)
+function __construct($x, $y=0, $content='')  {
+	$this->attributes = [
+		'x' => intval($x),
+		'y' => intval($y),
+		'content' => strval($content)
 	];
+	$text = $this->attributes['content'];
+	
+	if(preg_match('#^=.+#i', $text)) {
+		preg_match_all('#\[[^\]]+\]#', $text, $vals);
+		$vals = $vals[0] ?? [];
+		// covert [x,y] to A1 
+		foreach(array_unique($vals) as $val) {
+			$dxy = explode(',', trim($val, '[]'));
+			$dx = intval($dxy[0] ?? 0);
+			$dy = intval($dxy[1] ?? 0);
+			$address = $this->address($dx, $dy);
+			$text = str_replace($val, $address, $text);  
+		}
+	}
+	$this->attributes['text'] = $text;
+}
+
+function __get($key) {
+	return $this->attributes[$key] ?? null;
 }
 
 function __toString() {
-	return $this->address();
+	return $this->text;
 }
 
-function address($dxy=[0,0]) {
-	$xy = [
-		$this->xy[0] + $dxy[0] ?? 0,
-		$this->xy[1] + $dxy[1] ?? 0
-	];
-	return chr($xy[0] + 64) . $xy[1];
+function address($dx=0,$dy=0) {
+	$x = $this->x + $dx;
+	$y = $this->y + $dy;
+	return chr(64 + $x) . $y;
 }
 
 }
