@@ -178,6 +178,7 @@ static function check_paths() {
 static function check_path($path, $index=1) {
 	// $index=1 returns permission (bool)
 	// $index=0 returns role (string)
+	$path = trim($path, "\/\\ ");
 	if(!isset(self::$check_paths[$path])) {
 		$role = self::path_role($path);
 		$perm = self::check_role($role);
@@ -198,6 +199,7 @@ static function check_role($role, $user_role=null) {
 
 // role required to view this path
 static function path_role($path) {
+	$path = trim($path, "\/\\ ");
 	$segments = array_pad(explode('/', $path), 7, '');
 	
 	$zones = ['api', 'user', 'control', 'admin'];
@@ -337,6 +339,7 @@ static function path_role($path) {
 					default => 'admin'
 				};
 			}
+			break;
 			
 			default:
 			return 'club';
@@ -351,6 +354,7 @@ static function path_role($path) {
 			if($event) {
 				return $event->private ? 'controller' : self::roles[0];
 			}
+			break;
 		}
 	}
 		

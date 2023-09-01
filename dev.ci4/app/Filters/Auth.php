@@ -70,13 +70,13 @@ public function before(RequestInterface $request, $arguments = null) {
 		
 	// check permissions
 	$allowed = \App\Libraries\Auth::check_path($request_path);
-	
-	if($messages) {	
-		$session = \Config\Services::session();
-		$session->setFlashdata('messages', $messages);
+	if($allowed) {
+		if($messages) {	
+			$session = \Config\Services::session();
+			$session->setFlashdata('messages', $messages);
+		}
+		return;
 	}
-	
-	if($allowed) return;
 
 	/* access denied */
 	$disabled = \App\Libraries\Auth::check_path($request_path, 0)=='disabled';

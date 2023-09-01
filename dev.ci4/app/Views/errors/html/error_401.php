@@ -5,8 +5,9 @@ foreach(['name', 'email', 'password', 'password2', 'login'] as $key) {
 $show_reset = ($postval['name'] || $postval['password']) && \App\Libraries\Auth::check_path('reset');
 
 // new users only for club returns
-$segments = $this->request->uri->getSegments();
-$controller = isset($segments[0]) ? $segments[0] : '' ;
+$current_url = new \CodeIgniter\HTTP\URI(current_url());
+$segments = $current_url->getSegments();
+$controller = $segments[0] ?? '' ;
 $allow_new = $controller=='clubrets';
 
 $attr = ['id' => "existing"];
@@ -14,7 +15,7 @@ $hidden = [
 	'tabView' => '#existing',
 	'hp-info' => ''
 ];
-echo form_open(current_url(), $attr, $hidden);
+echo form_open($current_url, $attr, $hidden);
 
 ?>
 <p>Your user name is your club name. 
