@@ -12,18 +12,22 @@ foreach($tempfiles as $key=>$file) {
 array_multisort($sort, $items);
 
 $this->section('content'); ?>
+
 <p>There are currently <?php echo count($items);?> files stored. Sessions older than 
 <mark><?php echo date("Y-m-d H:i:s", $del_time);?></mark>
 are considered expired.</p>
 
 <p>There are <?php echo count($debugfiles);?> debug files stored.</p>
 
+<div class="table-responsive">
 <dl class="list-unstyled">
 <?php foreach($items as $item) {
 	echo "<dt>{$item['dt']}</dt>";
 	echo "<dd>{$item['dd']}</dd>";
 } ?>
 </dl>
+</div>
+
 <?php 
 $this->endSection(); 
 

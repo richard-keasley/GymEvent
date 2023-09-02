@@ -1,14 +1,23 @@
-<?php include __DIR__ . '/_head.php';
+<?php 
+use \App\Libraries\Auth;
+include __DIR__ . '/_head.php';
 foreach(['name', 'email', 'password', 'password2', 'login'] as $key) {
 	$postval[$key] = trim(strval(filter_input(INPUT_POST, $key)));
 }
-$show_reset = ($postval['name'] || $postval['password']) && \App\Libraries\Auth::check_path('reset');
-
-// new users only for club returns
 $current_url = new \CodeIgniter\HTTP\URI(current_url());
-$segments = $current_url->getSegments();
-$controller = $segments[0] ?? '' ;
-$allow_new = $controller=='clubrets';
+	
+// show reset after a failed attempt
+$show_reset = ($postval['name'] || $postval['password']) && Auth::check_path('reset');
+
+// default role allowed? 
+$show_new = Auth::check_role(Auth::$min_role, Auth::def_role);
+if($show_new) {
+	// new users only for club returns
+	$segments = $current_url->getSegments();
+	$controller = $segments[0] ?? '' ;
+	$show_new = $controller=='clubrets';
+}
+
 
 $attr = ['id' => "existing"];
 $hidden = [
@@ -19,7 +28,7 @@ echo form_open($current_url, $attr, $hidden);
 
 ?>
 <p>Your user name is your club name. 
-<?php if($allow_new) { ?>
+<?php if($show_new) { ?>
 Please <strong>create an account</strong> if you have not used this service before.
 <?php } ?></p>
  
@@ -33,7 +42,7 @@ Please <strong>create an account</strong> if you have not used this service befo
 </p>
 <p>
 	<button name="login" type="submit" value="login" class="btn btn-primary">Login</button>
-	<?php if($allow_new) { ?>
+	<?php if($show_new) { ?>
 	<button type="button" class="btn btn-outline-secondary" onclick="tabShow('#create')">Create an account</button>
 	<?php } ?>
 	<?php if($show_reset) { ?>
@@ -52,7 +61,7 @@ if($show_reset) { ?>
 </div>
 <?php } 
 
-if($allow_new) { 
+if($show_new) { 
 $attr = [
 	'id' => "create",
 	'autocomplete' => "off"

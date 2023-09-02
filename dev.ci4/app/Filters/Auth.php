@@ -58,7 +58,7 @@ public function before(RequestInterface $request, $arguments = null) {
 		}
 	}
 	
-	// check this role is enabled
+	// if there is a login, check this role is enabled
 	$user_role = $_SESSION['user_role'] ?? null;
 	if($user_role) {
 		$min_role = \App\Libraries\Auth::$min_role;
@@ -67,16 +67,15 @@ public function before(RequestInterface $request, $arguments = null) {
 			\App\Libraries\Auth::logout();
 		}
 	}
+	
+	if($messages) {	
+		$session = \Config\Services::session();
+		$session->setFlashdata('messages', $messages);
+	}
 		
 	// check permissions
 	$allowed = \App\Libraries\Auth::check_path($request_path);
-	if($allowed) {
-		if($messages) {	
-			$session = \Config\Services::session();
-			$session->setFlashdata('messages', $messages);
-		}
-		return;
-	}
+	if($allowed) return;
 
 	/* access denied */
 	$disabled = \App\Libraries\Auth::check_path($request_path, 0)=='disabled';

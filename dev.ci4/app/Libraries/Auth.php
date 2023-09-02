@@ -167,6 +167,7 @@ static function logout() {
 
 /* roles and permissions */ 
 const roles = ['-', 'club', 'controller', 'admin', 99=>'superuser'];
+const def_role = 'club';
 
 static private $check_paths = [];
 
