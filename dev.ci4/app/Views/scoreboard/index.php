@@ -10,7 +10,7 @@ $this->section('content'); ?>
 <p>The announcer's screen has the same lists of entries per round / rotation as the judges. These lists also update with judges' actions (selecting an entry to judge, entry can start routine, judge started entering scores, score value). This means the announcer is kept up to date with every aspect of the event as it happens.</p>
 <p>We can switch on the scoreboard before the day so judges can familiarise themselves with the system.</p>
 
-<p class="toolbar"><?php 
+<div class="toolbar"><?php 
 echo \App\Libraries\View::back_link("/");
 echo getlink('/setup/scoreboard', 'admin');
 ?></div>
