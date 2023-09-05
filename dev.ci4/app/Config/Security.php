@@ -15,7 +15,7 @@ class Security extends BaseConfig
      *
      * @var string 'cookie' or 'session'
      */
-    public string $csrfProtection = 'session';
+    public string $csrfProtection = 'cookie';
 
     /**
      * --------------------------------------------------------------------------
@@ -70,7 +70,6 @@ class Security extends BaseConfig
      * --------------------------------------------------------------------------
      *
      * Regenerate CSRF Token on every submission.
-	 // don't set this... it blocks multiple requests to API (e.g. TeamTime)
      */
     public bool $regenerate = false;
 
