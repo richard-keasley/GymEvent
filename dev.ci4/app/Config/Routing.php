@@ -35,7 +35,7 @@ class Routing extends BaseRouting
      *
      * Default: 'App\Controllers'
      */
-    public string $defaultNamespace = 'App\Controllers\\';
+    public string $defaultNamespace = 'App\Controllers';
 
     /**
      * The default controller to use when no other controller has been

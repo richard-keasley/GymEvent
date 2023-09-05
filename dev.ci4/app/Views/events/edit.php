@@ -28,23 +28,21 @@ ob_start(); // Details ?>
 </p>
 
 <?php
-$attr = [
+$attrs = [
 	'name' => 'description',
 	'value' => $event->description
 ];
-$editor = new \App\Views\Htm\Editor($attr);
-echo $editor->htm();
+echo new \App\Views\Htm\Editor($attrs);
 
 $acc->set_item('Details', ob_get_clean());
 
 ob_start(); // staff 
 
-$attr = [
+$attrs = [
 	'name' => 'staff',
 	'value' => $event->staff
 ];
-$editor = new \App\Views\Htm\Editor($attr);
-echo $editor->htm();
+echo new \App\Views\Htm\Editor($attrs);
 
 $edit_locked = $event->clubrets > 0;
 if($edit_locked) { ?>
@@ -87,12 +85,11 @@ $acc->set_item('Staff', ob_get_clean());
 
 ob_start(); // disciplines / categories 
 
-$attr = [
+$attrs = [
 	'name' => 'participants',
 	'value' => $event->participants
 ];
-$editor = new \App\Views\Htm\Editor($attr);
-echo $editor->htm();
+echo new \App\Views\Htm\Editor($attrs);
 
 $edit_locked = $event->clubrets > 0;
 
@@ -255,12 +252,11 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 $acc->set_item('Participants', ob_get_clean());
 
 ob_start(); // Payment
-$attr = [
+$attrs = [
 	'name' => 'payment',
 	'value' => $event->payment
 ];
-$editor = new \App\Views\Htm\Editor($attr);
-echo $editor->htm();
+echo new \App\Views\Htm\Editor($attrs);
 ?> 
 <p>This explains how clubs should pay. Include bank details and any dead-lines.</p>
 <?php

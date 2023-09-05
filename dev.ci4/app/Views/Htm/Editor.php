@@ -1,26 +1,31 @@
 <?php namespace App\Views\Htm;
 
-class Editor {
-const version = '6.3.2'; 
+class Editor implements \stringable {
+const version = '6.7.0';
+static $script_done = false;
 
-public $attr = [
+private $attrs = [
 	'name' => 'html',
 	'value' => '',
 	'class' => 'form-control'
 ];
+
 public $label = true;
-public $src = '';
 
-public function __construct($attr=[]) {
-	foreach($attr as $key=>$val) $this->attr[$key] = $val;
-	$this->src = sprintf('/app/tinymce_%s/tinymce/js/tinymce/tinymce.min.js', self::version);
-} 
+public function __construct($attrs=[]) {
+	foreach($attrs as $key=>$val) $this->attrs[$key] = $val;
+}
 
-public function htm() {
-	$id = "{$this->attr['name']}-editor";
+public function __get($key) {
+	return $this->attrs[$key] ?? null;
+}
+
+public function __toString() {
+	ob_start();
+	$id = "{$this->attrs['name']}-editor";
 	printf('<div id="%s">', $id);
-	if($this->label) printf('<label>%s</label>', humanize($this->attr['name']));
-	echo form_textarea($this->attr);
+	if($this->label) printf('<label>%s</label>', humanize($this->name));
+	echo form_textarea($this->attrs);
 	?>
 	<script>
 	$(function(){
@@ -39,9 +44,18 @@ public function htm() {
 	});
 	});
 	</script>
-	<script src="<?php echo $this->src;?>"></script>
 	<?php
 	echo '</div>';
+	
+	if(!self::$script_done) {
+		$attrs = [
+			'src' => sprintf('/app/tinymce_%s/tinymce/js/tinymce/tinymce.min.js', self::version)
+		];
+		printf('<script %s></script>', stringify_attributes($attrs));
+	}
+	self::$script_done = true;
+	
+	return ob_get_clean();
 }
 
 }
