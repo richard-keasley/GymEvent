@@ -1,6 +1,7 @@
 <?php 
-if(empty($_SESSION['user_id'])) return; 
+$logged_in = $_SESSION['user_id'] ?? false;
 
+if($logged_in) {
 $attr = [
 	'class' => "alert alert-light p-1 d-print-none"
 ];
@@ -8,11 +9,13 @@ echo form_open(site_url(), $attr); ?>
 <button class="btn btn-secondary" type="submit" name="logout" value="1">Logout</button>
 <?php echo getlink('admin', 'admin'); ?> 
 <label><?php 
-$label = "Logged in as {$_SESSION['user_name']}";
+$user_name = $_SESSION['user_name'] ?? 'unknown';
+$label = "Logged in as {$user_name}";
 $link = getlink('user', $label);
 echo $link ? $link : $label;
 ?></label>
 <?php echo form_close();
+}
 
 if(ENVIRONMENT != 'development') return;
 if(!empty($exception)) return;

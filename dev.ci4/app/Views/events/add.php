@@ -12,18 +12,18 @@ echo form_open(current_url(), $attr, $hidden); ?>
 
 <p class="input-group">
   <label class="input-group-text">title</label>
-	<?php echo form_input("title", $event->title, 'class="form-control"');?>
+	<?php echo form_input("title", $event->title ?? '', 'class="form-control"');?>
 </p>
 
 <p class="input-group">
   <label class="input-group-text">date</label>
-	<?php echo form_input("date", $event->date, 'class="form-control"', 'date');?>
+	<?php echo form_input("date", $event->date ?? '', 'class="form-control"', 'date');?>
 </p>
 
 <div class="my-3"><?php 
 $attrs = [
 	'name' => 'description',
-	'value' => $event->description
+	'value' => $event->description ?? ''
 ];
 echo new \App\Views\Htm\Editor($attrs);
 ?></div>
@@ -35,4 +35,5 @@ echo new \App\Views\Htm\Editor($attrs);
 
 <?php 
 echo form_close();
+# d($event);
 $this->endSection(); 

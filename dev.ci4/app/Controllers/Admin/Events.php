@@ -38,12 +38,26 @@ public function index() {
 	return view('events/index', $this->data);
 }
 
-public function add() {
-	$event = new \App\Entities\Event();
-	foreach(['title', 'date', 'description'] as $key) $event->$key = strval($this->request->getPost($key));
+public function add($event_id=0) {
+	$event = $event_id ? $this->mdl_events->withDeleted()->find($event_id) : null ;
+	if($event) {
+		$attribs = $event->toArray();
+		$keys = ['id', 'clubrets', 'videos', 'music', 'deleted_at', 'player'];
+		foreach($keys as $key) unset($attribs[$key]);
+		$this->data['heading'] = $event->title . ' - clone';
+	}
+	else {
+		$attribs = [];
+		$this->data['heading'] = 'Create new event';
+	}
 		
 	if($this->request->getPost('save')) {
 		// create
+		$post_keys = ['title', 'date', 'description'];
+		foreach($post_keys as $key) {
+			$attribs[$key] = strval($this->request->getPost($key));
+		}
+		$event = new \App\Entities\Event($attribs);
 		$id = $this->mdl_events->insert($event);
 		if($id) {
 			$this->find($id);
@@ -54,7 +68,8 @@ public function add() {
 			$this->data['messages'] = $this->mdl_events->errors();
 		}
 	}
-	$this->data['event'] = $event;
+	
+	$this->data['event'] = new \App\Entities\Event($attribs);
 	$this->data['breadcrumbs'][] = 'admin/events/add';
 	return view('events/add', $this->data);
 }
@@ -90,7 +105,7 @@ public function view($event_id=0) {
 			$this->data['messages'][] = "Event {$item_id} not deleted.";
 		}
 	}
-	
+		
 	$state = $this->request->getPost('state');
 	switch($state) {
 		case 'list':
