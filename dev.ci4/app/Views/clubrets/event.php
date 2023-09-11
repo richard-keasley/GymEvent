@@ -23,6 +23,7 @@ foreach($summary as $row) {
 			$tfoot[$key] = match($key) {
 				'club' => count($arr),
 				'updated' => '',
+				'staff' => '',
 				'fees' => \App\Views\Htm\Table::money(array_sum($arr)),
 				default => \App\Views\Htm\Table::number(array_sum($arr))
 			};
