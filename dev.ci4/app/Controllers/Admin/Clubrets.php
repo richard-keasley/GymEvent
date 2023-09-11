@@ -166,23 +166,32 @@ public function event($event_id=0) {
 	foreach($clubrets as $rowkey=>$clubret) {
 		$user = $clubret->user();
 		if($download=='summary') {
-			$label = $user ? $user->name : '[unknown]' ;
+			$club = $user ? $user->name : '[unknown]' ;
 		}
 		else {
 			if($user) {
-				$label = $user->name;
-				if($user->deleted_at) $label .= ' <i class="bi bi-x-circle text-danger" title="This user is disabled"></i>';		
+				$club = $user->name;
+				if($user->deleted_at) $club .= ' <i class="bi bi-x-circle text-danger" title="This user is disabled"></i>';		
 			}
-			else $label = 'unknown <i class="bi bi-exclamation-triangle-fill text-warning"></i>';
+			else $club = 'unknown <i class="bi bi-exclamation-triangle-fill text-warning"></i>';
 			
 			$ok = $clubret->check();
-			if(!$ok) $label .= ' <span class="bi bi-exclamation-triangle-fill text-warning" title="There are errors in this return"></span>';
-			$label = getlink($clubret->url('view', 'admin'), $label);
-			if($user) $label .= ' ' . $user->link();
+			if(!$ok) $club .= ' <span class="bi bi-exclamation-triangle-fill text-warning" title="There are errors in this return"></span>';
+			$club = getlink($clubret->url('view', 'admin'), $club);
+			if($user) $club .= ' ' . $user->link();
 		}
+		
+		$staff = $clubret->stafffee ? 'x' : '' ;
+		if($download!=='summary') {
+			$staff = $staff ? 
+				'<span class="bi-check text-success"></span>' : 
+				'<span class="bi-x text-danger"></span>' ;
+		}
+		
 		$tbody[$rowkey] = [
-			'club' => $label,
-			'updated' => $clubret->updated
+			'club' => $club,
+			'updated' => $clubret->updated,
+			'staff' => $staff
 		];
 				
 		$count[$rowkey] = [];

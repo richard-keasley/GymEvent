@@ -33,6 +33,7 @@ foreach($summary as $row) {
 		$tr[$key] = match($key) {
 			'fees' => \App\Views\Htm\Table::money($val),
 			'updated' => \App\Views\Htm\Table::time($val),
+			'staff' => $val,
 			'club' => $val,
 			default => \App\Views\Htm\Table::number($val)
 		};		
