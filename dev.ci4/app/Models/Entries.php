@@ -91,9 +91,10 @@ public function renumber($event_id) {
 			$entries = $this
 				->where('category_id', $entrycat->id)
 				->findAll();
+				
 			/*
 			renumber is sorted by clubs, 
-			but shuffle the order clubs appear in	
+			but shuffle the order clubs appear in
 			*/
 			$clubsort = []; $sort = [];
 			foreach($entries as $entry) {
@@ -101,14 +102,21 @@ public function renumber($event_id) {
 				$sort[] = $user_id;
 				if(!in_array($user_id, $clubsort)) $clubsort[] = $user_id;
 			}
-			# d($clubsort, $sort);
+			#d($clubsort, $sort);
 			shuffle($clubsort);
 			$clubsort = array_flip($clubsort);
 			foreach($sort as $key=>$user_id) {
-				$sort[$key] = $clubsort[$user_id];
+				/*
+				always sorted by Name (from Club return)
+				rand() shuffles names
+				*/
+				$sort[$key] = [
+					$clubsort[$user_id],
+					rand()
+				];
 			}
 			array_multisort($sort, $entries);
-			# d($clubsort, $sort);
+			#d($clubsort, $sort);
 			
 			foreach($entries as $entry) {
 				$entry->num = $num;
