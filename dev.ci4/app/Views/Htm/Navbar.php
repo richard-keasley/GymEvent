@@ -3,7 +3,8 @@
 class Navbar implements \Stringable {
 public $items = [];
 public $template = [
-	'items_start' => '<ul class="nav flex-column">',
+	# was class="nav flex-column"
+	'items_start' => '<ul class="navbar-nav">',
 	'item_start' => '<li class="nav-item">',
 	'a_attr' => ['class'=>'nav-link'],
 	'item_end' => '</li>',
