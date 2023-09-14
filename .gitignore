@@ -11,4 +11,4 @@ dev.ci4/public/public/*
 
 # live version
 public.ci4/*
-public_html/error_log
+public_html/*
