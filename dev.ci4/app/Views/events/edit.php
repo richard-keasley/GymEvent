@@ -103,7 +103,6 @@ else { ?>
 
 <div id="discats">
 <?php 
-$tbody = [];
 $discats = $event->discats;
 if(!$discats) { // provide one blank row 
 	$discats = [[
@@ -122,14 +121,14 @@ $input = [
 	'class' => 'form-control',
 	'cols' => 5,
 	'rows' => 5,
-	'style' => "min-width:5em;"
+	'style' => "min-width:6em;"
 ],
 'cats' => [
 	'name' => 'cats',
 	'class' => 'form-control',
 	'cols' => 30,
 	'rows' =>5,
-	'style' => "min-width:6em;"
+	'style' => "min-width:8em;"
 ],
 'opts' => [
 	'name' => 'opts',
@@ -146,6 +145,7 @@ if($edit_locked) {
 	}
 }
 
+$tbody = [];
 foreach($discats as $key=>$discat) {
 	$input['name']['value'] = $discat['name'];
 	
@@ -167,19 +167,23 @@ foreach($discats as $key=>$discat) {
 		'<button type="button" name="del" class="btn bi-trash btn-danger" title="delete"></button>'
 	];
 }
-$template = ['table_open' => '<table class="discats">'];
-$table = new \CodeIgniter\View\Table($template);
 
-$dis_heading = 'dis <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#help-dis">?</button>';
+$thead = [
+	'dis <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#help-dis">?</button>',
+	
+	'inf <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#help-inf">?</button>',
+	
+	'cats <a tabindex="0" role="button" class="popover-dismiss btn btn-sm btn-info" data-bs-toggle="popover" title="Categories options" data-bs-content="Comma separated lines of single words. Each line is a set of options.">?</a>',
+	
+	'options <a tabindex="0" role="button" class="popover-dismiss btn btn-sm btn-info" data-bs-toggle="popover" title="Entry options" data-bs-content="Single words, each on a separate line">?</a>',
+	
+	''
+];
 
-$inf_heading = 'inf <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#help-inf">?</button>';
-
-$cat_heading = 'cats <a tabindex="0" role="button" class="popover-dismiss btn btn-sm btn-info" data-bs-toggle="popover" title="Categories options" data-bs-content="Comma separated lines of single words. Each line is a set of options.">?</a>';
-
-$opt_heading = 'options <a tabindex="0" role="button" class="popover-dismiss btn btn-sm btn-info" data-bs-toggle="popover" title="Entry options" data-bs-content="Single words, each on a separate line">?</a>';
-
-$table->setHeading($dis_heading, $inf_heading, $cat_heading, $opt_heading, '');
+$table = \App\Views\Htm\Table::load('responsive');
+$table->setHeading($thead);
 echo $table->generate($tbody);
+
 echo form_hidden('discats', '');?>
 <button name="add" type="button" class="btn bi-plus-square btn-success" title="add row"></button>
 
