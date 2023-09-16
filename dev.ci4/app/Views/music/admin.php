@@ -4,14 +4,14 @@ $this->section('content');
 # d($event);
 # d($entries);
 # d($users);
+# d($filter);
 
 $user_options = [0 => '-'];
 foreach($users as $id=>$user) $user_options[$id] = $user->name;
 
-$action = uri_string() . '?' . http_build_query($filter);
 $attr = ['id' => "control"];
 $hidden = ['cmd' => "update"];
-echo form_open($action, $attr, $hidden); 
+echo form_open(current_url(true), $attr, $hidden); 
 ?>
 <div class="toolbar nav row sticky-top">
 	<div class="input-group">
@@ -155,7 +155,7 @@ $attr = [
 	'class' => 'modal-content'
 ];
 $hidden = ['set_state' => 1];
-echo form_open($action, $attr, $hidden);
+echo form_open(current_url(true), $attr, $hidden);
 ?>
 <div class="modal-header">
 <h5 class="modal-title" id="exampleModalLabel">Event music state</h5>
@@ -223,5 +223,4 @@ function update_selector(dis_id) {
 </script>
 
 <?php 
-# d($filter);
 $this->endSection();

@@ -21,18 +21,21 @@ echo \App\Libraries\View::back_link('admin/events');
 if($can_edit) {
 	
 echo getlink("admin/events/edit/{$event->id}", 'edit');
+$label = '<span class="bi-clipboard-plus" title="Clone this event"></span>';
+echo getlink("admin/events/add/{$event->id}", $label);
 
 if($event->deleted_at) { ?>
 	<button type="submit" name="state" value="list" title="list this event" class="btn btn-success bi-check-circle"></button>
+
 	<?php if(empty($disk_space['count'])) { ?>
 	<button type="button" title="Delete this event" class="btn btn-danger bi-trash" data-bs-toggle="modal" data-bs-target="#modal_delete"></button>
 	<?php } ?>
-<?php } else { ?>
-	<button type="submit" name="state" value="hide" title="hide this event" class="btn btn-danger bi-x-circle"></button>
+
 <?php }
 
-$label = '<span class="btn btn-secondary bi-clipboard-plus"></span>';
-echo anchor("admin/events/add/{$event->id}", $label);
+else { ?>
+	<button type="submit" name="state" value="hide" title="hide this event" class="btn btn-danger bi-x-circle"></button>
+<?php }
 
 }
 
