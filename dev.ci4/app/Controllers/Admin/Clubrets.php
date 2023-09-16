@@ -162,6 +162,7 @@ public function event($event_id=0) {
 	
 	// build summary table
 	$fees = []; $cols = []; $count = []; $tbody = [];
+	$stafffee = floatval($this->data['event']->stafffee);
 
 	foreach($clubrets as $rowkey=>$clubret) {
 		$user = $clubret->user();
@@ -181,18 +182,20 @@ public function event($event_id=0) {
 			if($user) $club .= ' ' . $user->link();
 		}
 		
-		$staff = $clubret->stafffee ? 'x' : '' ;
-		if($download!=='summary') {
-			$staff = $staff ? 
-				'<span class="bi-check text-success"></span>' : 
-				'<span class="bi-x text-danger"></span>' ;
-		}
-		
 		$tbody[$rowkey] = [
 			'club' => $club,
-			'updated' => $clubret->updated,
-			'staff' => $staff
+			'updated' => $clubret->updated
 		];
+		
+		if($stafffee) {
+			$val = $clubret->stafffee ? 'X' : '' ;
+			if($download!=='summary') {
+				$val = $val ?
+					'<span class="bi-check text-success"></span>' : 
+					'<span class="bi-x text-danger"></span>' ;
+			}
+			$tbody[$rowkey]['staff'] = $val;
+		}	
 				
 		$count[$rowkey] = [];
 		foreach($clubret->participants as $participant) {
