@@ -41,8 +41,6 @@ public function index() {
 	$this->data['body'] = 'music';
 	$this->data['back_link'] = 'events';
 	$this->data['base_url'] = 'music/view';
-	$this->data['title'] = 'Video index';
-	$this->data['heading'] = 'Select event to view';
 	return view('events/index', $this->data);
 }
 
@@ -159,7 +157,7 @@ public function edit($entry_id=0) {
 			use client extension... that will be used after upload
 			https://codeigniter.com/user_guide/libraries/uploaded_files.html
 			*/
-			$extension = $file->getClientExtension();
+			$extension = strtolower($file->getClientExtension());
 			if(!in_array($extension, \App\Libraries\Track::exts_allowed)) $error = "Files of type '{$extension}' are not allowed";
 		}
 		if(!$error) {
