@@ -13,8 +13,11 @@ https://codeigniter4.github.io/userguide/incoming/filters.html
 
 public function before(RequestInterface $request, $arguments = null) {
 	\App\Libraries\Auth::init();
-		
-	$request_path = $request->uri->getPath();
+	
+	$segments = $request->getUri()->getSegments();
+	$request_path = implode('/', $segments);
+	# $request_path = $request->uri->getPath();
+
 	$messages = [];
 	
 	$check_ip = \App\Libraries\Auth::$lgn_model->check_ip($request->getIPAddress());

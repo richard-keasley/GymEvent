@@ -1,21 +1,35 @@
 <?php $this->extend('default');
+$current_url = current_url(true);
+$request_page = implode('/', $current_url->getSegments());
+parse_str($current_url->getQuery(), $request_query);
 
 $this->section('content');
-echo form_open(current_url());
+# d($request_page, $request_query, $base_url);
 ?>
 <div class="sticky-top">
 <div class="table-responsive toolbar">
 <div>
 	<a class="btn btn-secondary" href="<?php echo $base_url;?>/add">Add user</a>
-	<a class="btn btn-secondary" href="<?php echo $base_url;?>/logins">Logins</a>
+	<a class="btn btn-outline-secondary" href="<?php echo $base_url;?>/logins">Logins</a>
 
 	<div class="btn-group"><?php
+
 	printf('<a class="btn btn-outline-secondary" href="%s">*</a>', $base_url); 
+		
+	$query = $request_query;
+	$attrs = [
+		'class' => "btn btn-outline-secondary"
+	];
 	foreach(\App\Libraries\Auth::roles as $role) {
-		printf('<a class="btn btn-outline-secondary" href="%1$s?by=role&val=%2$s">%2$s</a>', $base_url, $role);
-	} 
+		$query['by'] = "role";
+		$query['val'] = $role;
+		echo anchor($request_page . '?' . http_build_query($query), $role, $attrs);
+	}
+	
 	foreach(['enabled', 'disabled'] as $status=>$label) {
-		printf('<a class="btn btn-outline-secondary" href="%s?by=deleted&val=%u">%s</a>', $base_url, $status, $label);
+		$query['by'] = "deleted";
+		$query['val'] = $status;
+		echo anchor($request_page . '?' . http_build_query($query), $label, $attrs);
 	}
 	?></div>
 </div>	
@@ -28,7 +42,20 @@ echo $filter->htm();
 
 $table = \App\Views\Htm\Table::load('default');
 
-$thead = ['Name', 'active', 'role', ''];
+$sorts = [
+	'name' => 'Name',
+	'updated' => 'Active',
+	'role' => 'Role'
+];
+$thead = [];
+$query = $request_query;
+$request_sort = $query['sort'] ?? '';
+foreach($sorts as $sort=>$label) {
+	if($request_sort==$sort) $label .= ' <span class="bi bi-caret-down-fill"></span>';
+	$query['sort'] = $sort; 
+	$thead[] = anchor($request_page . '?' . http_build_query($query), $label);
+}
+$thead[] = '';
 $table->setHeading($thead);
 
 $tbody = [];
@@ -58,8 +85,11 @@ foreach($users as $user) {
 		$btns
 	];
 }
+
+echo form_open($current_url);
 echo $table->generate($tbody);
 echo form_close();
+
 $this->endSection(); 
 
 $this->section('bottom'); 
