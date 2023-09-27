@@ -13,7 +13,11 @@ const icons = [
 ];
 	
 protected $casts = [
-	'staffcats' => 'csv'
+	'staffcats' => 'csv',
+	'clubrets' => 'integer',
+	'videos' => 'integer',
+	'music' => 'integer',
+	'private' => 'integer'
 ];
 
 public function getDiscats() {
@@ -377,30 +381,24 @@ public function link($type, $user_id=0) {
 
 		case 'music':
 		if(!\App\Libraries\Track::enabled()) return '';
-		switch($this->music) {
-			case self::states['edit']:
-			case self::states['view']:
-				$href = "music/view/{$this->id}";
-				$label = "music";
-				if($user_id) {
-					$attr = [
-						'class' => 'nav-link', 
-						'title' => "View your music"
-					];
-				}
-				else {
-					$attr = [
-						'class' => 'btn btn-outline-secondary', 
-						'title' => "login to view music"
-					];
-				}
-				return anchor($href, $label, $attr);
-							
-			case self::states['waiting']:
-			case self::states['finished']:
-			default:
-			return '';
-		}
+		// can't check perm because may not be logged in
+		$href = "music/view/{$this->id}";
+		$attrs = $user_id ?
+			[
+				'class' => 'nav-link', 
+				'title' => "View your music"
+			] : 
+			[
+				'class' => 'btn btn-outline-secondary', 
+				'title' => "login to view music"
+			] ;
+		return match($this->music) {
+			self::states['waiting'] => '',
+			self::states['edit'] => anchor($href, 'music', $attrs),
+			self::states['view'] => '',
+			self::states['finished'] => '',
+			default => ''
+		};
 		break;
 		
 		case 'player':
@@ -411,22 +409,19 @@ public function link($type, $user_id=0) {
 			'control/teamtime/player' : 
 			"control/player/view/{$this->id}";
 
-		switch($this->music) {
-			case self::states['finished']:
-			case self::states['waiting']:
-				$perm = 0; break;
-			case self::states['view']:
-				$perm = 1; break;
-			case self::states['edit']:
-			default:
-			$perm = \App\Libraries\Auth::check_path($path);	
-		}
+		$perm = match($this->music) {
+			self::states['waiting'] => 0,
+			self::states['edit'] => \App\Libraries\Auth::check_path($path),
+			self::states['view'] => 1,
+			self::states['finished'] => 0,
+			default => 0
+		};
 		if($perm) { 
-			$attr = [
+			$attrs = [
 				'class' => 'nav-link', 
 				'title' => "View music player"
 			];
-			return anchor($path, 'player', $attr);            
+			return anchor($path, 'player', $attrs);            
 		}
 		break;
 		
