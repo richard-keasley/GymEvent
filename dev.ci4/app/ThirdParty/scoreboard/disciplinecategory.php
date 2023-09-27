@@ -1,6 +1,6 @@
 <?php 
 $this->tables['disciplinecategory'] = array (
-  'time' => '2022-10-11 09:03:37',
+  'time' => '2022-11-01 10:09:19',
   'table' => 
   array (
     0 => 

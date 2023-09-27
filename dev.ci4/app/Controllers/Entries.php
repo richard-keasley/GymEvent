@@ -20,17 +20,17 @@ private function find($event_id) {
 	}
 	$this->data['entries'] = $this->model->evt_discats($event_id);
 	$this->data['heading'] = $this->data['event']->title;
+	if($this->data['event']->private) $this->data['heading'] .= ' (private)';
 }
 	
 public function index() {
-	$events = [];
 	$sql = "SELECT DISTINCT `events`.`id` FROM `events` 
 	INNER JOIN `evt_disciplines` ON `evt_disciplines`.`event_id`=`events`.`id`
 	WHERE `events`.`clubrets`=2
 	ORDER BY `events`.`date`";
 	$query = $this->model->db->query($sql);
 	$ids =  array_column($query->getResultArray(), 'id');
-	$mod_events = new \App\Models\Events();
+	$mod_events = new \App\Models\Events;
 	$this->data['events'] = $mod_events->find($ids);
 	
 	$this->data['body'] = 'entries';
