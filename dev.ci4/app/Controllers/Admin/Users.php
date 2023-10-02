@@ -59,8 +59,12 @@ public function index() {
 	// read
 	$filter_by = $this->request->getGet('by');
 	$filter_val = $this->request->getGet('val');
-		
-	$this->usr_model->orderby('name');
+	
+	$sorts = ['name', 'updated', 'role'];
+	$sort = $this->request->getGet('sort');
+	if(!in_array($sort, $sorts)) $sort = current($sorts);
+	$this->usr_model->orderBy($sort);
+	
 	if($filter_by=='deleted') {
 		if($filter_val) $this->usr_model->onlyDeleted();
 	}
@@ -316,7 +320,8 @@ public function logins($filter='', $id='') {
 			$login['user_name'] = $user_names[$uid];
 		}
 		$login['check_ip'] = $lgn_model->check_ip($login['ip']);
-		$login['ip_info'] = implode(', ', \App\Models\Logins::ip_info($login['ip'], ['city', 'countryCode']));
+		$keys = ['city', 'countryCode'];
+		$login['ip_info'] = \App\Models\Logins::ip_info($login['ip'], $keys);
 
 		$this->data['logins'][] = $login;
 	}

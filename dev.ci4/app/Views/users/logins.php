@@ -20,7 +20,7 @@ foreach($logins as $login) {
 	$tbody[] = [
 		date('d M y H:i', strtotime($login['updated'])),
 		sprintf('<a href="%s/logins/ip/%s">%s</a>', $base_url, $login['ip'], $IP),
-		$login['ip_info'],
+		implode(', ', $login['ip_info']),
 		$user_link,
 		$login['error'] ? sprintf('<div class="alert alert-danger my-1 p-1">%s</div>', $login['error']) : '<span class="text-success">OK</span>',
 		'btns' => 

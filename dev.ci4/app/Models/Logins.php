@@ -51,9 +51,8 @@ function check_ip($ip) {
 			];
 		}
 	}
+	if(isset(self::$config['ignore'])) return true;	
 	
-	if(isset(self::$config['ignore'])) return true;
-		
 	if(!isset($this->_ip_checks[$ip])) {
 		// delete old records (remove temporary blocks)
 		$this->where('updated <', self::$config['del_time'])
@@ -82,10 +81,11 @@ function check_ip($ip) {
 	return $this->_ip_checks[$ip];
 }
 
-static $_ip_info = [];
 static function ip_info($ip, $attribs=null) {
-	if(empty(self::$_ip_info[$ip])) {
-		$url = "http://ip-api.com/json/$ip";
+	$ip_info = session('ip_info');
+	if(!is_array($ip_info)) $ip_info = [];
+	if(empty($ip_info[$ip])) {
+		$url = "http://ip-api.com/json/{$ip}";
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -109,17 +109,24 @@ static function ip_info($ip, $attribs=null) {
 			];
 		}
 		curl_close($ch);
-		self::$_ip_info[$ip] = $response;
+		$ip_info[$ip] = $response;
+		$session = session();
+		$session->set('ip_info', $ip_info);
 	}
-	$info = self::$_ip_info[$ip];
+	$info = $ip_info[$ip];
 	
-	if($info['status']!='success') return [$info['message']];
+	// complete array requested
 	if(empty($attribs)) return $info;
 
+	// just return selected attributes
 	$retval = [];
+	if($info['status']!='success') {
+		// ensure error message is returned
+		$retval[] = $info['message'] ?? 'ERROR';
+	}
 	foreach($attribs as $attrib) {
-		if(isset(self::$_ip_info[$ip][$attrib])) {
-			$retval[$attrib] = self::$_ip_info[$ip][$attrib];
+		if(isset($info[$attrib])) {
+			$retval[$attrib] = $info[$attrib];
 		}
 	}
 	return $retval;
