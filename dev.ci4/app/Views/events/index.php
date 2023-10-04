@@ -36,7 +36,7 @@ foreach($events as $event) {
 		sprintf('%s %s: %s', $icon, $date->format('j-M-y'), $event->title)
 	];
 }
-$navbar = new \App\Views\Htm\Navbar($nav);
-echo $navbar->htm();
+// navbar won't display private events unless permitted
+echo new \App\Views\Htm\Navbar($nav);
 	
 $this->endSection(); 
