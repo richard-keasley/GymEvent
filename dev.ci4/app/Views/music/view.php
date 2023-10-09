@@ -9,7 +9,10 @@ $track->event_id = $event->id;
 # d($entries);
 # d($filter, $cat_opts);
 
+
 ?>
+<p>The music upload service will close at 8:00pm on <?php echo $event->dates['music_closes']->format('j F');?>.</p>
+
 <form method="GET" id="selector" class="mb-2 toolbar">
 <?php 
 echo getlink("admin/music/view/{$event->id}", 'admin');

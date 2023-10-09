@@ -3,10 +3,10 @@ $table = \App\Views\Htm\Table::load('small');
 $can_edit = \App\Libraries\Auth::check_path("admin/events/edit/{$event->id}");
 
 $this->section('top'); ?>
-<h5><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></h5>
+<h5><?php $date = new \DateTime($event->date); echo $date->format('j F Y');?></h5>
 
 <?php 
-# d($event);
+# d($event->dates);
 # d($event->users('', false));
 # d($event->users('clubrets', false));
 
@@ -93,6 +93,14 @@ if($disk_space['count'] && $event->deleted_at) { ?>
 <?php } ?>
 </section>
 
+<section class="my-2 row">
+<ul class="list-unstyled"><?php
+$format = '<li>%s: %s</li>';
+foreach($event->dates as $key=>$date) {
+	printf($format, humanize($key), $date->format('j F'));
+}
+?></ul>
+</section>
 
 <?php if($event->clubrets==1) { ?>
 <section>

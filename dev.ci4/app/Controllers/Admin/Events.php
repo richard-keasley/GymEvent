@@ -191,6 +191,13 @@ public function edit($event_id=0) {
 		
 		// check-boxes
 		$getPost['private'] = $getPost['private'] ?? 0 ;
+		
+		// dates
+		$keys = array_keys($this->data['event']->dates);
+		$getPost['dates'] = [];
+		foreach($keys as $key) {
+			$getPost['dates'][$key] = $getPost["dates_{$key}"];
+		}
 				
 		// ToDo - convert discats to be stored as JSON
 		$discats = [];

@@ -12,6 +12,7 @@ protected $deletedField  = 'deleted_at';
 protected $allowedFields = [
 	'title', 
 	'date', 
+	'dates', 
 	'description', 
 	'payment', 
 	'participants', 

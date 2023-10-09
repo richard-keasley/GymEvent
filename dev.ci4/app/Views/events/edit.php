@@ -304,6 +304,18 @@ foreach($states as $fieldname) { ?>
 	</div>
 	</div>
 <?php }
+
+?>
+<section class="my-2 row"><?php
+foreach($event->dates as $key=>$date) {
+	echo '<p class="input-group">';
+	printf('<label class="input-group-text">%s</label>', humanize($key));
+	printf('<input type="date" name="dates_%s" value="%s" class="form-control">', $key, $date->format('Y-m-d'));
+	echo '</p>';
+}
+?></section>
+<?php
+
 $acc->set_item('Event states', ob_get_clean());
 
 

@@ -27,7 +27,9 @@ $files->removePattern($pattern);
 
 <?php if($event->clubrets==1) { ?>
 <p class="alert alert-success"><strong>We are accepting entries for this event.</strong><br>
-You are advised to open an entry <em>as soon as possible</em> if you intend to enter this event. You can continue to make edits until entries are closed. We will use the details within your return at that point (there is no "submit" button).</p>
+You are advised to open an entry <em>as soon as possible</em> if you intend to enter this event. You can continue to make edits until entries are closed 
+<strong>(8:00pm on <?php echo $event->dates['clubrets_closes']->format('j F');?>)</strong>. 
+We will use the details within your return at that point (there is no "submit" button).</p>
 <?php } ?>
 
 <?php if($event->clubrets==2) { ?>
@@ -44,7 +46,9 @@ If you find an error in the entries, <em>inform the event organisers as soon as 
 
 <?php if($event->music==1) { ?>
 <p class="alert alert-success"><strong>You can now upload your music.</strong><br>
-Please upload your music as soon as you can, give us time to check your music can be played! You can alter tracks as often as you like until the music service is closed.</p>
+Please upload your music as soon as you can, give us time to check your music can be played! You can alter tracks as often as you like until the music service is closed 
+<strong>(8:00pm on <?php echo $event->dates['music_closes']->format('j F');?>)</strong>. 
+</p>
 <?php } ?>
 
 <?php if($event->music==2) { ?>
