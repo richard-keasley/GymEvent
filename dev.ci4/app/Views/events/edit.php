@@ -143,9 +143,17 @@ if($edit_locked) {
 	foreach($input as $key=>$field) {
 		$input[$key]['readonly'] = "readonly";
 	}
+	$btn_del = '';
+	$btn_add = '';
+}
+else {
+	$btn_del = '<button type="button" name="del" class="btn bi-trash btn-danger" title="delete"></button>';
+	$btn_add ='<button name="add" type="button" class="btn bi-plus-square btn-success" title="add row"></button>';
 }
 
 $tbody = [];
+
+
 foreach($discats as $key=>$discat) {
 	$input['name']['value'] = $discat['name'];
 	
@@ -164,7 +172,7 @@ foreach($discats as $key=>$discat) {
 		form_textarea($input['inf']),
 		form_textarea($input['cats']),
 		form_textarea($input['opts']),
-		'<button type="button" name="del" class="btn bi-trash btn-danger" title="delete"></button>'
+		$btn_del
 	];
 }
 
@@ -184,9 +192,11 @@ $table = \App\Views\Htm\Table::load('responsive');
 $table->setHeading($thead);
 echo $table->generate($tbody);
 
-echo form_hidden('discats', '');?>
-<button name="add" type="button" class="btn bi-plus-square btn-success" title="add row"></button>
+echo $btn_add;
 
+echo form_hidden('discats', '');
+
+?>
 <script>
 $(function() {
 var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
