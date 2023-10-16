@@ -246,10 +246,7 @@ public function edit($event_id=0) {
 			}
 		}
 	}
-	if($opt_count && $opt_count!=count($this->data['cat_entries'])) {
-		$this->data['messages'][] = ['Entry options should to be entered for <em>all</em> entries or <em>none</em>.', 'warning'];
-	}	
-		
+			
 	// view
 	foreach($this->ent_model->get_errors($event_id) as $error) {
 		$this->data['messages'][] = $error;
@@ -257,6 +254,30 @@ public function edit($event_id=0) {
 	$this->data['breadcrumbs'][] = "admin/entries/edit/{$event_id}";
 	$this->data['user_options'] = $this->data['event']->users('clubrets', false);
 	$this->data['filter'] = $filter;
+	
+	// sort requested?
+	$allowed = ['name', 'club', 'dob'];
+	$sort_field = $this->request->getGet('sort');
+	if(!in_array($sort_field, $allowed)) $sort_field = false;
+	$this->data['sort'] = $sort_field;
+	if($sort_field) {
+		foreach($this->data['cat_entries'] as $cat_entry) {
+			$orderby[] = match($sort_field) {
+				'club' => $this->data['user_options'][$cat_entry->user_id] ?? '',
+				default => $cat_entry->{$sort_field}
+			};
+		}
+		# d($orderby, $this->data['cat_entries']);
+		array_multisort($orderby, $this->data['cat_entries']);
+		# d($orderby, $this->data['cat_entries']);
+	}
+	
+	if($opt_count && $opt_count!=count($this->data['cat_entries'])) {
+		$this->data['messages'][] = ['Entry options should to be entered for <em>all</em> entries or <em>none</em>.', 'warning'];
+	}	
+	
+	
+	
 	return view('entries/edit', $this->data);
 }
 

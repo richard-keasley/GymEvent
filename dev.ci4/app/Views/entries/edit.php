@@ -1,8 +1,6 @@
 <?php $this->extend('default');
 
 $this->section('content');
-$self = sprintf('%s?%s', current_url(), http_build_query($filter));
-
 $selector = []; $dis_options = []; $cat_options = [];
 $this_cat = [];
 foreach($entries as $dis) { 
@@ -18,11 +16,10 @@ foreach($entries as $dis) {
 		}
 	}
 }
-
+# d($cat_entries);
 # d($user_options);
 # d($filter);
 # d($entries);
-# d($self);
 ?>
 
 <form name="selector" method="GET">
@@ -72,7 +69,7 @@ function update_selector(dis_id) {
 <?php 
 $attr = [];
 $hidden = ['save'=>1];
-echo form_open($self, $attr, $hidden);
+echo form_open('', $attr, $hidden);
 
 $inputs = [
 	'category_id' => [
@@ -105,7 +102,7 @@ $inputs = [
 
 $tbody = []; 
 $run_inputs = [];
-foreach($cat_entries as $entry) {
+foreach($cat_entries as $count=>$entry) {
 	$tr = [];
 	foreach($inputs as $key=>$input) {
 		$input['name'] = "ent{$entry->id}_$key";
@@ -138,8 +135,31 @@ foreach($cat_entries as $entry) {
 }
 
 if($tbody) {
+
+$url = current_url(true);
+parse_str($url->getQuery(), $query);
+$path = $url->getPath() . '?';
+
+$headings = [
+	'Category', 
+	'num' => 'Num', 
+	'club' => 'Club', 
+	'name' => 'Name', 
+	'dob' => 'DoB', 
+	'Opt', 'Run order', ''
+];
+
+$keys = ['num', 'club', 'name', 'dob'];
+foreach($keys as $key) {
+	$label = $headings[$key];
+	$query['sort'] = $key;
+	$href = $path . http_build_query($query);
+	$headings[$key] = anchor($href, $label .' <span class="bi-sort-down"></span>');
+}
+
+	
 $table = \App\Views\Htm\Table::load('responsive');
-$table->setHeading(['Category', 'Num', 'Club', 'Name', 'DoB', 'Opt', 'Run order', '']);
+$table->setHeading($headings);
 echo $table->generate($tbody); 
 ?>
 <script>
@@ -206,16 +226,22 @@ function newrow(show) {
 
 <section>
 <h4>Category information</h4>
+<div class="row">
+
+<div class="col-auto d-flex flex-column">
+<label class="form-label"><strong>Count</strong></label>
+<em><?php echo count($cat_entries);?></em>
+</div>
+
 <?php 
-$attr = [
+$attrs = [
 	'id' => "exeset",
-	'class' => "d-flex mw-100 my-1"
+	'class' => "col-auto d-flex flex-column"
 ];
 $hidden = ['update_exeset' => '1'];
-echo form_open($self, $attr, $hidden); 
+echo form_open('', $attrs, $hidden); 
 ?>
-<label class="form-label"><strong>Exercises</strong></label> 
-
+<label class="form-label"><strong>Exercises</strong></label>
 <?php
 $scoreboard = new \App\ThirdParty\scoreboard;
 
@@ -234,7 +260,6 @@ $input = [
 ];
 echo form_dropdown($input); 
 ?>
-
 <em><?php 
 foreach($scoreboard->get_exesets() as $exeset) {
 	if($exeset['SetId']==$exeset_id) {
@@ -243,22 +268,19 @@ foreach($scoreboard->get_exesets() as $exeset) {
 	}
 } 
 ?></em>
+<?php echo form_close();
 
-<?php echo form_close(); ?>
-
-<?php 
 $music = $this_cat->music;
 if($music) { ?>
-<div class="d-flex mw-100 my-1">
-<label class="form-label"><strong>Music</strong></label> 
-
-<div class="mx-2"></div>
-
+<div class="col-auto d-flex flex-column">
+<label class="form-label"><strong>Music</strong></label>
 <em><?php echo implode(' ', $music);?></em>
+</div>
+<?php } ?>
 
 </div>
-<?php } 
-
+</section>
+<?php 
 
 $this->endSection(); 
 
@@ -269,7 +291,7 @@ $this->section('bottom'); ?>
 <?php 
 $attr = ['class' => "modal-content"];
 $hidden = ['batch' => 'catmerge'];
-echo form_open($self, $attr, $hidden); 
+echo form_open('', $attr, $hidden); 
 ?>
 <div class="modal-header">
 	<h5 class="modal-title">Merge category</h5>
@@ -303,7 +325,7 @@ echo form_open($self, $attr, $hidden);
 <?php 
 $attr = ['class' => "modal-content"];
 $hidden = ['batch'=>'runorder'];
-echo form_open($self, $attr, $hidden); 
+echo form_open('', $attr, $hidden); 
 ?>
 <div class="modal-header">
 	<h5 class="modal-title">Running order</h5>
