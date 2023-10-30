@@ -20,21 +20,25 @@ protected $casts = [
 	'private' => 'integer'
 ];
 
-
 public function getDates() {
 	$db_val = filter_json($this->attributes['dates'] ?? null);
 	$entity_val = [];
 	$keys = ['clubrets_opens', 'clubrets_closes', 'music_opens', 'music_closes'];
 	foreach($keys as $key) {
-		$val = $db_val[$key] ?? '';
-		$entity_val[$key] = new \datetime($val);
+		try {
+			$entity_val[$key] = new \datetime($db_val[$key]);
+		}
+		catch(\exception $ex) {
+			$entity_val[$key] = new \datetime;		
+		}
 	}
 	return $entity_val;
 }
 
 public function setDates($entity_val) {
+	# d($entity_val);
 	foreach($entity_val as $key=>$val) {
-		# $entity_val[$key] = $val->format('Y-m-d');
+		$entity_val[$key] = $val->format('Y-m-d');
 	}
 	$db_val = json_encode($entity_val);
 	$this->attributes['dates'] = $db_val;
