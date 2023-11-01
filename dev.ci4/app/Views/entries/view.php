@@ -38,7 +38,12 @@ if($can_edit) {
 	</script>
 	<?php 
 	echo form_close();
-} 
+}
+else { 
+?>
+<div class="alert alert-info"><strong>Note:</strong> Entry numbers and categories are not confirmed until the running order has been published.</div>
+<?php
+}
 
 ?>
 <div class="d-flex flex-wrap gap-4">

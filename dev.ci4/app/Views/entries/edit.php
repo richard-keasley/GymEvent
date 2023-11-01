@@ -150,14 +150,15 @@ $headings = [
 ];
 
 $keys = ['num', 'club', 'name', 'dob'];
-foreach($keys as $key) {
-	$label = $headings[$key];
-	$query['sort'] = $key;
+$request_sort = $query['sort'] ?? '';
+foreach($keys as $sort) {
+	$label = $headings[$sort];
+	if($sort==$request_sort) $label .= ' <span class="bi-sort-down"></span>';
+	$query['sort'] = $sort;
 	$href = $path . http_build_query($query);
-	$headings[$key] = anchor($href, $label .' <span class="bi-sort-down"></span>');
+	$headings[$sort] = anchor($href, $label);
 }
 
-	
 $table = \App\Views\Htm\Table::load('responsive');
 $table->setHeading($headings);
 echo $table->generate($tbody); 

@@ -51,7 +51,7 @@ $thead = [];
 $query = $request_query;
 $request_sort = $query['sort'] ?? '';
 foreach($sorts as $sort=>$label) {
-	if($request_sort==$sort) $label .= ' <span class="bi bi-caret-down-fill"></span>';
+	if($request_sort==$sort) $label .= ' <span class="bi bi-sort-down"></span>';
 	$query['sort'] = $sort; 
 	$thead[] = anchor($request_page . '?' . http_build_query($query), $label);
 }
