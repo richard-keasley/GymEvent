@@ -1,8 +1,8 @@
 body {
     height: 100%;
-    background: #fafafa;
+    background: #ffffcf;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: #777;
+    color: #600;
     font-weight: 300;
     margin: 0;
     padding: 0;
@@ -11,7 +11,7 @@ h1 {
     font-weight: lighter;
     letter-spacing: 0.8;
     font-size: 3rem;
-    color: #222;
+    color: inherit;
     margin: 0;
 }
 h1.headline {

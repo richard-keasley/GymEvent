@@ -17,7 +17,7 @@
 		<h1 class="headline">Whoops!</h1>
 
 		<p class="lead">We have hit a snag. Please try later&hellip;</p>
-		<p>Let Richard know if it keeps happening so he can mend it.</p>
+		<p>Please let Richard know so he can mend it.</p>
 
 	</div>
 

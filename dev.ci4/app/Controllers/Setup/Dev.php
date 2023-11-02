@@ -37,4 +37,8 @@ public function test($test_name='index') {
 	return view("{$test_path}/{$test_name}", $this->data);
 }
 
+public function woops() {
+	return view('errors/html/production');
+}
+
 }
