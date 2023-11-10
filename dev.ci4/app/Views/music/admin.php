@@ -53,8 +53,8 @@ foreach($entries as $dis) {
 				
 				$show_entry = 0; $ent_states = [];
 				foreach($entry->music as $exe=>$check_state) {
-					if(!$key) $thead[] = $track->exe;	
-					
+					if(!$key) $thead[] = $exe;	
+						
 					$track->exe = $exe;
 					$track->check_state = $check_state;
 					$ent_row[] = $track->playbtn(['checkbox']);
