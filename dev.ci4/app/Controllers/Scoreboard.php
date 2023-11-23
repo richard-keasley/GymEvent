@@ -5,8 +5,10 @@ class Scoreboard extends \App\Controllers\BaseController {
 public function __construct() {
 	$this->data['breadcrumbs'][] = 'scoreboard';
 	$appvars = new \App\Models\Appvars();
-	$links = $appvars->get_value('scoreboard.links') ?? [] ;
-	$links[] = ['/scoreboard/displays', 'Score Display'];
+	$links = [
+		['/scoreboard/displays', 'Score Display'],
+		['/scoreboard/follow', 'Follow scores']
+	];
 	$this->data['links'] = new \App\Views\Htm\Navbar($links);
 }
 

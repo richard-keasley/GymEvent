@@ -1,52 +1,19 @@
 <?php $this->extend('default');
 
-$this->section('content'); 
-$attr = [
-	'id' => "editform"
-];
-$hidden = [
-	'links' => '',
-	'save' => 1
-];
-echo form_open(current_url(), $attr, $hidden); ?>
-<h4>Create scoreboard links</h4>
-<p>These links appear on the scoreboard information pages.</p>
-<?php 
-$inputs = [
-	[
-		'type' => 'url',
-		'class' => 'form-control',
-		'style' => 'min-width:10em'
-	],
-	[
-		'type' => 'text',
-		'class' => 'form-control',
-		'style' => 'min-width:6em;'
-	]
-];
+$this->section('content'); ?>
 
-if(!$links) $links = [[]];
-$tbody = []; $trow = [];
-foreach($links as $link) {
-	foreach($inputs as $key=>$input) {
-		$inputs[$key]['value'] = $link[$key] ?? '';
-		$trow[$key] = form_input($inputs[$key]);
-	}
-	$trow['cmd'] = '<button name="del" type="button" class="btn bi-trash btn-danger btn-sm"></button>';
-		
-	$tbody[] = $trow;	
-}
-
-$table = \App\Views\Htm\Table::load('responsive');
-$table->setHeading(['url', 'label', '']);
-echo $table->generate($tbody);
-
-?>
-<button name="add" type="button" class="btn btn-success bi-plus-square"></button>
+<p>Scoreboard needs a lot of tidying up.</p>
+<ul>
+<li>App variable 'scoreboard.links' is no longer needed (use home.links instead)</li>
+<li>Scoreboard documentation is not needed (ie. how to set-up score displays)</li>
+<li>The data pages (below) are not changing when different tables are selected</li>
+<li>Remove shortcut ~/follow (routes)</li>
+<li>Upate QR code for "~/follow" to "~/x/follow"</li>
+</ul>
+<p>Scoreboard needs to be reduced to a simple documentation page. Maybe make it editable from UI.</p>
 
 <div class="toolbar">
 	<?php echo \App\Libraries\View::back_link("setup");?>
-	<button type="button" onclick="pagesave()" class="btn btn-primary">save</button>
 	<?php 
 	$attr = [
 		'class' => "nav-link",

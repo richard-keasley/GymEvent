@@ -13,7 +13,6 @@ echo form_open(current_url()); ?>
 
 <div class="col-auto">
 <?php 
-$tbody = [];
 foreach($controllers as $controller=>$enabled) { ?>
 	<div class="form-check form-switch">
 	<?php
@@ -36,12 +35,14 @@ foreach($controllers as $controller=>$enabled) { ?>
 <div class="col-auto">
 <p>You are viewing device:<br> 
 <code><?php echo $device;?><br>
-<?php echo base_url();?></code></p>
+<?php echo base_url();?><br>
+<?php echo filter_input(INPUT_SERVER, 'SERVER_ADDR');?></code></p>
 
 <nav class="nav flex-column">
 <?php 
 echo getlink('admin/help/stub?view=setup', 'Permissions');
 echo getlink('setup/scoreboard', 'Scoreboard');
+echo getlink('setup/links', 'Shortcut links');
 echo getlink('setup/php_info', 'PHP info');
 echo getlink('setup/appvars', 'App variables');
 echo getlink('setup/dev', 'Development notes');
