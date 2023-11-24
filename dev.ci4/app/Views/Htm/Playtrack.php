@@ -1,5 +1,5 @@
 <div id="playtrack" class="w-100 d-flex flex-column">
-<audio class="w-100" controls="controls"></audio> 
+<audio class="w-100" preload="auto" controls="controls"></audio> 
 <p class=""></p>
 <script>
 const playtrack = {
@@ -13,6 +13,9 @@ const playtrack = {
 			html = html.replace('_', ' ');
 			playtrack.msg(html, 'success');
 			playtrack.player.attr('src', track_url);
+			// attempt to preload music
+			// tmp = jQuery.get(track_url);
+			// playtrack.player.trigger('load');
 			if(autoplay) {
 				playtrack.player.trigger('play');
 			}
