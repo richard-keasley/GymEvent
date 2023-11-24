@@ -25,11 +25,16 @@ public function displays() {
 	return view('scoreboard/displays', $this->data);
 }
 
-public function follow() {
+public function follow($layout='') {
+	$view = 'follow';
+	$allowed = ['kiosk'];
+	if(in_array($layout, $allowed)) $view .= "_{$layout}";
+	
+		
 	$this->data['breadcrumbs'][] = 'scoreboard/follow';
 	$this->data['title'] = 'Follow scores';
 	$this->data['heading'] = '<span class="display-1">Follow scores</span>';
-	return view('scoreboard/follow', $this->data);
+	return view("scoreboard/{$view}", $this->data);
 }
 
 }

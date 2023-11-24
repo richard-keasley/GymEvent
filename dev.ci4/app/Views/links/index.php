@@ -5,8 +5,9 @@ $this->section('content'); ?>
 
 <ul class="list-group"><?php
 foreach($links as $key=>$link) {
+	$href = base_url("x/{$key}");
 	printf('<li class="list-group-item"><strong>%s</strong><div class="py-2"><code>%s</code></div></li>', 
-		anchor($link, $key), 
+		anchor($href),
 		$link
 	);
 }
