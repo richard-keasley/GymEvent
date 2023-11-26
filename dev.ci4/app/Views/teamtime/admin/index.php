@@ -75,8 +75,8 @@ echo form_open(current_url(), $attr); ?>
 
 <div class="bg-light my-1 p-1 navbar">
 <span class="pe-3 runnav">
-<button type="button" class="btn btn-primary bi bi-caret-left-fill" onclick="set_runvars('prev')" title="Next"></button>
-<button type="button" class="btn btn-primary bi bi-caret-right-fill" onclick="set_runvars('next')" title="Previous"></button>
+<button type="button" class="btn btn-primary bi bi-caret-left-fill" onclick="set_runvars('prev')" title="Previous"></button>
+<button type="button" class="btn btn-primary bi bi-caret-right-fill" onclick="set_runvars('next')" title="Next"></button>
 </span>
 
 <button class="ps-3 btn btn-outline-primary collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#topfields" aria-expanded="false" aria-controls="topfields">
