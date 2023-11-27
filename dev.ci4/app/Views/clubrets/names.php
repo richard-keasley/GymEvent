@@ -15,7 +15,7 @@ $attr = [
 echo form_open(current_url(), $attr);
 echo \App\Libraries\View::back_link($back_link); 
 ?>
-<button type="submit" name="download" value="names" class="btn btn-secondary" title="Download this as spreadsheet"><i class="bi bi-table"></i></button>
+<button type="submit" name="download" value="names" class="btn btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>
 <?php 
 echo form_close();
 $this->endSection();

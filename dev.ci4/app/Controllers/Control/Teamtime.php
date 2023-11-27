@@ -22,7 +22,6 @@ function settings() {
 		$inputs = [
 			'event_id' => FILTER_SANITIZE_NUMBER_INT,
 			'music_player' => FILTER_SANITIZE_STRING,
-			'image_path' => FILTER_SANITIZE_URL,
 			'run_rows' => FILTER_SANITIZE_STRING
 		];
 		$value = [];
@@ -30,7 +29,7 @@ function settings() {
 			$value[$key] = $this->request->getPost($key, $filter);
 		}
 		$value['run_rows'] = csv_array($value['run_rows']);
-		$value['image_path'] = '/' . trim($value['image_path'], "/\\");
+
 		// update
 		tt_lib::save_value('settings', $value);
 		$this->data['messages'][] = ['Settings updated', 'success'];

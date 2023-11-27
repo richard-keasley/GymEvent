@@ -10,7 +10,7 @@ public function index() {
 	return $this->respondNoContent();
 }
 
-public function track_url($event_id=0, $entry_num=0, $exe='') {
+public function track_url($event_id=0, $entry_num=0, $exe='', $local=false) {
 	$track = new \App\Libraries\Track();
 	$track->event_id = $event_id;
 	$track->entry_num = $entry_num;

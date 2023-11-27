@@ -127,9 +127,10 @@ foreach($event->participants() as $dis) { ?>
 
 <?php if($event->clubrets==2) { ?>
 <section>
+
 <?php echo form_open(current_url()); ?>
 <h4>Entries
-	<button type="submit" name="download" value="entries" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
+<button type="submit" name="download" value="entries" class="btn btn-sm btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>
 </h4>
 <?php echo form_close(); ?>
 

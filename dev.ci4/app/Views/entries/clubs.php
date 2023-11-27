@@ -6,7 +6,7 @@ $attr = [];
 echo form_open(current_url(), $attr);
 ?>
 <h4>Club summary
- <button type="submit" name="download" value="clubs" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
+<button type="submit" name="download" value="clubs" class="btn btn-sm btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>
 </h4>
 <?php
 echo form_close();

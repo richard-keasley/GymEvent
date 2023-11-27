@@ -30,7 +30,7 @@ $input = [
 ];
 echo form_dropdown($input);
 ?>
-<button type="submit" name="action" value="download" class="btn btn-secondary" title="Download this as spreadsheet"><i class="bi bi-table"></i></button>
+<button type="submit" name="action" value="download" class="btn btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>
 <script>
 $(function() {
 $('[name=source]').change(function() { $('#selector').submit(); });

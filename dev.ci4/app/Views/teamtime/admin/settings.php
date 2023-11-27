@@ -32,11 +32,6 @@ $inputs = [
 	'value' => tt_lib::get_value('settings', 'music_player'),
 	'options' => $player_opts
 ],
-'image_path' => [
-	'type' => 'text',
-	'class' => 'form-control',
-	'value' => tt_lib::get_value('settings', 'image_path')
-],
 'run_rows' => [
 	'type' => 'text',
 	'class' => 'form-control',
@@ -70,6 +65,18 @@ foreach($inputs as $key=>$input) { ?>
 } 
 
 echo form_close();
+
+$count = count(tt_lib::get_images());	
+$event_id = $inputs['event_id']['value'];
+$image_path = "/public/events/{$event_id}/teamtime";
+if($count) {
+	$format = '<p class="alert alert-success">%s images in %s</p>';
+	printf($format, $count, $image_path);
+} else {
+	$format = '<p class="alert alert-danger">No images found in %s!</p>';
+	printf($format, $image_path);
+}
+
 $this->endSection(); 
 
 $this->section('top'); ?>

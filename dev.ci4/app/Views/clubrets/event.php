@@ -10,8 +10,9 @@ $attr = ['class' => ""];
 echo form_open(current_url(), $attr);
 ?>
 <h4>Club returns
-	<button type="submit" name="download" value="summary" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
+<button type="submit" name="download" value="summary" class="btn btn-sm btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>
 </h4>
+
 <?php echo form_close();
 
 $tbody = []; $tr = []; $thead = []; $tfoot = [];
@@ -51,7 +52,7 @@ echo $table->generate($tbody);
 <section class="mw-100">
 <?php echo form_open(current_url(), $attr); ?>
 <h4>Staff
-	<button type="submit" name="download" value="staff" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
+	<button type="submit" name="download" value="staff" class="btn btn-sm btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>
 </h4>
 <?php echo form_close();
 $table->setHeading(['club', 'type', 'name', 'BG']);
@@ -64,7 +65,7 @@ echo $table->generate($staff);
 
 <?php echo form_open(current_url()); ?>
 <h4>Participants
-	<button type="submit" name="download" value="participants" class="btn btn-sm btn-secondary" title="Export this table"><i class="bi bi-table"></i></button>
+	<button type="submit" name="download" value="participants" class="btn btn-sm btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>
 </h4>
 <?php echo form_close(); ?>
 

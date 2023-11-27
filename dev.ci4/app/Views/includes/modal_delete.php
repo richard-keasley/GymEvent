@@ -1,5 +1,5 @@
 <?php
-$action =  $modal_delete['action'] ?? current_url();
+$action = $modal_delete['action'] ?? ''; # current_url();
 $id = $modal_delete['id'] ?? 'modal_delete';
 $cmd = $modal_delete['cmd'] ?? 'del_item';
 $item_id = $modal_delete['item_id'] ?? 0;
@@ -27,7 +27,7 @@ echo form_open($action, $attr, $hidden);
 	<?php echo $description;?>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-secondary bi-x-circle-fill" data-bs-dismiss="modal"title="cancel"></button>
+	<button type="button" class="btn btn-secondary bi-x-circle-fill" data-bs-dismiss="modal" title="cancel"></button>
 	<button type="submit" class="btn btn-danger bi-<?php echo $icon;?>" title="proceed"></button>
 </div>
 <?php echo form_close();?>

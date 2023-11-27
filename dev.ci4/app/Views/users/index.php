@@ -40,7 +40,7 @@ $this->section('content');
 $filter = new \App\Views\Htm\Filter;
 echo $filter->htm();
 
-$table = \App\Views\Htm\Table::load('default');
+$table = \App\Views\Htm\Table::load('responsive');
 
 $sorts = [
 	'name' => 'Name',
@@ -105,5 +105,4 @@ modal.addEventListener('show.bs.modal', function (event) {
 });
 </script>
 <?php
-echo form_close();
 $this->endSection(); 

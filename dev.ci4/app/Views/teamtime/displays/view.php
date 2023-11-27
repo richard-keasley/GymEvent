@@ -49,7 +49,7 @@ function get_view() {
 			var reload = response.reload;
 			if(reload) {
 				<?php if(ENVIRONMENT == 'development') { ?>
-				console.log(response);
+				// console.log(response);
 				// console.log(view);
 				<?php } ?>
 				switch(reload) {

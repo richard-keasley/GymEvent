@@ -32,7 +32,6 @@ $viewpath = tt_lib::get_viewpath() . '*.php';
 foreach(glob($viewpath) as $view) {
 	$nav[] = sprintf('teamtime/info/%s', basename($view, '.php'));
 }
-
 echo $navbar->htm($nav);
 
 $this->endSection();

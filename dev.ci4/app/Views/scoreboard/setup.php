@@ -1,31 +1,36 @@
 <?php $this->extend('default');
 
-$this->section('content'); ?>
+$this->section('content'); 
+echo form_open();
+$attrs = [
+	'name' => 'html',
+	'value' => $html
+];
+echo new \App\Views\Htm\Editor($attrs);
 
-<p>Scoreboard needs a lot of tidying up.</p>
-<ul>
-<li>App variable 'scoreboard.links' is no longer needed (use home.links instead)</li>
-<li>Scoreboard documentation is not needed (ie. how to set-up score displays)</li>
-<li>The data pages (below) are not changing when different tables are selected</li>
-<li>Remove shortcut ~/follow (routes)</li>
-<li>Upate QR code for "~/follow" to "~/x/follow"</li>
-</ul>
-<p>Scoreboard needs to be reduced to a simple documentation page. Maybe make it editable from UI.</p>
+?>
 
 <div class="toolbar">
-	<?php echo \App\Libraries\View::back_link("setup");?>
-	<?php 
-	$attr = [
-		'class' => "nav-link",
-		'title' =>"view scoreboard"
-	];
-	echo anchor('scoreboard', 'view', $attr);
-	$attr['title'] = "View scoreboard data";
-	echo anchor('setup/scoreboard/data', 'data', $attr);
-	?>
-</div>
+<?php echo \App\Libraries\View::back_link("setup");?>
+<button class="btn btn-primary">save</button>
 
 <?php 
+$attrs = [
+	'class' => "nav-link",
+	'title' => "scoreboard data"
+];
+echo anchor('setup/scoreboard/data', 'data', $attrs);
+
+$attrs = [
+	'class' => "nav-link",
+	'title' => "view scoreboard"
+];
+echo anchor('scoreboard', 'view scoreboard', $attrs);
+
+?>
+</div>
+
+<?php
 echo form_close();
 $this->endSection(); 
 
