@@ -20,7 +20,10 @@ echo form_open(current_url(true), $attr, $hidden);
 		<button class="btn btn-success" type="submit" name="val" value="1" title="checked"><i class="px-1 bi-check-square"></i></button>
 		<button class="btn btn-info" type="submit" name="val" value="2" title="withdrawn"><i class="px-1 bi-x-square"></i></button>
 	</div>
-	<?php echo $this->include('Htm/Playtrack'); ?>
+	<?php 
+	echo $this->include('Htm/Playtrack');
+	# echo $this->include('Htm/Playtrack2');
+	?>	
 </div>
 
 <?php

@@ -213,4 +213,12 @@ public function edit($entry_id=0) {
 	return view('music/edit', $this->data);
 }
 
+public function track($event_id=0, $entry_num=0, $exe='', $autoplay=0) {
+	$this->data['event_id'] = $event_id;
+	$this->data['entry_num'] = $entry_num;
+	$this->data['exe'] = $exe;
+	$this->data['autoplay'] = $autoplay;
+	return view('music/track', $this->data);
+}
+
 }

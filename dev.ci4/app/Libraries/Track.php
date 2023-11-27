@@ -42,7 +42,9 @@ static function ini_size($ini_size) {
 public function playbtn($opts=[]) {
 	$ret = [];
 	$track_url = $this->url();
-	
+	# $onclick = sprintf("playtrack2.play(%u,%u,'%s',1);", $this->event_id, $this->entry_num, $this->exe);
+	$onclick = sprintf("playtrack.load('%s');", $track_url);
+		
 	if(in_array('player', $opts)) {
 		$label = $this->entry_num;
 		$tag = 'button';
@@ -65,7 +67,7 @@ public function playbtn($opts=[]) {
 				'title' => 'This track has not been checked',
 				'type' => 'button',
 				'class' => self::BUTTONS['unchecked'],
-				'onClick' => sprintf("playtrack.load('%s');", $track_url)
+				'onClick' => $onclick
 			];
 			break;
 
@@ -75,7 +77,7 @@ public function playbtn($opts=[]) {
 				'title' => "This track is ready for the event",
 				'type' => 'button',
 				'class' => self::BUTTONS['play'],
-				'onClick' => sprintf("playtrack.load('%s');", $track_url)
+				'onClick' => $onclick
 			];
 			break;
 
@@ -90,7 +92,7 @@ public function playbtn($opts=[]) {
 			case 'withdrawn': 
 			$tag = 'span';
 			$attrs = [
-				'title' => "This track has been safely stored",
+				'title' => "This entry is withdrawn",
 				'class' => "text-info bi-x-square"
 			];
 			break;
