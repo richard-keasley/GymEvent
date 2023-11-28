@@ -17,7 +17,11 @@ public function get($varname='', $key=null) {
 		$this->respond($response) ;
 }
 
-private function update() {
+public function control() {
+	if(!\App\Libraries\Auth::check_role('controller')) {
+		return $this->failUnauthorized('Permission denied');
+	}
+
 	$progtable = tt_lib::get_value("progtable");
 	if(!$progtable) return $this->fail("No programme set");
 	
@@ -99,11 +103,11 @@ private function update() {
 		$runvars['cmd'] = 'moved';
 	}
 	
-	if($runvars['cmd']=='reload' ) {
+	if($runvars['cmd']=='reload') {
 		$displays = tt_lib::get_value('displays');
 		// add invalid display to force displays to be re-saved
 		$displays['reload'] = [time()];
-		tt_lib::save_value('displays', $displays);
+		$error = tt_lib::save_value('displays', $displays);
 	}
 				
 	// update timer
@@ -118,70 +122,38 @@ private function update() {
 		$runvars['timer_start'] = 0;
 	}
 	
-	tt_lib::save_value('runvars', $runvars);
-	return tt_lib::get_value("runvars");
+	$error = tt_lib::save_value('runvars', $runvars);
+	$runvars = tt_lib::get_value("runvars");
+	$runvars['error'] = $error;
+	return $this->respond($runvars);	
 }
 
-
-public function control() {
-	if(!\App\Libraries\Auth::check_role('controller')) {
-		return $this->failUnauthorized('Permission denied');
-	}
-	$runvars = $this->update();
-	
-	$remote = tt_lib::get_value('settings', 'remote');
-	if($remote!='send') return $this->respond($runvars);	
-		
-	
-	
-	
-	
-	/*
-	$api = [trim($remote_server, '/'), 'api/teamtime/remote'];
-	$api = implode('/', $api);
-	
-	$ch = curl_init($url);
-	# curl_setopt($ch, CURLOPT_FILE, $fp);
-	# curl_setopt($ch, CURLOPT_HEADER, 0);
-
-	curl_exec($ch);
-	$error = curl_error($ch);
-	curl_close($ch);
-	
-	// */
-	# $error = $url;
-	
-	
-	$runvars['remote'] = $error ? $error : 'OK';
-	
-	
-	
-	return $this->respond($runvars);
-	
-}
-
-public function remote() {
+public function remote($varname='') {
 	$error = false;
 	
 	if(!$error) {
 		$remote = tt_lib::get_value('settings', 'remote');
-		if($remote!='receive') $error = 'Remote control inactive';
+		if($remote!='receive') $error = 'Remote not receiving';
 	}
-	
 	if(!$error) {
 		$remote_key = tt_lib::get_value('settings', 'remote_key');
-		if(!$remote_key) $error = 'No remote key';
+		if(!$remote_key) $error = 'Remote key not set on receiver';
 	}
 	if(!$error) {
 		$postval = $this->request->getPost('remote_key');
-		if($remote_key!=$postval) $error = "Invalid remote key {$postval}";
+		if($remote_key!=$postval) $error = "Invalid remote key supplied";
+	}
+	if(!$error) {
+		$postval = $this->request->getPost('value');
+		if(!$postval) $error = "No data sent for {$varname}";
 	}
 	
-	$error = 'remote control disabled';
+	# if(!$error) $error = "remote control disabled";
 	if($error) return $this->failUnauthorized($error);
-		
-	# $this->update();
-	return $this->respondNoContent();
+	
+	// update 
+	
+	return $this->respond('OK');
 }
 
 public function display_view($ds_id=0, $ds_updated=0, $vw_updated=0) {

@@ -162,12 +162,20 @@ $.post(url, postvar)
 .done(function(response) {
 	//console.log(response);
 	show_runvars(response);
+	if(response.error) tt_message(response.error);
 })
 .fail(function(jqXHR) {
-	$('#msg').html('<p class="alert alert-danger">' + get_error(jqXHR) + '</p>'); 
+	tt_message(get_error(jqXHR)); 
 });
 
 };
+
+function tt_message(text='', alert='danger') {
+	if(text) {
+		text = '<p class="alert alert-'+alert+'">' + text + '</p>';
+	}
+	$('#msg').html(text);
+}
 
 function show_runvars(arr) {
 	runvars = arr;
@@ -183,7 +191,7 @@ function show_runvars(arr) {
 	$('[name=view] option').each(function() {
 		this.selected = this.value==runvars['view'];			
 	});
-	$('#msg').html('');
+	tt_message();
 	if(runvars.mode=='o') {
 		$('.omode-only').show();
 		timeticker.init(runvars['timer'], runvars['timer_current']);
@@ -258,7 +266,7 @@ $.get(url, function(response) {
 	show_runvars(response);
 })
 .fail(function(jqXHR) {
-	$('#msg').html('<p class="alert alert-danger">' + get_error(jqXHR) + '</p>'); 
+	tt_message( get_error(jqXHR) ); 
 });
 
 var tt = setInterval(function(){

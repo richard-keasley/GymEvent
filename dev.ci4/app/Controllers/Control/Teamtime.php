@@ -93,7 +93,8 @@ function programme() {
 				}
 			}
 		}
-		tt_lib::save_value('progtable', $value);
+		$error = tt_lib::save_value('progtable', $value);
+		if($error) $this->data['messages'][] = $error;
 		$this->data['messages'][] = ['Programme updated', 'success'];
 	}
 	// view
@@ -135,7 +136,8 @@ function teams() {
 	if($updated) {
 		// update
 		array_multisort($updated);
-		tt_lib::save_value('teams', $updated);
+		$error = tt_lib::save_value('teams', $updated);	
+		if($error) $this->data['messages'][] = $error;
 		$this->data['messages'][] = ['Teams updated', 'success'];
 	}
 	
@@ -151,12 +153,14 @@ function displays() {
 	if($this->request->getPost('save')) {
 		// displays
 		$value = filter_json($this->request->getPost('displays'));
-		tt_lib::save_value('displays', $value);
+		$error = tt_lib::save_value('displays', $value);
+	
 		// views
 		$value = filter_json($this->request->getPost('views'));
 		array_unshift($value, null); // add default view 
-		tt_lib::save_value('views', $value);
+		$error = tt_lib::save_value('views', $value);
 		
+		if($error) $this->data['messages'][] = $error;
 		$this->data['messages'][] = ['Displays and views updated', 'success'];
 	}
 	// view
