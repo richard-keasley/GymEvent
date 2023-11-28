@@ -17,26 +17,23 @@ public function get($varname='', $key=null) {
 		$this->respond($response) ;
 }
 
-public function control() {
-	if(!\App\Libraries\Auth::check_role('controller')) {
-		return $this->failUnauthorized('Permission denied');
-	}
-	
+private function update() {
 	$progtable = tt_lib::get_value("progtable");
 	if(!$progtable) return $this->fail("No programme set");
 	
 	$runvars = tt_lib::get_value("runvars");
+	// get run place before any updates
 	$row = $runvars['row'] ?? '#';
 	$col = $runvars['col'] ?? '#';
 	$start_place = "{$row}-{$col}";
 		
-	// modify runvars according to post
+	// update runvars according to post
 	foreach($this->request->getPost() as $key=>$val) {
 		$runvars[$key] = strip_tags($val);
 	}
 	
 	// update run place 
-	$mode = $progtable[$runvars['row']][0];
+	$mode = $progtable[$runvars['row']][0] ?? '';
 	do {
 		switch($runvars['cmd']) {
 			case 'prev':
@@ -122,9 +119,70 @@ public function control() {
 	}
 	
 	tt_lib::save_value('runvars', $runvars);
-	$runvars = tt_lib::get_value("runvars");
+	return tt_lib::get_value("runvars");
+}
+
+
+public function control() {
+	if(!\App\Libraries\Auth::check_role('controller')) {
+		return $this->failUnauthorized('Permission denied');
+	}
+	$runvars = $this->update();
+	
+	$remote = tt_lib::get_value('settings', 'remote');
+	if($remote!='send') return $this->respond($runvars);	
+		
+	
+	
+	
+	
+	/*
+	$api = [trim($remote_server, '/'), 'api/teamtime/remote'];
+	$api = implode('/', $api);
+	
+	$ch = curl_init($url);
+	# curl_setopt($ch, CURLOPT_FILE, $fp);
+	# curl_setopt($ch, CURLOPT_HEADER, 0);
+
+	curl_exec($ch);
+	$error = curl_error($ch);
+	curl_close($ch);
+	
+	// */
+	# $error = $url;
+	
+	
+	$runvars['remote'] = $error ? $error : 'OK';
+	
+	
+	
 	return $this->respond($runvars);
-} 
+	
+}
+
+public function remote() {
+	$error = false;
+	
+	if(!$error) {
+		$remote = tt_lib::get_value('settings', 'remote');
+		if($remote!='receive') $error = 'Remote control inactive';
+	}
+	
+	if(!$error) {
+		$remote_key = tt_lib::get_value('settings', 'remote_key');
+		if(!$remote_key) $error = 'No remote key';
+	}
+	if(!$error) {
+		$postval = $this->request->getPost('remote_key');
+		if($remote_key!=$postval) $error = "Invalid remote key {$postval}";
+	}
+	
+	$error = 'remote control disabled';
+	if($error) return $this->failUnauthorized($error);
+		
+	# $this->update();
+	return $this->respondNoContent();
+}
 
 public function display_view($ds_id=0, $ds_updated=0, $vw_updated=0) {
 	$reload = false;
@@ -162,5 +220,6 @@ public function display_view($ds_id=0, $ds_updated=0, $vw_updated=0) {
 	];
 	return $this->respond($response, 200);
 }
+
 
 }

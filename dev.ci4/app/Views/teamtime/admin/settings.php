@@ -18,6 +18,8 @@ foreach($events as $event) {
 	$event_opts[$event->id] = sprintf('%s: %s', $date->format('j-M-y'), $event->title);
 }
 $player_opts = ['local'=>'local', 'remote'=>'remote'];
+$remote_opts = ['off', 'send'=>'send', 'receive'=>'receive'];
+$remote_val = tt_lib::get_value('settings', 'remote');
 
 $inputs = [
 'event_id' => [
@@ -36,8 +38,39 @@ $inputs = [
 	'type' => 'text',
 	'class' => 'form-control',
 	'value' => tt_lib::get_value('settings', 'run_rows')
+],
+'remote' => [
+	'type' => 'select',
+	'class' => 'form-control',
+	'value' => $remote_val,
+	'options' => $remote_opts
 ]
 ];
+
+switch($remote_val) {
+	case 'send':
+	$inputs['remote_server'] = [
+		'type' => 'url',
+		'class' => 'form-control',
+		'value' => tt_lib::get_value('settings', 'remote_server')
+	];
+	$inputs['remote_key'] = [
+		'type' => 'text',
+		'class' => 'form-control',
+		'value' => tt_lib::get_value('settings', 'remote_key')
+	];
+	break;
+	
+	case 'receive':
+	$inputs['remote_key'] = [
+		'readonly' => "readonly",
+		'type' => 'text',
+		'class' => 'form-control',
+		'value' => tt_lib::get_value('settings', 'remote_key')
+	];
+	break;
+	
+}
 
 foreach($inputs as $key=>$input) { ?>
 	<div class="my-1 row">
@@ -51,18 +84,23 @@ foreach($inputs as $key=>$input) { ?>
 		<div class="col-sm-9">
 		<?php switch($input['type']) {
 			case 'select':
-				$input['selected'] = $input['value'];
-				unset($input['type'], $input['value']);
-				echo form_dropdown($input);
-				break;
+			$input['selected'] = $input['value'];
+			unset($input['type'], $input['value']);
+			echo form_dropdown($input);
+			break;
+			
+			case 'readonly':
+			printf('<div class="%s">%s</div>', $input['class'], $input['value']);
+			break;
+			
 			default:
-				if(is_array($input['value'])) $input['value'] = implode(', ', $input['value']);
-				echo form_input($input);
+			if(is_array($input['value'])) $input['value'] = implode(', ', $input['value']);
+			echo form_input($input);
 		} ?>
 		</div>
 	</div>
 	<?php
-} 
+}
 
 echo form_close();
 

@@ -1,7 +1,57 @@
 <?php $this->extend('default');
 use \App\Libraries\Teamtime as tt_lib;
 
-$this->section('content');  
+$this->section('content'); 
+
+
+
+$remote = tt_lib::get_value('settings', 'remote');
+if($remote=='send') {
+	$runvars = tt_lib::get_value('runvars');
+
+	$error = false;
+	if(!$error) {
+		$remote_server = tt_lib::get_value('settings', 'remote_server');
+		if(!$remote_server) $error = 'No remote server';
+	}
+	if(!$error) {		
+		$client = \Config\Services::curlrequest();
+				
+		$options = [
+			'baseURI' => $remote_server,
+			'timeout' => 3,
+			'http_errors' => false,
+			'debug' => true,
+			'json' => $runvars,
+			'body' => json_encode($runvars)
+		];
+		
+		$response = $client->post('api/teamtime/remote', $options);
+		# d($options);
+		# d($client);
+		# d($response);
+	
+		$status = $response->getStatusCode();
+		if($status>399) {
+			$body = json_decode($response->getBody(), true);
+			$error = $body['messages']['error'] ?? 'undefined error';
+			$error = "{$status}: {$error}";
+			# d($body);
+		}
+	}
+	
+	if(!$error) {
+		// carry on here
+	}
+	
+	if($error) echo "<p>{$error}</p>";
+}
+
+
+
+
+
+ 
 $event_id = tt_lib::get_value('settings', 'event_id');
 $mdl_events = new \App\Models\Events;
 $event = $mdl_events->find($event_id);

@@ -2,14 +2,16 @@
 use \App\Libraries\Teamtime as tt_lib;
 
 $event_id = tt_lib::get_value("settings", "event_id");
+$remote = tt_lib::get_value('settings', 'remote');
 
 $this->section('sidebar');
-$attr = [
-	'class' => "mw-100",
+
+$attrs = [
+	'class' => $remote=='receive' ? "d-none" : "mw-100",
 	'style' => "width:21em;",
 	'id' => 'runvars'
 ];
-echo form_open(current_url(), $attr); ?>
+echo form_open('', $attrs); ?>
 
 <fieldset class="collapse" id="topfields">
 
@@ -147,21 +149,24 @@ let exe = '';
 let url = '';
 
 function set_runvars(cmd='') {
-	postvar = {cmd:cmd};
-	var fields = $('#runvars').serializeArray();
-	jQuery.each(fields, function(i, field) {
-		postvar[field.name] = field.value;
-    });
-	// console.log(postvar);
-	url = '<?php echo site_url("/api/teamtime/control");?>';
-	$.post(url, postvar)
-	.done(function(response) {
-		//console.log(response);
-		show_runvars(response);
-	})
-	.fail(function(jqXHR) {
-		$('#msg').html('<p class="alert alert-danger">' + get_error(jqXHR) + '</p>'); 
-	});
+postvar = {cmd:cmd};
+var fields = $('#runvars').serializeArray();
+jQuery.each(fields, function(i, field) {
+	postvar[field.name] = field.value;
+});
+// console.log(postvar);
+
+// send to control
+url = '<?php echo site_url("/api/teamtime/control");?>';
+$.post(url, postvar)
+.done(function(response) {
+	//console.log(response);
+	show_runvars(response);
+})
+.fail(function(jqXHR) {
+	$('#msg').html('<p class="alert alert-danger">' + get_error(jqXHR) + '</p>'); 
+});
+
 };
 
 function show_runvars(arr) {

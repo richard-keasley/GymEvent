@@ -6,6 +6,15 @@ class Teamtime extends \App\Controllers\BaseController {
 function __construct() {
 	$this->data['breadcrumbs'][] = 'teamtime';
 	$this->data['breadcrumbs'][] = ['control/teamtime', 'control'];
+	$remote = tt_lib::get_value('settings', 'remote');
+	if($remote=='receive') {
+		$pathinfo = pathinfo(current_url(), PATHINFO_BASENAME);
+		if($pathinfo!='settings') {
+			$href = 'control/teamtime/settings';
+			$text = 'This device is being remotely controlled';
+			$this->data['messages'][] = [anchor($href, $text), 'warning'];
+		}
+	}
 }
 
 function index() {
@@ -13,6 +22,10 @@ function index() {
 	$this->data['title'] = 'Control panel';
 	$this->data['heading'] = 'Teamtime control panel';
 	$this->data['head'] = '<link rel="stylesheet" type="text/css" href="/app/teamtime/admin.css">';
+	
+	# $this->response->setHeader('Access-Control-Allow-Origin', '*');
+	# d($this->response->headers());
+
 	return view('teamtime/admin/index', $this->data);
 }
 
@@ -21,15 +34,36 @@ function settings() {
 		// displays
 		$inputs = [
 			'event_id' => FILTER_SANITIZE_NUMBER_INT,
-			'music_player' => FILTER_SANITIZE_STRING,
-			'run_rows' => FILTER_SANITIZE_STRING
+			'music_player' => FILTER_SANITIZE_SPECIAL_CHARS,
+			'run_rows' => FILTER_SANITIZE_SPECIAL_CHARS,
+			'remote' => FILTER_SANITIZE_SPECIAL_CHARS,
+			'remote_key' => FILTER_SANITIZE_SPECIAL_CHARS,
+			'remote_server' => FILTER_SANITIZE_URL
 		];
 		$value = [];
 		foreach($inputs as $key=>$filter) {
 			$value[$key] = $this->request->getPost($key, $filter);
 		}
 		$value['run_rows'] = csv_array($value['run_rows']);
-
+		if(!$value['remote_server']) $value['remote_server'] = site_url();
+				
+		switch($value['remote']) {
+			case 'receive':
+			// if just changed, create new key else read only
+			$remote = tt_lib::get_value('settings', 'remote');
+			$value['remote_key'] = ($remote==$value['remote']) ?
+				tt_lib::get_value('settings', 'remote_key') : 
+				bin2hex(random_bytes(16));
+			break;
+			
+			case 'send':
+			// accept input
+			break;
+			
+			default:
+			$value['remote_key'] = null;
+		}
+				
 		// update
 		tt_lib::save_value('settings', $value);
 		$this->data['messages'][] = ['Settings updated', 'success'];

@@ -22,7 +22,6 @@ echo form_open(current_url(true), $attr, $hidden);
 	</div>
 	<?php 
 	echo $this->include('Htm/Playtrack');
-	# echo $this->include('Htm/Playtrack2');
 	?>	
 </div>
 

@@ -42,7 +42,6 @@ static function ini_size($ini_size) {
 public function playbtn($opts=[]) {
 	$ret = [];
 	$track_url = $this->url();
-	# $onclick = sprintf("playtrack2.play(%u,%u,'%s',1);", $this->event_id, $this->entry_num, $this->exe);
 	$onclick = sprintf("playtrack.load('%s');", $track_url);
 		
 	if(in_array('player', $opts)) {

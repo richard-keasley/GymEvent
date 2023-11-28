@@ -15,19 +15,8 @@ load: function(track_url, autoplay=1) {
 		playtrack.audio.src = track_url;
 		playtrack.audio.muted = false;
 		playtrack.audio.volume = 1;
-		
+		playtrack.audio.load();	
 		playtrack.autoplay = autoplay;
-		
-		// attempt to preload music
-		// playtrack.audio.muted = true;
-		// playtrack.audio.play();
-		// tmp = jQuery.get(track_url);
-		// playtrack.audio.trigger('play');
-		// playtrack.audio.trigger('pause');
-		
-		if(autoplay) {
-			// playtrack.audio.play();
-		}
 	}
 },
 
@@ -50,22 +39,22 @@ $(function() {
 playtrack.pause();
 
 playtrack.audio.onerror = (event) => {
-	var html;
-	switch(e.target.error.code) {
-		case e.target.error.MEDIA_ERR_ABORTED: html = 'Download aborted'; break;
-		case e.target.error.MEDIA_ERR_NETWORK: html = 'Network error'; break;
-		case e.target.error.MEDIA_ERR_DECODE: html = 'Decoding error'; break;
-		case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED: html = 'No decoder available'; break;
-		default: html = 'Unknown error';
-	}
-	html = '<a href="' + e.target.src + '" title="try to download this track" target="music">' + html + '</a>';
-	playtrack.msg(html, 'danger');
+var html;
+switch(e.target.error.code) {
+	case e.target.error.MEDIA_ERR_ABORTED: html = 'Download aborted'; break;
+	case e.target.error.MEDIA_ERR_NETWORK: html = 'Network error'; break;
+	case e.target.error.MEDIA_ERR_DECODE: html = 'Decoding error'; break;
+	case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED: html = 'No decoder available'; break;
+	default: html = 'Unknown error';
+}
+html = '<a href="' + e.target.src + '" title="try to download this track" target="music">' + html + '</a>';
+playtrack.msg(html, 'danger');
 };
 
 playtrack.audio.oncanplaythrough = (event) => {
-	var html = playtrack.message.innerHTML;
-	playtrack.msg(html, 'success');
-	if(playtrack.autoplay) playtrack.audio.play();
+var html = playtrack.message.innerHTML;
+playtrack.msg(html, 'success');
+if(playtrack.autoplay) playtrack.audio.play();
 };
 	
 });

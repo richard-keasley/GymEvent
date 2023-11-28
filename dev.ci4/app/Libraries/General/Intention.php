@@ -5,27 +5,27 @@ const version = '2022-03-09';
 
 const filter = [
 	'name' => [
-		'filter' => FILTER_SANITIZE_STRING,
+		'filter' => FILTER_SANITIZE_SPECIAL_CHARS,
 		'flags' => FILTER_FLAG_NONE,
 		'default' => 'name'
 	],
 	'gender' => [
-		'filter' => FILTER_SANITIZE_STRING,
+		'filter' => FILTER_SANITIZE_SPECIAL_CHARS,
 		'flags' => FILTER_FLAG_NONE,
 		'default' => 'female'
 	],
 	'club' => [
-		'filter' => FILTER_SANITIZE_STRING,
+		'filter' => FILTER_SANITIZE_SPECIAL_CHARS,
 		'flags' => FILTER_FLAG_NONE,
 		'default' => 'club'
 	],
 	'exercise' => [
-		'filter' => FILTER_SANITIZE_STRING,
+		'filter' => FILTER_SANITIZE_SPECIAL_CHARS,
 		'flags' => FILTER_FLAG_NONE,
 		'default' => 'fx'
 	],
 	'level' => [
-		'filter' => FILTER_SANITIZE_STRING,
+		'filter' => FILTER_SANITIZE_SPECIAL_CHARS,
 		'flags' => FILTER_FLAG_NONE,
 		'default' => 'novice'
 	],
