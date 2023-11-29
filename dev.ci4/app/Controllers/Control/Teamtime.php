@@ -45,11 +45,11 @@ function settings() {
 			$value[$key] = $this->request->getPost($key, $filter);
 		}
 		$value['run_rows'] = csv_array($value['run_rows']);
-		if(!$value['remote_server']) $value['remote_server'] = site_url();
+		if(!$value['remote_server']) $value['remote_server'] = 'https://gymevent.uk/';
 				
 		switch($value['remote']) {
 			case 'receive':
-			// if just changed, create new key else read only
+			// if no change, read only, else create new key 
 			$remote = tt_lib::get_value('settings', 'remote');
 			$value['remote_key'] = ($remote==$value['remote']) ?
 				tt_lib::get_value('settings', 'remote_key') : 
@@ -61,11 +61,13 @@ function settings() {
 			break;
 			
 			default:
+			// ensure its empty
 			$value['remote_key'] = null;
 		}
 				
 		// update
-		tt_lib::save_value('settings', $value);
+		$error = tt_lib::save_value('settings', $value);
+		if($error) $this->data['messages'][] = $error;		
 		$this->data['messages'][] = ['Settings updated', 'success'];
 	}
 	// view 
