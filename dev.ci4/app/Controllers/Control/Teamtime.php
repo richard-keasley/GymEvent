@@ -159,7 +159,6 @@ function displays() {
 	
 		// views
 		$value = filter_json($this->request->getPost('views'));
-		array_unshift($value, null); // add default view 
 		$error = tt_lib::save_value('views', $value);
 		
 		if($error) $this->data['messages'][] = $error;

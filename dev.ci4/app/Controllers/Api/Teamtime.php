@@ -147,14 +147,15 @@ public function remote($varname='') {
 		$postval = $this->request->getPost('value');
 		if(!$postval) $error = "No data sent for {$varname}";
 	}
-	# if(!$error) $error = "remote control disabled";
 	if($error) return $this->failUnauthorized($error);
 	
 	// update 
-	# $error = tt_lib::save_value($varname, $postval);
-	# if($error) return $this->fail($error);
-		
-	return $this->respond('OK');
+	# $error = "remote control disabled";
+	if(!$error) {
+		$error = tt_lib::save_value($varname, $postval);
+	}
+	
+	return $error ? $this->fail($error) : $this->respond('OK');
 }
 
 public function display_view($ds_id=0, $ds_updated=0, $vw_updated=0) {

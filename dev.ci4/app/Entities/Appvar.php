@@ -9,6 +9,8 @@ protected $casts = [
 ];
 
 public function htm() {
+	if(!is_array($this->value)) return $this->value;
+
 	$tbody = [];
 	foreach($this->value as $row_key=>$row_val) {
 		$tr = ['_row' => sprintf('<span class="text-muted">%s</span>', $row_key)];
