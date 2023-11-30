@@ -8,6 +8,8 @@ const teams = <?php
 	foreach(tt_lib::get_value('teams') as $row) $teams[$row[0]] = $row[1];
 	echo json_encode($teams);
 	?>;
+// console.log(progtable);
+// console.log(teams);
 
 const timeticker = {
 	duration: 0,
@@ -20,7 +22,7 @@ const timeticker = {
 		this.current = current; // * 1000;
 		this.start = this.getTime() - current;
 		this.end = this.start + this.duration;
-		//console.log(this);
+		// console.log(this);
 	},
 	getTime: function() {
 		var jsDate = new Date();
@@ -72,7 +74,6 @@ function prog_section(row_num) {
 function team_name(number) {
 	var retval = teams[number];
 	if(typeof retval==='undefined') retval = 'undefined';
-	//console.log(teams);
 	return retval;
 }
 </script>

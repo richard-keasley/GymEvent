@@ -62,6 +62,7 @@ var timer_val = [];
 var $timer = $('#timertick .progbar')[0];
 var tt = setInterval(function() {
 	timer_val = timeticker.tick(['%', 'custom', 'raw']);
+	// console.log(timer_val);
 	$timer.style.width = timer_val[0];
 	$timer.style.background = timer_val[1];
 	$timer.innerHTML = timer_val[2] ? '&nbsp;' : 'STOP';	
