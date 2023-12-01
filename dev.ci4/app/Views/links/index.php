@@ -1,17 +1,19 @@
 <?php $this->extend('default');
 
 $this->section('content'); ?>
-<p>Defined shortcut links.</p>
 
 <ul class="mb-2 list-group"><?php
-foreach($links as $key=>$link) {
-	$href = base_url("x/{$key}");
-	printf('<li class="list-group-item"><strong>%s</strong><div class="py-2"><code>%s</code></div></li>', 
-		anchor($href),
-		$link
-	);
-}
 
+$format = '<li class="list-group-item">%s<code class="d-block py-2">%s</code></li>';
+
+$attrs = [
+	'class' => "fw-bold d-block"
+];
+foreach($links as $key=>$link) {
+	$href = "x/{$key}";
+	$anchor = anchor($href, base_url($href), $attrs);
+	printf($format, $anchor, $link);
+}
 ?></ul>
 
 <h4>Scoreboard displays</h4>
