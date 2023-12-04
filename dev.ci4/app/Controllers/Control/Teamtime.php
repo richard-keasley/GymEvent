@@ -45,8 +45,7 @@ function settings() {
 			$value[$key] = $this->request->getPost($key, $filter);
 		}
 		$value['run_rows'] = csv_array($value['run_rows']);
-		if(!$value['remote_server']) $value['remote_server'] = 'https://gymevent.uk/';
-				
+						
 		switch($value['remote']) {
 			case 'receive':
 			// if no change, read only, else create new key 
@@ -58,10 +57,14 @@ function settings() {
 			
 			case 'send':
 			// accept input
+			if(!$value['remote_server']) {
+				$value['remote_server'] = sprintf("https://%s/", config('App')->hostname);
+			}
 			break;
 			
 			default:
 			// ensure its empty
+			$value['remote'] = null;
 			$value['remote_key'] = null;
 		}
 				

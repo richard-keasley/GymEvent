@@ -182,12 +182,13 @@ public function auto($ch_id=0) {
 	return view("player/auto", $this->data);
 }
 
-private function get_track($track, $server='gymevent.uk') {
+private function get_track($track, $remote=null) {
 	if(!$track) return false;
-		
+	if(!$remote) $remote = config('App')->hostname;
+			
 	$host = parse_url(base_url(), PHP_URL_HOST);
-	if($host==$server) {
-		$this->data['messages'][] = "Already viewing source ({$server})";
+	if($host==$remote) {
+		$this->data['messages'][] = "Already viewing source ({$remote})";
 		return false;
 	}
 	
@@ -197,7 +198,7 @@ private function get_track($track, $server='gymevent.uk') {
 		return false;
 	}
 	// get filename
-	$url = "https://{$server}/api/music/track_url/{$track->event_id}/{$track->entry_num}/{$track->exe}";
+	$url = "https://{$remote}/api/music/track_url/{$track->event_id}/{$track->entry_num}/{$track->exe}";
 	$client = \Config\Services::curlrequest();
 	$options = [
 		'http_errors' => false

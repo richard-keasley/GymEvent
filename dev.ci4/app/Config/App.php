@@ -32,6 +32,8 @@ public function __construct() {
 
 	// name of this device
 	public $device = '';
+	// remote server for music uploads / teamtime
+	public $hostname = 'gymevent.uk';
 		
 	/**
      * --------------------------------------------------------------------------

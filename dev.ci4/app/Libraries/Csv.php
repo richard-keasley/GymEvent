@@ -68,13 +68,14 @@ function __construct($x, $y=0, $content='')  {
 		// covert [x,y] to A1 
 		foreach(array_unique($vals) as $val) {
 			$dxy = explode(',', trim($val, '[]'));
-			$dx = intval($dxy[0] ?? 0);
-			$dy = intval($dxy[1] ?? 0);
+			$dx = $dxy[0] ?? 0;
+			$dy = $dxy[1] ?? 0;
 			$address = $this->address($dx, $dy);
 			$text = str_replace($val, $address, $text);  
 		}
 	}
 	$this->attributes['text'] = $text;
+	# d($this->attributes);
 }
 
 function __get($key) {
@@ -85,10 +86,21 @@ function __toString() {
 	return $this->text;
 }
 
-function address($dx=0,$dy=0) {
-	$x = $this->x + $dx;
-	$y = $this->y + $dy;
-	return chr(64 + $x) . $y;
+function address($dx='', $dy='') {
+	$lock_char = '$';
+	
+	$int = intval(trim($dx, $lock_char));
+	$x = $this->x + $int;
+	$x = chr(64 + $x);
+	$lock = strpos($dx, $lock_char)===0;
+	if($lock) $x = "{$lock_char}{$x}";
+	
+	$int = intval(trim($dy, $lock_char));
+	$y = $this->y + $int;
+	$lock = strpos($dy, $lock_char)===0;
+	if($lock) $y = "{$lock_char}{$y}";
+
+	return "{$x}{$y}";
 }
 
 }

@@ -25,15 +25,19 @@ public function index() {
 
 	$option = $this->request->getGet('f');
 	if(!in_array($option, $this->data['options'])) $option = 'current'; 
-	$clubrets = match($option) {
-		'past' => [3],
-		'future' => [0],
-		default => [1, 2]
-	};
 	$this->data['option'] = $option;
-
+	$clubrets = match($option) {
+		'past'   => [1, 2, 3],
+		'future' => [0],
+		default  => [1, 2]
+	};
+	$before = match($option) {
+		'past'   => date("Y-m-d"),
+		default  => '9999-01-01'
+	};
+		
 	$this->data['events'] = $this->model
-		//->where('private', 0)
+		->where('date <', $before)
 		->whereIn('clubrets', $clubrets)
 		->orderBy('date')
 		->findAll();
