@@ -22,7 +22,7 @@ Edit `.env` to include database connection, server name.
 
 ## Dependencies
 
-- Codeigniter v4.2.6
+- Codeigniter v4.x
 - MySQL
 - PHP 8+
 
