@@ -81,7 +81,11 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	}
 	else {
 		$this->data['device'] = 'live website';
-	}
+	} 
+	
+	// discourage search engines
+	$this->response->setHeader('X-Robots-Tag', ['noindex', 'nofollow']);
+	# d($this->response->getHeaders());
 }
 
 protected function download($data, $layout='table', $filetitle='download', $filetype='csv') {
