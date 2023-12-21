@@ -28,8 +28,8 @@ public function getDates() {
 		try {
 			$entity_val[$key] = new \datetime($db_val[$key]);
 		}
-		catch(\exception $ex) {
-			$entity_val[$key] = new \datetime;		
+		catch(\Throwable $ex) {
+			$entity_val[$key] = new \datetime;	
 		}
 	}
 	return $entity_val;
