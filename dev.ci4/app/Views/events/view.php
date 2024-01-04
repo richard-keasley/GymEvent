@@ -32,17 +32,19 @@ You are advised to open an entry <em>as soon as possible</em> if you intend to e
 We will use the details within your return at that point (there is no "submit" button).</p>
 <?php } ?>
 
-<?php if($event->clubrets==2) { ?>
-<p class="alert alert-warning"><strong>Entries for this event are now closed.</strong><br>
-If you find an error in the entries, <em>inform the event organisers as soon as possible</em>. There is no guarantee entries can be corrected if you wait too long.</p>
-<?php } ?>
-
-<?php if($event->clubrets<2 && $event->payment) { ?>
+<?php if($event->clubrets==1 && $event->payment) { ?>
 <section>
 <h4>Payment</h4>
 <div><?php echo $event->payment;?></div>
 </section>
 <?php } ?>
+
+<?php if($event->clubrets==2) { ?>
+<p class="alert alert-warning"><strong>Entries for this event are now closed.</strong><br>
+If you find an error in the entries, <em>inform the event organisers as soon as possible</em>. There is no guarantee entries can be corrected if you wait too long.</p>
+
+<?php } ?>
+
 
 <?php if($event->music==1) { ?>
 <p class="alert alert-success"><strong>You can now upload your music.</strong><br>
