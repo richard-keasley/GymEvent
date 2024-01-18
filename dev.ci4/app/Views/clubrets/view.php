@@ -50,7 +50,7 @@ foreach($participants as $rowkey=>$row) {
 		$tbody[] = [
 			$key ? '' : $rowkey + 1,
 			$key ? '' : $row['dis'],
-			$key ? '' : implode(' ', $row['cat']),
+			$key ? '' : humanize(implode(' ', $row['cat'])),
 			$namestring->name,
 			$option,
 			$namestring->bg,

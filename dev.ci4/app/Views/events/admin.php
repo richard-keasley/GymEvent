@@ -5,7 +5,7 @@ $can_edit = \App\Libraries\Auth::check_path("admin/events/edit/{$event->id}");
 $this->section('top'); ?>
 <h5><?php $date = new \DateTime($event->date); echo $date->format('j F Y');?></h5>
 
-<?php 
+<?php  
 # d($event->dates);
 # d($event->users('', false));
 # d($event->users('clubrets', false));
@@ -112,9 +112,10 @@ foreach($event->participants() as $dis) { ?>
 	<?php 
 	$tbody = []; $total = 0;
 	foreach($dis['cats'] as $cat) { 
+		$label = humanize($cat['name']);
 		$count = count($cat['entries']);
+		$tbody[] = [$label, ['data'=>$count, 'class'=>"text-end"]];
 		$total += $count;
-		$tbody[] = [$cat['name'], ['data'=>$count,'class'=>"text-end"]];
 	}
 	$table->setHeading([$dis['name'], ['data'=>$total,'class'=>"text-end"]]);
 	echo $table->generate($tbody);
