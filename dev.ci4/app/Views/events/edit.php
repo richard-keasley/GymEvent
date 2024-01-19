@@ -22,7 +22,7 @@ ob_start(); // Details ?>
 	<label class="input-group-text">title</label>
 	<?php echo form_input("title", $event->title, 'class="form-control"');?>
 </p>
-<p class="input-group">
+<p class="input-group" style="max-width:20em;">
 	<label class="input-group-text">date</label>
 	<?php echo form_input("date", $event->date, 'class="form-control"', 'date');?>
 </p>
@@ -176,16 +176,15 @@ foreach($discats as $key=>$discat) {
 	];
 }
 
+$format = '%1$s <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#help-%1$s"><span class="bi-info-lg"></span></button>';
+
 $thead = [
-	'dis <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#help-dis">?</button>',
+	sprintf($format, 'dis'),
+	sprintf($format, 'inf'),
 	
-	'inf <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#help-inf">?</button>',
-	
-	'cats <a tabindex="0" role="button" class="popover-dismiss btn btn-sm btn-info" data-bs-toggle="popover" title="Categories options" data-bs-content="Comma separated lines of single words. Each line is a set of options.">?</a>',
-	
-	'options <a tabindex="0" role="button" class="popover-dismiss btn btn-sm btn-info" data-bs-toggle="popover" title="Entry options" data-bs-content="Single words, each on a separate line">?</a>',
-	
-	''
+	'cats ' . new \App\Views\Htm\Popover('Comma separated lines of single words. Each line is a set of options.', 'Category options'),
+		
+	'options ' . new \App\Views\Htm\Popover('Single words, each on a separate line', 'Entry options')
 ];
 
 $table = \App\Views\Htm\Table::load('responsive');
@@ -197,14 +196,6 @@ echo $btn_add;
 echo form_hidden('discats', '');
 
 ?>
-<script>
-$(function() {
-var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-  return new bootstrap.Popover(popoverTriggerEl, {trigger:'focus'});
-});
-});
-</script>
 </div>
 
 <div class="modal" id="help-inf" tabindex="-1">
@@ -316,12 +307,12 @@ foreach($states as $fieldname) { ?>
 <?php }
 
 ?>
-<section class="my-2 row"><?php
+<section class="my-2 row" style="max-width:45em"><?php
 foreach($event->dates as $key=>$date) {
-	echo '<p class="input-group">';
+	echo '<div class="input-group my-2" style="max-width:20em;">';
 	printf('<label class="input-group-text">%s</label>', humanize($key));
 	printf('<input type="date" name="dates_%s" value="%s" class="form-control">', $key, $date->format('Y-m-d'));
-	echo '</p>';
+	echo '</div>';
 }
 ?></section>
 <?php

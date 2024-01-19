@@ -34,7 +34,7 @@ public function evt_discats($event_id, $entries=1, $orderby='num') {
 	return $return;
 }
 
-// disciplines 
+/* disciplines */
 
 public function evt_disciplines($event_id) {
 	$query = $this->disciplines->orderBy('name', 'ASC')->getWhere(['event_id'=>$event_id]);
@@ -47,6 +47,7 @@ public function update_discipline($id, $data) {
 }
 
 /* entries */
+
 public function get_errors($event_id) {
 	$counts = [];
 	$errors = [];
@@ -158,6 +159,8 @@ public function delete_category($category_id) {
 	$this->entrycats->delete($category_id);
 }
 
+/* import from returns */
+
 public function populate($event_id) {
 	// check event 
 	$mdl_events = new \App\Models\Events;
@@ -177,7 +180,7 @@ public function populate($event_id) {
 		foreach($dis['cats'] as $sort=>$cat) {
 			$cat_arr = [
 				'discipline_id' => $dis_id, 
-				'name' => $cat['name'], 
+				'name' => humanize($cat['name']), 
 				'sort' => sprintf('%03u', $sort * 5)
 			];
 			$cat_id = $this->entrycats->insert($cat_arr);

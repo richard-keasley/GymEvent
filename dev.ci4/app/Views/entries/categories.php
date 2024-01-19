@@ -78,15 +78,14 @@ $tmp = [
 $inputs = []; $thead = [];
 foreach($col_names as $key) {
 	$inputs[$key] = $tmp[$key];
-	switch($key) {
-		case 'name':
-			$key='Category'; break;
-		case 'exercises':
-			$key = 'Exercise<br>set' ; break;
-		default:
-			$key = humanize($key);
-	}
-	$thead[] = $key;
+	
+	$thead[] = match($key) {
+		'name' => 'Category',
+		'sort' => 'sort ' . new \App\Views\Htm\Popover('padded integer (e.g. 000)', 'sort'),
+		'music' => 'music ' . new \App\Views\Htm\Popover('comma separated list of tracks to be collected for each entry', 'music'),
+		'exercises' => 'Exercise set',
+		default => humanize($key)
+	};
 }
 $thead[] = 'Count';
 
@@ -99,10 +98,6 @@ if($dis->id==$filter['disid']) { ?>
 		<?php echo form_input("dis{$dis->id}_name", $dis->name, 'class="form-control"');?> 
 		<label class="input-group-text">abbreviated</label><?php echo form_input("dis{$dis->id}_abbr", $dis->abbr, 'class="form-control"');?>
 	</fieldset>
-	<p>
-	Sort should be padded integer (<code>000</code>). 
-	Music is comma separated list of tracks to be collected for each entry.
-	</p>
 	<?php 
 	foreach($dis->cats as $cat) {
 		foreach($inputs as $key=>$input) {
