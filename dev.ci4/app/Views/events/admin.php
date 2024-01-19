@@ -95,9 +95,12 @@ if($disk_space['count'] && $event->deleted_at) { ?>
 
 <section class="my-2 row">
 <ul class="list-unstyled"><?php
+$now = new \datetime;
 $format = '<li>%s: %s</li>';
 foreach($event->dates as $key=>$date) {
-	printf($format, humanize($key), $date->format('j F'));
+	$fdate = $date < $now ? '<em>%s</em>' : '%s' ;
+	$date = sprintf($fdate, $date->format('j F'));
+	printf($format, humanize($key), $date);
 }
 ?></ul>
 </section>
