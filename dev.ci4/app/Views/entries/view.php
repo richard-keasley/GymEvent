@@ -39,32 +39,29 @@ if($can_edit) {
 	<?php 
 	echo form_close();
 }
-else { 
-?>
-<div class="alert alert-info"><strong>Note:</strong> Entry numbers and categories are not confirmed until the running order has been published.</div>
-<?php
-}
-
 ?>
 <div class="d-flex flex-wrap gap-4">
 <?php 
 $table = \App\Views\Htm\Table::load('responsive');
 
 $edit_base = site_url("/admin/entries/edit/{$event->id}");
-$thead = ['num', 'club', 'name'];
+$thead = [];
+if($can_edit) $thead[] = 'num';
+$thead[] = 'club';
+$thead[] = 'name';
 if($format=='dob') $thead[] = 'DoB';
+# if($can_edit) $thead[] = 'run';
 
 foreach($entries as $dis) { ?>
 	<section class="mw-100">
 	<h4><?php echo $dis->name;?></h4>
 	<?php foreach($dis->cats as $cat) {
-		$tbody = [];
+		$tbody = []; 
 		foreach($cat->entries as $entry) {
-			$row = [
-				$entry->num,
-				$users[$entry->user_id]->abbr ?? '?',
-				$entry->name
-			];
+			$row = [];
+			if(in_array('num', $thead)) $row[] = $entry->num;
+			$row[] = $users[$entry->user_id]->abbr ?? '?';
+			$row[] = $entry->name;
 			if(in_array('DoB', $thead)) {
 				$dob = strtotime($entry->dob);
 				$row[] = date('d-M-Y', $dob);
