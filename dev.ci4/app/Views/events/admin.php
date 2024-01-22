@@ -96,11 +96,14 @@ if($disk_space['count'] && $event->deleted_at) { ?>
 <section class="my-2 row">
 <ul class="list-unstyled"><?php
 $now = new \datetime;
-$format = '<li>%s: %s</li>';
-foreach($event->dates as $key=>$date) {
-	$fdate = $date < $now ? '<em>%s</em>' : '%s' ;
-	$date = sprintf($fdate, $date->format('j F'));
-	printf($format, humanize($key), $date);
+$dates = $event->dates;
+asort($dates);
+foreach($dates as $key=>$date) {
+	$format = $date < $now ?
+		'<li><em>%s: %s</em></li>' : 
+		'<li>%s: %s</li>';
+	$key = str_replace('clubrets', 'online entry', $key);
+	printf($format, humanize($key), $date->format('j F'));
 }
 ?></ul>
 </section>
