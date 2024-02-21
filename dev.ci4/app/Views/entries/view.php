@@ -2,9 +2,12 @@
 
 $this->section('content');
 
-$format = $format ?? 'plain' ;
 $can_edit = \App\Libraries\Auth::check_path('admin/entries/edit');
+$formats = ['plain', 'dob'];
+$format = $format ?? 'plain' ;
 if(!$can_edit) $format = 'plain';
+if(!in_array($format, $formats)) $format = 'plain';
+# d($format);
 
 if($can_edit) {
 	$attr = [
@@ -13,15 +16,17 @@ if($can_edit) {
 	echo form_open(current_url(), $attr);
 	echo \App\Libraries\View::back_link("admin/events/view/{$event->id}");
 	echo getlink("admin/entries/edit/{$event->id}", 'edit');
-	if($format=='dob') {
-		$suffix = 'plain'; $label = '<del>DoB</del>';
-	}
-	else {
-		$suffix = 'dob'; $label = 'DoB';
-	}
+	
 	$attr = ['class'=>"nav-link"];
-
-	echo anchor("admin/entries/view/{$event->id}/{$suffix}", $label, $attr);
+    foreach($formats as $val) {
+	    if($format==$val) continue;
+		$label = match($val) {
+			'dob' => 'DoB',
+			default => ucfirst($val)
+		};
+	    echo anchor("admin/entries/view/{$event->id}/{$val}", $label, $attr);
+	}
+	
 	echo getlink("admin/entries/categories/{$event->id}", 'categories');
 	echo getlink("admin/entries/clubs/{$event->id}", 'clubs');
 	echo getlink("admin/entries/import/{$event->id}", 'import');
