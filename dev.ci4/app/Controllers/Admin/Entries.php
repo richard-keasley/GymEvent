@@ -261,6 +261,7 @@ public function edit($event_id=0) {
 	if(!in_array($sort_field, $allowed)) $sort_field = false;
 	$this->data['sort'] = $sort_field;
 	if($sort_field) {
+		$orderby = [];
 		foreach($this->data['cat_entries'] as $cat_entry) {
 			$orderby[] = match($sort_field) {
 				'club' => $this->data['user_options'][$cat_entry->user_id] ?? '',
