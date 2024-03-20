@@ -5,7 +5,8 @@ use CodeIgniter\Entity;
 class Entry extends Entity {
 	
 protected $casts = [
-	'user_id' => 'integer'
+	'user_id' => 'integer',
+	'guest' => 'integer'
 ];
 
 private $model;

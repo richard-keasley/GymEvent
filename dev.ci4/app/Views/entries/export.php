@@ -26,15 +26,22 @@ $input = [
 	'class' => "form-control",
 	'options' => $source_opts,
 	'selected' => $source,
-	'style' => "max-width:10em"
+	'style' => "max-width:10em",
+	'onchange' => "$('#selector').submit();"
 ];
 echo form_dropdown($input);
+
+$dests = [
+	'csv' => "download",
+	'json' => "braces",
+	'xml' => "code"
+];
+$format = '<button type="submit" name="download" value="%s" class="btn btn-secondary" title="Export as %s"><i class="bi-%s"></i></button>';
+foreach($dests as $dest=>$icon) {
+	printf($format, $dest, strtoupper($dest), $icon);
+}
+
 ?>
-<button type="submit" name="action" value="download" class="btn btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>
-<script>
-$(function() {
-$('[name=source]').change(function() { $('#selector').submit(); });
-});
-</script>
+
 </form>
 <?php $this->endSection(); 

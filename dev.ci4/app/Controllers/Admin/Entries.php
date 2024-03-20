@@ -137,7 +137,7 @@ public function edit($event_id=0) {
 		
 	if($this->request->getPost('save')) {
 		// update
-		$col_names = ['category_id', 'user_id', 'num', 'name', 'dob', 'opt'];
+		$col_names = ['category_id', 'user_id', 'num', 'name', 'dob', 'guest', 'opt'];
 		$entries = $this->ent_model->cat_entries($filter['catid']);
 		$data = [];
 		foreach($entries as $entry) {
@@ -548,6 +548,8 @@ public function export($event_id=0, $download=0) {
 	$tg_id = tt_lib::get_value('settings', 'event_id');
 	$teamgym = ($tg_id==$event_id);
 	
+	$source = $this->request->getGet('source');
+	
 	// build user table
 	$usr_model = new \App\Models\Users();
 	$ent_users = [];
@@ -563,7 +565,6 @@ public function export($event_id=0, $download=0) {
 	}	
 	
 	// build export table
-	$source = $this->request->getGet('source');
 	$export_table = []; 
 	$this->data['headings'] = [];
 	switch($source) {
@@ -598,6 +599,8 @@ public function export($event_id=0, $download=0) {
 					$tr['Num'] = $entry->num;
 					$tr['Club'] = $ent_users[$entry->user_id]->abbr ?? '?';
 					$tr['Name'] = $entry->name;
+					if($entry->guest) $tr['Name'] .= ' (G)';
+				
 					if($exe_count) {
 						$tr['Tot'] = "=SUM([-{$exe_count}]:[-1])";
 
@@ -619,13 +622,16 @@ public function export($event_id=0, $download=0) {
 		foreach($this->data['entries'] as $dis) {
 			foreach($dis->cats as $cat) {
 				foreach($cat->entries as $rowkey=>$entry) {
-					$export_table[] = [
+					$tr = [
 						'dis' => $dis->name,
 						'cat' => $cat->name,
 						'num' => $entry->num,
 						'club' => $ent_users[$entry->user_id]->abbr ?? '?',
 						'name' => $entry->name
 					];
+					if($entry->guest) $tr['name'] .= ' (G)';
+				
+					$export_table[] = $tr;
 				}
 			}
 		}
@@ -683,6 +689,8 @@ public function export($event_id=0, $download=0) {
 							'club' => $ent_users[$entry->user_id]->abbr ?? '?',
 							'name' => $entry->name
 						];
+						if($entry->guest) $row['name'] .= ' (G)';
+						
 						if(!$rowkey) $has_opt = $entry->opt;
 						if($has_opt) $row['opt'] = humanize($entry->opt);
 						$export_table[] = $row;
@@ -702,8 +710,6 @@ public function export($event_id=0, $download=0) {
 			$this->data['table_header'] = false;
 			$this->data['headings'] = ['runorder', 'dis', 'cat'];
 		}
-				
-
 		break;
 		
 		case 'round_summary':
@@ -738,7 +744,7 @@ public function export($event_id=0, $download=0) {
 				
 		default:
 		$source = 'scoreboard';
-				
+		
 		if($teamgym) {
 			$rundata = tt_lib::get_rundata();
 			# d($rundata);
@@ -766,7 +772,8 @@ public function export($event_id=0, $download=0) {
 						],
 						'number' => $entry->num,
 						'title' => $entry->name,
-						'dob' => $entry->dob
+						'dob' => $entry->dob,
+						'guest' => $entry->guest,
 					];
 					$row['order'] = '';#$entry->get_rundata('order');
 					if($teamgym) {
@@ -799,11 +806,22 @@ public function export($event_id=0, $download=0) {
 			# $export_table[$rowkey]['order'] = implode('-', $sort[$rowkey]);
 		}
 	}
-	$this->data['export'] = $export_table;
+		
+	$this->data['export'] = []; $tr = [];
+	foreach($export_table as $row) {
+		$row = array_flatten_with_dots($row);
+		foreach($row as $key=>$val) {
+			$key = str_replace('.', '_', $key);
+			$tr[$key] = $val;
+		}
+		$this->data['export'][] = $tr;
+	}
 	
-	$action = $this->request->getGet('action');
-	if($action=='download') {
-		return $this->download($this->data, $this->data['layout'], $source);
+	// look for export request
+	$filetype = $this->request->getGet('download');
+	$arr = ['json', 'csv', 'xml'];
+	if(in_array($filetype, $arr)) {
+		return $this->download($this->data, $this->data['layout'], $source, $filetype);
 	}
 	
 	// view

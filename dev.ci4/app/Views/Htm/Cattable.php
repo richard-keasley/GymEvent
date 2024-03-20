@@ -64,7 +64,7 @@ private function compile() {
 }
 
 public function csv($data = false) {
-	if($data) $this->data = $this->data;
+	if($data) $this->data = $data;
 	$this->compile();
 	if(!$this->compiled) return;
 	
@@ -94,7 +94,8 @@ public function htm($data = false) {
 	foreach($this->compiled as $cattable) { ?>
 		<section class="mw-100"><?php 
 		
-		foreach($cattable['headings'] as $level=>$heading) {
+		$headings = $cattable['headings'] ?? [] ;
+		foreach($headings as $level=>$heading) {
 			$hl = $level + 2; // heading level
 			$tag = $hl>6 ? 'p' : "h{$hl}"; 
 			echo "<{$tag}>{$heading}</{$tag}>";

@@ -64,15 +64,30 @@ foreach($entries as $dis) { ?>
 		$tbody = []; 
 		foreach($cat->entries as $entry) {
 			$row = [];
-			if(in_array('num', $thead)) $row[] = $entry->num;
-			$row[] = $users[$entry->user_id]->abbr ?? '?';
-			$row[] = $entry->name;
-			if(in_array('DoB', $thead)) {
-				$dob = strtotime($entry->dob);
-				$row[] = date('d-M-Y', $dob);
-			}
-			if(in_array('run', $thead)) {
-				$row[] = $entry->get_rundata('group');
+			foreach($thead as $key) {
+				switch($key) {
+					case 'club':
+					$value = $users[$entry->user_id]->abbr ?? '?';
+					break;
+					
+					case 'name':
+					$value = $entry->name;
+					if($entry->guest) $value .= ' <abbr title="guest">(G)</abbr>';
+					break;
+					
+					case 'DoB':
+					$value = strtotime($entry->dob);
+					$value = date('d-M-Y', $value);
+					break;
+					
+					case 'run':
+					$value = $entry->get_rundata('group');
+					break; 
+					
+					default:
+					$value = $entry->$key;
+				}
+				$row[] = $value;
 			}
 			$tbody[] = $row;
 		}

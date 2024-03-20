@@ -73,6 +73,7 @@ echo form_open('', $attr, $hidden);
 
 $inputs = [
 	'category_id' => [
+		'type' => "select",
 		'class' => 'form-control',
 		'options' => $cat_options
 	],
@@ -82,6 +83,7 @@ $inputs = [
 		'style' => 'min-width:5em; max-width:7em;'
 	],
 	'user_id' => [
+		'type' => "select",
 		'class' => 'form-control',
 		'options' => $user_options,
 		'style' => "min-width:5em;"
@@ -93,6 +95,10 @@ $inputs = [
 	'dob'=> [
 		'class' => 'form-control',
 		'type' => 'date'
+	],
+	'guest'=> [
+		'class' => 'form-check-input',
+		'type' => 'checkbox'
 	],
 	'opt' => [
 		'class' => 'form-control',
@@ -106,12 +112,23 @@ foreach($cat_entries as $count=>$entry) {
 	$tr = [];
 	foreach($inputs as $key=>$input) {
 		$input['name'] = "ent{$entry->id}_$key";
-		if(isset($input['options'])) {
+		$type = $input['type'] ?? 'text' ;
+		switch($type) {
+			case 'select':
+			unset($input['type']);
 			$input['selected'] = $entry->$key;
 			$tr[] = form_dropdown($input);
-		}
-		else {
+			break;
+			
+			case 'checkbox':
+			$input['value'] = 1;
+			if($entry->$key) $input['checked'] = "checked";
+			$tr[] = form_input($input);
+			break;
+			
+			default:
 			$input['value'] = $entry->$key;
+			# $tr[] = print_r($input, 1);
 			$tr[] = form_input($input);
 		}
 	}
@@ -145,8 +162,11 @@ $headings = [
 	'num' => 'Num', 
 	'club' => 'Club', 
 	'name' => 'Name', 
-	'dob' => 'DoB', 
-	'Opt', 'Run order', ''
+	'dob' => 'DoB',
+	'<abbr title="guest">G</abbr>',
+	'Opt', 
+	'Run order', 
+	''
 ];
 
 $keys = ['num', 'club', 'name', 'dob'];

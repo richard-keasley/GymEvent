@@ -41,8 +41,14 @@ function write($filename) {
 			$xlcell = new xlcell($cellcol, $cellrow, $cell);
 			$row[$colkey] = $xlcell->text;
 		}
-					
-		fputcsv($fp, $row);
+		/*
+		https://www.php.net/manual/en/function.fputcsv.php
+		*/
+		$separator = ",";
+		$enclosure = "\"";
+		$escape = "\\";
+		$eol = "\r\n";
+		fputcsv($fp, $row, $separator, $enclosure, $escape, $eol);
 	}
 	fclose($fp);
 	return true;

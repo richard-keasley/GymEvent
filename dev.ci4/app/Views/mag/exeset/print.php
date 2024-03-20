@@ -5,7 +5,8 @@
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style><?php
-include __DIR__ . '/print.css';
+helper('minify');
+echo minify_file(__DIR__ . '/print.css');
 ?></style>
 
 <title><?php echo $title;?></title>
@@ -15,7 +16,7 @@ include __DIR__ . '/print.css';
 
 <header class="row">
 
-<div style="width:30%; font-weight:bold">
+<div class="col-4" style="font-weight:bold">
 <?php echo $exeset->name;?><br>
 <?php 
 $options = \App\Libraries\Mag\Rules::index;
@@ -23,11 +24,11 @@ echo $options[$exeset->rulesetname] ?? '' ;
 ?>
 </div>
 
-<pre style="width:40%">
+<pre class="col-4">
 <?php echo $exeset->event;?>
 </pre>
 
-<div class="text-end" style="width:30%; font-size:0.8em; color:#777; font-style:italic;">
+<div class="text-end col-4 text-muted d-none d-sm-block">
 Saved: <?php 
 	$time = new \CodeIgniter\I18n\Time($exeset->saved);
 	echo $time->toLocalizedString('d MMM yyyy'); 
@@ -47,9 +48,9 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	?>
 	<section class="row">
 	
-	<h3 style="width:35%"><?php echo $exe_rules['name'];?></h3>
+	<h3 class="col-4"><?php echo $exe_rules['name'];?></h3>
 	
-	<div class="routine" style="width:40%">
+	<div class="col-5 routine">
 	<table>
 	<tbody>
 	<?php
@@ -81,7 +82,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	</table>
 	</div>
 	
-	<div style="width:25%">
+	<div class="col-3">
 	<?php 
 	$this->setData(['exekey' => $exekey]);
 	echo $this->include('mag/exeset/exeval');	
@@ -108,9 +109,9 @@ $attr = [];
 echo form_open($action, $attr, $post);
 ?>
 <button type="submit" title="re-edit these routines">edit</button>
-<p>Print this page or 
+<p>Print this page (use A4 portrait) or 
 <abbr title="right click, then select save as...">save it</abbr>
-to your PC for use later. Use A4 portrait for printing; you may have to play with the margins to fit it on one page.</p>
+to your PC for use later.</p>
 <?php echo form_close();?>
 </footer>
 

@@ -88,19 +88,34 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	# d($this->response->getHeaders());
 }
 
-protected function download($data, $layout='table', $filetitle='download', $filetype='csv') {
-
-	$data['format'] = $filetype;
+protected function download($data, $layout='table', $filetitle='download', $filetype='') {
+	$filetype = strtolower($filetype);
 	$filetitle = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $filetitle));
-	$filename = "{$filetitle}.{$filetype}";
 
-	$response = view("export/{$layout}", $data);
-	// remove DEBUG comments from view
-	$response = preg_replace('#<!--.*-->[\r\n]#', '', $response);
+	switch($filetype) {
+		case 'json':
+		$this->response->setJSON($this->data['export']);
+		$response = $this->response->getBody();
+		break;
+		
+		case 'xml':
+		$this->response->setXML($this->data['export']);
+		$response = $this->response->getBody();
+		break;
+		
+		default:
+		$filetype = 'csv';
+		$data['format'] = $filetype;		
+		$response = view("export/{$layout}", $data);
+		// remove DEBUG comments from view
+		$response = preg_replace('#<!--.*-->[\r\n]#', '', $response);
+	}
 	
 	if(0) {
 		// view response for debug
-		$this->response->setHeader('content-type', 'text/plain;charset=UTF-8'); 
+		if($filetype=='csv') {
+			$this->response->setHeader('content-type', 'text/plain;charset=UTF-8'); 
+		}
 		return $response;
 	}
 	
@@ -110,6 +125,7 @@ protected function download($data, $layout='table', $filetitle='download', $file
 	$response = "\xEF\xBB\xBF" . $response; 
 	
 	// send download
+	$filename = "{$filetitle}.{$filetype}";
 	return $this->response->download($filename, $response);
 }
 

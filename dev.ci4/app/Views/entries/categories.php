@@ -45,12 +45,12 @@ $tmp = [
 	'name' => [
 		'type' => 'text',
 		'class' => 'form-control',
-		'style' => 'min-width:8em;'
+		'style' => 'min-width:16em;'
 	], 
 	'abbr' => [
 		'type' => 'text',
 		'class' => 'form-control',
-		'style' => 'width:5em;'
+		'style' => 'width:7em;'
 	],  
 	'sort' => [
 		'type' => 'text',
@@ -81,6 +81,7 @@ foreach($col_names as $key) {
 	
 	$thead[] = match($key) {
 		'name' => 'Category',
+		'abbr' => 'Abbr ' . new \App\Views\Htm\Popover('Max length 20 chars', 'short name'),
 		'sort' => 'sort ' . new \App\Views\Htm\Popover('padded integer (e.g. 000)', 'sort'),
 		'music' => 'music ' . new \App\Views\Htm\Popover('comma separated list of tracks to be collected for each entry', 'music'),
 		'exercises' => 'Exercise set',
