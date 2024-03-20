@@ -104,7 +104,7 @@ protected function download($data, $layout='table', $filetitle='download', $file
 		// replace data line numbers 
 		// CI replaces integer keys with "item{int}"
 		$response = preg_replace('#<item[0-9]+>#', '<item>', $response);
-		$response = preg_replace('#</item[0-9]+\>#', '</item>', $response);
+		$response = preg_replace('#</item[0-9]+>#', '</item>', $response);
 		break;
 		
 		default:

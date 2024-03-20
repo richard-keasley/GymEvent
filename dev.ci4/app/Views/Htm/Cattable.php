@@ -6,7 +6,7 @@ $cattable->data = $tbody;
 echo $cattable->htm();
 */
 
-class Cattable {
+class Cattable implements \stringable {
 public $data = null;
 public $headings = []; // data columns to convert to HTM headings
 public $table_header = false; // include table header
@@ -18,19 +18,18 @@ public function __construct($headings=[]) {
 }
 
 private function compile() {
-	if(!$this->data) {
-		$this->compiled = false;
-		return;
-	}
+	$this->compiled = false;
+	
+	if(!$this->data) return;
 	
 	// headings
 	$prev_headings = [];
 	foreach($this->headings as $level=>$fldname) {
 		$prev_headings[$level] = '';
 	}
-	$headings = [];
 
 	// build categorised tables
+	$headings = [];
 	$compiled = [];
 	$catkey = 0;
 	foreach($this->data as $row) {
@@ -83,10 +82,9 @@ public function csv($data = false) {
 	return ob_get_clean();
 }
 
-public function htm($data = false) {
-	if($data) $this->data = $this->data;
+public function __toString() {
 	$this->compile();
-	if(!$this->compiled) return;
+	if(!$this->compiled) return '';
 		
 	$table = \App\Views\Htm\Table::load($this->template_name);
 	

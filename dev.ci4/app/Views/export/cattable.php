@@ -7,6 +7,6 @@ $cattable->data = $export;
 $cattable->table_header = $table_header ?? true;
 
 echo match($format) {
-	'htm' => $cattable->htm(),
+	'htm' => $cattable->__toString(),
 	default => $cattable->csv()
 };

@@ -73,8 +73,7 @@ echo $table->generate($staff);
 	$headings = ['dis', 'cat'];
 	$cattable = new \App\Views\Htm\Cattable($headings);
 	$cattable->data = $participants;
-	echo $cattable->htm();
-	# echo $table->generate($event->participants());
+	echo $cattable;
 ?></div>
 
 <?php 
