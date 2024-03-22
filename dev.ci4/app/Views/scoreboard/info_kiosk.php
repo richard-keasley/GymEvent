@@ -21,11 +21,11 @@ echo minify_file(__DIR__ . '/kiosk.css');
 
 helper('html');
 
-$link = 'x/follow';
+$link = 'x/info';
 
 $img = [
-    'src'   => '/app/scoreboard/qr-follow.png',
-    'alt'   => 'Follow scores',
+    'src'   => '/app/scoreboard/qr-info.png',
+    'alt'   => 'Event information',
     'style' => "max-width:100%;",
 ];
 
@@ -45,8 +45,7 @@ $anchor = [
 </div>
 
 <div style="width:50vw;">
-<p>Follow scores during today's event!</p>
-<p>You need the entry number to see the scores.</p>
+<p>View information on today's event!</p>
 </div>
 
 </div>

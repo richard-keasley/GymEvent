@@ -17,7 +17,8 @@ public function index() {
 	$links = [
 		'follow' => "", 
 		'scores' => "",
-		'judges' => ""
+		'judges' => "",
+		'info' => ""
 	];
 	
 	// update

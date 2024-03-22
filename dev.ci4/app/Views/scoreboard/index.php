@@ -11,7 +11,15 @@ echo $appvars->get_value('scoreboard.home');
 <div class="toolbar"><?php 
 echo \App\Libraries\View::back_link("/");
 echo getlink('setup/scoreboard', 'admin');
-echo getlink('scoreboard/follow', 'follow');
+
+$appvars = new \App\Models\Appvars();
+$links = $appvars->get_value('home.links');
+
+$keys = ['follow', 'info'];
+foreach($keys as $key) {
+	$link = $links[$key] ?? null ;
+	if($link) echo getlink("scoreboard/{$key}");
+}
 ?></div>
 
 <?php $this->endSection();

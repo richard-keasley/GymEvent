@@ -14,7 +14,7 @@ echo form_open('', $attr, $hidden); ?>
 $input = [
 	'type' => 'url',
 	'class' => 'form-control',
-	'style' => 'min-width:20em'
+	'style' => 'min-width:30em'
 ];
 $tbody = []; 
 foreach($links as $key=>$link) {

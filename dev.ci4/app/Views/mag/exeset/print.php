@@ -26,7 +26,7 @@ echo $options[$exeset->rulesetname] ?? '' ;
 
 <pre class="col-4">
 <?php echo $exeset->event;?>
-</pre>
+</pre> 
 
 <div class="text-end col-4 text-muted d-none d-sm-block">
 Saved: <?php 
@@ -50,7 +50,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	
 	<h3 class="col-4"><?php echo $exe_rules['name'];?></h3>
 	
-	<div class="col-5 routine">
+	<div class="col-5 routine d-none d-sm-block">
 	<table>
 	<tbody>
 	<?php
@@ -83,11 +83,12 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	</div>
 	
 	<div class="col-3">
+	<div class="d-flex-column">
 	<?php 
 	$this->setData(['exekey' => $exekey]);
 	echo $this->include('mag/exeset/exeval');	
 	?>
-	<ul style="margin-top:0.5em;" class="list-unstyled">
+	<ul class="list-unstyled">
 	<?php 
 	foreach($exercise['neutrals'] as $nkey=>$nval) { 
 		$decoration = $nval ? 'none' : 'line-through' ;
@@ -95,6 +96,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		printf('<li class="text-decoration-%s">%s</li>', $decoration, $neutral['description']);
 	} ?>
 	</ul>
+	</div>
 	</div>
 
 	</section>

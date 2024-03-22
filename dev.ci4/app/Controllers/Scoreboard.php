@@ -23,4 +23,15 @@ public function follow($layout='') {
 	return view("scoreboard/{$view}", $this->data);
 }
 
+public function info($layout='') {
+	$view = 'info';
+	$allowed = ['kiosk'];
+	if(in_array($layout, $allowed)) $view .= "_{$layout}";
+			
+	$this->data['breadcrumbs'][] = 'scoreboard/info';
+	$this->data['title'] = 'Event info';
+	$this->data['heading'] = '<span class="display-1">Event information</span>';
+	return view("scoreboard/{$view}", $this->data);
+}
+
 }

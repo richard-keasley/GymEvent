@@ -72,7 +72,6 @@ form button {
 }
 table {
 	border-collapse: collapse;
-	border-collapse: collapse;
 }
 tfoot td {
 	font-weight: bold;
@@ -81,9 +80,21 @@ tfoot td {
 thead th {
 	text-align: left;
 }
+table.table-sm td {
+	padding: 0em 0.2em;
+}
 
 .d-none {
 	display:none;
+}
+.d-flex-column {
+	display: flex;
+	flex-direction: column;
+	gap: .7em;
+	align-items: self-start;
+}
+.d-flex-column > * {
+	margin: 0;
 }
 .alert-danger {
 	background: #edd9d9a8;
@@ -128,11 +139,6 @@ thead th {
 	width: 1.5em;
 }
 
-@media (min-width:481px) {
-.d-sm-block {
-	display:block;
-}
-	
 .row {
 	display: flex;
 	gap: 0;
@@ -141,8 +147,24 @@ thead th {
 .row > * {
 	overflow: hidden;
 	padding: 0 0.5em;
+	margin: 0;
 	box-sizing: border-box;
 }
+.col-1  { width: 25%  }
+.col-2  { width: 25%  }
+.col-3  { width: 50%  }
+.col-4  { width: 50%  } 
+.col-5  { width: 75%  }
+.col-6  { width: 75%  }
+.col-7  { width: 100% }
+.col-8  { width: 100% }
+.col-9  { width: 100% }
+.col-10 { width: 100% }
+.col-11 { width: 100% }
+
+
+@media (min-width:481px) {
+.d-sm-block { display:block; }
 .col-1  { width:  8.3% }
 .col-2  { width: 16.6% }
 .col-3  { width: 25%   }
@@ -154,7 +176,6 @@ thead th {
 .col-9  { width: 75%   }
 .col-10 { width: 83.3% }
 .col-11 { width: 91.6% }
-
 }
 
 @media print {
