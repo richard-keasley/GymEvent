@@ -15,9 +15,9 @@ public function index() {
 
 public function view($key='') {
 	$link = $this->data['links'][$key] ?? null ;
+	if($link==='') $link = base_url(); // link closed
 	if($link) return redirect()->to($link);
-		
-	$message = "Invalid link: {$key}";
+	$message = "'{$key}' is not a valid link";
 	throw \App\Exceptions\Exception::not_found($message);
 }
 
