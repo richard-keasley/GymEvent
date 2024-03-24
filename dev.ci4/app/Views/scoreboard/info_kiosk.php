@@ -24,7 +24,7 @@ helper('html');
 $link = 'x/info';
 
 $img = [
-    'src'   => '/app/scoreboard/qr-info.png',
+    'src'   => 'app/scoreboard/qr-info.png',
     'alt'   => 'Event information',
     'style' => "max-width:100%;",
 ];

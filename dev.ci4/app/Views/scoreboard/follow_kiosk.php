@@ -24,7 +24,7 @@ helper('html');
 $link = 'x/follow';
 
 $img = [
-    'src'   => '/app/scoreboard/qr-follow.png',
+    'src'   => 'app/scoreboard/qr-follow.png',
     'alt'   => 'Follow scores',
     'style' => "max-width:100%;",
 ];
