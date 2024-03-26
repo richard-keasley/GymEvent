@@ -257,26 +257,17 @@ public function event($event_id=0) {
 	$this->data['participants'] = $tbody;
 
 	// view
-	switch($this->data['event']->clubrets) {
-		case 0: 
-			$msg = ['Returns for this event are not yet open', 'warning'];
-			break;
-		case 1:
-			$msg = ['Returns for this event are still open', 'success'];
-			break;
-		case 2:
-			$msg = ['Returns for this event are completed', 'warning'];
-			break;
-		case 3:
-			$msg = ['Returns service is closed for this event', 'success'];
-			break;
-		default:
-			$msg = ["Unknown state ({$this->data['event']->clubrets}) for club returns", 'danger'];
-	}
+	$this->data['messages'][] = match($this->data['event']->clubrets) {
+		0 => ['Returns for this event are not yet open', 'warning'],
+		1 => ['Returns for this event are still open', 'success'],
+		2 => ['Returns for this event are completed', 'warning'],
+		3 => ['Returns service is closed for this event', 'success'],
+		default => ["Unknown state ({$this->data['event']->clubrets}) for club returns", 'danger']
+	};
+		
 	$this->data['back_link'] = "/admin/events/view/{$event_id}";
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['breadcrumbs'][] = ["admin/clubrets/event/{$event_id}", 'Returns'];
-	$this->data['messages'][] = $msg;
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title . ' - returns';
 	$this->data['clubrets'] = $this->data['event']->clubrets();

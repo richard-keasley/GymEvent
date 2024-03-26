@@ -96,6 +96,23 @@ $attr = [
 ];
 echo anchor("admin/clubrets/names/{$event->id}", 'names', $attr);
 echo form_close();
+
+?>
+<ul class="list-unstyled"><?php
+$now = new \datetime;
+$dates = $event->dates;
+asort($dates);
+foreach($dates as $key=>$date) {
+	if(strpos($key, 'clubrets_')!==0) continue;
+	$format = $date < $now ?
+		'<li><em>%s: %s</em></li>' : 
+		'<li>%s: %s</li>';
+	$key = str_replace('clubrets', 'online entry', $key);
+	printf($format, humanize($key), $date->format('j F'));
+}
+?></ul>
+<?php
+
 if(isset($users_dialogue)) { 
 	echo $this->include('includes/users/dialogue');
 }

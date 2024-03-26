@@ -1,6 +1,6 @@
 <?php $this->extend('default');
 
-$this->section('content');
+$this->section('content'); 
 # d($event);
 # d($entries);
 # d($users);
@@ -26,6 +26,7 @@ echo form_open(current_url(true), $attr, $hidden);
 </div>
 
 <?php
+
 $count_entries = 0;
 $tracks_table = [];
 foreach(\App\Libraries\Track::state_labels as $key) $tracks_table[$key] = 0;
@@ -113,9 +114,23 @@ echo getlink("admin/music/clubs/{$event->id}", 'clubs');
 ?>
 </div>
 
+<ul class="list-unstyled"><?php
+$now = new \datetime;
+$dates = $event->dates;
+asort($dates);
+foreach($dates as $key=>$date) {
+	if(strpos($key, 'music_')!==0) continue;
+	$format = $date < $now ?
+		'<li><em>%s: %s</em></li>' : 
+		'<li>%s: %s</li>';
+	$key = str_replace('clubrets', 'online entry', $key);
+	printf($format, humanize($key), $date->format('j F'));
+}
+?></ul>
+
 <form name="selector" method="GET" class="row">
 <div class="col-auto"><?php 
-	$selector = []; $dis_opts = ['-'];
+	$selector = []; $dis_opts = [];
 	foreach($entries as $dis) {
 		foreach($dis->cats as $cat) {
 			if($cat->music) {
@@ -123,6 +138,10 @@ echo getlink("admin/music/clubs/{$event->id}", 'clubs');
 			}
 		}
 		if(!empty($selector[$dis->id])) $dis_opts[$dis->id] = $dis->name;
+	}
+	
+	if(count($dis_opts)>1) { 
+		$dis_opts = ['-'] + $dis_opts;
 	}
 	echo form_dropdown('dis', $dis_opts, $filter['dis'], 'class="form-control"');
 ?>
@@ -177,7 +196,12 @@ foreach(\App\Entities\Event::states as $state_label=>$state) {
 	$input['checked'] = $event->music==$state;
 	$input['value'] = $state;
 	echo form_radio($input);
-	printf('<label class="btn btn-outline-%s" for="%s">%s</label>', $colours[$state], $input['id'], $state_label);
+	
+	$label = [
+		'class' => "btn btn-outline-{$colours[$state]}",
+		'for' => $input['id']
+	];
+	printf('<label %s>%s</label>', stringify_attributes($label), $state_label);
 } 
 ?>
 </div>

@@ -78,6 +78,15 @@ public function view($event_id=0) {
 	$this->data['filter'] = []; 
 	$flds = ['dis', 'cat', 'user', 'status'];
 	foreach($flds as $fld) $this->data['filter'][$fld] = $this->request->getGet($fld);
+	
+	// view
+	$this->data['messages'][] = match($this->data['event']->music) {
+		0 => ['Music upload for this event is not yet open', 'warning'],
+		1 => ['Music upload for this event is open', 'success'],
+		2 => ['Music upload for this event is completed', 'warning'],
+		3 => ['Music upload service is closed for this event', 'success'],
+		default => ["Unknown state ({$this->data['event']->clubrets}) for club returns", 'danger']
+	};
 		
 	$this->data['users'] = $this->data['event']->users();
 	$this->data['entries'] = $this->data['event']->entries();
