@@ -42,6 +42,8 @@ class Autoload extends AutoloadConfig
     public $psr4 = [
         APP_NAMESPACE => APPPATH, // For custom app namespace
         'Config'      => APPPATH . 'Config',
+		'MatthiasMullie\Minify' => APPPATH . 'ThirdParty/minify-1.3.73/src',
+		'MatthiasMullie\PathConverter' => APPPATH . 'ThirdParty/path-converter-1.1.3/src'
     ];
 
     /**

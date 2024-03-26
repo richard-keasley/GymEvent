@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="robots" content="noindex">
+<meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#600">
@@ -10,15 +10,14 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/app/icons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/app/icons/favicon-16x16.png">
 <link rel="stylesheet" type="text/css" href="/app/gymevent.css">
-<link rel="stylesheet" type="text/css" href="/app/custom.css">
-<title><?php echo $title;?></title>
 <style><?php
-helper('minify');
-echo minify_file(__DIR__ . '/kiosk.css');
+$minifier = new MatthiasMullie\Minify\CSS(config('Paths')->viewDirectory . '/custom.css');
+$minifier->add(__DIR__ . '/kiosk.css');
+echo $minifier->minify();
 ?></style>
+<title><?php echo $title;?></title>
 </head>
 <?php 
-
 helper('html');
 
 $link = 'x/info';

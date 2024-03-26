@@ -10,7 +10,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/app/icons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/app/icons/favicon-16x16.png">
 <link rel="stylesheet" type="text/css" href="/app/gymevent.css">
-<link rel="stylesheet" type="text/css" href="/app/custom.css">
+<style><?php
+$minifier = new MatthiasMullie\Minify\CSS(config('Paths')->viewDirectory . '/custom.css');
+echo $minifier->minify();
+?></style>
 <?php echo \App\ThirdParty\jquery::script(); ?>
 <title><?php echo $title;?></title>
 <?php if(!empty($head)) echo $head;?>

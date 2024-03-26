@@ -91,6 +91,22 @@ public function breadcrumb($method='', $folder='') {
 	return ["{$folder}events/{$method}/{$this->id}", $label];
 }
 
+public function viewstate() {
+	$current = [1, 2]; 
+	if(in_array($this->clubrets, $current)) {
+		// always current
+		$viewstate = 'current';
+	}
+	else {
+		// determine if past or future
+		$now = date("Y-m-d");
+		if($this->date < $now) $viewstate = 'past';
+		elseif($this->date > $now) $viewstate = 'future';
+		else $viewstate = 'current'; // today
+	}
+	return $viewstate;
+}
+
 public function discat_inf($dis_name, $inf_name) {
 	$ret = '';
 	foreach($this->discats as $dis) {

@@ -26,22 +26,14 @@ public function index() {
 	$option = $this->request->getGet('f');
 	if(!in_array($option, $this->data['options'])) $option = 'current'; 
 	$this->data['option'] = $option;
-	$clubrets = match($option) {
-		'past'   => [1, 2, 3],
-		'future' => [0],
-		default  => [1, 2]
-	};
-	$before = match($option) {
-		'past'   => date("Y-m-d"),
-		default  => '9999-01-01'
-	};
-		
-	$this->data['events'] = $this->model
-		->where('date <', $before)
-		->whereIn('clubrets', $clubrets)
-		->orderBy('date')
-		->findAll();
-
+	
+	$this->data['events'] = [];
+	$events = $this->model->orderBy('date')->findAll();
+	foreach($events as $event) {
+		if($event->viewstate()==$option) $this->data['events'][] = $event;
+	}
+	# d($this->data['events']);
+	
 	$this->data['body'] = 'events';
 	$this->data['base_url'] = 'events/view';
 	return view('events/index', $this->data);
@@ -53,9 +45,9 @@ public function view($event_id=0) {
 
 	// back_link query
 	$query = [];
-	$query['f'] = match($this->data['event']->clubrets) {
-		'0' => 'future',
-		'3' => 'past',
+	$query['f'] = match($this->data['event']->viewstate()) {
+		'future' => 'future',
+		'past' => 'past',
 		default => 'current'
 	};
 	    

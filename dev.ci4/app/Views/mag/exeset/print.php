@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="robots" content="noindex">
+<meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style><?php
-helper('minify');
-echo minify_file(__DIR__ . '/print.css');
+$minifier = new MatthiasMullie\Minify\CSS(__DIR__ . '/print.css');
+echo $minifier->minify();
 ?></style>
 
 <title><?php echo $title;?></title>
