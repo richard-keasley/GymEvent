@@ -10,6 +10,7 @@ $attrs = [
 	'class' => "fw-bold d-block"
 ];
 foreach($links as $key=>$link) {
+	if(!$link) continue; // link closed
 	$href = "x/{$key}";
 	$anchor = anchor($href, base_url($href), $attrs);
 	printf($format, $anchor, $link);
