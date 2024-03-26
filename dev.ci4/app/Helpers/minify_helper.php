@@ -6,9 +6,8 @@ function minify($string, $format='css') {
 	// Remove spaces before and after selectors, braces, and colons
 	$string = preg_replace('/\s*([{}|:;,])\s+/', '$1', $string);
 	// Remove remaining spaces and line breaks
-	$search = ["\r\n", "\r", "\n", "\t", '  ', '   ', '    '];
+	$search = ["\r\n", "\r", "\n", "\t", '    ', '   ', '  '];
 	$string = str_replace($search, '', $string);
-
 	return $string;
 }
 
