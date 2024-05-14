@@ -34,6 +34,9 @@ public function __construct() {
 	public $device = '';
 	// remote server for music uploads / teamtime
 	public $hostname = 'gymevent.uk';
+	// system emails BCC
+	public $mailto = ''; 
+	
 		
 	/**
      * --------------------------------------------------------------------------

@@ -70,19 +70,20 @@ public function index() {
 	// build message
 	$this->data['user'] = $user; 
 	$message = view('users/reset/email', $this->data);
-	$email_to = ENVIRONMENT == 'production' ? $user->email : 'richard@base-camp.org.uk';
+	$app_mailto = config('App')->mailto;
+	$email_to = ENVIRONMENT == 'production' ? $user->email : $app_mailto;
 
 	// send email to user
 	$email = \Config\Services::email();
 	$email->setSubject('Password reset');
 	$email->setMessage($message);
-	$email->setBCC('richard@hawthgymnastics.co.uk');
+	$email->setBCC($app_mailto);
 	$email->setTo($email_to);
 	# d($email);
 	if(!$email->send()) {
 		$message = ENVIRONMENT == 'production' ? null : $email->printDebugger(['header']) ;
 		if(!$message) $message = "Sorry! Email service is unavailable!"; 
-		\App\Exceptions\Exception::exception($message);
+		throw \App\Exceptions\Exception::exception($message);
 	}
 		
 	// view

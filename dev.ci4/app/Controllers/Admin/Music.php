@@ -106,7 +106,7 @@ public function clubs($event_id=0) {
 	$this->data['status'] = $status;
 		
 	// build table
-	$mailto = [];
+	$recipients = [];
 	$tbody = []; $orderby = [];
 	$track = new \App\Libraries\Track();
 	$track->event_id = $event_id;
@@ -130,7 +130,7 @@ public function clubs($event_id=0) {
 								$club = anchor("/admin/music/view/{$event_id}?user={$user_id}", $user->name) . ' ' . $user->link() ;
 								if($user->email) {
 									$club .= ' ' . mailto($user->email, '<i class="bi-envelope"></i>', ['title' => $user->email]);
-									$mailto[] = $user->email;
+									$recipients[] = $user;
 								}
 								$orderby[$user_id] = $user->name;
 								$tbody[$user_id]['club'] = $club;
@@ -151,17 +151,29 @@ public function clubs($event_id=0) {
 	
 	if($this->request->getPost('sendmail')) {
 		$email = \Config\Services::email();
-		$count = 0;
-		$email->setSubject($this->request->getPost('subject'));
-		$email->setMessage($this->request->getPost('body'));
-		$email->setBCC('richard@hawthgymnastics.co.uk');
+		$email_subject = $this->request->getPost('subject');
+		$email_template = $this->request->getPost('body');
+		$tr_exclude = ['password','cookie'];
+		$app_mailto = config('App')->mailto;
 		
+		$count = 0;
 		$error = null;
-		foreach($mailto as $email_to) {
-			if(ENVIRONMENT != 'production') $email_to = 'richard@base-camp.org.uk';
+		foreach($recipients as $recipient) {
+			$translate = [];
+			foreach($recipient->toArray() as $key=>$val) {
+				if(in_array($key, $tr_exclude)) continue;
+				$translate["{{$key}}"] = $val;
+			}
+			$email_message = strtr($email_template, $translate);
+			# d($email_message); d($translate); die;
+			
+			$email->setSubject($email_subject);
+			$email->setMessage($email_message);
+			$email->setBCC($app_mailto);
+			$email_to = (ENVIRONMENT == 'production') ? $recipient->email : $app_mailto;
 			$email->setTo($email_to);
 			# d($email);
-			if($email->send(false)) {
+			if($email->send()) {
 				$count++; 
 			}
 			else { 			
@@ -180,8 +192,6 @@ public function clubs($event_id=0) {
 	$this->data['heading'] = $this->data['event']->title;
 	
 	return view('music/clubs', $this->data);
-
-	
 }
 
 }
