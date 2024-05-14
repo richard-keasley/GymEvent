@@ -33,6 +33,7 @@ public function test($test_name='index') {
 		$this->data['breadcrumbs'][] = ["setup/dev/test/{$test_name}", $test_name];
 	}
 	
+	$this->data['postvars'] = $this->request->getPost();
 	$this->data['heading'] = $this->data['title'];	
 	return view("{$test_path}/{$test_name}", $this->data);
 }

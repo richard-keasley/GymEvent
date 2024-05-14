@@ -54,7 +54,11 @@ echo form_open_multipart(current_url(), $attr, $hidden);
 
 <section>
 <?php 
-$exeval_fields = ['rulesetname']; // only these fields sent to API
+$exeval_fields = [
+	'rulesetname' => "rulesetname", 
+	'name' => "name", 
+	'event' => "event"
+]; 
 $tab_items = [];
 foreach($exeset->exercises as $exekey=>$exercise) {
 	ob_start();
@@ -124,7 +128,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
 			$input['value'] = $element[$col];
 			$input['class'] .= $class;
-			if($col<2) $exeval_fields[] = $input['name'];
+			$exeval_fields[$exekey]['el'][$elnum][$col] = $input['name'];
 
 			switch($input['type']) {
 				case 'select': 
@@ -153,7 +157,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			'id' => $id,
 			'value' => $exercise['connection'] ?? 0
 		];
-		$exeval_fields[] = $input['name'];
+		$exeval_fields[$exekey]['con'] = $input['name'];
 		echo form_input($input);
 		?>
 		</div>
@@ -172,7 +176,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			'class' => "form-check-input"
 		];
 		if($nval) $input['checked'] = 'checked';
-		$exeval_fields[] = $input['name'];
+		$exeval_fields[$exekey]['nd'][$nkey] = $input['name'];
 		$neutral = $exe_rules['neutrals'][$nkey]; 
 		
 		$attr = [
@@ -189,7 +193,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	<div id="exeval-<?php echo $exekey;?>">
 	<?php 
 	$this->setData(['exekey' => $exekey]);
-	echo $this->include('mag/exeset/exeval'); 
+	echo $this->include('ma2/exeset/exeval'); 
 	?>
 	</div>
 	
@@ -315,25 +319,14 @@ echo $table->generate($tbody);
 ?>
 <script><?php
 ob_start();
-?>
-const api = '<?php echo site_url("/api/mag/exevals");?>/';
-const filter = <?php 
-	$arr = [];
-	foreach(\App\Libraries\Mag\Exeset::filter as $key=>$val) {
-		$arr[] = [$key, $val];	
-	}
-	echo json_encode($arr);
-?>;
-const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
-const exeval_fields = <?php echo json_encode($exeval_fields);?>;
-let execlearModal = null;
-let exename = null;
-<?php
+include __DIR__ . '/edit.js';
+echo ob_get_clean();
+/*
+
 $minifier = new MatthiasMullie\Minify\JS();
 $minifier->add(ob_get_clean());
-$minifier->add(__DIR__ . '/edit.js');
 echo $minifier->minify();
-?>
-</script>
+*/
+?></script>
 
 <?php $this->endSection(); 

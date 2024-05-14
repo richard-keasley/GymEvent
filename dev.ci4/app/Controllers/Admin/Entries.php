@@ -142,19 +142,18 @@ public function edit($event_id=0) {
 		$data = [];
 		foreach($entries as $entry) {
 			foreach($col_names as $col_name) {
-				$fldname = "ent{$entry->id}_{$col_name}";
-				$fld_val = $this->request->getPost($fldname);
-				$data[$col_name] = trim($fld_val);
+				$fld_name = "ent{$entry->id}_{$col_name}";
+				$fld_val = $this->request->getPost($fld_name);
+				$data[$col_name] = filter_string($fld_val);
 			}
 			$runorder = [];
 			foreach($entry->runorder as $key=>$val) {
-				$fldname = "ent{$entry->id}_run_{$key}";
-				$fld_val = $this->request->getPost($fldname);
-				$runorder[$key] = $fld_val;
+				$fld_name = "ent{$entry->id}_run_{$key}";
+				$fld_val = $this->request->getPost($fld_name);
+				$runorder[$key] = filter_string($fld_val);
 			}
 			$data['runorder'] = json_encode($runorder);
-			
-			# d($data['name']);
+			# d($data);
 			
 			if($data['name']=='#delrow') {
 				$this->ent_model->delete($entry->id, 1);
@@ -169,12 +168,11 @@ public function edit($event_id=0) {
 		foreach($col_names as $col_name) {
 			$fld_name = "newrow_{$col_name}";
 			$fld_val = $this->request->getPost($fld_name);
-			$data[$col_name] = $fld_val;
+			$data[$col_name] = filter_string($fld_val);
 		}
 		if($data['name']) {
 			$data['category_id'] = $filter['catid'];
 			$this->ent_model->add_entry($data);
-			#d($data);
 		}
 		
 		// read 
@@ -276,9 +274,7 @@ public function edit($event_id=0) {
 	if($opt_count && $opt_count!=count($this->data['cat_entries'])) {
 		$this->data['messages'][] = ['Entry options should to be entered for <em>all</em> entries or <em>none</em>.', 'warning'];
 	}	
-	
-	
-	
+		
 	return view('entries/edit', $this->data);
 }
 

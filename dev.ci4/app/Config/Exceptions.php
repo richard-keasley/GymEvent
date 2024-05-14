@@ -31,8 +31,8 @@ class Exceptions extends BaseConfig
      * Any status codes here will NOT be logged if logging is turned on.
      * By default, only 404 (Page Not Found) exceptions are ignored.
      */
-	// ignore failed login attempts 
-    public array $ignoreCodes = [404, 401, 423];
+	// ignore Authentication failures (\App\Filters\Auth)
+    public array $ignoreCodes = [401, 403, 404, 423];
 
     /**
      * --------------------------------------------------------------------------

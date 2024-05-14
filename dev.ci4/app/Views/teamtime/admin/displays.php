@@ -17,7 +17,7 @@ $attr = [
 	'id' => "editform"
 ];
 $hidden = [
-	'save' => 1,
+	'save' => "1",
 	'displays' => '',
 	'views' => ''
 ];

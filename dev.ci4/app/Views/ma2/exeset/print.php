@@ -86,7 +86,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	<div class="d-flex-column">
 	<?php 
 	$this->setData(['exekey' => $exekey]);
-	echo $this->include('mag/exeset/exeval');	
+	echo $this->include('ma2/exeset/exeval');	
 	?>
 	<ul class="list-unstyled">
 	<?php 
@@ -106,7 +106,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 
 <footer>
 <?php 
-$action = site_url('mag/routine');
+$action = site_url('ma2/routine');
 $attr = [];
 echo form_open($action, $attr, $post);
 ?>

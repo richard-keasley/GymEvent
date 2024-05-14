@@ -1,5 +1,5 @@
 <?php
-$action = $modal_delete['action'] ?? ''; # current_url();
+$action = $modal_delete['action'] ?? ''; # current_url(true);
 $id = $modal_delete['id'] ?? 'modal_delete';
 $cmd = $modal_delete['cmd'] ?? 'del_item';
 $item_id = $modal_delete['item_id'] ?? 0;
@@ -15,7 +15,7 @@ $attr = [
 ];
 $hidden = [
 	'cmd' => $cmd,
-	'item_id' => $item_id
+	'item_id' => (string) $item_id
 ];
 echo form_open($action, $attr, $hidden);
 ?>

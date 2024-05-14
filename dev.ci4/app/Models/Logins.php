@@ -53,9 +53,9 @@ function check_ip($ip) {
 	}
 	if(isset(self::$config['ignore'])) return true;	
 	
-	if(!isset($this->_ip_checks[$ip])) {
+	if(!isset($this->_ip_checks[$ip])) {	
 		// delete old records (remove temporary blocks)
-		$this->where('updated <', self::$config['del_time'])
+		$this->where('updated <', (string) self::$config['del_time'])
 			->where('error <>', 'blocked')
 			->delete();
 				

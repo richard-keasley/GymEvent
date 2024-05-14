@@ -175,7 +175,7 @@ $attr = [
 	'id' => "frmstate",
 	'class' => 'modal-content'
 ];
-$hidden = ['set_state' => 1];
+$hidden = ['set_state' => "1"];
 echo form_open(current_url(true), $attr, $hidden);
 ?>
 <div class="modal-header">

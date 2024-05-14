@@ -68,11 +68,6 @@ public function control() {
 				}
 			}
 			break;
-				
-			case 'restart':
-			$runvars['row'] = 1;
-			$runvars['col'] = 1;
-			break;
 		}
 		
 		// ensure we're still in the table

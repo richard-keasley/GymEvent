@@ -1,3 +1,16 @@
+const api = '<?php echo site_url("/api/mag/exevals");?>/';
+const filter = <?php 
+	$arr = [];
+	foreach(\App\Libraries\Mag\Exeset::filter as $key=>$val) {
+		$arr[] = [$key, $val];	
+	}
+	echo json_encode($arr);
+?>;
+const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
+const exeval_fields = <?php echo json_encode($exeval_fields);?>;
+
+let execlearModal = null;
+let exename = null;
 
 /*
 
@@ -74,7 +87,7 @@ function get_exevals() {
 		}
 		exeset[fld] = val;
 	});
-
+	
 	$.get(api, exeset, function(response) {
 		try { 
 			update_exevals(response, 1); 

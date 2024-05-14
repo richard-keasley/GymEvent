@@ -26,13 +26,6 @@ echo form_open('', $attrs); ?>
 </div>
 
 <div class="input-group my-1">
-	<label class="input-group-text">Run place</label>
-	<input type="number" name="row" class="form-control">
-	<input type="number" name="col" class="form-control">
-	<button type="button" class="btn btn-primary bi bi-skip-backward-fill" onclick="set_runvars('restart')" title="Re-start event"></button>
-</div>
-
-<div class="input-group my-1">
 	<label class="input-group-text">Timer</label>
 	<input type="number" name="timer" class="form-control">
 </div>
@@ -44,10 +37,17 @@ echo form_open('', $attrs); ?>
 
 <div class="navbar my-1">
 
+<span>
 <button type="button" class="btn btn-primary bi bi-arrow-repeat" onclick="set_runvars('refresh')" title="update view"></button>
+
+<button class="btn btn-primary" type="button" title="Jump to programme place" data-bs-toggle="modal" data-bs-target="#tt-progjump"><i class="bi-grid-3x3-gap"></i></button>
+<input type="hidden" name="row" class="form-control">
+<input type="hidden" name="col" class="form-control">
+</span>
 
 <span>
 <?php echo \App\Libraries\View::back_link('teamtime'); ?>
+
 
 <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#debug" title="View API replies"><i class="bi-wrench"></i></button>
 
@@ -135,21 +135,40 @@ $this->endSection();
 
 $this->section('bottom'); 
 echo $this->include('teamtime/js');
+echo $this->include('teamtime/admin/progjump');
 ?>
+
 <script>
-const csrf_token = '<?php echo csrf_token();?>';
-const csrf_hash = '<?php echo csrf_hash();?>';
-const music_player = '<?php echo $music_player;?>';
-const event_id = <?php echo $event_id;?>;
+// const csrf_token = '<?php echo csrf_token();?>';
+// const csrf_hash = '<?php echo csrf_hash();?>';
+
+const ttcontrol = {
+
+music_player: '<?php echo $music_player;?>',
+event_id: <?php echo $event_id;?>,
+
+message: function(text='', alert='danger') {
+	if(text) {
+		text = '<p class="alert alert-'+alert+'">' + text + '</p>';
+	}
+	$('#msg').html(text);
+},
+
+jumpto: function(row, col) {
+	$('#runvars [name=row]').val(row);
+	$('#runvars [name=col]').val(col);
+	set_runvars('jump');
+}
+
+};
 
 let runvars = null;	
-let postvar = null;
 let entry = 0;
 let exe = '';
 let url = '';
 
 function set_runvars(cmd='') {
-postvar = {cmd:cmd};
+var postvar = {cmd:cmd};
 var fields = $('#runvars').serializeArray();
 jQuery.each(fields, function(i, field) {
 	postvar[field.name] = field.value;
@@ -162,20 +181,13 @@ $.post(url, postvar)
 .done(function(response) {
 	//console.log(response);
 	show_runvars(response);
-	if(response.error) tt_message(response.error);
+	if(response.error) ttcontrol.message(response.error);
 })
 .fail(function(jqXHR) {
-	tt_message(get_error(jqXHR)); 
+	ttcontrol.message(get_error(jqXHR)); 
 });
 
 };
-
-function tt_message(text='', alert='danger') {
-	if(text) {
-		text = '<p class="alert alert-'+alert+'">' + text + '</p>';
-	}
-	$('#msg').html(text);
-}
 
 function show_runvars(arr) {
 	runvars = arr;
@@ -191,7 +203,7 @@ function show_runvars(arr) {
 	$('[name=view] option').each(function() {
 		this.selected = this.value==runvars['view'];			
 	});
-	tt_message();
+	ttcontrol.message();
 	if(runvars.mode=='o') {
 		$('.omode-only').show();
 		timeticker.init(runvars['timer'], runvars['timer_current']);
@@ -203,7 +215,7 @@ function show_runvars(arr) {
 	}
 	else $('.cmode-only').hide();
 	
-	if(music_player=='local' && runvars.cmd!='refresh') {
+	if(ttcontrol.music_player=='local' && runvars.cmd!='refresh') {
 		playtrack.pause();
 		if(runvars.mode=='c') {
 			entry = progtable[runvars.row][runvars.col];
@@ -266,7 +278,7 @@ $.get(url, function(response) {
 	show_runvars(response);
 })
 .fail(function(jqXHR) {
-	tt_message( get_error(jqXHR) ); 
+	ttcontrol.message( get_error(jqXHR) ); 
 });
 
 var tt = setInterval(function(){

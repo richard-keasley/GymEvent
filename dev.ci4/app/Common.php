@@ -77,3 +77,19 @@ function filter_json($val, $array=1) {
 	if($val) return $val;
 	return $array ? [] : new stdClass();
 }
+
+function filter_string($input) {
+	// ensure POST value is valid string
+	
+	// return string
+	$retval = (string) $input;
+	
+	// remove space variants (after copy and paste into input box)
+	// https://unicode-explorer.com/b/2000
+	$spaces = "~[\u{A0}\u{2000}\u{2001}\u{2002}\u{2003}\u{2004}\u{2005}\u{2006}\u{2007}\u{2008}\u{2009}\u{200A} ]+~";
+	$retval = preg_replace($spaces, ' ', $retval);
+	$retval = trim($retval, ", \n\r\t\v\x00");
+	
+	# d($input, $retval);
+	return $retval;	
+}

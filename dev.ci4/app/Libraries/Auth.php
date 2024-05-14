@@ -144,7 +144,7 @@ static function login($name, $password) {
 		// fail
 		self::logout();
 		$request = service('request');
-		$login['error'] .= '<br>' . $request->uri->getPath();
+		$login['error'] .= '<br>' . $request->getUri()->getPath();
 		$user_id = 0;
 	}
 	else {

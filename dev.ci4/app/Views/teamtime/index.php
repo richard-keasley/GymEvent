@@ -1,7 +1,8 @@
 <?php $this->extend('default');
 use \App\Libraries\Teamtime as tt_lib;
 
-$this->section('content'); 
+$this->section('content');
+# d(tt_lib::get_value('views'));
  
 $event_id = tt_lib::get_value('settings', 'event_id');
 $mdl_events = new \App\Models\Events;

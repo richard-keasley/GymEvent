@@ -208,9 +208,11 @@ public function add_discipline($data) {
 }
 
 public function add_entry($data) {
-	if(empty($data['category_id'])) return 0;
-	if(empty($data['name'])) return 0;
-	$this->insert($data);
+	$entry = new \App\Entities\Entry($data);		
+	if(!strlen($entry->name)) return 0;
+	if(!$entry->category_id) return 0;
+	
+	$this->insert($entry);
 	return $this->db->insertID();
 }
 

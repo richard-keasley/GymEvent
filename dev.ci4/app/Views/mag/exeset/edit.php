@@ -315,25 +315,10 @@ echo $table->generate($tbody);
 ?>
 <script><?php
 ob_start();
-?>
-const api = '<?php echo site_url("/api/mag/exevals");?>/';
-const filter = <?php 
-	$arr = [];
-	foreach(\App\Libraries\Mag\Exeset::filter as $key=>$val) {
-		$arr[] = [$key, $val];	
-	}
-	echo json_encode($arr);
-?>;
-const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
-const exeval_fields = <?php echo json_encode($exeval_fields);?>;
-let execlearModal = null;
-let exename = null;
-<?php
+include __DIR__ . '/edit.js';
 $minifier = new MatthiasMullie\Minify\JS();
 $minifier->add(ob_get_clean());
-$minifier->add(__DIR__ . '/edit.js');
 echo $minifier->minify();
-?>
-</script>
+?></script>
 
 <?php $this->endSection(); 

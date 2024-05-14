@@ -1,19 +1,17 @@
 <?php namespace App\Entities;
 
-use CodeIgniter\Entity;
+use CodeIgniter\Entity\Entity;
 
 class Entry extends Entity {
-	
+
 protected $casts = [
 	'user_id' => 'integer',
-	'guest' => 'integer'
+	'category_id' => 'integer',
+	'guest' => 'integer',
+	'name' => 'string'
 ];
 
 private $model;
-
-function __construct() {
-	$this->model = new \App\Models\Entries();
-}
 
 function breadcrumb($controller) {
 	switch($controller) {
@@ -106,7 +104,8 @@ public function setVideos($entity_val) {
 
 public function updateVideos() {
 	$data = ['videos' => $this->attributes['videos']];
-	$this->model->update($this->id, $data);
+	$model = new \App\Models\Entries;
+	$model->update($this->id, $data);
 }
 
 public function getMusic() {
@@ -127,7 +126,8 @@ public function setMusic($entity_val) {
 
 public function updateMusic() {
 	$data = ['music' => $this->attributes['music']];
-	$this->model->update($this->id, $data);
+	$model = new \App\Models\Entries;
+	$model->update($this->id, $data);
 }
 
 public function getRunorder() {

@@ -1,33 +1,33 @@
-#kiosk {
-	width: 100vw;
-	height: 56.22vw; /* force aspect ratio */
-	position: relative;
-}
-#kiosk #container {
-	position: absolute;
-	left: 4vw;
-	right: 4vw;
-	bottom: 4vw;
-	top: 4vw;
-}
-#kiosk #flex {
-	display:flex; 
-	gap:8vw;
-}
-#kiosk #flex p {
-	font-size: 5vw;
-	line-height: 1.2;
-}
-#kiosk footer {
-	margin: 4vw 0 0 0;
-	font-size: 4.5vw;
-	font-weight: bold;
-	color: #600;
-}
-
-#kiosk #logo {
-	position:absolute;
-	right:0; 
-	bottom:0;
-	width:10vw;
+#kiosk {
+	width: 100vw;
+	height: 56.22vw; /* force aspect ratio */
+	position: relative;
+}
+#kiosk #container {
+	position: absolute;
+	left: 4vw;
+	right: 4vw;
+	bottom: 4vw;
+	top: 4vw;
+}
+#kiosk #flex {
+	display:flex; 
+	gap:8vw;
+}
+#kiosk #flex p {
+	font-size: 5vw;
+	line-height: 1.2;
+}
+#kiosk footer {
+	margin: 4vw 0 0 0;
+	font-size: 4.5vw;
+	font-weight: bold;
+	color: #600;
+}
+
+#kiosk #logo {
+	position:absolute;
+	right:0; 
+	bottom:0;
+	width:10vw;
 }

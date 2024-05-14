@@ -1,11 +1,11 @@
 <?php namespace App\Entities;
 
-use CodeIgniter\Entity;
+use CodeIgniter\Entity\Entity;
 
 class User extends Entity {
 	
 protected $casts = [
-	'user_id' => 'integer'
+	'enabled' => 'integer'
 ];
 
 public function self() {

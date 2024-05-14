@@ -1,13 +1,9 @@
 <?php $this->extend('default');
 
 $this->section('content');
-$attr = [
-	'autocomplete' => "off"
-];
-$hidden = [
-	'reset' => 1
-];
-echo form_open('reset/reset', $attr, $hidden);
+$attrs = ['autocomplete' => "off"];
+$hidden = ['reset' => "1"];
+echo form_open('reset/reset', $attrs, $hidden);
 ?>
 <p>Enter the 'reset key' (emailed to you) and your new password. The reset key is valid for 20 minutes.</p>
 <div class="mb-3">

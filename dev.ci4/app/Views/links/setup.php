@@ -5,7 +5,7 @@ $attr = [
 	'id' => "editform"
 ];
 $hidden = [
-	'save' => 1
+	'save' => "1"
 ];
 echo form_open('', $attr, $hidden); ?>
 <h4>Edit external links</h4>

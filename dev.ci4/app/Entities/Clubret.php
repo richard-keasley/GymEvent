@@ -1,8 +1,14 @@
 <?php namespace App\Entities;
 
-use CodeIgniter\Entity;
+use CodeIgniter\Entity\Entity;
 
 class Clubret extends Entity {
+
+protected $casts = [
+	'user_id' => 'integer',
+	'event_id' => 'integer',
+	'stafffee' => 'integer'
+];
 
 static function enabled() {
 	return \App\Libraries\Auth::check_path('clubrets', 0) != 'disabled';
@@ -224,37 +230,22 @@ class namestring implements \Stringable {
 /* 
 a namestring is a comma separated string containing:
 name 1, name 2, BG number, DoB
+DoB is UNIX timestamp
 Only used in entity "clubret"
 Each item in "participants" contains an array of namestring
 Each item in "staff" contains a single namestring
-*/ 
+*/
 
-public $namestring = '';
-public $name = '';
-public $bg = '';
-public $dob = null; // unix timestamp
-public $csv = '';
+private $attributes = [];
 
 function __construct($namestring) {
-	/*
-	the ongoing battle against stupidity
-	assume users
-	- blank lines
-	- input data in wrong order
-	- add middle name as a separate data item
-	- include more than one name 
-	- don't separate name with comma
+	/* 	See setup/test/namestring	*/
 	
-	See setup/test/namestring
-	*/
+	$namestring = filter_string($namestring);
+	$this->attributes['namestring'] = $namestring;
 	
-	$namestring = trim($namestring, ", \n\r\t\v\x00");
-	if(!$namestring) return;
-	
-	$this->namestring = $namestring;
 	$input = preg_split("/ *[\t,] */", $namestring);
 	$input = array_pad($input, 8, '');
-	
 	$used = [];
 	
 	// look for BG 
@@ -262,12 +253,12 @@ function __construct($namestring) {
 	$check_order = [2, 3, 0, 1, 4, 5, 6, 7];
 	$keys = array_diff($check_order, $used);
 	foreach($keys as $key) {
-		if(self::is_bg($input[$key])) {
+		if(self::sanitize_bg($input[$key])) {
 			$bg_key = $key;
 			break;
 		}
 	}
-	$this->bg = $input[$bg_key];
+	$this->attributes['bg'] = $input[$bg_key];
 	$used[] = $bg_key;
 		
 	// look for DoB 
@@ -275,21 +266,24 @@ function __construct($namestring) {
 	$check_order = [3, 2, 0, 1, 4, 5, 6, 7];
 	$keys = array_diff($check_order, $used);
 	foreach($keys as $key) {
-		$dob = self::input_dob($input[$key]);
+		$dob = self::sanitize_date($input[$key]);
 		if($dob) {
 			$dob_key = $key;
 			break;
 		}
 	}
-	$this->dob = $dob;
+	// DoB is stored as Unix timestamp
+	$this->attributes['dob'] = $dob;
 	$used[] = $dob_key;		
+	// valid DoB as HTML or preserve input
+	$dob = $dob ? $this->htm_dob() : $input[$dob_key];
 
 	// build name from unused input
 	$names = [];
 	$check_order = [0, 1, 2, 3];
 	$keys = array_diff($check_order, $used);
 	foreach($keys as $key) {
-		$val = $input[$key];
+		$val = trim($input[$key]);
 		if($val) $names[] = $val;
 	}
 	
@@ -304,71 +298,113 @@ function __construct($namestring) {
 			implode(' ', array_slice($names, 1))
 		];
 	}		
-	$this->name = implode(' ', $names);
+	$this->attributes['name'] = implode(' ', $names);
 	
 	// re-build CSV
-	// HTML recognised dates else preserve input
-	$htm_dob = $dob ? $this->htm_dob() : $input[$dob_key] ;
 	$csv = [
 		$names[0],
 		$names[1],
 		$input[$bg_key],
-		$dob ? $this->htm_dob() : $input[$dob_key]
+		$dob
 	];
-	$this->csv = implode(', ', $csv);
+	$this->attributes['csv'] = implode(', ', $csv);
+}
+
+public function __get($key) {
+	return $this->attributes[$key] ?? null ;
+}
+
+public function __debugInfo() {
+	return $this->attributes;
 }
 
 function htm_dob() {
 	return $this->dob ? date('d-M-Y', $this->dob) : '' ;
 }
 
-static function input_dob($str) {
-	// ensure form input is formatted
-	$ret = trim($str);				
-	$ret = preg_replace('!\s+!', ' ', $ret); // remove multiple spaces
-	$ret = str_replace(['/','.',' '], '-', $ret); // replace separator
-	$ret = array_pad( explode('-',$ret,3), 3, ''); // 3 items
-	// month could be first or second
-	if(ctype_digit($ret[0]) && ctype_digit($ret[1])) $ret = array_reverse($ret); // don't reverse if non-numerical month
-	$ret = implode('-', $ret); // convert to Y-m-d  
-	return strtotime($ret);
-}
-
 public function __toString(): string {
-	$arr = [
-		"<strong>{$this->namestring}</strong>",
-		"name: {$this->name}",
-		"bg: {$this->bg}",
-		"dob: {$this->dob}",
-		$this->csv
-	];
+	$arr = [];
+	foreach($this->__debugInfo() as $key=>$val) {
+		$val = match($key) {
+			'dob' => date(' (j M Y)', $val),
+			'namestring' => sprintf('<span style="white-space:pre">%s</span>', $val),
+			default => $val
+		};
+		$arr[] = "{$key}: {$val}";
+	}
+	
 	$error = $this->error();
 	if($error) $arr[] = sprintf('<span class="text-bg-danger">Entry %s</span>', $error);
+	
 	return sprintf('<div class="border p-1 m-1">%s</div>', implode('<br>', $arr));
 }
 
 function error() {
-	if(!$this->namestring) return "is empty";
+	$val = $this->namestring;
+	if(!$val) return "is empty";
+
+	$val = $this->name;
+	if(!$val) return "has no name";
+	if(strlen($val)<6) return "has invalid name";
 	
-	if(!$this->name) return "has no name";
-	if(strlen($this->name)<6) return "has invalid name";
+	$val = $this->bg;
+	if(empty($val)) return "has no BG number";
+	if(!self::sanitize_bg($val)) return "has invalid BG number";
 	
-	if(empty($this->bg)) return "has no BG number";
-	if(!self::is_bg($this->bg)) return "has invalid BG number";
-	
-	if(empty($this->dob)) return  "has invalid DoB";
+	$val = $this->dob;
+	if(empty($val)) return "has no DoB";
 	else {
 		$yr0 = date('Y') - 90;
 		$yr1 = date('Y') - 3;
-		$yr = date('Y', $this->dob);
+		$yr = date('Y', $val);
 		if($yr<$yr0 || $yr>$yr1) return "has invalid YoB";
 	}
+	
 	// no error
 	return '';
 }
 
-static function is_bg($val) {
-	return ctype_digit($val);
+static function sanitize_bg($val) {
+	// only contains digits
+	return ctype_digit($val) ? $val : false;
+}
+
+static function sanitize_date($str) {
+	if(!$str) return false;
+	try {
+		$formats = [
+			'd/m/Y', // standard UK
+			'd-m-Y', 
+			'd.m.Y', // German
+			'd m Y', 
+			false // create from string
+		];
+		foreach($formats as $format) {
+			$dt = $format ? 
+				\DateTime::createFromFormat($format, $str) : 
+				new \DateTime($str) ;
+			if($dt) break;	
+		}
+		// strip time from datetime
+		$dt->setTime(0,0);
+		
+		$yr = (int) $dt->format('Y');
+		if($yr<100) {
+			// 2 digit year, bring it to this century
+			$now = new \datetime;
+			$now = (int) $now->format('y');
+			$add = $yr>$now ? 1900 : 2000 ;
+			# d($yr, $add);
+			$dt->add(new \DateInterval("P{$add}Y"));
+		}
+		
+		return $dt->getTimestamp();
+	}
+	catch(\exception $ex) {
+		# d($ex);
+	}
+	// fail
+	return false;
 }
 
 }

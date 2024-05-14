@@ -57,7 +57,7 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	else touch($gc_file);
 		
 	// look for help file
-	$stub = $this->request->uri->getSegments();
+	$stub = $this->request->getUri()->getSegments();
 	foreach(array_reverse($stub) as $segment) {
 		$ok = 1;
 		if(is_numeric($segment)) $ok = 0;

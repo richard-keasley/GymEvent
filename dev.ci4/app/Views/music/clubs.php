@@ -41,7 +41,7 @@ if($tbody && $status) { // email dialogue
 <div class="modal-dialog modal-lg">
 <?php
 $attrs = ['class' => "modal-content"];
-$hidden = ['sendmail' => 1];
+$hidden = ['sendmail' => "1"];
 $action = uri_string() . "?status={$status}";
 echo form_open($action, $attrs, $hidden);
 ?>
@@ -69,8 +69,7 @@ $attr = [
 	'name' => 'body',
 	'value' => $this->include('music/email')
 ];
-$editor = new \App\Views\Htm\Editor($attr);
-echo $editor->htm();
+echo new \App\Views\Htm\Editor($attr);
 ?>
 </div>
 

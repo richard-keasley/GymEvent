@@ -16,7 +16,7 @@ public function before(RequestInterface $request, $arguments = null) {
 	
 	$segments = $request->getUri()->getSegments();
 	$request_path = implode('/', $segments);
-	# $request_path = $request->uri->getPath();
+	# $request_path = $request->getUri()->getPath();
 
 	$messages = [];
 	
@@ -75,7 +75,7 @@ public function before(RequestInterface $request, $arguments = null) {
 		$session = \Config\Services::session();
 		$session->setFlashdata('messages', $messages);
 	}
-		
+	
 	// check permissions
 	$allowed = \App\Libraries\Auth::check_path($request_path);
 	if($allowed) return;

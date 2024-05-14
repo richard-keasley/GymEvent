@@ -1,8 +1,16 @@
 <?php namespace App\Entities;
 
-use CodeIgniter\Entity;
+use CodeIgniter\Entity\Entity;
 
 class Event extends Entity {
+
+protected $casts = [
+	'staffcats' => 'csv',
+	'clubrets' => 'integer',
+	'videos' => 'integer',
+	'music' => 'integer',
+	'private' => 'integer'
+];
 
 const icons = [
 	'future' => '<i class="bi bi-calendar-x text-danger" title="Not yet open"></i>',
@@ -10,14 +18,6 @@ const icons = [
 	'current' => '<i class="bi bi-calendar-fill text-success" title="Current"></i>',
 	'hidden' => '<i class="bi bi-x-circle text-danger" title="Not listed"></i>',
 	'private' => '<i class="bi bi-file-lock2 text-info" title="Private"></i>'
-];
-	
-protected $casts = [
-	'staffcats' => 'csv',
-	'clubrets' => 'integer',
-	'videos' => 'integer',
-	'music' => 'integer',
-	'private' => 'integer'
 ];
 
 public function getDates() {
