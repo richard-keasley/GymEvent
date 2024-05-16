@@ -36,4 +36,20 @@ public function clubrets() {
 	return $res ? $model->find(array_column($res, 'id')) : [] ;
 }
 
+public function placeholders() {
+	$retval = [];
+	foreach($this->toArray() as $key=>$val) {
+		switch($key) {
+			// ignore these 
+			case 'password':
+			case 'cookie':
+			break;
+			
+			default:
+			$retval[$key] = $val;
+		}
+	}
+	return $retval;	
+}
+
 }

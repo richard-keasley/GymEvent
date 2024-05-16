@@ -494,6 +494,38 @@ public function user_entries($user_id) {
 	return $query->getResult();
 }
 
+public function placeholders() {
+	$retval = [];
+	foreach($this->toArray() as $key=>$val) {
+		switch($key) {
+			// ignore these 
+			case 'description':
+			case 'payment':
+			case 'participants':
+			case 'staff':
+			break;
+			
+			case 'dates':
+			foreach($val as $subkey=>$subval) {
+				$retval[$key][$subkey] = $subval->format('l j F');
+			}
+			break;
+			
+			case 'date':
+			$dt = new \datetime($val);
+			$retval[$key] = $dt->format('l j F');
+			break;
+			
+			default:
+			if(!is_array($val)) {
+				$retval[$key] = $val;
+			}
+		}
+	}
+	$retval['url'] = site_url("events/view/{$this->id}");
+	return $retval;
+}
+
 /* event states */
 const states = [
 	'waiting' => 0,

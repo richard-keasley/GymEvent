@@ -153,26 +153,30 @@ public function clubs($event_id=0) {
 		$email = \Config\Services::email();
 		$email_subject = $this->request->getPost('subject');
 		$email_template = $this->request->getPost('body');
-		$tr_exclude = ['password','cookie'];
+		$email_template = str_replace('ph:{', '{', $email_template);
 		$app_mailto = config('App')->mailto;
+
+		$parser = \Config\Services::parser();
+		$placeholders = [
+			'event' => $this->data['event']->placeholders()
+		];		
 		
 		$count = 0;
 		$error = null;
 		foreach($recipients as $recipient) {
-			$translate = [];
-			foreach($recipient->toArray() as $key=>$val) {
-				if(in_array($key, $tr_exclude)) continue;
-				$translate["{{$key}}"] = $val;
-			}
-			$email_message = strtr($email_template, $translate);
-			# d($email_message); d($translate); die;
-			
-			$email->setSubject($email_subject);
+			$placeholders['user'] = $recipient->placeholders();
+			$translate = array_flatten_with_dots($placeholders);
+			$email_message = $parser->setData($translate)->renderString($email_template);
 			$email->setMessage($email_message);
+
+			$email->setSubject($email_subject);
 			$email->setBCC($app_mailto);
 			$email_to = (ENVIRONMENT == 'production') ? $recipient->email : $app_mailto;
 			$email->setTo($email_to);
-			# d($email);
+			# d($translate); d($email_message); 
+			# d($email); 
+			# die;
+			
 			if($email->send()) {
 				$count++; 
 			}
