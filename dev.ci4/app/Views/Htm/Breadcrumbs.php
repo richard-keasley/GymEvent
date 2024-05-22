@@ -16,6 +16,7 @@ public function __construct($items=[]) {
 
 public function htm($items = false) {
 	if($items) $this->items = $items;
+	if(!$this->items) return;
 	$last = array_key_last($this->items);
 	$retval = $this->template['items_start'];
 

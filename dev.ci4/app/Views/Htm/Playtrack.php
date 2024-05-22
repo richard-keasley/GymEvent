@@ -40,14 +40,14 @@ playtrack.pause();
 
 playtrack.audio.onerror = (event) => {
 var html;
-switch(e.target.error.code) {
-	case e.target.error.MEDIA_ERR_ABORTED: html = 'Download aborted'; break;
-	case e.target.error.MEDIA_ERR_NETWORK: html = 'Network error'; break;
-	case e.target.error.MEDIA_ERR_DECODE: html = 'Decoding error'; break;
-	case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED: html = 'No decoder available'; break;
+switch(event.target.error.code) {
+	case event.target.error.MEDIA_ERR_ABORTED: html = 'Download aborted'; break;
+	case event.target.error.MEDIA_ERR_NETWORK: html = 'Network error'; break;
+	case event.target.error.MEDIA_ERR_DECODE: html = 'Decoding error'; break;
+	case event.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED: html = 'No decoder available'; break;
 	default: html = 'Unknown error';
 }
-html = '<a href="' + e.target.src + '" title="try to download this track" target="music">' + html + '</a>';
+html = '<a href="' + event.target.src + '" title="try to download this track" target="music">' + html + '</a>';
 playtrack.msg(html, 'danger');
 };
 

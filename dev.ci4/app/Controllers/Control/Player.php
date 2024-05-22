@@ -59,6 +59,19 @@ public function view($event_id=0) {
 	return view("player/view", $this->data);
 }
 
+public function static($event_id=0) {
+	$event = $this->find($event_id);
+		
+	$this->data['event'] = $event;
+	$this->data['breadcrumbs'] = null;
+	
+	$this->data['title'] = 'Music player';
+	$this->data['heading'] = $this->data['event']->title;
+	
+	$view = view("player/view", $this->data);
+	return $view;
+}
+
 public function edit($event_id=0) {
 	$event = $this->find($event_id);
 	
