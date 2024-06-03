@@ -41,6 +41,7 @@ static function ini_size($ini_size) {
 
 public function playbtn($opts=[]) {
 	$ret = [];
+		
 	$track_url = $this->url();
 	$onclick = sprintf("playtrack.load('%s');", $track_url);
 		
@@ -148,7 +149,7 @@ public function url() {
 	$file = $this->file();
 	if(!$file) return '';
 	$query = ['t' => $file->getMTime()];
-	return $this->urlpath() . $file->getFilename() . '?' . http_build_query($query);
+	return sprintf('%s/%s?%s', $this->urlpath(), $file->getFilename(), http_build_query($query));
 } 
 
 public function file() {
@@ -215,7 +216,7 @@ public function filepath() {
 } 
 
 public function urlpath() {
-	return sprintf('/public/events/%u/music/', $this->event_id);
+	return base_url("public/events/{$this->event_id}/music");
 } 
 
 public function setFilename($filename) {

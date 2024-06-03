@@ -1,11 +1,9 @@
 <?php 
+// logout form
 $logged_in = $_SESSION['user_id'] ?? false;
-
-if($logged_in) {
-$attr = [
-	'class' => "alert alert-light p-1 d-print-none"
-];
-echo form_open(site_url(), $attr); ?>
+if($logged_in) { ?>
+<footer class="alert alert-light p-1 d-print-none">
+<?php echo form_open(site_url()); ?>
 <button class="btn btn-secondary" type="submit" name="logout" value="1">Logout</button>
 <?php echo getlink('admin', 'admin'); ?> 
 <label><?php 
@@ -14,8 +12,9 @@ $label = "Logged in as {$user_name}";
 $link = getlink('user', $label);
 echo $link ? $link : $label;
 ?></label>
-<?php echo form_close();
-}
+<?php echo form_close(); ?>
+</footer>
+<?php } // logout form
 
 if(ENVIRONMENT != 'development') return;
 if(!empty($exception)) return;

@@ -6,23 +6,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#600">
-<link rel="apple-touch-icon" sizes="180x180" href="/app/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/app/icons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/app/icons/favicon-16x16.png">
-<link rel="stylesheet" type="text/css" href="/app/gymevent.css">
+<?php
+helper('html'); 
+$links = [
+[
+	'rel' => "shortcut icon",
+	'type' => "image/ico",
+	'href' => "app/icons/favicon.ico"
+],
+[
+	'rel' => "apple-touch-icon",
+	'type' => "image/png",
+	'href' => "app/icons/apple-touch-icon.png"
+],
+[
+	'rel' => "icon",
+	'type' => "image/png",
+	'href' => "app/icons/favicon-32x32.png"
+],
+[
+	'rel' => "icon",
+	'type' => "image/png",
+	'href' => "app/icons/favicon-16x16.png"
+],
+	'app/gymevent.css'
+];
+foreach($links as $link) echo link_tag($link) . "\n"; 
+
+echo \App\ThirdParty\jquery::script();
+
+?> 
 <style><?php
 $minifier = new MatthiasMullie\Minify\CSS(config('Paths')->viewDirectory . '/custom.css');
 echo $minifier->minify();
-?></style>
-<?php echo \App\ThirdParty\jquery::script(); ?>
+?></style> 
 <title><?php echo $title;?></title>
 <?php if(!empty($head)) echo $head;?>
 </head>
 
 <body class="container">
+
 <header>
 <h1><?php echo empty($heading) ? $title : $heading;?></h1>
-
 <?php
 $session = \Config\Services::session();
 $flashdata = $session->getFlashdata('messages');

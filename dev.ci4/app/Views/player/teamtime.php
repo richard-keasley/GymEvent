@@ -33,10 +33,10 @@ $event = $mdl_events->find($event_id);
 $title = $event ? $event->title : 'Event not found' ;
 printf('<h2>%s</h2>', $title);
 
-#printf('<p>%s</p>', $track->urlpath());
-
 $track = new \App\Libraries\Track();
 $track->event_id = $event_id;
+# printf('<p>%s</p>', $track->urlpath());
+
 $tbody = [];
 $empty = \App\Views\Htm\Table::centre('<i class="text-danger bi-x" title="this track does not appear in the programme"></i>');
 

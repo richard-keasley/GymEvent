@@ -26,9 +26,30 @@ $filebase = $track->filebase($track_type);
 <ul>
 <li>This track is named <code><?php echo $filebase;?></code></li>
 <li>Event's music folder is <code><?php echo $track->filepath();?></code></li>
-<li>This track's URL is <code><?php echo base_url($track->urlpath() . $filebase);?></code></li>
+<li>This track's URL is <code><?php echo $track->urlpath() . "/{$filebase}";?></code></li>
 </ul>
 
 <p>Use this information to manually add tracks to the play list.</p>
 
-<p>If the track has been converted, the original track should be here: <code><?php echo base_url() . $track->urlpath() . $track->filebase('orig');?></code></p>
+<p>If the track has been converted, the original track should be here:
+<code><?php echo $track->urlpath() . '/' . $track->filebase('orig');?></code></p>
+
+<hr>
+<h5>Downloading media player to local device</h5>
+
+<p>You also need to copy the following files</p>
+
+<dl>
+<dt>App</dt>
+<dd>From <code><?php echo FCPATH;?>app</code><br>
+- all files in root<br>
+- fonts/*<br>
+- icons/*<br>
+- jquery/*</dd>
+
+<dt>music</dt>
+<dd>Copy all music from 
+<code><?php echo $track->filepath();?></code>
+to "music"</dd>
+
+</dl>

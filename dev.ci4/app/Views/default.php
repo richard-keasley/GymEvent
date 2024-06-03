@@ -25,13 +25,15 @@ else { ?>
 	<?php $this->renderSection('content'); ?>
 	</div>
 </div>
-<?php } 
+<?php }
 
 $this->renderSection('bottom');
+
 ?>
 </main>
 
 <?php 
+
 echo $this->include('includes/_footer');
 echo $this->include('includes/js');
 echo $this->include('includes/_foot');

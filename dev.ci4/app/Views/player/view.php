@@ -93,17 +93,28 @@ $track->exe = $round['exe'];
 <?php } ?>
 <?php $this->endSection(); 
 
-$this->section('bottom');?>
-<div class="toolbar"><?php 
-	$label = '<i class="bi bi-gear-fill "></i>';
-	$attrs = [
-		'title' => "Setup event",
-		'class' => "btn btn-outline-secondary"
-	];
-	echo anchor("control/player/edit/{$event->id}", $label, $attrs);
-	$attrs['title'] = 'Start auto-player';
-	echo anchor("control/player/auto", 'Auto', $attrs);
-?></div>
-
+$this->section('bottom'); ?>
+<footer class="toolbar">
 <?php 
-$this->endSection(); 
+$label = '<i class="bi bi-gear-fill"></i>';
+$attrs = [
+	'title' => "Setup event",
+	'class' => "btn btn-outline-secondary"
+];
+echo anchor("control/player/edit/{$event->id}", $label, $attrs);
+
+$label = '<i class="bi bi-download"></i>';
+$attrs = [
+	'title' => "Save media player to local device",
+	'class' => "btn btn-outline-secondary"
+];
+echo anchor("control/player/savepage/{$event->id}", $label, $attrs);	
+
+$attrs = [
+	'title' => "Start auto-player",
+	'class' => "btn btn-outline-secondary"
+];
+echo anchor("control/player/auto", 'Auto', $attrs);
+?>
+</footer>
+<?php $this->endSection(); 
