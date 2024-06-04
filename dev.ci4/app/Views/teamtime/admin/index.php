@@ -3,6 +3,7 @@ use \App\Libraries\Teamtime as tt_lib;
 
 $event_id = tt_lib::get_value("settings", "event_id");
 $remote = tt_lib::get_value('settings', 'remote');
+$music_player = tt_lib::get_value("settings", "music_player");
 
 $this->section('sidebar');
 
@@ -107,7 +108,6 @@ echo form_open('', $attrs); ?>
 </div>
 
 <div class="cmode-only my-2 p-1 border"><?php 
-$music_player = tt_lib::get_value("settings", "music_player");
 $include = match($music_player) {
 	'local' => 'Htm/Playtrack',
 	'remote' => 'player/remote',
@@ -145,6 +145,7 @@ echo $this->include('teamtime/admin/progjump');
 const ttcontrol = {
 
 music_player: '<?php echo $music_player;?>',
+track_api: '<?php echo base_url("/api/music/track_url/{$event_id}");?>',
 event_id: <?php echo $event_id;?>,
 
 message: function(text='', alert='danger') {
@@ -220,8 +221,9 @@ function show_runvars(arr) {
 		if(runvars.mode=='c') {
 			entry = progtable[runvars.row][runvars.col];
 			exe = progtable[0][runvars.col];
-			url = '<?php echo site_url("/api/music/track_url/{$event_id}");?>/'+entry+'/'+exe;
-			$.get(url, function(response) {
+			url = [ttcontrol.track_api, entry, exe];
+			
+			$.get(url.join('/'), function(response) {
 				// console.log(response);
 				playtrack.load(response, 0); // NB: no autoplay
 			})

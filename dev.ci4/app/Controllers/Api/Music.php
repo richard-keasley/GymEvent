@@ -5,26 +5,31 @@ use CodeIgniter\API\ResponseTrait;
 class Music extends \App\Controllers\BaseController {
 	
 use ResponseTrait;
+
+private function getTrack() {
+	$segments = $this->request->getUri()->getSegments();
+	$track = new \App\Libraries\Track();
+	$track->event_id = $segments[3] ?? 0 ;
+	$track->entry_num = $segments[4] ?? 0 ;
+	$track->exe = $segments[5] ?? '' ;
+	return $track;
+}
 	
 public function index() {
 	return $this->respondNoContent();
 }
 
-public function track_url($event_id=0, $entry_num=0, $exe='', $local=false) {
-	$track = new \App\Libraries\Track();
-	$track->event_id = $event_id;
-	$track->entry_num = $entry_num;
-	$track->exe = $exe;
+public function track_url($event_id=0, $entry_num=0, $exe='') {
+	$track = $this->getTrack();
 	$url = $track->url();
-	if(!$url) return $this->failNotfound("No music found for {$entry_num} {$exe}");
-	return $this->respond(base_url($url));
+	return $url ? 
+		$this->respond($url): 
+		$this->failNotfound("No music found for {$entry_num} {$exe}");
 }
 
-public function track($event_id=0, $entry_num=0, $exe='') {
-	$track = new \App\Libraries\Track();
-	$track->event_id = $event_id;
-	$track->entry_num = $entry_num;
-	$track->exe = $exe;
+public function _track($event_id=0, $entry_num=0, $exe='') {
+	// delete this function (4 June 2024)
+	$track = $this->getTrack();
 	$file = $track->file();
 	if(!$file) return $this->failNotfound("No music found for {$entry_num} {$exe}");
 	$filename = $track->filepath() . $file->getFilename();
