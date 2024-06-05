@@ -308,11 +308,21 @@ foreach($states as $fieldname) { ?>
 
 ?>
 <section class="my-2 row" style="max-width:45em"><?php
+# d($event->dates);
 foreach($event->dates as $key=>$date) {
 	echo '<div class="input-group my-2" style="max-width:20em;">';
 	printf('<label class="input-group-text">%s</label>', humanize($key));
-	printf('<input type="date" name="dates_%s" value="%s" class="form-control">', $key, $date->format('Y-m-d'));
+	
+	$fldname = "dates_{$key}";
+	$input = [
+		'type' => "date",
+		'class' => "form-control",
+		'name' => $fldname,
+		'value' => $date
+	];
+	echo form_input($input);
 	echo '</div>';
+	
 }
 ?></section>
 <?php

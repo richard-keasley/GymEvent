@@ -39,9 +39,11 @@ public function delete_all($event_id) {
 	self::delete_path(dirname($event->filepath()));
 	
 	$model = new \App\Models\Clubrets;
-	$model->where('event_id', $event_id)->delete(null, true);
+	$model->delete_event($event_id);
+	
 	$model = new \App\Models\Entries;
 	$model->delete_event($event_id);
+	
 	$this->delete($event_id, true);
 	return true;
 }

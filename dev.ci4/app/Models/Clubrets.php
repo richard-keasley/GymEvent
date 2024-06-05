@@ -8,8 +8,8 @@ protected $primaryKey = 'id';
 protected $returnType    = 'App\Entities\Clubret';
 protected $updatedField  = 'updated';
 protected $allowedFields = [
-	'event_id', 
-	'user_id', 'name', 'address', 'phone', 'other', 
+	'event_id', 'user_id',
+	'name', 'address', 'phone', 'other', 
 	'participants', 
 	'staff', 
 	'stafffee', 
@@ -51,8 +51,7 @@ public function lookup($event_id, $user_id) {
 }
 
 public function delete_event($event_id) {
-	$items = $this->where('event_id', $event_id)->findAll();
-	d($items);
+	$this->where('event_id', $event_id)->delete(null, true);
 }
 
 } 

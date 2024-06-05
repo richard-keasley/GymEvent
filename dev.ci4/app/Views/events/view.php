@@ -15,7 +15,7 @@ $files->removePattern($pattern);
 
 ?>
 <section class="clearfix">
-<p><?php $date = new DateTime($event->date); echo $date->format('j F Y');?></p>
+<p><?php $date = new \DateTime($event->date); echo $date->format('j F Y');?></p>
 <?php if($logo_src) { ?>
 	<div class="item-image">
 	<img src="<?php echo base_url($logo_src);?>">
@@ -28,7 +28,11 @@ $files->removePattern($pattern);
 <?php if($event->clubrets==1) { ?>
 <p class="alert alert-success"><strong>We are accepting entries for this event.</strong><br>
 You are advised to open an entry <em>as soon as possible</em> if you intend to enter this event. You can continue to make edits until entries are closed 
-<strong>(8:00pm on <?php echo $event->dates['clubrets_closes']->format('j F');?>)</strong>. 
+<?php 
+if($event->dates['clubrets_closes']) {
+	$date = new \datetime($event->dates['clubrets_closes']);
+	printf('<strong>(8:00pm on %s)</strong>', $date->format('j F'));
+} ?>.
 We will use the details within your return at that point (there is no "submit" button).</p>
 <?php } ?>
 
@@ -48,8 +52,12 @@ If you find an error in the entries, <em>inform the event organisers as soon as 
 
 <?php if($event->music==1) { ?>
 <p class="alert alert-success"><strong>You can now upload your music.</strong><br>
-Please upload your music as soon as you can, give us time to check your music can be played! You can alter tracks as often as you like until the music service is closed 
-<strong>(8:00pm on <?php echo $event->dates['music_closes']->format('j F');?>)</strong>. 
+Please upload your music as soon as you can, give us time to check your music can be played! You can alter tracks as often as you like until the music service is closed
+<?php 
+if($event->dates['music_closes']) {
+	$date = new \datetime($event->dates['music_closes']);
+	printf('<strong>(8:00pm on %s)</strong>', $date->format('j F'));
+} ?>. 
 </p>
 <?php } ?>
 

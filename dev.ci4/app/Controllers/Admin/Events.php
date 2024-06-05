@@ -197,14 +197,9 @@ public function edit($event_id=0) {
 		$getPost['dates'] = [];
 		foreach($keys as $key) {
 			$fldname = "dates_{$key}";
-			$value = $getPost[$fldname] ?? null;
-			$value = new \datetime($value);
-			# $value = $value->format('Y-m-d');
-			# d($value);
-			# d($getPost[$fldname]);
-			# $getPost[$fldname] = '';
-			$getPost['dates'][$key] = $value;
+			$getPost['dates'][$key] = $getPost[$fldname] ?? null;
 		}
+		# d($getPost['dates']);
 				
 		// ToDo - convert discats to be stored as JSON
 		$discats = [];

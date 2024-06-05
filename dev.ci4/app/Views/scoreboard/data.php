@@ -34,7 +34,15 @@ foreach($scoreboard->files as $file) {
 ?>
 </ul>
 </div>
+<?php
 
+$attrs = [
+	'class' => "nav-link",
+	'title' => "data filters"
+];
+echo anchor('setup/scoreboard/filters', 'filters', $attrs);
+
+?>
 </div>
 <?php $this->endSection(); 
 

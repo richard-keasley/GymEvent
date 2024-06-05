@@ -42,13 +42,11 @@ else { ?>
 if(!$event->deleted_at) {	 
 	echo getlink("events/view/{$event->id}", '<span class="bi-eye" title="customer view of this event"></span>');
 	
-	if(!$event->private) {
-		if(in_array($event->clubrets, [1, 2, 3])) {
-			echo getlink("admin/clubrets/event/{$event->id}", 'returns');
-		}
-		if(in_array($event->clubrets, [2])) {
-			echo $this->include('entries/populate/button');
-		}
+	if(in_array($event->clubrets, [1, 2, 3])) {
+		echo getlink("admin/clubrets/event/{$event->id}", 'returns');
+	}
+	if(in_array($event->clubrets, [2])) {
+		echo $this->include('entries/populate/button');
 	}
 	
 	if(in_array($event->clubrets, [2, 3])) {
@@ -98,12 +96,15 @@ if($disk_space['count'] && $event->deleted_at) { ?>
 $now = new \datetime;
 $dates = $event->dates;
 asort($dates);
-foreach($dates as $key=>$date) {
-	$format = $date < $now ?
-		'<li><em>%s: %s</em></li>' : 
-		'<li>%s: %s</li>';
-	$key = str_replace('clubrets', 'online entry', $key);
-	printf($format, humanize($key), $date->format('j F'));
+foreach($dates as $key=>$val) {
+	if($val) {
+		$date = new \datetime($val);
+		$format = $date < $now ?
+			'<li><em>%s: %s</em></li>' : 
+			'<li>%s: %s</li>';
+		$key = str_replace('clubrets', 'online entry', $key);
+		printf($format, humanize($key), $date->format('j F'));
+	}
 }
 ?></ul>
 </section>

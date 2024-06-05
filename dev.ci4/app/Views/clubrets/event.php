@@ -102,13 +102,16 @@ echo form_close();
 $now = new \datetime;
 $dates = $event->dates;
 asort($dates);
-foreach($dates as $key=>$date) {
+foreach($dates as $key=>$val) {
 	if(strpos($key, 'clubrets_')!==0) continue;
-	$format = $date < $now ?
-		'<li><em>%s: %s</em></li>' : 
-		'<li>%s: %s</li>';
-	$key = str_replace('clubrets', 'online entry', $key);
-	printf($format, humanize($key), $date->format('j F'));
+	if($val) {
+		$date = new \datetime($val);			
+		$format = $date < $now ?
+			'<li><em>%s: %s</em></li>' : 
+			'<li>%s: %s</li>';
+		$key = str_replace('clubrets', 'online entry', $key);
+		printf($format, humanize($key), $date->format('j F'));
+	}
 }
 ?></ul>
 <?php

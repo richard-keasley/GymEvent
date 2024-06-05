@@ -211,7 +211,7 @@ public function add_entry($data) {
 	$entry = new \App\Entities\Entry($data);		
 	if(!strlen($entry->name)) return 0;
 	if(!$entry->category_id) return 0;
-	
+	# d($entry);
 	$this->insert($entry);
 	return $this->db->insertID();
 }

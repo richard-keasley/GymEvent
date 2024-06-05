@@ -25,11 +25,16 @@ public function getDates() {
 	$entity_val = [];
 	$keys = ['clubrets_opens', 'clubrets_closes', 'music_opens', 'music_closes'];
 	foreach($keys as $key) {
+		$entity_val[$key] = null ;
 		try {
-			$entity_val[$key] = new \datetime($db_val[$key]);
+			$date = $db_val[$key] ?? null;
+			if($date) {
+				$date = new \datetime($date);
+				$entity_val[$key] = $date->format('Y-m-d');
+			}
 		}
-		catch(\Throwable $ex) {
-			$entity_val[$key] = new \datetime;	
+		catch(\throwable $ex) {
+			// do nothing, value was set at start of loop
 		}
 	}
 	return $entity_val;
@@ -37,9 +42,11 @@ public function getDates() {
 
 public function setDates($entity_val) {
 	# d($entity_val);
+	/*
 	foreach($entity_val as $key=>$val) {
 		$entity_val[$key] = $val->format('Y-m-d');
 	}
+	*/
 	$db_val = json_encode($entity_val);
 	$this->attributes['dates'] = $db_val;
 	return $db_val;

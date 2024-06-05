@@ -389,34 +389,44 @@ public function import($event_id=0) {
 		'name' => 'name',
 		'club' => 'club',
 		'dob' => 'DoB (d-M-Y)',
-		'runorder' => 'Running order (int-int-int)'
+		'runorder' => 'Running order (int-int-int)',
+		'exeset' => 'Exercise set (int)'
 	];
 
-	$getPost = trim($this->request->getPost('csv'));
+	$getPost = $this->request->getPost('csv');
 	if($getPost) {
 		try {
 			// read input
 			$input = [];
 			$lines = explode("\n", $getPost);
 			$map = array_keys($this->data['columns']);
+			$row = [];
 			$count_map = count($map);
-			foreach($lines as $line_num=>$line) {			
+			$allow_empty = ['exeset'];
+			foreach($lines as $line_num=>$line) {
+				$line = trim($line);
 				if(!$line_num) continue; // skip first line
+				if(!$line) continue; // skip blank lines
 				
 				$vals = preg_split("/ *[\t,] */", trim($line));
 				$count_vals = count($vals);
 				if($count_vals!=$count_map) {
 					throw new \Exception("{$count_vals} columns on line {$line_num}");
 				}
-				foreach($map as $key=>$dest) {
-					$row[$dest] = $vals[$key];
+				foreach($map as $src=>$dest) {
+					$val = $vals[$src];
+					if(!in_array($dest, $allow_empty) && !$val) {
+						throw new \Exception("Empty {$dest} on line {$line_num}");
+					}
+					$row[$dest] = $val;
 				}
+				
 				$input[] = $row;
 			}
 			if(!$input) throw new \Exception("No input");
 			# d($input);
 			
-			// parse input v2
+			// parse input
 			$dis_key = -1;
 			$dis_name = null;
 			$discat = [];
@@ -437,6 +447,7 @@ public function import($event_id=0) {
 					$cat_name = $line['cat'];
 					$discat[$dis_key]['cats'][$cat_key] = [
 						'name' => $cat_name,
+						'exercises' => $line['exeset'],
 						'entries' => []
 					];
 				}
@@ -445,25 +456,29 @@ public function import($event_id=0) {
 				$line['dob'] = $val->format('Y-m-d');
 				
 				$val = explode('-', $line['runorder']);
-				$runorder = [
+				$val = [
 					'rnd' => $val[0] ?? null,
 					'rot' => $val[1] ?? null,
 					'exe' => $val[2] ?? null
 				];
-				$line['runorder'] = json_encode($runorder);
-				# d($line['runorder']);
+				$line['runorder'] = $val; # json_encode($val);
+				# d($val);
 								
 				$discat[$dis_key]['cats'][$cat_key]['entries'][] = $line;		
 			}
-			
 			# d($discat); throw new \Exception('not finished yet');
+			
+			$ret_model = new \App\Models\Clubrets;
+			$usr_model = new \App\Models\Users;
 			
 			// delete existing data
 			$this->ent_model->delete_event($event_id);
+			$ret_model->delete_event($event_id);
 			
 			// import new data
-			$usr_model = new \App\Models\Users;
 			$current_user = $usr_model->find(session('user_id'));
+			$ent_count = 0;
+			$clubs = [];
 			foreach($discat as $dis) {
 				$arr = [
 					'event_id' => $event_id, 
@@ -479,6 +494,7 @@ public function import($event_id=0) {
 					$arr = [
 						'discipline_id' => $dis_id, 
 						'name' => $cat['name'], 
+						'exercises' => $cat['exercises'], 
 						'sort' => str_pad($sort, 3, '0', STR_PAD_LEFT)
 					];
 					$cat_id = $this->ent_model->entrycats->insert($arr);
@@ -492,6 +508,7 @@ public function import($event_id=0) {
 
 						$club = $usr_model->withDeleted()->where('name', $entry['club'])->first();
 						if(!$club) $club = $usr_model->withDeleted()->where('abbr', $entry['club'])->first();
+						
 						if($club) {
 							$user_id = $club->id;
 						}
@@ -513,17 +530,30 @@ public function import($event_id=0) {
 								throw new \Exception(implode('<br>', $errors));
 							}
 						}
-						#unset($entry['club']);
 						$entry['user_id'] = $user_id;
+						$clubs[$user_id] = $entry['club'];
 						
-						#d($entry);
 						# d($club);
+						# d($entry);
 						
 						$this->ent_model->add_entry($entry);
+						$ent_count++;
 					}
 				}
 			}
-			$this->data['messages'][] = ['Import successful', 'success'];			
+			
+			// add an empty return for each club
+			foreach($clubs as $user_id=>$club_name) {
+				$clubret = [
+					'event_id' => $event_id, 
+					'user_id'=>$user_id
+				];
+				$clubret = new \App\Entities\Clubret($clubret);
+				$ret_model->insert($clubret);
+			}
+			
+			$message = sprintf('%u entries, %u clubs', $ent_count, count($clubs));
+			$this->data['messages'][] = ["Import successful - {$message}", 'success'];	
 		}
 		catch (\Exception $e) {
 			# d($e);

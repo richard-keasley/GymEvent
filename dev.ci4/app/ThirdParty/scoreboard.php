@@ -51,24 +51,24 @@ function get_exesets() {
 		$tables[$varname] = $this->get_table($varname);
 		if(!$tables[$varname]) return [];
 	}
-	// clean exercise sets
-	$include = [
-		8, 6, 5,
-		1, 9, 
-		2, 
-		3, 4, 
-		12,
-		11, 23, 24, 25, 26
-	];
-	$temp = [];
-	foreach($tables['exerciseset'] as $row) {
-		$key = array_search($row['SetId'], $include);
-		if($row['SetId']==11) $row['Name'] = 'Floor &amp; Vault';
-		if($key!==false) $temp[$key] = $row;
-	}
-	ksort($temp);
-	$tables['exerciseset'] = $temp;
 	
+	// clean exercise sets
+	$appvars = new \App\Models\Appvars();
+	$include = $appvars->get_value("scoreboard.exesets");
+	if($include) {
+		$temp = [];
+		foreach($tables['exerciseset'] as $row) {
+			$key = array_search($row['SetId'], $include);
+			if($row['SetId']==11) {
+				// rename "F&V no music";
+				$row['Name'] = 'Floor &amp; Vault';
+			}
+			if($key!==false) $temp[$key] = $row;
+		}
+		ksort($temp);
+		$tables['exerciseset'] = $temp;
+	}
+		
 	$retval = [];
 	foreach($tables['exerciseset'] as $exeset) {
 		$exeset['children'] = [];
@@ -93,20 +93,17 @@ function get_discats() {
 	$disciplines = $this->get_table('disciplines');
 	
 	// clean disciplines
-	$include = [
-		4, 14,
-		5, 
-		12, 16,
-		13, 
-		45, 46
-	];
-	$temp = [];
-	foreach($disciplines as $row) {
-		$key = array_search($row['DisId'], $include);
-		if($key!==false) $temp[$key] = $row;
+	$appvars = new \App\Models\Appvars();
+	$include = $appvars->get_value("scoreboard.disciplines");
+	if($include) {
+		$temp = [];
+		foreach($disciplines as $row) {
+			$key = array_search($row['DisId'], $include);
+			if($key!==false) $temp[$key] = $row;
+		}
+		ksort($temp);
+		$disciplines = $temp;
 	}
-	ksort($temp);
-	$disciplines = $temp;
 		
 	if(!$cats || !$disciplines) return $retval;
 	foreach($cats as $key=>$cat) {

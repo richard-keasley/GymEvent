@@ -69,4 +69,46 @@ public function data($varname='') {
 	return view('scoreboard/data', $this->data);
 }
 
+public function filters() {
+	$appvars = new \App\Models\Appvars();
+	$varnames = ['disciplines', 'exesets'];
+	
+	$filter = $this->request->getPost('filter');
+	if($filter) {
+		// save
+		$appvar = new \App\Entities\Appvar;
+		
+		foreach($varnames as $varname) {
+			$value = $this->request->getPost($varname);
+			$value = explode(',', $value);
+			$arr = [];
+			foreach($value as $item) {
+				$int = intval($item);
+				if($int) $arr[] = $int;
+			}
+				
+			$appvar->id = "scoreboard.{$varname}";
+			$appvar->value = $arr;
+			$appvars->save_var($appvar);		
+		}
+	}
+	
+	// read
+	$this->data['filters'] = [];
+	foreach($varnames as $varname) {
+		$value = $appvars->get_value("scoreboard.{$varname}");
+		if(!is_array($value)) $value = [];
+		$this->data['filters'][$varname] = $value;
+	}
+		
+	// view
+	$this->data['breadcrumbs'][] = ['setup/scoreboard/data', 'data'];
+	$this->data['breadcrumbs'][] = ['setup/scoreboard/data/filters', 'filters'];
+	$this->data['heading'] = 'Scoreboard data filters';
+	$this->data['title'] = 'Filters';
+	return view('scoreboard/filters', $this->data);
+	
+	
+}
+
 }
