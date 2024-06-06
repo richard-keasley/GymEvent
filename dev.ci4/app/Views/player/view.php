@@ -108,7 +108,7 @@ $attrs = [
 	'title' => "Save media player to local device",
 	'class' => "btn btn-outline-secondary"
 ];
-echo anchor("control/player/savepage/{$event->id}", $label, $attrs);	
+echo anchor(current_url() . '/save', $label, $attrs);	
 
 $attrs = [
 	'title' => "Start auto-player",

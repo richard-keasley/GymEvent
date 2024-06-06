@@ -177,13 +177,39 @@ function displays() {
 	return view('teamtime/admin/displays', $this->data);
 }
 
-function player() {
-	// view 
-	$this->data['title'] = 'Music';
+function player($action='') {
+	$event_id = tt_lib::get_value('settings', 'event_id');
+	# $event_id=455;
+	$mdl_events = new \App\Models\Events;
+	$event = $mdl_events->find($event_id);
+	
+	$this->data['event_id'] = $event_id;
+	$this->data['title'] = 'Music player';
 	$this->data['heading'] = 'Teamtime music';
-	$this->data['breadcrumbs'][] = "control/teamtime/player";
-	$this->data['back_link'] = "control/teamtime";
-	return view("player/teamtime", $this->data);
+	$this->data['h2'] = $event ? $event->title : 'Event not found' ;
+	
+	if($action=='save') {
+		$this->data['breadcrumbs'] = null;
+		$this->data['head'] = '<script>$(function(){$("footer").hide()})</script>';
+	}
+	else {
+		$this->data['breadcrumbs'][] = "control/teamtime/player";
+	}
+	// get view
+	$page = view("player/teamtime", $this->data);	
+	if($action!='save') return $page;
+
+	// remove timestamp info
+	$page = preg_replace('#\?t=\d+"#', '"', $page);
+	// make paths relative	
+	$replacements = [
+		[base_url('app/'), 'app/'],
+		[base_url("public/events/{$event_id}/music/"), 'music/']
+	];
+	foreach($replacements as $replacement) {
+		$page = str_replace($replacement[0], $replacement[1], $page);
+	}
+	return $this->response->download('player.htm', $page);	
 }
 
 function appvars() {

@@ -6,7 +6,6 @@ $this->section('content');
 $table = \App\Views\Htm\Table::load('responsive');
 $progtable = tt_lib::get_value('progtable');
 $teams = tt_lib::get_value('teams');
-$event_id = tt_lib::get_value('settings', 'event_id');
 $rundata = tt_lib::get_rundata();
 # d($rundata);
 
@@ -28,10 +27,7 @@ if(!$teams) { ?>
 <p class="alert alert-danger">Teams are not set-up</p>
 <?php }
 
-$mdl_events = new \App\Models\Events;
-$event = $mdl_events->find($event_id);
-$title = $event ? $event->title : 'Event not found' ;
-printf('<h2>%s</h2>', $title);
+echo "<h2>{$h2}</h2>";
 
 $track = new \App\Libraries\Track();
 $track->event_id = $event_id;
@@ -68,9 +64,17 @@ $this->section('top'); ?>
 <div><?php
 $attrs = [
 	'title' => "Start auto-player",
-	'class' => "btn btn-outline-secondary"
+	'class' => "btn btn-outline-secondary mx-1"
 ];
 echo anchor("control/player/auto", 'Auto', $attrs);
+
+$label = '<i class="bi bi-download"></i>';
+$attrs = [
+	'title' => "Save media player to local device",
+	'class' => "btn btn-outline-secondary mx-1"
+];
+echo anchor(current_url() . '/save', $label, $attrs);
+
 ?></div>
 <?php echo $this->include('player/js_buttons');?>
 	
