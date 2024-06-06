@@ -389,41 +389,43 @@ public function import($event_id=0) {
 		'name' => 'name',
 		'club' => 'club',
 		'dob' => 'DoB (d-M-Y)',
-		'runorder' => 'Running order (int-int-int)',
-		'exeset' => 'Exercise set (int)'
+		'runorder' => 'Running order (int-int-int)', // optional
+		'exeset' => 'Exercise set (int)' // optional
 	];
 
 	$getPost = $this->request->getPost('csv');
 	if($getPost) {
 		try {
+			// use this code for custom exceptions
+			$ex_code = 999;
 			// read input
-			$input = [];
 			$lines = explode("\n", $getPost);
 			$map = array_keys($this->data['columns']);
-			$row = [];
-			$count_map = count($map);
-			$allow_empty = ['exeset'];
+			$optional = ['exeset', 'runorder'];
+			$count_map = count($map) - count($optional);
+			
+			$input = []; $row = [];
 			foreach($lines as $line_num=>$line) {
 				$line = trim($line);
 				if(!$line_num) continue; // skip first line
 				if(!$line) continue; // skip blank lines
 				
-				$vals = preg_split("/ *[\t,] */", trim($line));
+				$vals = preg_split("/ *\t */", trim($line));
 				$count_vals = count($vals);
-				if($count_vals!=$count_map) {
-					throw new \Exception("{$count_vals} columns on line {$line_num}");
+				if($count_vals<$count_map) {
+					throw new \Exception("{$count_vals} columns on line {$line_num}", $ex_code);
 				}
 				foreach($map as $src=>$dest) {
-					$val = $vals[$src];
-					if(!in_array($dest, $allow_empty) && !$val) {
-						throw new \Exception("Empty {$dest} on line {$line_num}");
+					$val = $vals[$src] ?? '';
+					if(!in_array($dest, $optional) && !$val) {
+						throw new \Exception("Empty {$dest} on line {$line_num}", $ex_code);
 					}
 					$row[$dest] = $val;
 				}
 				
 				$input[] = $row;
 			}
-			if(!$input) throw new \Exception("No input");
+			if(!$input) throw new \Exception("No input", $ex_code);
 			# d($input);
 			
 			// parse input
@@ -466,7 +468,7 @@ public function import($event_id=0) {
 								
 				$discat[$dis_key]['cats'][$cat_key]['entries'][] = $line;		
 			}
-			# d($discat); throw new \Exception('not finished yet');
+			# d($discat); throw new \Exception('not finished yet', $ex_code);
 			
 			$ret_model = new \App\Models\Clubrets;
 			$usr_model = new \App\Models\Users;
@@ -488,7 +490,7 @@ public function import($event_id=0) {
 				if(!$dis_id) {
 					$errors = $this->ent_model->errors();
 					$errors[] = "Couldn't create discipline '{$dis['name']}'"; 
-					throw new \Exception(implode('<br>', $errors));
+					throw new \Exception(implode('<br>', $errors), $ex_code);
 				}
 				foreach($dis['cats'] as $sort=>$cat) {
 					$arr = [
@@ -501,7 +503,7 @@ public function import($event_id=0) {
 					if(!$cat_id) {
 						$errors = $this->ent_model->errors();
 						$errors[] = "Couldn't create category '{$cat['name']}'"; 
-						throw new \Exception(implode('<br>', $errors));
+						throw new \Exception(implode('<br>', $errors), $ex_code);
 					}
 					foreach($cat['entries'] as $entry) {
 						$entry['category_id'] = $cat_id;
@@ -527,7 +529,7 @@ public function import($event_id=0) {
 							else {
 								$errors = $usr_model->errors();
 								$errors[] = "Couldn't create club '{$entry['club']}'"; 
-								throw new \Exception(implode('<br>', $errors));
+								throw new \Exception(implode('<br>', $errors), $ex_code);
 							}
 						}
 						$entry['user_id'] = $user_id;
@@ -555,9 +557,14 @@ public function import($event_id=0) {
 			$message = sprintf('%u entries, %u clubs', $ent_count, count($clubs));
 			$this->data['messages'][] = ["Import successful - {$message}", 'success'];	
 		}
-		catch (\Exception $e) {
-			# d($e);
-			$this->data['messages'][] = [$e->getMessage(), 'danger'];
+		catch(\Exception $e) {
+			$code = $e->getCode();
+			$error = $e->getMessage();
+			// custom error or PHP error 
+			$message = $code===$ex_code ? 
+				$error : 
+				sprintf('Error (%s): %s - line %u', $code, $error, $e->getLine()) ;
+			$this->data['messages'][] = [$message, 'danger'];
 		}
 	}
 
