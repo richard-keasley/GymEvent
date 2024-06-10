@@ -5,13 +5,14 @@ $this->section('content');
 $files = $event->files;
 // extract logo if it's there
 $logo_src = ''; 
-$pattern = 'logo.';
 foreach($files as $file) {
-	if(strpos($file->getPathname(), $pattern)) {
-		$logo_src = substr($file->getPathname(), strlen(FCPATH));
+	$filename = $file->getPathname();
+	if(strpos($filename, 'logo.')) {
+		$logo_src = substr($filename, strlen(FCPATH));
+		$files->removeFile($filename);
 	}
+	if($logo_src) break;
 }
-$files->removePattern($pattern);
 
 ?>
 <section class="clearfix">

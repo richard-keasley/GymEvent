@@ -150,7 +150,7 @@ public function getFiles() {
 	$path = $this->filepath();
 	if(!is_dir($path)) return $files;
 	$files->addDirectory($path);
-	$files->removePattern('index.');
+	$files->removePattern('index.*');
 	return $files;
 }
 
