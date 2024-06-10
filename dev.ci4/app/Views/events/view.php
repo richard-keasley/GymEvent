@@ -25,6 +25,12 @@ $files->removePattern($pattern);
 <div><?php echo $event->description;?></div>
 </section>
 
+<?php if($event->clubrets==0 && $event->dates['clubrets_opens']) { ?>
+<p class="alert alert-info">We intend to start accepting entries on <?php 
+echo (new \datetime($event->dates['clubrets_opens']))->format('j F'); 
+?>.</p>
+<?php } ?>
+
 <?php if($event->clubrets==1) { ?>
 <p class="alert alert-success"><strong>We are accepting entries for this event.</strong><br>
 You are advised to open an entry <em>as soon as possible</em> if you intend to enter this event. You can continue to make edits until entries are closed 
@@ -46,9 +52,7 @@ We will use the details within your return at that point (there is no "submit" b
 <?php if($event->clubrets==2) { ?>
 <p class="alert alert-warning"><strong>Entries for this event are now closed.</strong><br>
 If you find an error in the entries, <em>inform the event organisers as soon as possible</em>. There is no guarantee entries can be corrected if you wait too long.</p>
-
 <?php } ?>
-
 
 <?php if($event->music==1) { ?>
 <p class="alert alert-success"><strong>You can now upload your music.</strong><br>
