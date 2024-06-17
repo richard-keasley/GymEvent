@@ -31,14 +31,9 @@ $input = [
 ];
 echo form_dropdown($input);
 
-$dests = [
-	'csv' => "download",
-	'json' => "braces",
-	'xml' => "code"
-];
 $format = '<button type="submit" name="download" value="%s" class="btn btn-secondary" title="Export as %s"><i class="bi-%s"></i></button>';
-foreach($dests as $dest=>$icon) {
-	printf($format, $dest, strtoupper($dest), $icon);
+foreach($filetypes as $filetype=>$icon) {
+	printf($format, $filetype, strtoupper($filetype), $icon);
 }
 
 ?>

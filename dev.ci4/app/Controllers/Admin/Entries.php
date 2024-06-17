@@ -852,8 +852,13 @@ public function export($event_id=0, $download=0) {
 	
 	// look for export request
 	$filetype = $this->request->getGet('download');
-	$arr = ['json', 'csv', 'xml'];
-	if(in_array($filetype, $arr)) {
+	// only using CSV
+	$this->data['filetypes'] = [
+		'csv' => "download",
+		# 'json' => "braces",
+		# 'xml' => "code"
+	];
+	if(isset($this->data['filetypes'][$filetype])) {
 		return $this->download($this->data, $this->data['layout'], $source, $filetype);
 	}
 	
