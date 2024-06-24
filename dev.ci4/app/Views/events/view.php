@@ -27,8 +27,10 @@ foreach($files as $file) {
 </section>
 
 <?php if($event->clubrets==0 && $event->dates['clubrets_opens']) { ?>
-<p class="alert alert-info">We intend to start accepting entries on <?php 
-echo (new \datetime($event->dates['clubrets_opens']))->format('j F'); 
+<p class="alert alert-info">We will start accepting entries <?php 
+$dt_opens = new \datetime($event->dates['clubrets_opens']);
+$dt_now = new \datetime();
+echo $dt_opens < $dt_now ? 'soon' : 'on ' . $dt_opens->format('j F');
 ?>.</p>
 <?php } ?>
 
@@ -53,6 +55,14 @@ We will use the details within your return at that point (there is no "submit" b
 <?php if($event->clubrets==2) { ?>
 <p class="alert alert-warning"><strong>Entries for this event are now closed.</strong><br>
 If you find an error in the entries, <em>inform the event organisers as soon as possible</em>. There is no guarantee entries can be corrected if you wait too long.</p>
+<?php } ?>
+
+<?php if($event->music==0 && $event->dates['music_opens']) { ?>
+<p class="alert alert-info">We will start accepting music <?php 
+$dt_opens = new \datetime($event->dates['music_opens']);
+$dt_now = new \datetime();
+echo $dt_opens < $dt_now ? 'soon' : 'on ' . $dt_opens->format('j F');
+?>.</p>
 <?php } ?>
 
 <?php if($event->music==1) { ?>
