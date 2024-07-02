@@ -13,7 +13,7 @@ public function index() {
 public function exeval() {
 	$request = $this->request->getGet();
 	
-		# return $this->respond($request);
+	# return $this->respond($_POST);
 
 	
 	$exedata = []; // exercise set from request

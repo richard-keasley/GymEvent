@@ -11,11 +11,23 @@ public $data = [];
 public $exercises = [];
 public $ruleset = null;
 
+static function sanitize($arr) {
+	foreach($arr as $key=>$val) {
+		$arr[$key] = is_array($val) ? 
+			self::sanitize($val) : 
+			strtr(trim($val), self::filter) ;
+	}
+	return $arr;
+}
+
 public function __construct($post=[]) {
 	// sanitize
+	$post = self::sanitize($post);
+	/*
 	foreach($post as $key=>$val) {
 		$post[$key] = strtr(trim($val), self::filter);
 	}
+	*/
 	foreach(['name', 'event', 'rulesetname'] as $key) {
 		$this->data[$key] = $post[$key] ?? '';
 	}

@@ -54,7 +54,7 @@ echo form_open_multipart(current_url(), $attr, $hidden);
 
 <section>
 <?php 
-$exeval_fields = [
+$exeset_fields = [
 	'rulesetname' => "rulesetname", 
 	'name' => "name", 
 	'event' => "event"
@@ -128,7 +128,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
 			$input['value'] = $element[$col];
 			$input['class'] .= $class;
-			$exeval_fields[$exekey]['el'][$elnum][$col] = $input['name'];
+			$exeset_fields[$exekey]['el'][$elnum][$col] = $input['name'];
 
 			switch($input['type']) {
 				case 'select': 
@@ -157,7 +157,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			'id' => $id,
 			'value' => $exercise['connection'] ?? 0
 		];
-		$exeval_fields[$exekey]['con'] = $input['name'];
+		$exeset_fields[$exekey]['con'] = $input['name'];
 		echo form_input($input);
 		?>
 		</div>
@@ -176,7 +176,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			'class' => "form-check-input"
 		];
 		if($nval) $input['checked'] = 'checked';
-		$exeval_fields[$exekey]['nd'][$nkey] = $input['name'];
+		$exeset_fields[$exekey]['nd'][$nkey] = $input['name'];
 		$neutral = $exe_rules['neutrals'][$nkey]; 
 		
 		$attr = [
@@ -216,7 +216,8 @@ $buttons = [
 		'class' => "btn btn-primary bi bi-check-square",
 		'title' => "Re-check all start values after edits",
 		'type' => "button",
-		'name' => "update"
+		'name' => "update",
+		'onclick' => "exesets.update()",
 	],
 	[
 		'class' => "btn btn-primary bi bi-arrow-down-square",
@@ -267,9 +268,6 @@ foreach($buttons as $button) {
 </div>
 
 <?php echo form_close();
-
-# d($exeset);
- d($exeval_fields);
 $this->endSection(); 
 
 $this->section('bottom') ?>
@@ -319,11 +317,7 @@ echo $table->generate($tbody);
 </div>
 </div>
 </div>
-<?php
- d($exeset);
 
-
-?>
 <script><?php
 ob_start();
 include __DIR__ . '/edit.js';
@@ -336,4 +330,8 @@ echo $minifier->minify();
 */
 ?></script>
 
-<?php $this->endSection(); 
+<?php
+ d($exeset);
+ d($exeset_fields);
+
+$this->endSection(); 

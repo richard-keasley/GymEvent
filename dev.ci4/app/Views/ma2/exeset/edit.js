@@ -1,4 +1,4 @@
-const magexes = {
+const exesets = {
 
 filter: <?php 
 	$arr = [];
@@ -10,28 +10,63 @@ filter: <?php
 
 exekeys: <?php echo json_encode(array_keys($exeset->exercises));?>,
 
-fieldnames: <?php echo json_encode($exeval_fields);?>,
+fields: <?php echo json_encode($exeset_fields);?>,
 
 exename: null,
 
 data: null,
 
-load: function() {
-	magexes.data = magexes.storage.load();
-	if(!Array.isArray(magexes.data)) magexes.data = [];
-	magexes.cleandata(0);
+load: function(idx=0) {
+	exesets.data = exesets.storage.load();
+	if(!Array.isArray(exesets.data)) exesets.data = [];
+	exesets.cleandata(idx);
+},
+
+update: function(idx=0) {
+	var exeset = exesets.get_formdata(exesets.fields);
+	console.log('get exeset from form');
+	console.log(exesets.fields);
+	console.log(exeset);
+	exesets.data[idx] = exeset;
+	exesets.cleandata(idx);
+},
+
+get_formdata: function(fields) {
+	var formdata = {}, el = null;
+	$.each(fields, function(key, value) {
+		if(typeof value=='object') {
+			value = get_formdata(value);
+		}
+		else {
+			el = $('[name='+value+']')[0];
+			switch(el.type) {
+				case 'checkbox':
+				value = el.checked ? 1 : 0 ;
+				break;
+				
+				default:
+				value = el.value.trim();
+			}
+		}
+		formdata[key] = value;
+	});
+	return formdata;
 },
 
 cleandata: function(idx=0) {
+	var exeset = exesets.data[idx] ?? {};
 	console.log('clean exeset via API');
-	var exeset = magexes.data[idx] ?? {};
+	
+	var request = exeset;
 	var api = '<?php echo site_url("/api/ma2/exeval");?>/';
-	$.get(api, exeset, function(response) {
+	$.get(api, request, function(response) {
+		//console.log(request);
+		//console.log(response);
 		try {
-			// put clean data back into store
-			magexes.data[idx] = response['data'] ?? {};
-			console.log(magexes.data[idx]);
-			magexes.storage.save(magexes.data);
+			// put clean data into store
+			exesets.data[idx] = response['data'] ?? {};
+			console.log(exesets.data[idx]);
+			exesets.storage.save(exesets.data);
 
 			var html = response['html'] ?? false;
 			if(!html) throw new Error('No HTML returned');
@@ -48,11 +83,11 @@ cleandata: function(idx=0) {
 
 storage: {
 	load: function() {
-		console.log('load exevals from local');
+		console.log('load exesets from local');
 		return localStorage.getItem('mag-exesets');		
 	},
 	save: function(data) {
-		console.log('store exevals to local');	
+		console.log('store exesets to local');	
 		console.log(data);
 		localStorage.setItem('mag-exesets', JSON.stringify(data));
 	}
@@ -69,11 +104,10 @@ const filter = <?php
 	echo json_encode($arr);
 ?>;
 const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
-const exeval_fields = <?php echo json_encode($exeval_fields);?>;
+const exeset_fields = <?php echo json_encode($exeset_fields);?>;
 let exename = null;
 
 function get_formdata(fields) {
-	console.log(fields);
 	var formdata = {}; var el = null;
 	$.each(fields, function(key, value) {
 		if(typeof value=='object') {
@@ -123,7 +157,7 @@ $('#editform button[name=clone]').click(function() {
 	name_field.val(name);
 });
 
-$('#editform button[name=update]').click(function() {
+$('#__editform button[name=update]').click(function() {
 	get_exevals();
 });
 
@@ -136,7 +170,7 @@ document.getElementById('execlear').addEventListener('show.bs.modal', function (
 	$('#execlear .exename').html(exename);
 });
 
-magexes.load();
+exesets.load();
 
 });
 
@@ -168,14 +202,15 @@ function get_exevals() {
 	*/
 	
 	
-	var exeset = get_formdata(exeval_fields);
+	
+	var exeset = get_formdata(exeset_fields);
 	console.log('get form data');
 	console.log(exeset);
 	return;
 	
 	var idx = 0; // this needs to be current gymnast
-	magexes.data[idx] = exeset;
-	exeset = magexes.cleandata(idx);
+	exesets.data[idx] = exeset;
+	exeset = exesets.cleandata(idx);
 	return;
 	
 	// store this exeset
@@ -187,7 +222,7 @@ function get_exevals() {
 	// work out title from gymnast's name
 	var name = exeset.name;
 	console.log(name);
-	magexes.filter.forEach((element) => {
+	exesets.filter.forEach((element) => {
 		var search = new RegExp(element[0], "gi");
 		name = name.replace(search, element[1]);
 	});
@@ -208,7 +243,7 @@ function get_exevals() {
 	
 		
 	var exeset = {}; var el = null; var val = null;
-	exeval_fields.forEach(fld => {
+	exeset_fields.forEach(fld => {
 		el = $('[name='+fld+']')[0];
 		switch(el.type) {
 			case 'checkbox':
@@ -235,7 +270,7 @@ function get_exevals() {
 	
 	
 	var exeset = {}; var el = null; var fldvalue = null;
-	exeval_fields.forEach(fldname => {
+	exeset_fields.forEach(fldname => {
 		el = $('[name='+fldname+']')[0];
 		switch(el.type) {
 			case 'checkbox':
