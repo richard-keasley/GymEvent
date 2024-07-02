@@ -23,7 +23,7 @@ class Paths
      * This must contain the name of your "system" folder. Include
      * the path if the folder is not in the same directory as this file.
      */
-	public $systemDirectory = __DIR__ . '/../../ci/4.5.2/system';
+	public $systemDirectory = __DIR__ . '/../../ci/4.5.3/system';
 
     /**
      * ---------------------------------------------------------------
