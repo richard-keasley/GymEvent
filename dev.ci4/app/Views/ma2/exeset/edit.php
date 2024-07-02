@@ -244,7 +244,14 @@ $buttons = [
 		'type' => "button",
 		'data-bs-toggle' => "modal",
 		'data-bs-target' => "#execlear"
-	]	
+	],
+	[
+		'class' => "btn btn-info bi-question-circle",
+		'title' => "Button help",
+		'type' => "button",
+		'data-bs-toggle' => "modal",
+		'data-bs-target' => "#iconhelp"
+	]
 ];
 
 $tbody = [];
@@ -256,13 +263,13 @@ foreach($buttons as $button) {
 	];
 }
 ?>
-<button type="button" title="Button help" class="btn btn-info bi-question-circle" data-bs-toggle="modal" data-bs-target="#iconhelp"></button>
+
 </div>
 
 <?php echo form_close();
 
 # d($exeset);
-# d($exeval_fields);
+ d($exeval_fields);
 $this->endSection(); 
 
 $this->section('bottom') ?>
@@ -313,7 +320,7 @@ echo $table->generate($tbody);
 </div>
 </div>
 <?php
-# d($exeset);
+ d($exeset);
 
 
 ?>

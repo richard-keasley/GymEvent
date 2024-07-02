@@ -16,7 +16,7 @@ public function __construct($post=[]) {
 	foreach($post as $key=>$val) {
 		$post[$key] = strtr(trim($val), self::filter);
 	}
-	foreach(['name','event','rulesetname'] as $key) {
+	foreach(['name', 'event', 'rulesetname'] as $key) {
 		$this->data[$key] = $post[$key] ?? '';
 	}
 	$this->data['saved'] = date('Y-m-d H:i:s');

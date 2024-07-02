@@ -1,3 +1,65 @@
+const magexes = {
+
+filter: <?php 
+	$arr = [];
+	foreach(\App\Libraries\Mag\Exeset::filter as $key=>$val) {
+		$arr[] = [$key, $val];	
+	}
+	echo json_encode($arr);
+	?>,
+
+exekeys: <?php echo json_encode(array_keys($exeset->exercises));?>,
+
+fieldnames: <?php echo json_encode($exeval_fields);?>,
+
+exename: null,
+
+data: null,
+
+load: function() {
+	magexes.data = magexes.storage.load();
+	if(!Array.isArray(magexes.data)) magexes.data = [];
+	magexes.cleandata(0);
+},
+
+cleandata: function(idx=0) {
+	console.log('clean exeset via API');
+	var exeset = magexes.data[idx] ?? {};
+	var api = '<?php echo site_url("/api/ma2/exeval");?>/';
+	$.get(api, exeset, function(response) {
+		try {
+			// put clean data back into store
+			magexes.data[idx] = response['data'] ?? {};
+			console.log(magexes.data[idx]);
+			magexes.storage.save(magexes.data);
+
+			var html = response['html'] ?? false;
+			if(!html) throw new Error('No HTML returned');
+			update_exevals(html, 1);
+		}
+		catch(errorThrown) { 
+			update_exevals(errorThrown);
+		}
+	})
+	.fail(function(jqXHR) {
+		update_exevals('server error');
+	});
+},
+
+storage: {
+	load: function() {
+		console.log('load exevals from local');
+		return localStorage.getItem('mag-exesets');		
+	},
+	save: function(data) {
+		console.log('store exevals to local');	
+		console.log(data);
+		localStorage.setItem('mag-exesets', JSON.stringify(data));
+	}
+} // end storage
+	
+};
+
 const api = '<?php echo site_url("/api/mag/exevals");?>/';
 const filter = <?php 
 	$arr = [];
@@ -8,10 +70,10 @@ const filter = <?php
 ?>;
 const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
 const exeval_fields = <?php echo json_encode($exeval_fields);?>;
-let execlearModal = null;
 let exename = null;
 
 function get_formdata(fields) {
+	console.log(fields);
 	var formdata = {}; var el = null;
 	$.each(fields, function(key, value) {
 		if(typeof value=='object') {
@@ -26,7 +88,7 @@ function get_formdata(fields) {
 				default:
 					value = el.value.trim();
 			}
-		}		
+		}
 		formdata[key] = value;
 	});
 	return formdata;
@@ -69,11 +131,12 @@ $('#editform [name=rulesetname]').change(function() {
 	$('#editform').submit();
 });
 
-execlearModal = document.getElementById('execlear');
-execlearModal.addEventListener('show.bs.modal', function (event) {
+document.getElementById('execlear').addEventListener('show.bs.modal', function (event) {
 	exename = $('#exes .nav-tabs .active').html();
 	$('#execlear .exename').html(exename);
 });
+
+magexes.load();
 
 });
 
@@ -93,10 +156,28 @@ function get_exevals() {
 	- allow download of complete data set 
 	*/
 	
+	/*
+	var form = document.getElementById("editform");
+	var formData = new FormData(form);
+	var postdata = {}
+	for(var [key, value] of formData) {
+		postdata[key] = value;
+	}
+	console.log(postdata);
+	console.log(formData);
+	*/
+	
 	
 	var exeset = get_formdata(exeval_fields);
-	// console.log(exeset);
-
+	console.log('get form data');
+	console.log(exeset);
+	return;
+	
+	var idx = 0; // this needs to be current gymnast
+	magexes.data[idx] = exeset;
+	exeset = magexes.cleandata(idx);
+	return;
+	
 	// store this exeset
 	var exesets = localStorage.getItem('mag-exesets');
 	// console.log(exesets);
@@ -106,7 +187,7 @@ function get_exevals() {
 	// work out title from gymnast's name
 	var name = exeset.name;
 	console.log(name);
-	filter.forEach((element) => {
+	magexes.filter.forEach((element) => {
 		var search = new RegExp(element[0], "gi");
 		name = name.replace(search, element[1]);
 	});
