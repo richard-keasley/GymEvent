@@ -3,15 +3,17 @@
 $this->section('content');
 
 $action = '';
-$attr = [
+$attrs = [
 	'id' => "editform",
 	'data' => ''
 ];
 $hidden = [
 	'saved' => $exeset->saved
 ];
-echo form_open_multipart(current_url(), $attr, $hidden); 
+echo form_open_multipart('', $attrs, $hidden); 
 ?>
+<select class="form-select" name="idx" onchange="idxsel.reload();"></select>
+
 <section>
 <div class="input-group my-1">
 	<label class="input-group-text" for="name" style="width:7em">Name</label>
@@ -128,7 +130,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
 			$input['value'] = $element[$col];
 			$input['class'] .= $class;
-			$exeset_fields[$exekey]['el'][$elnum][$col] = $input['name'];
+			$exeset_fields[$exekey]['elements'][$elnum][$col] = $input['name'];
 
 			switch($input['type']) {
 				case 'select': 
@@ -157,7 +159,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			'id' => $id,
 			'value' => $exercise['connection'] ?? 0
 		];
-		$exeset_fields[$exekey]['con'] = $input['name'];
+		$exeset_fields[$exekey]['connection'] = $input['name'];
 		echo form_input($input);
 		?>
 		</div>
@@ -176,7 +178,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			'class' => "form-check-input"
 		];
 		if($nval) $input['checked'] = 'checked';
-		$exeset_fields[$exekey]['nd'][$nkey] = $input['name'];
+		$exeset_fields[$exekey]['neutrals'][$nkey] = $input['name'];
 		$neutral = $exe_rules['neutrals'][$nkey]; 
 		
 		$attr = [
@@ -190,12 +192,10 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	<?php } ?>
 	</div>
 	
-	<div id="exeval-<?php echo $exekey;?>">
-	<?php 
+	<div class="exeval"><?php 
 	$this->setData(['exekey' => $exekey]);
 	echo $this->include('ma2/exeset/exeval'); 
-	?>
-	</div>
+	?></div>
 	
 	<?php 
 	$tab_items[$exekey] = [
@@ -216,7 +216,6 @@ $buttons = [
 		'class' => "btn btn-primary bi bi-check-square",
 		'title' => "Re-check all start values after edits",
 		'type' => "button",
-		'name' => "update",
 		'onclick' => "exesets.update()",
 	],
 	[
@@ -237,14 +236,21 @@ $buttons = [
 		'class' => "btn btn-primary bi bi-plus-square",
 		'title' => "Make a copy of this exercise set to use on another gymnast",
 		'type' => "button",
-		'name' => "clone"
+		'onclick' => "exesets.clone()"
 	],
 	[
-		'class' => "btn btn-danger bi-trash",
+		'class' => "btn btn-warning bi-arrow-counterclockwise",
 		'title' => "Clear the exercise currently visible",
 		'type' => "button",
 		'data-bs-toggle' => "modal",
 		'data-bs-target' => "#execlear"
+	],
+	[
+		'class' => "btn btn-danger bi-trash",
+		'title' => "Delete this gymnast",
+		'type' => "button",
+		'data-bs-toggle' => "modal",
+		'data-bs-target' => "#delentry"
 	],
 	[
 		'class' => "btn btn-info bi-question-circle",
@@ -318,6 +324,24 @@ echo $table->generate($tbody);
 </div>
 </div>
 
+<div class="modal" id="delentry" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+	<h5 class="modal-title">Delete <span class="entname"></span></h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+	<p>Are you sure you want to delete <span class="entname"></span>?</p>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="exesets.delete()">Delete</button>
+</div>
+</div>
+</div>
+</div>
+
 <script><?php
 ob_start();
 include __DIR__ . '/edit.js';
@@ -331,7 +355,7 @@ echo $minifier->minify();
 ?></script>
 
 <?php
- d($exeset);
- d($exeset_fields);
+# d($exeset);
+# d($exeset_fields);
 
 $this->endSection(); 

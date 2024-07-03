@@ -13,13 +13,10 @@ public function index() {
 public function exeval() {
 	$request = $this->request->getGet();
 	
-	# return $this->respond($_POST);
-
-	
 	$exedata = []; // exercise set from request
 		
 	$request['saved'] = date('Y-m-d H:i:s');
-	$exedata['exeset'] = new \App\Libraries\Mag\Exeset($request);
+	$exedata['exeset'] = new \App\Libraries\Ma2\Exeset($request);
 
 	// response (exeval for each exercise)
 	$response = [

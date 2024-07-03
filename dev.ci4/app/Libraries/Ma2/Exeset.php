@@ -1,4 +1,4 @@
-<?php namespace App\Libraries\Mag;
+<?php namespace App\Libraries\Ma2;
 
 class Exeset {
 const filter = [
@@ -7,18 +7,25 @@ const filter = [
 	'&' => '+'
 ];
 
+static function sanitize($arr) {
+	foreach($arr as $key=>$val) {
+		$arr[$key] = is_array($val) ? 
+			self::sanitize($val) : 
+			strtr(trim($val), self::filter) ;
+	}
+	return $arr;
+}
+
 public $data = [];
 public $exercises = [];
 public $ruleset = null;
 
-public function __construct($post=[]) {
+public function __construct($request=[]) {
 	// sanitize
-	foreach($post as $key=>$val) {
-		$post[$key] = strtr(trim($val), self::filter);
-	}
-
+	$request = self::sanitize($request);
+	
 	foreach(['name', 'event', 'rulesetname'] as $key) {
-		$this->data[$key] = $post[$key] ?? '';
+		$this->data[$key] = $request[$key] ?? '';
 	}
 	$this->data['saved'] = date('Y-m-d H:i:s');
 	$this->ruleset = \App\Libraries\Mag\Rules::load($this->rulesetname);
@@ -39,22 +46,21 @@ public function __construct($post=[]) {
 		$elements = array_fill(0, $el_count, $element);
 		foreach($elements as $elnum=>$element) {
 			foreach($element as $colnum=>$default) {
-				$key = "{$exekey}_el_{$elnum}_{$colnum}";
-				$elements[$elnum][$colnum] = $post[$key] ?? $default ;
+				$elements[$elnum][$colnum] = $request[$exekey]['elements'][$elnum][$colnum] ?? $default ;
 			}
 		}
 		$this->exercises[$exekey]['elements'] = $elements;
 		
 		if(!empty($exe_rules['connection'])) {
-			$key = "{$exekey}_con";
-			$val = $post[$key] ?? 0 ;
-			$this->exercises[$exekey]['connection'] = floatval($val);	
+			$val = (float) ($request[$exekey]['connection'] ?? 0);
+			while($val > 4) { $val = $val / 10; }
+			$this->exercises[$exekey]['connection'] = number_format($val, 1);	
 		}
 		
 		$neutrals = [];
 		foreach(array_keys($exe_rules['neutrals']) as $nkey) {
-			$key = "{$exekey}_nd_{$nkey}";
-			$neutrals[$nkey] = empty($post[$key]) ? 0  : 1;
+			$val = $request[$exekey]['neutrals'][$nkey] ?? 0 ;
+			$neutrals[$nkey] = $val ? 1 : 0;
 		}
 		$this->exercises[$exekey]['neutrals'] = $neutrals;	
 	}

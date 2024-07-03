@@ -1,176 +1,229 @@
 const exesets = {
-
-filter: <?php 
-	$arr = [];
-	foreach(\App\Libraries\Mag\Exeset::filter as $key=>$val) {
-		$arr[] = [$key, $val];	
-	}
-	echo json_encode($arr);
-	?>,
+	
+idx: <?php echo $idx;?>,
 
 exekeys: <?php echo json_encode(array_keys($exeset->exercises));?>,
 
-fields: <?php echo json_encode($exeset_fields);?>,
-
-exename: null,
-
-data: null,
-
-load: function(idx=0) {
-	exesets.data = exesets.storage.load();
-	if(!Array.isArray(exesets.data)) exesets.data = [];
-	exesets.cleandata(idx);
+load: function() {
+	var exeset = exesets.storage.load();
+	exesets.cleandata(exeset);
 },
 
-update: function(idx=0) {
-	var exeset = exesets.get_formdata(exesets.fields);
-	console.log('get exeset from form');
-	console.log(exesets.fields);
-	console.log(exeset);
-	exesets.data[idx] = exeset;
-	exesets.cleandata(idx);
+update: function() {
+	var exeset = exesets.formdata.get();
+	exesets.cleandata(exeset);
 },
 
-get_formdata: function(fields) {
-	var formdata = {}, el = null;
-	$.each(fields, function(key, value) {
-		if(typeof value=='object') {
-			value = get_formdata(value);
+clone: function() {
+	var exeset = exesets.formdata.get();
+	exeset['name'] = '# new';
+	exesets.storage.add(exeset);
+	exesets.update();
+},
+
+delete: function() {
+	exesets.storage.delete();
+	idxsel.reload(0);
+},
+
+formdata: {
+	fields: <?php echo json_encode($exeset_fields);?>,
+
+	get: function(fields=null) {
+		if(!fields) {
+			fields = exesets.formdata.fields;
+			console.log('get form data');
+			// console.log(fields);
 		}
-		else {
-			el = $('[name='+value+']')[0];
-			switch(el.type) {
-				case 'checkbox':
-				value = el.checked ? 1 : 0 ;
-				break;
-				
-				default:
-				value = el.value.trim();
+		
+		var formdata = {}, el = null;
+		$.each(fields, function(key, value) {
+			if(typeof value=='object') {
+				value = exesets.formdata.get(value);
 			}
-		}
-		formdata[key] = value;
-	});
-	return formdata;
-},
-
-cleandata: function(idx=0) {
-	var exeset = exesets.data[idx] ?? {};
-	console.log('clean exeset via API');
+			else {
+				el = $('[name='+value+']')[0];
+				switch(el.type) {
+					case 'checkbox':
+					value = el.checked ? 1 : 0 ;
+					break;
+					
+					default:
+					value = el.value.trim();
+				}
+			}
+			formdata[key] = value;
+		});
+		return formdata;
+	},
 	
-	var request = exeset;
-	var api = '<?php echo site_url("/api/ma2/exeval");?>/';
-	$.get(api, request, function(response) {
-		//console.log(request);
-		//console.log(response);
-		try {
-			// put clean data into store
-			exesets.data[idx] = response['data'] ?? {};
-			console.log(exesets.data[idx]);
-			exesets.storage.save(exesets.data);
+	set: function(data, fields=null) {
+		if(!fields) {
+			fields = exesets.formdata.fields;
+			exesets.storage.save(data);
+			idxsel.init();
+			console.log('set form data');
+			// console.log(fields);
+		}
+		var $el, value;
+		$.each(fields, function(key, fldname) {
+			if(typeof fldname=='object') {
+				// console.log('sub-process '+ key);
+				value = data[key] ?? {} ;
+				exesets.formdata.set(value, fldname);
+			}
+			else {
+				value = data[key] ?? '' ;
+				$el = $('[name='+fldname+']');
+				switch($el.attr('type')) {
+					case 'checkbox':
+					// console.log(key + ':[' + fldname+']');
+					// console.log(value);
+					$el.attr('checked', value ? true : false );
+					break;
+					
+					default:
+					$el.val(value);
+				}
+			}
+		});
+	}
+	
+}, // end formdata
 
+cleandata: function(exeset, reload=0) {
+	console.log('clean exeset via API');
+	// console.log(exeset);
+		
+	var api = '<?php echo site_url("/api/ma2/exeval");?>/';
+	$.get(api, exeset, function(response) {
+		// console.log(response);
+		try {
+			exeset = response['data'] ?? {};
+			// console.log(exeset);
 			var html = response['html'] ?? false;
 			if(!html) throw new Error('No HTML returned');
-			update_exevals(html, 1);
+			exesets.exevals(html, 1);
 		}
 		catch(errorThrown) { 
-			update_exevals(errorThrown);
+			exesets.exevals(errorThrown);
 		}
+			
+		// put clean data into store
+		exesets.formdata.set(exeset);
+		if(reload) location.reload();
 	})
 	.fail(function(jqXHR) {
-		update_exevals('server error');
+		exesets.exevals('server error');
+	});
+},
+
+exevals: function(message, message_ok=0) {
+	let exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
+	var htm, warning;
+
+	exekeys.forEach(function(exekey) {
+		if(message_ok) {
+			htm = message[exekey] ?? '';
+			warning = htm ? false : exekey + ' missing in response';
+		}
+		else {
+			warning = message;
+		}
+		if(warning) {
+			htm = '<div class="p-1 alert alert-danger"><ul class="list-unstyled m-0"><li>' + warning + '</li></ul></div>';
+		}
+		$('#exesitem'+exekey+' .exeval').html(htm);
 	});
 },
 
 storage: {
-	load: function() {
-		console.log('load exesets from local');
-		return localStorage.getItem('mag-exesets');		
+	data: function() {
+		try {
+			var string = localStorage.getItem('mag-exesets');
+			var data = JSON.parse(string);
+			if(!Array.isArray(data)) data = [];
+			return data;
+		}
+		catch(errorThrown) { 
+			console.error('storage: ' + errorThrown);
+		}
+		return [];
 	},
-	save: function(data) {
-		console.log('store exesets to local');	
-		console.log(data);
+	
+	load: function() {
+		var data = exesets.storage.data();
+		var exeset = data[exesets.idx] ?? {} ;
+		console.log('load exeset from local');
+		// console.log(exeset);
+		// console.log(data);
+		return exeset;
+	},
+	
+	save: function(exeset) {
+		var data = exesets.storage.data();
+		data[exesets.idx] = exeset;
+		console.log('store exesets to local');
+		// console.log(data);
 		localStorage.setItem('mag-exesets', JSON.stringify(data));
+	},
+	
+	add: function(exeset) {
+		var data = exesets.storage.data();
+		data.push(exeset);
+		console.log('add new exeset');
+		localStorage.setItem('mag-exesets', JSON.stringify(data));
+	},
+	
+	delete: function() {
+		console.log('delete current exeset');
 	}
 } // end storage
 	
 };
 
-const api = '<?php echo site_url("/api/mag/exevals");?>/';
-const filter = <?php 
-	$arr = [];
-	foreach(\App\Libraries\Mag\Exeset::filter as $key=>$val) {
-		$arr[] = [$key, $val];	
+const idxsel = {
+	selector: null,
+	init: function() {
+		idxsel.selector = $('select[name=idx]');
+		idxsel.selector.html('');
+		var data = exesets.storage.data();
+		data.forEach(function(value, index, array) {
+			var optionText = value['name'] ?? '??';
+			idxsel.selector.append(new Option(optionText, index));
+		});
+		idxsel.selector.val(<?php echo $idx;?>);
+	},
+	reload: function(idx='#') {
+		var base_url = '<?php echo base_url("ma2/routine");?>/';
+		if(idx==='#') idx = idxsel.selector.val();
+		var new_url = base_url + idx;
+		window.location.assign(new_url);
 	}
-	echo json_encode($arr);
-?>;
-const exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
-const exeset_fields = <?php echo json_encode($exeset_fields);?>;
-let exename = null;
-
-function get_formdata(fields) {
-	var formdata = {}; var el = null;
-	$.each(fields, function(key, value) {
-		if(typeof value=='object') {
-			value = get_formdata(value);
-		}
-		else {
-			el = $('[name='+value+']')[0];
-			switch(el.type) {
-				case 'checkbox':
-					value = el.checked ? 1 : 0 ;
-					break;
-				default:
-					value = el.value.trim();
-			}
-		}
-		formdata[key] = value;
-	});
-	return formdata;
 }
 
-
-
-<?php /*
-
-if('serviceWorker' in navigator) {
-	navigator.serviceWorker.register('/ma2/routineSW', {scope: '/ma2/'})
-	.then((reg) => {
-		// registration worked
-		console.log('Registration succeeded. Scope is ' + reg.scope);
-	}).catch((error) => {
-		// registration failed
-		console.log('Registration failed with ' + error);
-	});
-}
-*/ ?>
 
 $(function() {
 
-$('#editform button[name=clone]').click(function() {
-	var form = $('#editform')[0];
-	var name_field = $('#editform [name=name]');
-	var name = name_field.val();
-	form.target = '_blank';
-	name_field.val('copied');
-	$('#editform').submit();
-	form.target = '_self';
-	name_field.val(name);
-});
-
-$('#__editform button[name=update]').click(function() {
-	get_exevals();
-});
 
 $('#editform [name=rulesetname]').change(function() {
-	$('#editform').submit();
+	var exeset = exesets.formdata.get();
+	exesets.cleandata(exeset, 1);
+	// $('#editform').submit();
 });
 
-document.getElementById('execlear').addEventListener('show.bs.modal', function (event) {
-	exename = $('#exes .nav-tabs .active').html();
+document.getElementById('execlear').addEventListener('show.bs.modal', function(event) {
+	let exename = $('#exes .nav-tabs .active').html();
 	$('#execlear .exename').html(exename);
 });
 
+document.getElementById('delentry').addEventListener('show.bs.modal', function(event) {
+	let entname = $('#editform [name=name]').val();
+	$('#delentry .entname').html(entname);
+});
+
 exesets.load();
+idxsel.init();
 
 });
 
@@ -179,156 +232,5 @@ function execlear(exekey) {
 	$('#exes .tab-pane.active input[type=text]').val('');
 	$('#exes .tab-pane.active input[type=number]').val(0);
 	$('#exes .tab-pane.active input[type=checkbox]').prop("checked", false);
-	get_exevals();
-}
-
-function get_exevals() {
-	/*
-	work out how to use local storage
-	challenges:
-	- allow multiple gymnasts per view
-	- allow download of complete data set 
-	*/
-	
-	/*
-	var form = document.getElementById("editform");
-	var formData = new FormData(form);
-	var postdata = {}
-	for(var [key, value] of formData) {
-		postdata[key] = value;
-	}
-	console.log(postdata);
-	console.log(formData);
-	*/
-	
-	
-	
-	var exeset = get_formdata(exeset_fields);
-	console.log('get form data');
-	console.log(exeset);
-	return;
-	
-	var idx = 0; // this needs to be current gymnast
-	exesets.data[idx] = exeset;
-	exeset = exesets.cleandata(idx);
-	return;
-	
-	// store this exeset
-	var exesets = localStorage.getItem('mag-exesets');
-	// console.log(exesets);
-
-
-
-	// work out title from gymnast's name
-	var name = exeset.name;
-	console.log(name);
-	exesets.filter.forEach((element) => {
-		var search = new RegExp(element[0], "gi");
-		name = name.replace(search, element[1]);
-	});
-	if(name) { 
-		$('h1').html(name);
-		document.title = name;
-	}
-	
-	
-	
-	
-	
-	
-	return;
-	// start here
-	
-	
-	
-		
-	var exeset = {}; var el = null; var val = null;
-	exeset_fields.forEach(fld => {
-		el = $('[name='+fld+']')[0];
-		switch(el.type) {
-			case 'checkbox':
-				val = el.checked ? 1 : 0 ;
-				break;
-			default:
-				val = el.value;
-		}
-		exeset[fld] = val;
-	});
-	
-	$.get(api, exeset, function(response) {
-		try { 
-			update_exevals(response, 1); 
-		}
-		catch(errorThrown) { 
-			update_exevals(errorThrown);
-		}
-	})
-	.fail(function(jqXHR) {
-		update_exevals('server error');
-		update_exevals(get_error(jqXHR));
-	});
-	
-	
-	var exeset = {}; var el = null; var fldvalue = null;
-	exeset_fields.forEach(fldname => {
-		el = $('[name='+fldname+']')[0];
-		switch(el.type) {
-			case 'checkbox':
-			fldvalue = el.checked ? 1 : 0 ;
-			break;
-			
-			default:
-			fldvalue = el.value;
-		}
-		
-		var keys = fldname.split('_');
-		var length = keys.length;
-		// console.log(length, keys);
-			
-		// make space for arrays	
-		if(length>1 && typeof exeset[keys[0]] === 'undefined') {
-			exeset[keys[0]] = {};
-		}
-		if(length>2 && typeof exeset[keys[0]][keys[1]] === 'undefined') {
-			exeset[keys[0]][keys[1]] = {};
-		}
-		if(length>3 && typeof exeset[keys[0]][keys[1]][keys[2]] === 'undefined') {
-			exeset[keys[0]][keys[1]][keys[2]] = {};
-		}
-				
-		switch(length) {
-			case 2: 
-			exeset[keys[0]][keys[1]] = fldvalue;
-			break;
-			case 3: 
-			exeset[keys[0]][keys[1]][keys[2]] = fldvalue;
-			break;
-			case 4: 
-			exeset[keys[0]][keys[1]][keys[2]][keys[3]] = fldvalue;
-			break;
-			default: // include length=1
-			exeset[fldname] = fldvalue;
-		}
-	});
-	// console.log(formData);
-	console.log(exeset);
-	
-	var exesets = localStorage.getItem('mag-exesets');
-	
-	localStorage.setItem('mag-exeset', JSON.stringify(exeset));
-}
-
-function update_exevals(message, message_ok=0) {
-	let htm = ''; let this_ok = 0;
-	exekeys.forEach(function(exekey) {
-		this_ok = message_ok ? typeof(message[exekey])!="undefined" : 0 ;
-		if(this_ok) {
-			htm = message[exekey];
-		}
-		else {
-			htm = message_ok ? exekey + ' missing in response' : message ;
-		}
-		if(!this_ok) htm = '<div class="p-1 alert alert-danger"><ul class="list-unstyled m-0"><li>' + htm + '</li></ul></div>';
-		$('#exeval-'+exekey).html(htm);
-	});
+	$('#exes .tab-pane.active .exeval').html('');
 }
