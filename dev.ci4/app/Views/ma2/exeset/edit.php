@@ -2,7 +2,6 @@
  
 $this->section('content');
 
-$action = '';
 $attrs = [
 	'id' => "editform",
 	'data' => ''
@@ -35,10 +34,19 @@ echo form_open_multipart('', $attrs, $hidden);
 		'class' => "form-control", 
 		'id' => "rulesetname",
 		'name' => "rulesetname",
-		'options' => \App\Libraries\Mag\Rules::index
+		'options' => \App\Libraries\Mag\Rules::index,
+		'onchange' => "rulsetname_change()"
 	];
 	echo form_dropdown($input);
-?></div>
+?>
+<script>
+function rulsetname_change() {
+	var exeset = exesets.formdata.get();
+	exesets.cleandata(exeset, 1);
+	// $('#editform').submit();
+}
+</script>
+</div>
 
 <div class="input-group my-1">
 	<label class="input-group-text" for="event" style="width:7em">Event</label>
@@ -64,6 +72,7 @@ $exeset_fields = [
 $tab_items = [];
 foreach($exeset->exercises as $exekey=>$exercise) {
 	ob_start();
+	# d($exercise);
 	
 	$exe_rules = $exeset->ruleset->exes[$exekey] ?? [] ;
 	switch($exe_rules['method']) {
@@ -219,13 +228,6 @@ $buttons = [
 		'onclick' => "exesets.update()",
 	],
 	[
-		'class' => "btn btn-primary bi bi-arrow-down-square",
-		'title' => "Save this exercise set to your computer so the routines can be altered later",
-		'type' => "submit",
-		'name' => "cmd",
-		'value' => "store"
-	],
-	[
 		'class' => "btn btn-primary bi bi-printer",
 		'title' => "Printer friendly version of this exercise set",
 		'type' => "submit",
@@ -237,6 +239,13 @@ $buttons = [
 		'title' => "Make a copy of this exercise set to use on another gymnast",
 		'type' => "button",
 		'onclick' => "exesets.clone()"
+	],
+	[
+		'class' => "btn btn-primary bi bi-tools",
+		'title' => "Data utilities",
+		'type' => "button",
+		'data-bs-toggle' => "modal",
+		'data-bs-target' => "#utils"
 	],
 	[
 		'class' => "btn btn-warning bi-arrow-counterclockwise",
@@ -322,6 +331,15 @@ echo $table->generate($tbody);
 </div>
 </div>
 </div>
+<script>
+function execlear(exekey) {
+	$('#exes .tab-pane.active select').val('');
+	$('#exes .tab-pane.active input[type=text]').val('');
+	$('#exes .tab-pane.active input[type=number]').val(0);
+	$('#exes .tab-pane.active input[type=checkbox]').prop("checked", false);
+	$('#exes .tab-pane.active .exeval').html('');
+}
+</script>
 </div>
 
 <div class="modal" id="delentry" tabindex="-1">
@@ -342,6 +360,58 @@ echo $table->generate($tbody);
 </div>
 </div>
 
+<div class="modal" id="utils" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<div class="modal-header">
+<h5 class="modal-title">Utilities</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+<?php
+$buttons = [
+[
+	'class' => "btn btn-primary bi bi-arrow-down-square",
+	'title' => "Save all data to your computer so it can be used on another device",
+	'type' => "button",
+	'onclick' => "alert('not yet')",
+],
+[
+	'class' => "btn btn-primary bi bi-arrow-up-square",
+	'title' => "Upload data from your computer",
+	'type' => "button",
+	'onclick' => "alert('not yet')",
+],
+[
+	'class' => "btn btn-danger bi bi-trash",
+	'title' => "Delete all data on this device",
+	'type' => "button",
+	'onclick' => "alert('not yet')",
+],
+];
+$tbody = [];
+foreach($buttons as $button) {
+	$tbody[] = [
+		sprintf('<button %s></button> ', stringify_attributes($button)),
+		$button['title'] . '.'
+	];
+}
+$table = \App\Views\Htm\Table::load('small');
+$table->autoHeading = false;
+echo $table->generate($tbody);
+?>	
+</div>
+
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+
+</div>
+</div>
+</div>
+
 <script><?php
 ob_start();
 include __DIR__ . '/edit.js';
@@ -355,7 +425,7 @@ echo $minifier->minify();
 ?></script>
 
 <?php
-# d($exeset);
+d($exeset);
 # d($exeset_fields);
 
 $this->endSection(); 

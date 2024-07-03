@@ -1,6 +1,6 @@
 const exesets = {
 	
-idx: <?php echo $idx;?>,
+idx: 0,
 
 exekeys: <?php echo json_encode(array_keys($exeset->exercises));?>,
 
@@ -138,10 +138,10 @@ exevals: function(message, message_ok=0) {
 },
 
 storage: {
-	data: function() {
+	get: function() {
 		try {
-			var string = localStorage.getItem('mag-exesets');
-			var data = JSON.parse(string);
+			var item = localStorage.getItem('mag-exesets');
+			var data = JSON.parse(item);
 			if(!Array.isArray(data)) data = [];
 			return data;
 		}
@@ -151,9 +151,14 @@ storage: {
 		return [];
 	},
 	
-	load: function() {
-		var data = exesets.storage.data();
-		var exeset = data[exesets.idx] ?? {} ;
+	set: function(data) {
+		localStorage.setItem('mag-exesets', JSON.stringify(data));
+	},
+	
+	load: function(idx='#') {
+		if(idx==='#') idx = exesets.idx;
+		var data = exesets.storage.get();
+		var exeset = data[idx] ?? {} ;
 		console.log('load exeset from local');
 		// console.log(exeset);
 		// console.log(data);
@@ -161,22 +166,25 @@ storage: {
 	},
 	
 	save: function(exeset) {
-		var data = exesets.storage.data();
+		var data = exesets.storage.get();
 		data[exesets.idx] = exeset;
 		console.log('store exesets to local');
 		// console.log(data);
-		localStorage.setItem('mag-exesets', JSON.stringify(data));
+		exesets.storage.set(data);
 	},
 	
 	add: function(exeset) {
-		var data = exesets.storage.data();
+		var data = exesets.storage.get();
 		data.push(exeset);
 		console.log('add new exeset');
-		localStorage.setItem('mag-exesets', JSON.stringify(data));
+		exesets.storage.set(data);
 	},
 	
 	delete: function() {
 		console.log('delete current exeset');
+		var data = exesets.storage.get();
+		data.splice(exesets.idx, 1);
+		exesets.storage.set(data);
 	}
 } // end storage
 	
@@ -184,33 +192,31 @@ storage: {
 
 const idxsel = {
 	selector: null,
+	idx: 0,
 	init: function() {
 		idxsel.selector = $('select[name=idx]');
 		idxsel.selector.html('');
-		var data = exesets.storage.data();
+		var data = exesets.storage.get();
 		data.forEach(function(value, index, array) {
 			var optionText = value['name'] ?? '??';
 			idxsel.selector.append(new Option(optionText, index));
 		});
-		idxsel.selector.val(<?php echo $idx;?>);
+		
+		var idx = localStorage.getItem('mag-exesets-idx') ?? 0;
+		// console.log(idx);
+		idxsel.selector.val(idx);
 	},
 	reload: function(idx='#') {
 		var base_url = '<?php echo base_url("ma2/routine");?>/';
-		if(idx==='#') idx = idxsel.selector.val();
-		var new_url = base_url + idx;
+		if(idx==='#') idx = parseInt(idxsel.selector.val());
+		localStorage.setItem('mag-exesets-idx', idx);
+		exeset = exesets.storage.load(idx);
+		var new_url = base_url + (exeset['rulesetname'] ?? '') ;
 		window.location.assign(new_url);
 	}
 }
 
-
 $(function() {
-
-
-$('#editform [name=rulesetname]').change(function() {
-	var exeset = exesets.formdata.get();
-	exesets.cleandata(exeset, 1);
-	// $('#editform').submit();
-});
 
 document.getElementById('execlear').addEventListener('show.bs.modal', function(event) {
 	let exename = $('#exes .nav-tabs .active').html();
@@ -222,15 +228,8 @@ document.getElementById('delentry').addEventListener('show.bs.modal', function(e
 	$('#delentry .entname').html(entname);
 });
 
+exesets.idx = localStorage.getItem('mag-exesets-idx') ?? 0;
 exesets.load();
 idxsel.init();
 
 });
-
-function execlear(exekey) {
-	$('#exes .tab-pane.active select').val('');
-	$('#exes .tab-pane.active input[type=text]').val('');
-	$('#exes .tab-pane.active input[type=number]').val(0);
-	$('#exes .tab-pane.active input[type=checkbox]').prop("checked", false);
-	$('#exes .tab-pane.active .exeval').html('');
-}
