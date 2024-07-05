@@ -2,23 +2,19 @@ const exesets = {
 	
 idx: 0,
 
-exekeys: <?php echo json_encode(array_keys($exeset->exercises));?>,
-
-load: function() {
-	var exeset = exesets.storage.load();
-	exesets.cleandata(exeset);
-},
+tmpl: null,
 
 update: function() {
 	var exeset = exesets.formdata.get();
-	exesets.cleandata(exeset);
+	exesets.formdata.set(exeset);
 },
 
 clone: function() {
 	var exeset = exesets.formdata.get();
+	exesets.storage.save(exeset);
 	exeset['name'] = '# new';
-	exesets.storage.add(exeset);
-	exesets.update();
+	var idx = exesets.storage.add(exeset);
+	idxsel.reload(idx);
 },
 
 delete: function() {
@@ -27,11 +23,9 @@ delete: function() {
 },
 
 formdata: {
-	fields: <?php echo json_encode($exeset_fields);?>,
-
 	get: function(fields=null) {
 		if(!fields) {
-			fields = exesets.formdata.fields;
+			fields = exesets.tmpl.fields;
 			console.log('get form data');
 			// console.log(fields);
 		}
@@ -57,12 +51,42 @@ formdata: {
 		return formdata;
 	},
 	
-	set: function(data, fields=null) {
+	set: function(exeset) {
+		console.log('clean exeset via API');
+		// console.log(exeset);
+			
+		var api = '<?php echo site_url("/api/ma2/exeval");?>/';
+		$.get(api, exeset, function(response) {
+			// console.log(response);
+			try {
+				// display cleaned data
+				exeset = response['data'] ?? false;
+				if(!exeset) throw new Error('No data returned');
+				exesets.formdata.htm(exeset);
+				
+				// display D score info
+				var html = response['html'] ?? false;
+				if(!html) throw new Error('No HTML returned');
+				exesets.exevals(html, 1);
+			}
+			catch(errorThrown) { 
+				exesets.exevals(errorThrown);
+			}
+		})
+		.fail(function(jqXHR) {
+			exesets.exevals('server error');
+		});
+	},
+		
+	htm: function(data, fields=null) {
 		if(!fields) {
-			fields = exesets.formdata.fields;
+			console.log('write form html');
+			var rulesetname = data.rulesetname ?? null ;
+			exesets.setTemplate(rulesetname); // load new template
+	
+			fields = exesets.tmpl.fields;
 			exesets.storage.save(data);
 			idxsel.init();
-			console.log('set form data');
 			// console.log(fields);
 		}
 		var $el, value;
@@ -70,7 +94,7 @@ formdata: {
 			if(typeof fldname=='object') {
 				// console.log('sub-process '+ key);
 				value = data[key] ?? {} ;
-				exesets.formdata.set(value, fldname);
+				exesets.formdata.htm(value, fldname);
 			}
 			else {
 				value = data[key] ?? '' ;
@@ -91,38 +115,58 @@ formdata: {
 	
 }, // end formdata
 
-cleandata: function(exeset, reload=0) {
-	console.log('clean exeset via API');
-	// console.log(exeset);
+printdata: {
+	set: function(exeset) {
+		console.log('clean exeset via API');
+		// console.log(exeset);
 		
-	var api = '<?php echo site_url("/api/ma2/exeval");?>/';
-	$.get(api, exeset, function(response) {
-		// console.log(response);
-		try {
-			exeset = response['data'] ?? {};
-			// console.log(exeset);
-			var html = response['html'] ?? false;
-			if(!html) throw new Error('No HTML returned');
-			exesets.exevals(html, 1);
+		var html = '';
+		var api = '<?php echo site_url("/api/ma2/print");?>/';
+		$.get(api, exeset, function(response) {
+			// console.log(response);
+			try {
+				exesets.printdata.msg(response, 1);
+			}
+			catch(errorThrown) {
+				exesets.printdata.msg(errorThrown);
+			}
+		})
+		.fail(function(jqXHR) {
+			exesets.printdata.msg('server error');
+		});
+	},
+	
+	msg: function(message, message_ok=0) {
+		var htm, warning;
+		if(message_ok) {
+			htm = message ?? '';
+			warning = htm ? false : 'No message in response';
 		}
-		catch(errorThrown) { 
-			exesets.exevals(errorThrown);
+		else {
+			warning = message;
 		}
-			
-		// put clean data into store
-		exesets.formdata.set(exeset);
-		if(reload) location.reload();
-	})
-	.fail(function(jqXHR) {
-		exesets.exevals('server error');
-	});
+		if(warning) {
+			htm = '<div class="p-1 alert alert-danger"><ul class="list-unstyled m-0"><li>' + warning + '</li></ul></div>';
+		}
+		$('#printdata').html(htm);
+	}
+},
+
+setTemplate: function(rulesetname) {
+	var current = exesets.tmpl ?? false;
+	if(current) current = current.name ?? false;
+	if(current===rulesetname) return;
+	
+	console.log('load template ' + rulesetname);
+	var source = $('#template-'+rulesetname).html();
+	$('#edit-template').html(source);	
+	exesets.tmpl = exesets_tmpl[rulesetname];
 },
 
 exevals: function(message, message_ok=0) {
-	let exekeys = <?php echo json_encode(array_keys($exeset->exercises));?>;
 	var htm, warning;
 
-	exekeys.forEach(function(exekey) {
+	exesets.tmpl.exekeys.forEach(function(exekey) {
 		if(message_ok) {
 			htm = message[exekey] ?? '';
 			warning = htm ? false : exekey + ' missing in response';
@@ -178,6 +222,7 @@ storage: {
 		data.push(exeset);
 		console.log('add new exeset');
 		exesets.storage.set(data);
+		return (data.length - 1);
 	},
 	
 	delete: function() {
@@ -215,21 +260,3 @@ const idxsel = {
 		window.location.assign(new_url);
 	}
 }
-
-$(function() {
-
-document.getElementById('execlear').addEventListener('show.bs.modal', function(event) {
-	let exename = $('#exes .nav-tabs .active').html();
-	$('#execlear .exename').html(exename);
-});
-
-document.getElementById('delentry').addEventListener('show.bs.modal', function(event) {
-	let entname = $('#editform [name=name]').val();
-	$('#delentry .entname').html(entname);
-});
-
-exesets.idx = localStorage.getItem('mag-exesets-idx') ?? 0;
-exesets.load();
-idxsel.init();
-
-});

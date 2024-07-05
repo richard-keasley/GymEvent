@@ -1,16 +1,7 @@
 <?php $this->extend('default');
  
-$this->section('content');
-
-$attrs = [
-	'id' => "editform",
-	'data' => ''
-];
-$hidden = [
-	'saved' => $exeset->saved
-];
-echo form_open_multipart('', $attrs, $hidden); 
-?>
+$this->section('content'); ?>
+<form id="editform">
 <select class="form-select" name="idx" onchange="idxsel.reload();"></select>
 
 <section>
@@ -21,7 +12,7 @@ echo form_open_multipart('', $attrs, $hidden);
 		'name' => "name",
 		'id' => "name",
 		'class' => "form-control",
-		'value' => $exeset->name
+		// 'value' => $exeset->name
 	];
 	echo form_input($input);
 	?>
@@ -35,15 +26,17 @@ echo form_open_multipart('', $attrs, $hidden);
 		'id' => "rulesetname",
 		'name' => "rulesetname",
 		'options' => \App\Libraries\Mag\Rules::index,
-		'onchange' => "rulsetname_change()"
+		'onchange' => "rulsetname_change(this)"
 	];
 	echo form_dropdown($input);
 ?>
 <script>
-function rulsetname_change() {
-	var exeset = exesets.formdata.get();
-	exesets.cleandata(exeset, 1);
-	// $('#editform').submit();
+function rulsetname_change(el) {
+	rulesetname = $(el).val(); // get new rule set
+	console.log('switch to ' + rulesetname);
+	var exeset = exesets.formdata.get(); // existing form data
+	exeset[rulesetname] = rulesetname; // change to new rule set
+	exesets.formdata.set(exeset); // apply new template to exeset
 }
 </script>
 </div>
@@ -56,167 +49,13 @@ function rulsetname_change() {
 		'id' => "event",
 		'name' => "event",
 		'style' => "height:4em",
-		'value' => $exeset->event
+		// 'value' => $exeset->event
 	];
 	echo form_textarea($input);
 ?></div>
 </section>
 
-<section>
-<?php 
-$exeset_fields = [
-	'rulesetname' => "rulesetname", 
-	'name' => "name", 
-	'event' => "event"
-]; 
-$tab_items = [];
-foreach($exeset->exercises as $exekey=>$exercise) {
-	ob_start();
-	# d($exercise);
-	
-	$exe_rules = $exeset->ruleset->exes[$exekey] ?? [] ;
-	switch($exe_rules['method']) {
-		case 'tariff':
-			$inputs = [
-				[
-					'type' => "number",
-					'step' => "0.1",
-					'min' => "0",
-					'max' => $exe_rules['d_max'],
-					'class' => "form-control tarrif-0",
-					'placeholder' => 'tariff'
-				],
-				[
-					'type' => 'select',
-					'options' => $exeset->ruleset->routine_options('groups'),
-					'class' => "form-control tarrif-1",
-					'placeholder' => 'grp'
-				],
-				[
-					'type' => 'text',
-					'class' => "form-control tarrif-2",
-					'placeholder' => 'description'
-				]
-			];
-			$dismount_num =  999;
-			break;
-		case 'routine':
-		default: 
-			$inputs = [
-				[
-					'type' => 'select',
-					'options' => $exeset->ruleset->routine_options('difficulties'),
-					'class' => "form-control routine-0",
-					'placeholder' => 'val'
-				],
-				[
-					'type' => 'select',
-					'options' => $exeset->ruleset->routine_options('groups'),
-					'class' => "form-control routine-1",
-					'placeholder' => 'grp'
-				],
-				[
-					'type' => 'text',
-					'class' => "form-control routine-2",
-					'placeholder' => 'description'
-				]
-			];
-			$dismount_num = array_key_last($exercise['elements']); 
-	}
-
-	$last_elnum = array_key_last($exercise['elements']); 
-	foreach($exercise['elements'] as $elnum=>$element) {
-		$class = '';
-		if($elnum) $class .= ' not-first';
-		if($elnum<$last_elnum) $class .= ' not-last';
-		?>
-		<div class="input-group my-0">
-		<span class="input-group-text elnum<?php echo $class;?>">
-			<?php echo $elnum==$dismount_num ? 'D' : $elnum + 1; ?>
-		</span>
-		<?php
-		foreach($inputs as $col=>$input) {
-			$input['name'] = "{$exekey}_el_{$elnum}_{$col}";
-			$input['value'] = $element[$col];
-			$input['class'] .= $class;
-			$exeset_fields[$exekey]['elements'][$elnum][$col] = $input['name'];
-
-			switch($input['type']) {
-				case 'select': 
-					unset($input['type']);
-					echo form_dropdown($input);
-					break;
-				default:
-					echo form_input($input);
-			}
-		}
-		?>
-		</div>
-	<?php }
-	
-	if(!empty($exe_rules['connection'])) { ?>
-		<div class="input-group my-1">
-		<span class="input-group-text" style="width:7em">Connection</span>
-		<?php 
-		$id = "{$exekey}_con";
-		$input = [
-			'type' => "number",
-			'step' => "0.1",
-			'min' => "0",
-			'class' => "form-control",
-			'name' => $id,
-			'id' => $id,
-			'value' => $exercise['connection'] ?? 0
-		];
-		$exeset_fields[$exekey]['connection'] = $input['name'];
-		echo form_input($input);
-		?>
-		</div>
-	<?php } ?>
-	
-	<div class="my-2">
-	<?php foreach($exercise['neutrals'] as $nkey=>$nval) { ?>
-		<div class="form-check">
-		<?php
-		$id = "{$exekey}_nd_{$nkey}";
-		$input = [
-			'type' => 'checkbox',
-			'name' => $id,
-			'id' => $id,
-			'value' => 1,
-			'class' => "form-check-input"
-		];
-		if($nval) $input['checked'] = 'checked';
-		$exeset_fields[$exekey]['neutrals'][$nkey] = $input['name'];
-		$neutral = $exe_rules['neutrals'][$nkey]; 
-		
-		$attr = [
-			'class' => "form-check-label"
-		];
-	
-		echo form_input($input);
-		echo form_label(sprintf('%s (%1.1f)', $neutral['description'], $neutral['deduction']), $id, $attr);
-		?>
-		</div>
-	<?php } ?>
-	</div>
-	
-	<div class="exeval"><?php 
-	$this->setData(['exekey' => $exekey]);
-	echo $this->include('ma2/exeset/exeval'); 
-	?></div>
-	
-	<?php 
-	$tab_items[$exekey] = [
-		'heading' => $exe_rules['name'],
-		'content' => ob_get_clean()
-	];
-}
-
-$tabs = new \App\Views\Htm\Tabs($tab_items, 'exes');
-echo $tabs->htm();
-?>
-</section>
+<section id="edit-template"></section>
 
 <div class="toolbar">
 <?php
@@ -230,9 +69,7 @@ $buttons = [
 	[
 		'class' => "btn btn-primary bi bi-printer",
 		'title' => "Printer friendly version of this exercise set",
-		'type' => "submit",
-		'name' => "cmd",
-		'value' => "print"
+		'href' => "/ma2/routine/print",
 	],
 	[
 		'class' => "btn btn-primary bi bi-plus-square",
@@ -246,13 +83,6 @@ $buttons = [
 		'type' => "button",
 		'data-bs-toggle' => "modal",
 		'data-bs-target' => "#utils"
-	],
-	[
-		'class' => "btn btn-warning bi-arrow-counterclockwise",
-		'title' => "Clear the exercise currently visible",
-		'type' => "button",
-		'data-bs-toggle' => "modal",
-		'data-bs-target' => "#execlear"
 	],
 	[
 		'class' => "btn btn-danger bi-trash",
@@ -272,20 +102,32 @@ $buttons = [
 
 $tbody = [];
 foreach($buttons as $button) {
-	printf('<button %s></button> ', stringify_attributes($button));
+	$href = $button['href'] ?? false;
+	$format = $href ? '<a %s></a> ' : '<button %s></button> ' ;
+	printf($format, stringify_attributes($button));
 	$tbody[] = [
 		sprintf('<span class="%s"></span>', $button['class']), 
-		$button['title'] . '.'
+		$button['title']
 	];
 }
 ?>
 
 </div>
 
-<?php echo form_close();
-$this->endSection(); 
+<?php echo form_close();?>
 
-$this->section('bottom') ?>
+<?php $this->endSection(); 
+
+$this->section('bottom');
+
+echo '<script>const exesets_tmpl={};</script>';
+foreach(\App\Libraries\Mag\Rules::index as $key=>$label) {
+	$data = ['rulesetname' => $key];
+	$data = ['exeset' => new \App\Libraries\Mag\Exeset($data)];
+	echo view('ma2/exeset/edit-template', $data);
+}
+
+?>
 
 <div class="modal" id="iconhelp" tabindex="-1">
 <div class="modal-dialog">
@@ -302,9 +144,9 @@ $table->autoHeading = false;
 echo $table->generate($tbody);
 ?>
 
-<p class="text-muted">Rules' version: <?php 
-	$time = new \CodeIgniter\I18n\Time($exeset->ruleset->version);
-	echo $time->toLocalizedString('d MMM yyyy'); 
+<p class="text-muted">Rules' version: [Need to update this]<?php 
+	// $time = new \CodeIgniter\I18n\Time($exeset->ruleset->version);
+	// echo $time->toLocalizedString('d MMM yyyy'); 
 ?></p>
 
 </div>
@@ -313,33 +155,6 @@ echo $table->generate($tbody);
 </div>
 </div>
 </div>
-</div>
-
-<div class="modal" id="execlear" tabindex="-1">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-	<h5 class="modal-title">Reset <span class="exename"></span></h5>
-	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-<div class="modal-body">
-	<p>Are you sure you want to clear contents from the <span class="exename"></span> exercise?</p>
-</div>
-<div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-	<button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="execlear()">Clear exercise</button>
-</div>
-</div>
-</div>
-<script>
-function execlear(exekey) {
-	$('#exes .tab-pane.active select').val('');
-	$('#exes .tab-pane.active input[type=text]').val('');
-	$('#exes .tab-pane.active input[type=number]').val(0);
-	$('#exes .tab-pane.active input[type=checkbox]').prop("checked", false);
-	$('#exes .tab-pane.active .exeval').html('');
-}
-</script>
 </div>
 
 <div class="modal" id="delentry" tabindex="-1">
@@ -414,7 +229,7 @@ echo $table->generate($tbody);
 
 <script><?php
 ob_start();
-include __DIR__ . '/edit.js';
+include __DIR__ . '/exesets.js';
 echo ob_get_clean();
 /*
 
@@ -422,10 +237,22 @@ $minifier = new MatthiasMullie\Minify\JS();
 $minifier->add(ob_get_clean());
 echo $minifier->minify();
 */
-?></script>
+?>
+
+$(function() {
+
+document.getElementById('delentry').addEventListener('show.bs.modal', function(event) {
+	let entname = $('#editform [name=name]').val();
+	$('#delentry .entname').html(entname);
+});
+
+exesets.idx = localStorage.getItem('mag-exesets-idx') ?? 0;
+var exeset = exesets.storage.load();
+exesets.formdata.set(exeset);
+idxsel.init();
+
+});
+</script>
 
 <?php
-d($exeset);
-# d($exeset_fields);
-
 $this->endSection(); 

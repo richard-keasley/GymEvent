@@ -1,5 +1,7 @@
 <?php namespace App\Libraries\Ma2;
 
+use \App\Libraries\Mag\Rules;
+
 class Exeset {
 const filter = [
 	'<' => '{',
@@ -24,12 +26,18 @@ public function __construct($request=[]) {
 	// sanitize
 	$request = self::sanitize($request);
 	
-	foreach(['name', 'event', 'rulesetname'] as $key) {
-		$this->data[$key] = $request[$key] ?? '';
+	$this->data = [
+		'name' => $request['name'] ?? '',
+		'event' => $request['event'] ?? '',
+		'rulesetname' => $request['rulesetname'] ?? '#',
+		'saved' => date('Y-m-d H:i:s')
+	];
+	
+	if(!Rules::exists($this->data['rulesetname'])) {
+		$this->data['rulesetname'] = Rules::DEF_RULESETNAME;
 	}
-	$this->data['saved'] = date('Y-m-d H:i:s');
-	$this->ruleset = \App\Libraries\Mag\Rules::load($this->rulesetname);
-
+	$this->ruleset = Rules::load($this->data['rulesetname']);
+	
 	foreach($this->ruleset->exes as $exekey=>$exe_rules) {
 		switch($exe_rules['method']) {
 			case 'tariff':

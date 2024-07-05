@@ -27,10 +27,19 @@ public function exeval() {
 		
 	foreach($exedata['exeset']->exercises as $exekey=>$exercise) {
 		$exedata['exekey'] = $exekey;
-		$response['html'][$exekey] = \view('mag/exeset/exeval', $exedata);
+		$response['html'][$exekey] = \view('ma2/exeset/exeval', $exedata);
 		$response['data'][$exekey] = $exercise;
 	}
 	return $this->respond($response);
+}
+
+public function print() {
+	$request = $this->request->getGet();
+	$data = [
+		'exeset' => new \App\Libraries\Ma2\Exeset($request)
+	];
+	$html = view('ma2/exeset/print-exeset', $data);
+	return $this->respond($html);
 }
 
 }
