@@ -1,7 +1,11 @@
 <?php $this->extend('default');
  
-$this->section('content'); ?>
-<form id="editform">
+$this->section('content'); 
+
+$attrs = ['id'=>"editform"];
+echo form_open('', $attrs);
+?>
+
 <select class="form-select" name="idx" onchange="idxsel.reload();"></select>
 
 <section>
@@ -57,8 +61,7 @@ function rulsetname_change(el) {
 
 <section id="edit-template"></section>
 
-<div class="toolbar">
-<?php
+<div class="toolbar"><?php
 $buttons = [
 	[
 		'class' => "btn btn-primary bi bi-check-square",
@@ -110,13 +113,11 @@ foreach($buttons as $button) {
 		$button['title']
 	];
 }
-?>
+?></div>
 
-</div>
-
-<?php echo form_close();?>
-
-<?php $this->endSection(); 
+<?php 
+echo form_close();
+$this->endSection(); 
 
 $this->section('bottom');
 

@@ -20,6 +20,7 @@ public function exeval() {
 
 	// response (exeval for each exercise)
 	$response = [
+		'request' => $request,
 		'data' => $exedata['exeset']->data,
 		'html' => []
 	];

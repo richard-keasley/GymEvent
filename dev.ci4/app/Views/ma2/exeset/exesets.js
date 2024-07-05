@@ -1,5 +1,10 @@
 const exesets = {
-	
+
+csrf: {
+	token: '<?php echo csrf_token();?>',
+	hash: '<?php echo csrf_hash();?>'
+},
+
 idx: 0,
 
 tmpl: null,
@@ -24,13 +29,14 @@ delete: function() {
 
 formdata: {
 	get: function(fields=null) {
+		var formdata = {}, el = null;
+		
 		if(!fields) {
 			fields = exesets.tmpl.fields;
 			console.log('get form data');
 			// console.log(fields);
 		}
 		
-		var formdata = {}, el = null;
 		$.each(fields, function(key, value) {
 			if(typeof value=='object') {
 				value = exesets.formdata.get(value);
@@ -53,8 +59,10 @@ formdata: {
 	
 	set: function(exeset) {
 		console.log('clean exeset via API');
+
+		// exeset[exesets.csrf.token] = exesets.csrf.hash;
 		// console.log(exeset);
-			
+		
 		var api = '<?php echo site_url("/api/ma2/exeval");?>/';
 		$.get(api, exeset, function(response) {
 			// console.log(response);
