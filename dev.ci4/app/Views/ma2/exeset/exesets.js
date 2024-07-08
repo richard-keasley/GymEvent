@@ -64,7 +64,8 @@ formdata: {
 		// console.log(exeset);
 		
 		var api = '<?php echo site_url("/api/ma2/exeval");?>/';
-		$.get(api, exeset, function(response) {
+		$.get(api, exeset)
+		.done(function(response) {
 			// console.log(response);
 			try {
 				// display cleaned data
@@ -89,9 +90,11 @@ formdata: {
 	htm: function(data, fields=null) {
 		if(!fields) {
 			console.log('write form html');
-			var rulesetname = data.rulesetname ?? null ;
-			exesets.setTemplate(rulesetname); // load new template
+			var ruleset = data['ruleset'] ?? null;
+			// console.log(ruleset);
 	
+			exesets.setTemplate(ruleset); // load new template
+			
 			fields = exesets.tmpl.fields;
 			exesets.storage.save(data);
 			idxsel.init();
@@ -160,15 +163,22 @@ printdata: {
 	}
 },
 
-setTemplate: function(rulesetname) {
+setTemplate: function(ruleset) {
 	var current = exesets.tmpl ?? false;
 	if(current) current = current.name ?? false;
-	if(current===rulesetname) return;
+	if(current===ruleset.name) return;
 	
-	console.log('load template ' + rulesetname);
-	var source = $('#template-'+rulesetname).html();
+	console.log('load template ' + ruleset.name);
+	
+	var htm = [];
+	for(var property in ruleset) {
+		htm.push(ruleset[property]);
+	}
+	$('#help-ruleset').html(htm.join('<br>'));
+	
+	var source = $('#template-'+ruleset.name).html();
 	$('#edit-template').html(source);	
-	exesets.tmpl = exesets_tmpl[rulesetname];
+	exesets.tmpl = exesets_tmpl[ruleset.name];
 },
 
 exevals: function(message, message_ok=0) {
@@ -242,29 +252,3 @@ storage: {
 } // end storage
 	
 };
-
-const idxsel = {
-	selector: null,
-	idx: 0,
-	init: function() {
-		idxsel.selector = $('select[name=idx]');
-		idxsel.selector.html('');
-		var data = exesets.storage.get();
-		data.forEach(function(value, index, array) {
-			var optionText = value['name'] ?? '??';
-			idxsel.selector.append(new Option(optionText, index));
-		});
-		
-		var idx = localStorage.getItem('mag-exesets-idx') ?? 0;
-		// console.log(idx);
-		idxsel.selector.val(idx);
-	},
-	reload: function(idx='#') {
-		var base_url = '<?php echo base_url("ma2/routine");?>/';
-		if(idx==='#') idx = parseInt(idxsel.selector.val());
-		localStorage.setItem('mag-exesets-idx', idx);
-		exeset = exesets.storage.load(idx);
-		var new_url = base_url + (exeset['rulesetname'] ?? '') ;
-		window.location.assign(new_url);
-	}
-}

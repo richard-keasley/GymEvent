@@ -1,12 +1,66 @@
 <?php $this->extend('default');
+
+$buttons = [
+	[
+		'class' => "btn btn-primary bi bi-check-square",
+		'title' => "Re-check all start values after edits",
+		'type' => "button",
+		'onclick' => "exesets.update()",
+	],
+	'print' => [
+		'class' => "btn btn-primary bi bi-printer",
+		'title' => "Printer friendly version of this exercise set",
+		'href' => "/ma2/routine/print",
+	],
+	[
+		'class' => "btn btn-primary bi bi-plus-square",
+		'title' => "Make a copy of this exercise set to use on another gymnast",
+		'type' => "button",
+		'onclick' => "exesets.clone()"
+	],
+	[
+		'class' => "btn btn-primary bi bi-file-code",
+		'title' => "Data utilities",
+		'type' => "button",
+		'data-bs-toggle' => "modal",
+		'data-bs-target' => "#utils"
+	],
+	[
+		'class' => "btn btn-danger bi-trash",
+		'title' => "Delete this gymnast",
+		'type' => "button",
+		'data-bs-toggle' => "modal",
+		'data-bs-target' => "#delentry"
+	],
+	[
+		'class' => "btn btn-info bi-question-circle",
+		'title' => "Button help",
+		'type' => "button",
+		'data-bs-toggle' => "modal",
+		'data-bs-target' => "#dlg-help"
+	]
+];
+
+$ignore = ['print'];
+$help = []; $toolbar = [];
+foreach($buttons as $key=>$button) {
+	$help[] = [
+		sprintf('<span class="%s"></span>', $button['class']), 
+		$button['title']
+	];
+	$href = $button['href'] ?? false;
+	$format = $href ? '<a %s></a>' : '<button %s></button>' ;
+	$buttons[$key] = sprintf($format, stringify_attributes($button));
+	if(!in_array($key, $ignore)) $toolbar[] = $buttons[$key];
+}
  
 $this->section('content'); 
-
 $attrs = ['id'=>"editform"];
 echo form_open('', $attrs);
-?>
 
-<select class="form-select" name="idx" onchange="idxsel.reload();"></select>
+$idxsel = $buttons['print'];
+include __DIR__ . '/idxsel.php';
+?>
 
 <section>
 <div class="input-group my-1">
@@ -62,57 +116,7 @@ function rulsetname_change(el) {
 <section id="edit-template"></section>
 
 <div class="toolbar"><?php
-$buttons = [
-	[
-		'class' => "btn btn-primary bi bi-check-square",
-		'title' => "Re-check all start values after edits",
-		'type' => "button",
-		'onclick' => "exesets.update()",
-	],
-	[
-		'class' => "btn btn-primary bi bi-printer",
-		'title' => "Printer friendly version of this exercise set",
-		'href' => "/ma2/routine/print",
-	],
-	[
-		'class' => "btn btn-primary bi bi-plus-square",
-		'title' => "Make a copy of this exercise set to use on another gymnast",
-		'type' => "button",
-		'onclick' => "exesets.clone()"
-	],
-	[
-		'class' => "btn btn-primary bi bi-tools",
-		'title' => "Data utilities",
-		'type' => "button",
-		'data-bs-toggle' => "modal",
-		'data-bs-target' => "#utils"
-	],
-	[
-		'class' => "btn btn-danger bi-trash",
-		'title' => "Delete this gymnast",
-		'type' => "button",
-		'data-bs-toggle' => "modal",
-		'data-bs-target' => "#delentry"
-	],
-	[
-		'class' => "btn btn-info bi-question-circle",
-		'title' => "Button help",
-		'type' => "button",
-		'data-bs-toggle' => "modal",
-		'data-bs-target' => "#iconhelp"
-	]
-];
-
-$tbody = [];
-foreach($buttons as $button) {
-	$href = $button['href'] ?? false;
-	$format = $href ? '<a %s></a> ' : '<button %s></button> ' ;
-	printf($format, stringify_attributes($button));
-	$tbody[] = [
-		sprintf('<span class="%s"></span>', $button['class']), 
-		$button['title']
-	];
-}
+echo implode(' ', $toolbar);
 ?></div>
 
 <?php 
@@ -130,7 +134,7 @@ foreach(\App\Libraries\Mag\Rules::index as $key=>$label) {
 
 ?>
 
-<div class="modal" id="iconhelp" tabindex="-1">
+<div class="modal" id="dlg-help" tabindex="-1">
 <div class="modal-dialog">
 <div class="modal-content">
 <div class="modal-header">
@@ -142,13 +146,11 @@ foreach(\App\Libraries\Mag\Rules::index as $key=>$label) {
 <?php 
 $table = \App\Views\Htm\Table::load('small');
 $table->autoHeading = false;
-echo $table->generate($tbody);
+echo $table->generate($help);
 ?>
 
-<p class="text-muted">Rules' version: [Need to update this]<?php 
-	// $time = new \CodeIgniter\I18n\Time($exeset->ruleset->version);
-	// echo $time->toLocalizedString('d MMM yyyy'); 
-?></p>
+<h6>Rule set</h6>
+<p class="text-muted" id="help-ruleset"></p>
 
 </div>
 <div class="modal-footer">
@@ -207,16 +209,16 @@ $buttons = [
 	'onclick' => "alert('not yet')",
 ],
 ];
-$tbody = [];
+$help = [];
 foreach($buttons as $button) {
-	$tbody[] = [
+	$help[] = [
 		sprintf('<button %s></button> ', stringify_attributes($button)),
 		$button['title'] . '.'
 	];
 }
 $table = \App\Views\Htm\Table::load('small');
 $table->autoHeading = false;
-echo $table->generate($tbody);
+echo $table->generate($help);
 ?>	
 </div>
 
@@ -250,8 +252,6 @@ document.getElementById('delentry').addEventListener('show.bs.modal', function(e
 exesets.idx = localStorage.getItem('mag-exesets-idx') ?? 0;
 var exeset = exesets.storage.load();
 exesets.formdata.set(exeset);
-idxsel.init();
-
 });
 </script>
 

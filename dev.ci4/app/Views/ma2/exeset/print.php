@@ -8,18 +8,25 @@
 <title><?php echo $title;?></title>
 <?php 
 echo \App\ThirdParty\jquery::script(); 
+echo link_tag('app/gymevent.css');
 if(!empty($head)) echo $head;
 ?>
 </head>
 
 <body class="container-fluid">
+<header>
+<?php 
+$attrs = [
+	'class' => "btn btn-primary bi bi-pencil-square",
+	'title' => "Edit this exercise set",
+	'href' => "/ma2/routine",
+];
+$idxsel = sprintf('<a %s></a>', stringify_attributes($attrs));
+include __DIR__ . '/idxsel.php'; 
+?>
+</header>
 
-<div id="printdata"></div>
-
-<footer>
-
-<p><a href="/ma2/routine" class="btn btn-primary" title="re-edit these routines">edit</a></p>
-</footer>
+<main id="printdata"></main>
 
 <script><?php
 ob_start();

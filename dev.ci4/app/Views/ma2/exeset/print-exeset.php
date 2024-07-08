@@ -1,19 +1,19 @@
 <header class="row">
 
-<div class="col-4" style="font-weight:bold"><?php 
+<div class="col-6 col-sm-4"><strong><?php 
 $options = \App\Libraries\Mag\Rules::index;
 $lines = [
 	$exeset->name,
 	$options[$exeset->rulesetname] ?? ''
 ];
 echo implode('<br>', $lines);
-?></div>
+?></strong></div>
 
-<pre class="col-4"><?php
+<pre class="col-6 col-sm-4"><?php
  echo $exeset->event;
 ?></pre> 
 
-<div class="text-end col-4 text-muted d-none d-sm-block"><?php
+<div class="text-end fst-italic text-muted d-none d-sm-block col-sm-4"><?php
 $lines = []; $format = 'd MMM yyyy';
 $time = new \CodeIgniter\I18n\Time($exeset->saved);
 $lines[] = 'Saved: ' . $time->toLocalizedString($format); 
@@ -30,9 +30,9 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	?>
 	<section class="row">
 	
-	<h3 class="col-4"><?php echo $exe_rules['name'];?></h3>
+	<h5 class="col-6 col-sm-4"><?php echo $exe_rules['name'];?></h5>
 	
-	<div class="col-5 routine d-none d-sm-block">
+	<div class="routine d-none d-sm-block col-sm-5">
 	<table>
 	<tbody>
 	<?php
@@ -64,7 +64,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	</table>
 	</div>
 	
-	<div class="col-3">
+	<div class="col-6 col-sm-3">
 	<div class="d-flex-column">
 	<?php 
 	$this->setData(['exekey' => $exekey]);

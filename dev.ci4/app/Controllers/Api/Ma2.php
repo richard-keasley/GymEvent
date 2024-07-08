@@ -20,12 +20,20 @@ public function exeval() {
 
 	// response (exeval for each exercise)
 	$response = [
-		'request' => $request,
-		'data' => $exedata['exeset']->data,
+		# 'server' => $_SERVER,
+		# 'request' => $_REQUEST,
+		'data' => $exedata['exeset']->data,	
 		'html' => []
 	];
-	# $response['data']['exercises'] = $exedata['exeset']->exercises;
-		
+	$response['data']['ruleset'] = [
+		'name' => $exedata['exeset']->data['rulesetname'],
+		'title' => $exedata['exeset']->ruleset->title,
+		'description' => $exedata['exeset']->ruleset->description,
+		'version' => $exedata['exeset']->ruleset->version
+	];
+	$dt = new \datetime($response['data']['ruleset']['version']);
+	$response['data']['ruleset']['version'] = $dt->format('d F Y');
+			
 	foreach($exedata['exeset']->exercises as $exekey=>$exercise) {
 		$exedata['exekey'] = $exekey;
 		$response['html'][$exekey] = \view('ma2/exeset/exeval', $exedata);

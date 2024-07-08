@@ -92,8 +92,8 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	<?php }
 	
 	if(!empty($exe_rules['connection'])) { ?>
-		<div class="input-group my-1">
-		<span class="input-group-text" style="width:7em">Connection</span>
+		<div class="input-group my-1" style="max-width:14em">
+		<span class="input-group-text">Connection</span>
 		<?php 
 		$id = "{$exekey}_con";
 		$input = [
