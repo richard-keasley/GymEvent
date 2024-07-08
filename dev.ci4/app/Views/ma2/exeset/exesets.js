@@ -170,9 +170,22 @@ setTemplate: function(ruleset) {
 	
 	console.log('load template ' + ruleset.name);
 	
-	var htm = [];
+	var htm = [], val;
 	for(var property in ruleset) {
-		htm.push(ruleset[property]);
+		switch(property) {
+			case 'version':
+			val = new Date(ruleset[property]);
+			val = 'version: ' + val.toLocaleDateString();
+			break;
+			
+			case 'name':
+			val = null;
+			break;
+			
+			default:
+			val = ruleset[property];
+		}
+		if(val) htm.push(val);
 	}
 	$('#help-ruleset').html(htm.join('<br>'));
 	

@@ -94,12 +94,12 @@ protected function download($data, $layout='table', $filetitle='download', $file
 
 	switch($filetype) {
 		case 'json':
-		$this->response->setJSON($this->data['export']);
+		$this->response->setJSON($data);
 		$response = $this->response->getBody();
 		break;
 		
 		case 'xml':
-		$this->response->setXML($this->data['export']);
+		$this->response->setXML($data);
 		$response = $this->response->getBody();
 		// replace data line numbers 
 		// CI replaces integer keys with "item{int}"
@@ -109,8 +109,11 @@ protected function download($data, $layout='table', $filetitle='download', $file
 		
 		default:
 		$filetype = 'csv';
-		$data['format'] = $filetype;		
-		$response = view("export/{$layout}", $data);
+		$export = [
+			'export' => $data,
+			'format' => $filetype
+		];		
+		$response = view("export/{$layout}", $export);
 		// remove DEBUG comments from view
 		$response = preg_replace('#<!--.*-->[\r\n]#', '', $response);
 	}

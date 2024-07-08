@@ -283,10 +283,7 @@ public function edit($event_id=0) {
 private function export($tbody, $suffix='') {
 	$filetitle = $this->data['event']->title;
 	if($suffix) $filetitle .= "_{$suffix}";
-	$data = [
-		'export' => $tbody
-	];
-	return $this->download($data, 'table', $filetitle);
+	return $this->download($tbody, 'table', $filetitle);
 }
 	
 }

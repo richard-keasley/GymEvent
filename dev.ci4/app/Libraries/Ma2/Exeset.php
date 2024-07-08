@@ -78,4 +78,20 @@ public function __get($propname) {
 	if(isset($this->data[$propname])) return $this->data[$propname];
 }
 
+public function export() {
+	$retval = $this->data;
+	
+	$retval['ruleset'] = [
+		'name' => $this->data['rulesetname'],
+		'title' => $this->ruleset->title,
+		'description' => $this->ruleset->description,
+		'version' => $this->ruleset->version
+	];
+			
+	foreach($this->exercises as $exekey=>$exercise) {
+		$retval[$exekey] = $exercise;
+	}
+	return $retval;
+}
+
 }

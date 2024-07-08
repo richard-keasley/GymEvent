@@ -52,6 +52,10 @@ public function routine($layout=null) {
 	$minifier = new \MatthiasMullie\Minify\CSS($css);
 	$this->data['head'] .= sprintf('<style>%s</style>', $minifier->minify());
 	
+	// uploaded data
+	# $uploaded = $this->request->getPost('exesets');	
+	# d($uploaded);
+	
 	return view("ma2/exeset/{$layout}", $this->data);
 
 
@@ -87,6 +91,55 @@ public function routine($layout=null) {
 		$this->data['head'] .= '<link rel="stylesheet" type="text/css" href="/app/mag/exeset-edit.css">';
 		return view('ma2/exeset/edit', $this->data);
 	}
+}
+
+public function export() {
+	$json = $this->request->getPost('exesets');
+	$arr = json_decode($json, true);
+	
+	$export = [];
+	foreach($arr as $request) {
+		$exeset = new \App\Libraries\Ma2\Exeset($request);
+		$export[] = $exeset->export();
+	}
+	return $this->download($export, null, 'mag_routines', 'json');
+}
+
+public function import() {
+	$error = '';
+	
+	$file = $this->request->getFile('import');
+	if(!$file) $error = 'No file selected';
+	if(!$error && !$file->isValid()) $error = $file->getErrorString();
+	if(!$error) {
+		$json = file_get_contents($file->getPathname());
+		$arr = json_decode($json);
+		if(!$arr) $error = "Invalid file contents";
+		d($json, $arr);
+	
+	}
+	
+	$this->data['exesets'] = [];
+	if(!$error) {
+		foreach($arr as $request) {
+			$exeset = new \App\Libraries\Ma2\Exeset($request);
+			$this->data['exesets'][] = $exeset->export();
+		}
+	}
+	d($error);
+	
+	
+	# d($file);
+		#	d($file->getfilename());
+		#	d($file->getRealPath());
+# d($this->request->getfiles());
+	
+	if(!$arr) $arr = [];
+	
+	
+	
+	
+	return view('ma2/exeset/import', $this->data);
 }
 
 } 

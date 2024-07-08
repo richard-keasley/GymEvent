@@ -194,31 +194,32 @@ $buttons = [
 	'class' => "btn btn-primary bi bi-arrow-down-square",
 	'title' => "Save all data to your computer so it can be used on another device",
 	'type' => "button",
-	'onclick' => "alert('not yet')",
+	'onclick' => "magexes.save()",
 ],
 [
 	'class' => "btn btn-primary bi bi-arrow-up-square",
 	'title' => "Upload data from your computer",
-	'type' => "button",
-	'onclick' => "alert('not yet')",
+	'href' => site_url("ma2/import"),
 ],
 [
 	'class' => "btn btn-danger bi bi-trash",
 	'title' => "Delete all data on this device",
 	'type' => "button",
-	'onclick' => "alert('not yet')",
+	'onclick' => "magexes.clear()",
 ],
 ];
-$help = [];
+$tbody = [];
 foreach($buttons as $button) {
-	$help[] = [
-		sprintf('<button %s></button> ', stringify_attributes($button)),
-		$button['title'] . '.'
+	$href = $button['href'] ?? false;
+	$format = $href ? '<a %s></a>' : '<button %s></button>' ;
+	$tbody[] = [
+		 sprintf($format, stringify_attributes($button)),
+		 $button['title'] . '.'
 	];
 }
 $table = \App\Views\Htm\Table::load('small');
 $table->autoHeading = false;
-echo $table->generate($help);
+echo $table->generate($tbody);
 ?>	
 </div>
 
@@ -230,17 +231,32 @@ echo $table->generate($help);
 </div>
 </div>
 
+<?php 
+$attrs = ['id' => "magexes-save"];
+$hidden = ['exesets' => ''];
+echo form_open('ma2/export', $attrs, $hidden);
+echo form_close();
+
+?>
+
 <script><?php
 ob_start();
 include __DIR__ . '/exesets.js';
-echo ob_get_clean();
-/*
-
-$minifier = new MatthiasMullie\Minify\JS();
-$minifier->add(ob_get_clean());
-echo $minifier->minify();
-*/
 ?>
+
+const magexes = {
+save: function() {
+	var data = exesets.storage.get();
+	$('#magexes-save [name=exesets]').val(JSON.stringify(data));
+	$('#magexes-save').submit();		
+},
+upload: function() {
+	alert('not yet done');
+},
+clear: function() {
+	alert('not yet done');	
+}
+}
 
 $(function() {
 
@@ -252,7 +268,19 @@ document.getElementById('delentry').addEventListener('show.bs.modal', function(e
 exesets.idx = localStorage.getItem('mag-exesets-idx') ?? 0;
 var exeset = exesets.storage.load();
 exesets.formdata.set(exeset);
+
+
 });
+
+<?php 
+echo ob_get_clean();
+/*
+
+$minifier = new MatthiasMullie\Minify\JS();
+$minifier->add(ob_get_clean());
+echo $minifier->minify();
+*/
+?>
 </script>
 
 <?php

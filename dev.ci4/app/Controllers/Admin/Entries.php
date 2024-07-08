@@ -116,7 +116,7 @@ public function clubs($event_id=0) {
 		
 	$download = $this->request->getPost('download');
 	if($download=='clubs') {
-		return $this->download(['export'=>$tbody], 'table', $download);
+		return $this->download($tbody, 'table', $download);
 	}
 		
 	$this->data['tbody'] = $tbody;
@@ -859,7 +859,7 @@ public function export($event_id=0, $download=0) {
 		# 'xml' => "code"
 	];
 	if(isset($this->data['filetypes'][$filetype])) {
-		return $this->download($this->data, $this->data['layout'], $source, $filetype);
+		return $this->download($this->data['export'], $this->data['layout'], $source, $filetype);
 	}
 	
 	// view
