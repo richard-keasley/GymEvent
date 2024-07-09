@@ -48,13 +48,9 @@ public function routine($layout=null) {
 	if(!in_array($layout, $layouts)) $layout = 'edit';
 	
 	$config = new \config\paths;
-	$css = $config->viewDirectory . "/ma2/exeset/{$layout}.css";
+	$css = "{$config->viewDirectory}/ma2/exeset/{$layout}.css";
 	$minifier = new \MatthiasMullie\Minify\CSS($css);
 	$this->data['head'] .= sprintf('<style>%s</style>', $minifier->minify());
-	
-	// uploaded data
-	# $uploaded = $this->request->getPost('exesets');	
-	# d($uploaded);
 	
 	return view("ma2/exeset/{$layout}", $this->data);
 
@@ -126,6 +122,7 @@ public function import() {
 		$json = $this->request->getPost('exesets');
 		$exesets = $this->import_json($json);
 		$this->data['messages'][] = "Import has not yet been done";
+		# return redirect()->to('ma2/routine');
 		d($exesets);
 	}
 		

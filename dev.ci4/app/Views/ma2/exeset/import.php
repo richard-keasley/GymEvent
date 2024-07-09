@@ -1,4 +1,5 @@
 <?php $this->extend('default');
+$import = []; 
 
 $this->section('content'); 
 
@@ -11,9 +12,17 @@ $cancel_button = anchor("ma2/routine", $label, $attrs);
  
 if($file && $exesets) { 
 
-$import = []; $list = [];
+$list = [];
 foreach($exesets as $exeset) {
-	$list[] = "{$exeset->name}, {$exeset->event}";
+	$row = [
+		'name' => $exeset->name ? 
+			$exeset->name : 
+			'<em class="text-body-secondary">[no name]</em>',
+		'event' => $exeset->event ? 
+			$exeset->event : 
+			'<em class="text-body-secondary">??</em>'
+	];
+	$list[] = implode(', ', $row);
 	$import[] = $exeset->export();
 }
 
@@ -37,9 +46,10 @@ foreach($list as $li) echo "<li>{$li}</li>";
 echo $cancel_button;
 
 $attrs = [
-	'type' => "submit",
+	'type' => "button",
 	'class' => "btn btn-primary",
-	'title' => "Use this data (replace existing data)"
+	'title' => "Use this data (replace existing data)",
+	'onclick' => "import_data()"
 ];
 $label = '<span class="bi bi-upload"></span>';
 printf('<button %s>%s</button>', stringify_attributes($attrs), $label);
@@ -55,23 +65,44 @@ $hidden = [];
 echo form_open_multipart('', $attrs, $hidden);
 ?>
 <fieldset><legend>Upload new routine set</legend>
+
 <div class="mb-3 row">
-
-<div class="col-auto"><?php 
-echo $cancel_button;
-?></div>
-
-<div class="col-auto">
-<input class="form-control" type="file" name="import">
-</div>
-
-<div class="col-auto">
-<button class="btn btn-primary" type="submit">upload</button>
-</div>
-
+	<div class="col-auto"><?php 
+	echo $cancel_button;
+	?></div>
+	
+	<div class="col-auto">
+	<input class="form-control" type="file" name="import">
+	</div>
+	
+	<div class="col-auto">
+	<button class="btn btn-primary" type="submit">upload</button>
+	</div>
 </div>
 </fieldset>
 <?php
 echo form_close();
 
 $this->endSection(); 
+
+$this->section('bottom'); ?>
+<script><?php
+ob_start();
+include __DIR__ . '/exesets.js';
+?>
+function import_data() {
+	exesets.storage.set(<?php echo json_encode($import);?>);
+	localStorage.setItem('mag-exesets-idx', 0);	
+	window.location.assign('<?php echo base_url('ma2/routine');?>');
+}
+<?php 
+echo ob_get_clean();
+/*
+
+$minifier = new MatthiasMullie\Minify\JS();
+$minifier->add(ob_get_clean());
+echo $minifier->minify();
+*/
+?>
+</script>
+<?php $this->endSection(); 

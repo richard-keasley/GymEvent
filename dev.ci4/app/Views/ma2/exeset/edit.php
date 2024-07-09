@@ -250,11 +250,10 @@ save: function() {
 	$('#magexes-save [name=exesets]').val(JSON.stringify(data));
 	$('#magexes-save').submit();		
 },
-upload: function() {
-	alert('not yet done');
-},
 clear: function() {
-	alert('not yet done');	
+	exesets.storage.set([]);
+	localStorage.setItem('mag-exesets-idx', 0);	
+	window.location.assign('<?php echo base_url('ma2/routine');?>');
 }
 }
 
