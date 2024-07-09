@@ -106,40 +106,50 @@ public function export() {
 }
 
 public function import() {
-	$error = '';
+	$this->data['exesets'] = [];
+	$this->data['file'] = null;
 	
 	$file = $this->request->getFile('import');
-	if(!$file) $error = 'No file selected';
-	if(!$error && !$file->isValid()) $error = $file->getErrorString();
-	if(!$error) {
-		$json = file_get_contents($file->getPathname());
-		$arr = json_decode($json);
-		if(!$arr) $error = "Invalid file contents";
-		d($json, $arr);
-	
-	}
-	
-	$this->data['exesets'] = [];
-	if(!$error) {
-		foreach($arr as $request) {
-			$exeset = new \App\Libraries\Ma2\Exeset($request);
-			$this->data['exesets'][] = $exeset->export();
+	if($file) {
+		$this->data['file'] = $file; 
+		if($file->isValid()) {
+			$json = file_get_contents($file->getPathname());		
+			$this->data['exesets'] = $this->import_json($json);
+		}
+		else {
+			$this->data['messages'][] = "Upload: {$file->getErrorString()}";
 		}
 	}
-	d($error);
 	
-	
-	# d($file);
-		#	d($file->getfilename());
-		#	d($file->getRealPath());
-# d($this->request->getfiles());
-	
-	if(!$arr) $arr = [];
-	
-	
-	
-	
+	$import = $this->request->getPost('import');
+	if($import) {
+		$json = $this->request->getPost('exesets');
+		$exesets = $this->import_json($json);
+		$this->data['messages'][] = "Import has not yet been done";
+		d($exesets);
+	}
+		
 	return view('ma2/exeset/import', $this->data);
+}
+
+private function import_json($json) {
+	$exesets = [];
+	try {
+		# d($json);
+		$flags = JSON_THROW_ON_ERROR;
+		$arr = json_decode($json, true, 512, $flags);
+		# d($arr);
+		foreach($arr as $request) {
+			$exesets[] = new \App\Libraries\Ma2\Exeset($request);
+		}			
+	}
+	catch(\JsonException $ex) {
+		$this->data['messages'][] = "{$ex->getMessage()} in uploaded file";
+	}
+	catch(\Exception $ex) {
+		$this->data['messages'][] = $ex->getMessage();
+	}
+	return $exesets;
 }
 
 } 

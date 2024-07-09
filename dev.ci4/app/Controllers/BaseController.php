@@ -116,6 +116,10 @@ protected function download($data, $layout='table', $filetitle='download', $file
 		$response = view("export/{$layout}", $export);
 		// remove DEBUG comments from view
 		$response = preg_replace('#<!--.*-->[\r\n]#', '', $response);
+		/* https://stackoverflow.com/questions/33592518/how-can-i-setting-utf-8-to-csv-file-in-php-codeigniter
+		prepend BOM to UTF8 file downloads
+		*/
+		$response = "\xEF\xBB\xBF" . $response; 
 	}
 	
 	if(0) {
@@ -125,12 +129,7 @@ protected function download($data, $layout='table', $filetitle='download', $file
 		}
 		return $response;
 	}
-	
-	/* https://stackoverflow.com/questions/33592518/how-can-i-setting-utf-8-to-csv-file-in-php-codeigniter
-	prepend this to UTF8 file downloads
-	*/
-	$response = "\xEF\xBB\xBF" . $response; 
-	
+		
 	// send download
 	$filename = "{$filetitle}.{$filetype}";
 	return $this->response->download($filename, $response);
