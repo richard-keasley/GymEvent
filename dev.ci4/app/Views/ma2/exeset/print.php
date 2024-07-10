@@ -14,7 +14,7 @@ if(!empty($head)) echo $head;
 </head>
 
 <body class="container-fluid">
-<header>
+<header class="d-print-none">
 <?php 
 $attrs = [
 	'class' => "btn btn-primary bi bi-pencil-square",
@@ -26,7 +26,7 @@ include __DIR__ . '/idxsel.php';
 ?>
 </header>
 
-<main id="printdata"></main>
+<div id="printdata"></div>
 
 <script><?php
 ob_start();

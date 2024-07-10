@@ -1,42 +1,54 @@
-pre {
+#printdata pre {
 	font-family: inherit;
 	font-size: inherit;
 	margin: 0;
 }
 
-main header {
+#printdata .text-muted {
+	font-size: 90%;
+}
+
+#printdata header {
 	margin: 0 0 0.3em 0;
 	border-bottom: 1px solid #b7561b;
 	padding: 0.3em 0;
 }
-main header ul {
+#printdata header ul {
 	white-space: nowrap;
 }
-main header ul strong {
+#printdata header ul strong {
 	display: inline-block;
 	min-width: 6em;
 	text-align: right;
 	margin-right: .3em;
 }
-main main section {
+
+#printdata section {
 	border-bottom: 1px solid #b7561b;
 	padding: .2em 0;
 	margin: 0;
 	page-break-inside: avoid;
 }
 
-main table {
-	border-collapse: collapse;
+#printdata .table {
+	margin: 0;
 }
-main tfoot td {
+#printdata .table.table-sm td {
+	padding: 0em 0.2em;
+}
+#printdata .dscore tfoot td {
 	font-weight: bold;
 	border-top: 1px solid #ddd;
 }
-main thead th {
+#printdata .dscore thead th {
 	text-align: left;
 }
-main table.table-sm td {
-	padding: 0em 0.2em;
+#printdata .dscore td {
+	border: 0;
+}
+#printdata .dscore .list-unstyled {
+	margin:0; 
+	padding: 0;
 }
 
 .routine {
@@ -45,17 +57,25 @@ main table.table-sm td {
 .routine table {
 	width: 100%;
 }
-.routine td {
-	border-top: 1px solid #eee;
-	border-bottom: 1px solid #eee;
+.routine tr td {
 	padding: 0 .3em;
 	white-space: nowrap;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 }
-.routine .el {
+.routine tr:first-child td {
+	border-top: 0;
+}
+.routine tr:last-child td {
+	border-bottom: 0;
+}
+
+
+.routine .elnum {
 	width: 1em;
 	color: #b7561b;
 }
-.routine .el0 {
+.routine .elval {
 	width: 1.5em;
 }
 
@@ -63,8 +83,9 @@ main table.table-sm td {
 @page { size: A4 portrait; }
 body.container-fluid { 
 	margin: 0; 
-	font-size: 10.5pt;
 	padding: 0;
+	line-height: 1.25;
+	font-size: 10.5pt;
 }
 #toolbarContainer {display:none;}
 }

@@ -53,40 +53,6 @@ public function routine($layout=null) {
 	$this->data['head'] .= sprintf('<style>%s</style>', $minifier->minify());
 	
 	return view("ma2/exeset/{$layout}", $this->data);
-
-
-
-	// delete from here down
-
-
-	
-	$data = ['rulesetname'=>$rulesetname];
-	$this->data['exeset'] = new \App\Libraries\Mag\Exeset($data);
-	
-	// probably no post here 
-	$getPost = $this->request->getPost();		
-	// $this->data['exeset'] = new \App\Libraries\Mag\Exeset($getPost);
-	
-
-	
-	$cmd = $this->request->getPost('cmd');		
-	switch($cmd) {
-		case 'print':
-		case 'store':
-		$getPost['cmd'] = 'edit';
-		$this->data['post'] = $getPost;
-		if($cmd=='print') return view('ma2/exeset/print', $this->data);
-		// store
-		$filename = preg_replace('#[^a-z_ ]#i', '', $this->data['exeset']->name);
-		$filename = str_replace(' ', '_', $filename);
-		if(!$filename) $filename = 'routine';
-		$this->response->setHeader('Content-Disposition', "attachment; filename={$filename}.html");
-		return view('ma2/exeset/print', $this->data);
-		
-		default:
-		$this->data['head'] .= '<link rel="stylesheet" type="text/css" href="/app/mag/exeset-edit.css">';
-		return view('ma2/exeset/edit', $this->data);
-	}
 }
 
 public function export() {
@@ -117,14 +83,10 @@ public function import() {
 		}
 	}
 	
-	$import = $this->request->getPost('import');
-	if($import) {
-		$json = $this->request->getPost('exesets');
-		$exesets = $this->import_json($json);
-		$this->data['messages'][] = "Import has not yet been done";
-		# return redirect()->to('ma2/routine');
-		d($exesets);
-	}
+	$this->data['title'] = 'Routine upload';
+	$this->data['heading'] = 'Upload new MAG routines';
+	$this->data['breadcrumbs'][] = ['ma2/routine', "Routine sheet"];
+	$this->data['breadcrumbs'][] = ['ma2/import', $this->data['title']];
 		
 	return view('ma2/exeset/import', $this->data);
 }
@@ -141,7 +103,7 @@ private function import_json($json) {
 		}			
 	}
 	catch(\JsonException $ex) {
-		$this->data['messages'][] = "{$ex->getMessage()} in uploaded file";
+		$this->data['messages'][] = "{$ex->getMessage()}. Check the file is valid JSON.";
 	}
 	catch(\Exception $ex) {
 		$this->data['messages'][] = $ex->getMessage();

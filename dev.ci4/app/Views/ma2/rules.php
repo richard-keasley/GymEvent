@@ -95,13 +95,10 @@ foreach($ruleset->routine['groups'] as $group_num=>$group_val) {
 $this->endSection(); 
 
 $this->section('top');
-
-$attr = ['class' => "toolbar"];
-$hidden = ['rulesetname' => $rulesetname];
-echo form_open('ma2/routine', $attr, $hidden);
-echo \App\Libraries\View::back_link("ma2");
 ?>
-<button type="submit" title="create routine" class="btn btn-outline-primary"><i class="bi-plus-circle-fill text-success"></i></button>
+<div class="toolbar">
+<?php echo \App\Libraries\View::back_link("ma2"); ?>
+<a href="/ma2/routine" title="create routines" class="btn btn-outline-primary"><i class="bi-plus-circle-fill text-success"></i></a>
 <?php
 $names = array_keys($index);
 $key = array_search($rulesetname, $names);
@@ -115,8 +112,9 @@ if($key!==false) {
 		printf('<a class="btn btn-outline-dark bi-chevron-right" href="/ma2/rules/%s" title="%s"></a>', $name, $index[$name]);
 	}
 }
-echo form_close();
-$this->endSection(); 
+?>
+</div>
+<?php $this->endSection(); 
 
 $this->section('bottom'); ?>
 <p>Please tell Richard Keasley if you spot any errors.</p>

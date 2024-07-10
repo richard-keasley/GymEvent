@@ -26,9 +26,6 @@ const idxsel = {
 	reload: function(idx='#') {
 		if(idx==='#') idx = parseInt(idxsel.selector.val());
 		localStorage.setItem('mag-exesets-idx', idx);
-//		exeset = exesets.storage.load(idx);
-	//	exesets.formdata.set(exeset);
-
 		window.location.reload();
 	}
 }

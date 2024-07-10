@@ -11,34 +11,32 @@ public function index() {
 }
 
 public function exeval() {
+	/*
+	this should be post, 
+	but post requests get updated to get requests (and lose the payload)
+	*/
 	$request = $this->request->getGet();
-	
-	$exedata = []; // exercise set from request
-		
 	$request['saved'] = date('Y-m-d H:i:s');
-	$exedata['exeset'] = new \App\Libraries\Ma2\Exeset($request);
+	
+	$exeset = new \App\Libraries\Ma2\Exeset($request);
 
-	// response (exeval for each exercise)
 	$response = [
 		# 'server' => $_SERVER,
 		# 'request' => $_REQUEST,
-		'data' => $exedata['exeset']->data,	
+		'data' => $exeset->export(),
 		'html' => []
 	];
-	$response['data']['ruleset'] = [
-		'name' => $exedata['exeset']->data['rulesetname'],
-		'title' => $exedata['exeset']->ruleset->title,
-		'description' => $exedata['exeset']->ruleset->description,
-		'version' => $exedata['exeset']->ruleset->version
+	
+	// add in HTML
+	$viewdata = [
+		'exeset' => $exeset,
+		'exekey' => ''
 	];
-	$dt = new \datetime($response['data']['ruleset']['version']);
-	$response['data']['ruleset']['version'] = $dt->format('d F Y');
-			
-	foreach($exedata['exeset']->exercises as $exekey=>$exercise) {
-		$exedata['exekey'] = $exekey;
-		$response['html'][$exekey] = \view('ma2/exeset/exeval', $exedata);
-		$response['data'][$exekey] = $exercise;
+	foreach($exeset->exercises as $exekey=>$exercise) {
+		$viewdata['exekey'] = $exekey;
+		$response['html'][$exekey] = \view('ma2/exeset/exeval', $viewdata);
 	}
+	
 	return $this->respond($response);
 }
 

@@ -84,6 +84,7 @@ formdata: {
 		})
 		.fail(function(jqXHR) {
 			exesets.exevals('server error');
+			console.log(jqXHR);
 		});
 	},
 		

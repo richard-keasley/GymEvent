@@ -26,7 +26,7 @@ echo implode('<br>', $lines);
 
 <main><?php  
 foreach($exeset->exercises as $exekey=>$exercise) { 
-	$exe_rules = $exeset->ruleset->exes[$exekey] ?? [] ;
+	$exe_rules = $exeset->ruleset->exes[$exekey];
 	?>
 	<section class="row">
 	
@@ -47,28 +47,30 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	}
 	
 	$tr = [];
-	foreach($exercise['elements'] as $elnum=>$element) {
+	foreach($exercise['elements'] as $elkey=>$element) {
 		foreach($element as $key=>$val) $tr[$key] = $val ? $val : '' ;
-		?>
-		<tr>
-		<?php 
-		printf('<td class="el">%s</td>', $elnum==$dismount_num ? 'D' : $elnum + 1);
-		printf('<td class="el0">%s %s</td>', $tr[0], $tr[1]);
-		printf('<td>%s</td>', $tr[2]);
-		?>
-		</tr>
-		<?php 
+		$row = [
+			'elnum' => $elkey==$dismount_num ? 'D' : $elkey + 1,
+			'elval' => "{$tr[0]} {$tr[1]}",
+			'eldes' => $tr[2]
+		];
+		
+		echo '<tr>';
+		foreach($row as $class=>$td) {
+			printf('<td class="%s">%s</td>', $class, $td);
+		}
+		echo '</tr>';
 	}
 	?>
 	</tbody>
 	</table>
 	</div>
 	
-	<div class="col-6 col-sm-3">
+	<div class="dscore col-6 col-sm-3">
 	<div class="d-flex-column">
 	<?php 
 	$this->setData(['exekey' => $exekey]);
-	echo $this->include('ma2/exeset/exeval');	
+	echo $this->include('ma2/exeset/exeval');
 	?>
 	<ul class="list-unstyled">
 	<?php 

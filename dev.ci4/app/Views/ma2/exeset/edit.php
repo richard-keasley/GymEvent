@@ -1,7 +1,7 @@
 <?php $this->extend('default');
 
 $buttons = [
-	[
+	'update' => [
 		'class' => "btn btn-primary bi bi-check-square",
 		'title' => "Re-check all start values after edits",
 		'type' => "button",
@@ -12,53 +12,64 @@ $buttons = [
 		'title' => "Printer friendly version of this exercise set",
 		'href' => "/ma2/routine/print",
 	],
-	[
+	'clone' => [
 		'class' => "btn btn-primary bi bi-plus-square",
 		'title' => "Make a copy of this exercise set to use on another gymnast",
 		'type' => "button",
 		'onclick' => "exesets.clone()"
 	],
-	[
+	'data' => [
 		'class' => "btn btn-primary bi bi-file-code",
 		'title' => "Data utilities",
 		'type' => "button",
-		'data-bs-toggle' => "modal",
-		'data-bs-target' => "#utils"
+		'onclick' => "magexes.dlg_data()"
 	],
-	[
+	'delete' => [
 		'class' => "btn btn-danger bi-trash",
 		'title' => "Delete this gymnast",
 		'type' => "button",
-		'data-bs-toggle' => "modal",
-		'data-bs-target' => "#delentry"
+		'onclick' => "magexes.dlg_delete()"
 	],
-	[
+	'export' => [
+		'class' => "btn btn-primary bi bi-arrow-down-square",
+		'title' => "Save all data to your computer so it can be used on another device",
+		'type' => "button",
+		'onclick' => "magexes.save()",
+	],
+	'import' => [
+		'class' => "btn btn-primary bi bi-arrow-up-square",
+		'title' => "Upload data from your computer",
+		'href' => site_url("ma2/import"),
+	],
+	'clear' => [
+		'class' => "btn btn-danger bi bi-trash",
+		'title' => "Delete all data on this device",
+		'type' => "button",
+		'data-bs-toggle' => "modal",
+		'data-bs-target' => "#dlg_clear"
+	],
+	'help' => [
 		'class' => "btn btn-info bi-question-circle",
 		'title' => "Button help",
 		'type' => "button",
 		'data-bs-toggle' => "modal",
-		'data-bs-target' => "#dlg-help"
+		'data-bs-target' => "#dlg_help"
 	]
 ];
-
-$ignore = ['print'];
-$help = []; $toolbar = [];
 foreach($buttons as $key=>$button) {
-	$help[] = [
-		sprintf('<span class="%s"></span>', $button['class']), 
-		$button['title']
-	];
 	$href = $button['href'] ?? false;
 	$format = $href ? '<a %s></a>' : '<button %s></button>' ;
-	$buttons[$key] = sprintf($format, stringify_attributes($button));
-	if(!in_array($key, $ignore)) $toolbar[] = $buttons[$key];
+	$buttons[$key] = [
+		'button' => sprintf($format, stringify_attributes($button)),
+		'title' => $button['title'] ?? $key
+	];
 }
  
 $this->section('content'); 
 $attrs = ['id'=>"editform"];
 echo form_open('', $attrs);
 
-$idxsel = $buttons['print'];
+$idxsel = $buttons['print']['button'];
 include __DIR__ . '/idxsel.php';
 ?>
 
@@ -116,7 +127,8 @@ function rulsetname_change(el) {
 <section id="edit-template"></section>
 
 <div class="toolbar"><?php
-echo implode(' ', $toolbar);
+$keys = ['update', 'clone', 'data', 'delete', 'help'];
+foreach($keys as $key) echo $buttons[$key]['button'];
 ?></div>
 
 <?php 
@@ -134,7 +146,7 @@ foreach(\App\Libraries\Mag\Rules::index as $key=>$label) {
 
 ?>
 
-<div class="modal" id="dlg-help" tabindex="-1">
+<div class="modal" id="dlg_help" tabindex="-1">
 <div class="modal-dialog">
 <div class="modal-content">
 <div class="modal-header">
@@ -144,9 +156,14 @@ foreach(\App\Libraries\Mag\Rules::index as $key=>$label) {
 
 <div class="modal-body">
 <?php 
+$keys = ['print', 'update', 'clone', 'delete', 'data'];
+$tbody = [];
+foreach($keys as $key) {
+	$tbody[] = $buttons[$key];
+}
 $table = \App\Views\Htm\Table::load('small');
 $table->autoHeading = false;
-echo $table->generate($help);
+echo $table->generate($tbody);
 ?>
 
 <h6>Rule set</h6>
@@ -160,7 +177,7 @@ echo $table->generate($help);
 </div>
 </div>
 
-<div class="modal" id="delentry" tabindex="-1">
+<div class="modal" id="dlg_delete" tabindex="-1">
 <div class="modal-dialog">
 <div class="modal-content">
 <div class="modal-header">
@@ -168,7 +185,7 @@ echo $table->generate($help);
 	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div class="modal-body">
-	<p>Are you sure you want to delete <span class="entname"></span>?</p>
+	<p>Are you sure you want to delete '<span class="entname"></span>'?</p>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -178,44 +195,39 @@ echo $table->generate($help);
 </div>
 </div>
 
-<div class="modal" id="utils" tabindex="-1">
+<div class="modal" id="dlg_clear" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+	<h5 class="modal-title">Delete all data</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+	<p>Are you sure you want to delete <strong>all data</strong> held on this device?</p>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="magexes.clear()">Delete</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="dlg_data" tabindex="-1">
 <div class="modal-dialog">
 <div class="modal-content">
 
 <div class="modal-header">
-<h5 class="modal-title">Utilities</h5>
+<h5 class="modal-title">Manage data</h5>
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
 <div class="modal-body">
 <?php
-$buttons = [
-[
-	'class' => "btn btn-primary bi bi-arrow-down-square",
-	'title' => "Save all data to your computer so it can be used on another device",
-	'type' => "button",
-	'onclick' => "magexes.save()",
-],
-[
-	'class' => "btn btn-primary bi bi-arrow-up-square",
-	'title' => "Upload data from your computer",
-	'href' => site_url("ma2/import"),
-],
-[
-	'class' => "btn btn-danger bi bi-trash",
-	'title' => "Delete all data on this device",
-	'type' => "button",
-	'onclick' => "magexes.clear()",
-],
-];
+$keys = ['update', 'export', 'import', 'clear'];
 $tbody = [];
-foreach($buttons as $button) {
-	$href = $button['href'] ?? false;
-	$format = $href ? '<a %s></a>' : '<button %s></button>' ;
-	$tbody[] = [
-		 sprintf($format, stringify_attributes($button)),
-		 $button['title'] . '.'
-	];
+foreach($keys as $key) {
+	$tbody[] = $buttons[$key];
 }
 $table = \App\Views\Htm\Table::load('small');
 $table->autoHeading = false;
@@ -254,20 +266,26 @@ clear: function() {
 	exesets.storage.set([]);
 	localStorage.setItem('mag-exesets-idx', 0);	
 	window.location.assign('<?php echo base_url('ma2/routine');?>');
+},
+dlg_data: function() {
+	exesets.update();
+	var modal = new bootstrap.Modal('#dlg_data');
+	modal.show();
+},
+dlg_delete: function() {
+	var modal = new bootstrap.Modal('#dlg_delete');
+	var entname = $('#editform [name=name]').val();
+	$('#dlg_delete .entname').html(entname);
+	modal.show();
 }
+
 }
 
 $(function() {
 
-document.getElementById('delentry').addEventListener('show.bs.modal', function(event) {
-	let entname = $('#editform [name=name]').val();
-	$('#delentry .entname').html(entname);
-});
-
 exesets.idx = localStorage.getItem('mag-exesets-idx') ?? 0;
 var exeset = exesets.storage.load();
 exesets.formdata.set(exeset);
-
 
 });
 

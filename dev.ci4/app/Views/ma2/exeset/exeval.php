@@ -145,9 +145,4 @@ foreach($exercise['neutrals'] as $nkey=>$nval) {
 		$nd += $neutral['deduction'];
 	}
 }
-if($nd) printf('<p><strong>ND:</strong> %.1f</p>', $nd);
-
-
-# $start_value =  + 10;
-	
-	
+if($nd) printf('<p class="my-0"><strong>ND:</strong> %.1f</p>', $nd);
