@@ -22,19 +22,22 @@ $buttons = [
 		'class' => "btn btn-primary bi bi-file-code",
 		'title' => "Data utilities",
 		'type' => "button",
-		'onclick' => "magexes.dlg_data()"
+		'onclick' => "magexes.dlg_data()",
+		# 'data-bs-toggle' => "modal"
 	],
 	'delete' => [
 		'class' => "btn btn-danger bi-trash",
 		'title' => "Delete this gymnast",
 		'type' => "button",
-		'onclick' => "magexes.dlg_delete()"
+		'onclick' => "magexes.dlg_delete()",
+		'data-bs-toggle' => "modal"
 	],
 	'export' => [
 		'class' => "btn btn-primary bi bi-arrow-down-square",
 		'title' => "Save all data to your computer so it can be used on another device",
 		'type' => "button",
 		'onclick' => "magexes.save()",
+		'data-bs-toggle' => "modal"
 	],
 	'import' => [
 		'class' => "btn btn-primary bi bi-arrow-up-square",
@@ -224,7 +227,7 @@ echo $table->generate($tbody);
 
 <div class="modal-body">
 <?php
-$keys = ['update', 'export', 'import', 'clear'];
+$keys = ['export', 'import', 'clear'];
 $tbody = [];
 foreach($keys as $key) {
 	$tbody[] = $buttons[$key];

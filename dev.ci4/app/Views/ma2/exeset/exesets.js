@@ -60,11 +60,11 @@ formdata: {
 	set: function(exeset) {
 		console.log('clean exeset via API');
 
-		// exeset[exesets.csrf.token] = exesets.csrf.hash;
+		exeset[exesets.csrf.token] = exesets.csrf.hash;
 		// console.log(exeset);
 		
-		var api = '<?php echo site_url("/api/ma2/exeval");?>/';
-		$.get(api, exeset)
+		var api = '<?php echo site_url("/api/ma2/exeval");?>';
+		$.post(api, exeset)
 		.done(function(response) {
 			// console.log(response);
 			try {
@@ -83,8 +83,9 @@ formdata: {
 			}
 		})
 		.fail(function(jqXHR) {
-			exesets.exevals('server error');
-			console.log(jqXHR);
+			var message = jqXHR['message'] ?? 'server error' ;
+			exesets.exevals(message);
+			console.error(message);
 		});
 	},
 		
@@ -130,11 +131,13 @@ formdata: {
 printdata: {
 	set: function(exeset) {
 		console.log('clean exeset via API');
+		exeset[exesets.csrf.token] = exesets.csrf.hash;
 		// console.log(exeset);
 		
 		var html = '';
-		var api = '<?php echo site_url("/api/ma2/print");?>/';
-		$.get(api, exeset, function(response) {
+		var api = '<?php echo site_url("/api/ma2/print");?>';
+		$.post(api, exeset)
+		.done(function(response) {
 			// console.log(response);
 			try {
 				exesets.printdata.msg(response, 1);

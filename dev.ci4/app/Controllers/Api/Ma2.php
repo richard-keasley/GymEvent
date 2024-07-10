@@ -11,11 +11,7 @@ public function index() {
 }
 
 public function exeval() {
-	/*
-	this should be post, 
-	but post requests get updated to get requests (and lose the payload)
-	*/
-	$request = $this->request->getGet();
+	$request = $this->request->getPost();
 	$request['saved'] = date('Y-m-d H:i:s');
 	
 	$exeset = new \App\Libraries\Ma2\Exeset($request);
@@ -41,7 +37,7 @@ public function exeval() {
 }
 
 public function print() {
-	$request = $this->request->getGet();
+	$request = $this->request->getPost();
 	$data = [
 		'exeset' => new \App\Libraries\Ma2\Exeset($request)
 	];
