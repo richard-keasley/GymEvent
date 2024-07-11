@@ -22,15 +22,13 @@ $buttons = [
 		'class' => "btn btn-primary bi bi-file-code",
 		'title' => "Data utilities",
 		'type' => "button",
-		'onclick' => "magexes.dlg_data()",
-		# 'data-bs-toggle' => "modal"
+		'onclick' => "magexes.show('data')",
 	],
 	'delete' => [
 		'class' => "btn btn-danger bi-trash",
 		'title' => "Delete this gymnast",
 		'type' => "button",
-		'onclick' => "magexes.dlg_delete()",
-		'data-bs-toggle' => "modal"
+		'onclick' => "magexes.show('delete')",
 	],
 	'export' => [
 		'class' => "btn btn-primary bi bi-arrow-down-square",
@@ -48,15 +46,13 @@ $buttons = [
 		'class' => "btn btn-danger bi bi-trash",
 		'title' => "Delete all data on this device",
 		'type' => "button",
-		'data-bs-toggle' => "modal",
-		'data-bs-target' => "#dlg_clear"
+		'onclick' => "magexes.show('clear')"
 	],
 	'help' => [
 		'class' => "btn btn-info bi-question-circle",
 		'title' => "Button help",
 		'type' => "button",
-		'data-bs-toggle' => "modal",
-		'data-bs-target' => "#dlg_help"
+		'onclick' => "magexes.show('help')"
 	]
 ];
 foreach($buttons as $key=>$button) {
@@ -247,7 +243,7 @@ echo $table->generate($tbody);
 </div>
 
 <?php 
-$attrs = ['id' => "magexes-save"];
+$attrs = ['id' => "magexes-save", 'class' => "d-none"];
 $hidden = ['exesets' => ''];
 echo form_open('ma2/export', $attrs, $hidden);
 echo form_close();
@@ -260,6 +256,42 @@ include __DIR__ . '/exesets.js';
 ?>
 
 const magexes = {
+
+init: function() {
+	// get all modals on this page
+	magexes.modals = {};
+	let id = null, modalname = null;
+	$('.modal').each(function(index) {
+		modalname = this.id.substring(4);
+		magexes.modals[modalname] = new bootstrap.Modal('#'+this.id);
+	});
+},
+
+modals: null,
+show: function(showname) {
+	// prepare for modal display
+	switch(showname) {
+		case 'data':
+		exesets.update();
+		break;
+		
+		case 'delete':
+		var entname = $('#editform [name=name]').val();
+		$('#dlg_delete .entname').html(entname);
+	}
+	
+	// hide any other modals 
+	for(var modalname in magexes.modals) {
+		var modal = magexes.modals[modalname];
+		if(modalname==showname) {
+			if(!modal._isShown) modal.show();
+		}
+		else {
+			if(modal._isShown) modal.hide();
+		}
+	}
+},
+	
 save: function() {
 	var data = exesets.storage.get();
 	$('#magexes-save [name=exesets]').val(JSON.stringify(data));
@@ -269,23 +301,13 @@ clear: function() {
 	exesets.storage.set([]);
 	localStorage.setItem('mag-exesets-idx', 0);	
 	window.location.assign('<?php echo base_url('ma2/routine');?>');
-},
-dlg_data: function() {
-	exesets.update();
-	var modal = new bootstrap.Modal('#dlg_data');
-	modal.show();
-},
-dlg_delete: function() {
-	var modal = new bootstrap.Modal('#dlg_delete');
-	var entname = $('#editform [name=name]').val();
-	$('#dlg_delete .entname').html(entname);
-	modal.show();
 }
 
 }
 
 $(function() {
 
+magexes.init();
 exesets.idx = localStorage.getItem('mag-exesets-idx') ?? 0;
 var exeset = exesets.storage.load();
 exesets.formdata.set(exeset);

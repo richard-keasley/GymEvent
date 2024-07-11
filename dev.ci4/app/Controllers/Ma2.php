@@ -82,7 +82,7 @@ public function import() {
 			$this->data['messages'][] = "Upload: {$file->getErrorString()}";
 		}
 	}
-	
+		
 	$this->data['title'] = 'Routine upload';
 	$this->data['heading'] = 'Upload new MAG routines';
 	$this->data['breadcrumbs'][] = ['ma2/routine', "Routine sheet"];
