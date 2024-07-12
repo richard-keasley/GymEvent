@@ -7,6 +7,7 @@ public function __construct() {
 	$this->data['breadcrumbs'][] = ['ma2', "Men's Artistic"];
 	$this->data['title'] = "Men's Artistic";
 	$this->data['heading'] = "Men's Artistic";
+	$this->data['filename'] = "mag_routines";
 	$this->data['head'] = '
 <link rel="manifest" href="/app/mag/webmanifest.json">
 <meta name="apple-mobile-web-app-title" content="MAG routines">';
@@ -40,9 +41,26 @@ public function routineSW() {
 }
 
 public function routine($layout=null) {
-	$this->data['title'] = 'MAG routines';
-	$this->data['heading'] = 'MAG routine sheets';
-	$this->data['breadcrumbs'][] = ['ma2/routine', "Routine sheet"];
+	
+	$this->data['upload'] = null;
+	$file = $this->request->getFile('upload');
+	if($file) {
+		if($file->isValid()) {
+			$json = file_get_contents($file->getPathname());
+			$upload = \App\Libraries\Ma2\Exeset::read_json($json);
+			if($upload['error']) {
+				$this->data['messages'][] = $upload['error'];
+			}
+			else {
+				$this->data['upload'] = $upload;
+				$this->data['upload']['file'] = $file;
+			}
+			
+		}
+		else {
+			$this->data['messages'][] = "Upload: {$file->getErrorString()}";
+		}
+	}
 	
 	$layouts = ['edit', 'print'];
 	if(!in_array($layout, $layouts)) $layout = 'edit';
@@ -52,6 +70,10 @@ public function routine($layout=null) {
 	$minifier = new \MatthiasMullie\Minify\CSS($css);
 	$this->data['head'] .= sprintf('<style>%s</style>', $minifier->minify());
 	
+	$this->data['title'] = 'MAG routines';
+	$this->data['heading'] = 'MAG routine sheets';
+	$this->data['breadcrumbs'][] = ['ma2/routine', "Routine sheet"];
+		
 	return view("ma2/exeset/{$layout}", $this->data);
 }
 
@@ -64,51 +86,7 @@ public function export() {
 		$exeset = new \App\Libraries\Ma2\Exeset($request);
 		$export[] = $exeset->export();
 	}
-	return $this->download($export, null, 'mag_routines', 'json');
+	return $this->download($export, null, $this->data['filename'], 'json');
 }
 
-public function import() {
-	$this->data['exesets'] = [];
-	$this->data['file'] = null;
-	
-	$file = $this->request->getFile('import');
-	if($file) {
-		$this->data['file'] = $file; 
-		if($file->isValid()) {
-			$json = file_get_contents($file->getPathname());		
-			$this->data['exesets'] = $this->import_json($json);
-		}
-		else {
-			$this->data['messages'][] = "Upload: {$file->getErrorString()}";
-		}
-	}
-		
-	$this->data['title'] = 'Routine upload';
-	$this->data['heading'] = 'Upload new MAG routines';
-	$this->data['breadcrumbs'][] = ['ma2/routine', "Routine sheet"];
-	$this->data['breadcrumbs'][] = ['ma2/import', $this->data['title']];
-		
-	return view('ma2/exeset/import', $this->data);
 }
-
-private function import_json($json) {
-	$exesets = [];
-	try {
-		# d($json);
-		$flags = JSON_THROW_ON_ERROR;
-		$arr = json_decode($json, true, 512, $flags);
-		# d($arr);
-		foreach($arr as $request) {
-			$exesets[] = new \App\Libraries\Ma2\Exeset($request);
-		}			
-	}
-	catch(\JsonException $ex) {
-		$this->data['messages'][] = "{$ex->getMessage()}. Check the file is valid JSON.";
-	}
-	catch(\Exception $ex) {
-		$this->data['messages'][] = $ex->getMessage();
-	}
-	return $exesets;
-}
-
-} 

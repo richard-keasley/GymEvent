@@ -18,6 +18,30 @@ static function sanitize($arr) {
 	return $arr;
 }
 
+static function read_json($json) {
+	// returns an array of exercise sets
+	$retval = [
+		'error' => null,
+		'exesets' => []
+	];
+	try {
+		# d($json);
+		$flags = JSON_THROW_ON_ERROR;
+		$arr = json_decode($json, true, 512, $flags);
+		# d($arr);
+		foreach($arr as $request) {
+			$retval['exesets'][] = new self($request);
+		}			
+	}
+	catch(\JsonException $ex) {
+		$retval['error'] = "{$ex->getMessage()}. Check the file is valid JSON.";
+	}
+	catch(\Exception $ex) {
+		$retval['error'] = $ex->getMessage();
+	}
+	return $retval;
+}
+
 public $data = [];
 public $exercises = [];
 public $ruleset = null;

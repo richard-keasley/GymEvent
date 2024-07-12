@@ -33,8 +33,7 @@ formdata: {
 		
 		if(!fields) {
 			fields = exesets.tmpl.fields;
-			console.log('get form data');
-			// console.log(fields);
+			exesets.log('get form data');
 		}
 		
 		$.each(fields, function(key, value) {
@@ -58,15 +57,13 @@ formdata: {
 	},
 	
 	set: function(exeset) {
-		console.log('clean exeset via API');
+		exesets.log('clean exeset via API');
 
 		exeset[exesets.csrf.token] = exesets.csrf.hash;
-		// console.log(exeset);
 		
 		var api = '<?php echo site_url("/api/ma2/exeval");?>';
 		$.post(api, exeset)
 		.done(function(response) {
-			// console.log(response);
 			try {
 				// display cleaned data
 				exeset = response['data'] ?? false;
@@ -85,27 +82,23 @@ formdata: {
 		.fail(function(jqXHR) {
 			var message = jqXHR['message'] ?? 'server error' ;
 			exesets.exevals(message);
-			console.error(message);
+			console.error(jqXHR);
 		});
 	},
 		
 	htm: function(data, fields=null) {
 		if(!fields) {
-			console.log('write form html');
+			exesets.log('write form html');
 			var ruleset = data['ruleset'] ?? null;
-			// console.log(ruleset);
-	
 			exesets.setTemplate(ruleset); // load new template
 			
 			fields = exesets.tmpl.fields;
 			exesets.storage.save(data);
 			idxsel.init();
-			// console.log(fields);
 		}
 		var $el, value;
 		$.each(fields, function(key, fldname) {
 			if(typeof fldname=='object') {
-				// console.log('sub-process '+ key);
 				value = data[key] ?? {} ;
 				exesets.formdata.htm(value, fldname);
 			}
@@ -114,8 +107,6 @@ formdata: {
 				$el = $('[name='+fldname+']');
 				switch($el.attr('type')) {
 					case 'checkbox':
-					// console.log(key + ':[' + fldname+']');
-					// console.log(value);
 					$el.attr('checked', value ? true : false );
 					break;
 					
@@ -130,15 +121,13 @@ formdata: {
 
 printdata: {
 	set: function(exeset) {
-		console.log('clean exeset via API');
+		exesets.log('clean exeset via API');
 		exeset[exesets.csrf.token] = exesets.csrf.hash;
-		// console.log(exeset);
 		
 		var html = '';
 		var api = '<?php echo site_url("/api/ma2/print");?>';
 		$.post(api, exeset)
 		.done(function(response) {
-			// console.log(response);
 			try {
 				exesets.printdata.msg(response, 1);
 			}
@@ -172,7 +161,7 @@ setTemplate: function(ruleset) {
 	if(current) current = current.name ?? false;
 	if(current===ruleset.name) return;
 	
-	console.log('load template ' + ruleset.name);
+	exesets.log('load template ' + ruleset.name);
 	
 	var htm = [], val;
 	for(var property in ruleset) {
@@ -238,34 +227,35 @@ storage: {
 		if(idx==='#') idx = exesets.idx;
 		var data = exesets.storage.get();
 		var exeset = data[idx] ?? {} ;
-		console.log('load exeset from local');
-		// console.log(exeset);
-		// console.log(data);
+		exesets.log('load exeset from local');
 		return exeset;
 	},
 	
 	save: function(exeset) {
 		var data = exesets.storage.get();
 		data[exesets.idx] = exeset;
-		console.log('store exesets to local');
-		// console.log(data);
+		exesets.log('store exesets to local');
 		exesets.storage.set(data);
 	},
 	
 	add: function(exeset) {
 		var data = exesets.storage.get();
 		data.push(exeset);
-		console.log('add new exeset');
+		exesets.log('add new exeset');
 		exesets.storage.set(data);
 		return (data.length - 1);
 	},
 	
 	delete: function() {
-		console.log('delete current exeset');
+		exesets.log('delete current exeset');
 		var data = exesets.storage.get();
 		data.splice(exesets.idx, 1);
 		exesets.storage.set(data);
 	}
-} // end storage
+}, // end storage
+
+log: function(message) {
+	// console.log(message);
+}
 	
 };

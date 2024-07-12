@@ -20,7 +20,6 @@ const idxsel = {
 		});
 
 		var idx = localStorage.getItem('mag-exesets-idx') ?? 0;
-		// console.log(idx);
 		idxsel.selector.val(idx);
 	},
 	reload: function(idx='#') {

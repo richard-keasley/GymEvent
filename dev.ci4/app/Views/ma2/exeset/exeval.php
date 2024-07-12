@@ -119,14 +119,16 @@ if(!$dscore_total) return; // empty routine
 $score_format = '<div class="px-2 text-end">%.1f</div>';
 $table = \App\Views\Htm\Table::load('small');
 $table->autoHeading = false;
-$table->setFooting(['D', sprintf($score_format, $dscore_total)]);
+
 $tbody = [];
 foreach($dscore as $key=>$val) {
 	$tbody[] = [
 		$key, 
 		sprintf($score_format, $val)
 	];
-} 
+}
+$tfoot = ['D', sprintf($score_format, $dscore_total)];
+$table->setFooting($tfoot);
 echo $table->generate($tbody);
 
 // neutral deductions
@@ -145,4 +147,7 @@ foreach($exercise['neutrals'] as $nkey=>$nval) {
 		$nd += $neutral['deduction'];
 	}
 }
-if($nd) printf('<p class="my-0"><strong>ND:</strong> %.1f</p>', $nd);
+if($nd) {
+	printf('<p class="my-0" title="neutral deductions"><strong>ND:</strong> %.1f</p>', $nd);
+}
+
