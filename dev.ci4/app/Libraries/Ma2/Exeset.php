@@ -57,6 +57,7 @@ public function __construct($request=[]) {
 		'saved' => date('Y-m-d H:i:s')
 	];
 	
+	if(!$this->data['name']) $this->data['name'] = '[no name]';
 	if(!Rules::exists($this->data['rulesetname'])) {
 		$this->data['rulesetname'] = Rules::DEF_RULESETNAME;
 	}
