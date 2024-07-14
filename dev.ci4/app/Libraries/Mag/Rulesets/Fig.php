@@ -1,12 +1,24 @@
 <?php namespace App\Libraries\Mag\Rulesets;
 
 class Fig {
-public $name = null; // set by constructor
-public $title = null; // set by constructor
-
-public $version = '2021-12-11';
-
-public $description = 'FIG senior code';
+	
+protected $attributes = [
+	'name' => null,
+	'id' => null,
+	'title' => null,
+	'version' => '2021-12-11',
+	'description' => "FIG senior code"
+];
+public function __get($key) {
+	return $this->attributes[$key] ?? null;
+}
+public function __construct() {
+	$classname = get_class($this);
+	$arr = explode('\\', $classname);
+	$name = array_pop($arr);
+	$this->attributes['name'] = $name;
+	$this->attributes['title'] = \App\Libraries\Mag\Rules::index[$name];
+}
 
 public $exes = [
 	'FX' => [
@@ -83,9 +95,6 @@ public $routine = [
 	],
 	'group_max' => 5, // elements per group
 	'group_dis' => 4 // dismount group
-];
-
-public $tariff = [
 ];
 
 public function routine_options($propname) {

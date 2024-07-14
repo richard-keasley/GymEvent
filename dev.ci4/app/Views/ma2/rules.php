@@ -98,7 +98,7 @@ $this->section('top');
 ?>
 <div class="toolbar">
 <?php echo \App\Libraries\View::back_link("ma2"); ?>
-<a href="/ma2/routine" title="create routines" class="btn btn-outline-primary"><i class="bi-plus-circle-fill text-success"></i></a>
+<a href="/ma2/routine" title="edit routines" class="btn btn-primary"><i class="bi-pencil-square"></i></a>
 <?php
 $names = array_keys($index);
 $key = array_search($rulesetname, $names);

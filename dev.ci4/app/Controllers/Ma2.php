@@ -8,9 +8,12 @@ public function __construct() {
 	$this->data['title'] = "Men's Artistic";
 	$this->data['heading'] = "Men's Artistic";
 	$this->data['filename'] = "mag_routines";
-	$this->data['head'] = '
-<link rel="manifest" href="/app/mag/webmanifest.json">
+	$this->data['head'] = '';
+/*
+ToDo
+'<link rel="manifest" href="/app/mag/webmanifest.json">
 <meta name="apple-mobile-web-app-title" content="MAG routines">';
+*/
 }
 	
 public function index() {

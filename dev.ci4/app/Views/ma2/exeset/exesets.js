@@ -182,6 +182,9 @@ setTemplate: function(ruleset) {
 	}
 	$('#help-ruleset').html(htm.join('<br>'));
 	
+	var $link = $('#ruleset-link');
+	$link[0].href = '<?php echo base_url("ma2/rules");?>/'+ruleset.name;
+	
 	var source = $('#template-'+ruleset.name).html();
 	$('#edit-template').html(source);	
 	exesets.tmpl = exesets_tmpl[ruleset.name];
@@ -192,8 +195,8 @@ exevals: function(message, message_ok=0) {
 
 	exesets.tmpl.exekeys.forEach(function(exekey) {
 		if(message_ok) {
-			htm = message[exekey] ?? '';
-			warning = htm ? false : exekey + ' missing in response';
+			htm = message[exekey] ?? null;
+			if(htm===null) warning = exekey + ' missing in response';
 		}
 		else {
 			warning = message;

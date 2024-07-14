@@ -15,10 +15,13 @@ const index = [
 static function load($setname=self::DEF_RULESETNAME) {
 	if(!self::exists($setname)) $setname = self::DEF_RULESETNAME;
 	$classname = "\\App\\Libraries\\Mag\\Rulesets\\{$setname}";
+	return new $classname;
+	/*
 	$ruleset = new $classname;
 	$ruleset->name = $classname;
 	$ruleset->title = self::index[$setname];
 	return $ruleset;
+	*/
 }
 
 static function exists($setname) {

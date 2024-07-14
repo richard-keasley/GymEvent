@@ -106,10 +106,10 @@ public function export() {
 	$retval = $this->data;
 	
 	$retval['ruleset'] = [
-		'name' => $this->data['rulesetname'],
+		'name' => $this->ruleset->name,
 		'title' => $this->ruleset->title,
 		'description' => $this->ruleset->description,
-		'version' => $this->ruleset->version
+		'version' => $this->ruleset->version,
 	];
 			
 	foreach($this->exercises as $exekey=>$exercise) {

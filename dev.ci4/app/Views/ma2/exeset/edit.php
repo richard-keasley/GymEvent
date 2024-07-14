@@ -164,9 +164,17 @@ foreach($keys as $key) {
 $table = \App\Views\Htm\Table::load('small');
 $table->autoHeading = false;
 echo $table->generate($tbody);
-?>
 
-<h6>Rule set</h6>
+$attrs = ['class' => "bi bi-newspaper"];
+$label = sprintf('<span %s></span>', stringify_attributes($attrs));
+$attrs = [
+	'title' => "view this rule set",
+	'class' => "btn btn-primary-outline", 
+	'id'=>"ruleset-link"
+];
+$link = anchor("#", $label, $attrs);
+echo "<h6>Rule set {$link}</h6>";
+?>
 <p class="text-muted" id="help-ruleset"></p>
 
 </div>
@@ -204,6 +212,9 @@ echo $table->generate($tbody);
 </div>
 <div class="modal-body">
 	<p>Are you sure you want to delete <strong>all data</strong> held on this device?</p>
+	<p class="text-muted">This will remove this app's data from your 
+	browser (<span class="fst-italic">e.g. Edge, Chrome, FireFox, Safari</span>)
+	.</p>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -233,7 +244,9 @@ $table = \App\Views\Htm\Table::load('small');
 $table->autoHeading = false;
 echo $table->generate($tbody);
 ?>
-<p>All app data is stored within the browser (e.g. FireFox, Edge, Chrome) on your device (laptop, mobile, etc). These functions enable you to switch browser, use another device or create a backup.</p>  	
+<p>All app data is stored within the 
+browser (<span class="fst-italic">e.g. Edge, Chrome, FireFox, Safari</span>)
+on your device (laptop, mobile, etc). These functions enable you to switch browser, use another device or create a backup.</p>  	
 </div>
 
 <div class="modal-footer">
