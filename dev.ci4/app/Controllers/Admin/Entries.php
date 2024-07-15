@@ -598,7 +598,8 @@ public function export($event_id=0, $download=0) {
 	}	
 	
 	// build export table
-	$export_table = []; 
+	$export_table = [];
+	$this->data['tfoot'] = [];
 	$this->data['headings'] = [];
 	switch($source) {
 		case 'score_table':
@@ -769,15 +770,48 @@ public function export($event_id=0, $download=0) {
 				}
 			}
 		}
-		array_multisort($sort, $export_table);
+		if($sort) {
+			array_multisort($sort, $export_table);
+			foreach(array_keys($row) as $key) {
+				$this->data['tfoot'][$key] = match($key) {
+					'cat' => 'count',
+					'count' => 'sum',
+					default => ''
+				};
+			}
+		}	
 		# d($sort);
 				
+		$this->data['layout'] = 'table';
+		break;
+		
+		case 'categories':
+		$sort = [];
+		foreach($this->data['entries'] as $dis) {
+			foreach($dis->cats as $cat) {
+				$export_table[] = [
+					'dis' => $dis->name,
+					'cat' => $cat->name,
+					'count' => count($cat->entries)
+				];
+				$sort[] = "{$dis->name}-{$cat->sort}";
+			}
+		}
+		if($sort) {
+			array_multisort($sort, $export_table);
+			foreach(array_keys($export_table[0]) as $key) {
+				$this->data['tfoot'][$key] = match($key) {
+					'cat' => 'count',
+					'count' => 'sum',
+					default => ''
+				};
+			}
+		}
 		$this->data['layout'] = 'table';
 		break;
 				
 		default:
 		$source = 'scoreboard';
-		
 		if($teamgym) {
 			$rundata = tt_lib::get_rundata();
 			# d($rundata);
@@ -868,7 +902,7 @@ public function export($event_id=0, $download=0) {
 	$this->data['breadcrumbs'][] = ["admin/entries/export/{$event_id}", 'export'];
 
 	// valid sources
-	$arr = ['scoreboard', 'score_table', 'running_order', 'round_summary', 'entries', 'entry_list'];
+	$arr = ['scoreboard', 'score_table', 'running_order', 'round_summary', 'entries', 'categories', 'entry_list'];
 	$this->data['source_opts'] = [];
 	foreach($arr as $key) {
 		$this->data['source_opts'][$key] = humanize($key);

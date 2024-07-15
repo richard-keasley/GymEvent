@@ -11,8 +11,23 @@ if($export && $table_header) {
 switch($format) {
 	case 'htm':
 	$table = \App\Views\Htm\Table::load('bordered');
+	
 	if($thead) $table->setHeading($thead);
 	else $table->autoHeading = false;
+	
+	$tfoot = $tfoot ?? false;
+	if($tfoot) {
+		foreach($tfoot as $key=>$fn) {
+			$column = array_column($export, $key);
+			$tfoot[$key] = match($fn) {
+				'sum' => array_sum($column),
+				'count' => count($column),
+				default => $fn
+			};
+		}
+		$table->setFooting($tfoot);
+	}
+		
 	echo $table->generate($export);
 	break;
 	
