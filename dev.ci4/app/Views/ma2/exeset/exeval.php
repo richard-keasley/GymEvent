@@ -44,8 +44,8 @@ switch($exe_rules['method']) {
 		$dismount_elnum = array_key_last($exercise['elements']); 
 		foreach($exercise['elements'] as $elnum=>$element) {
 			$rownum = $elnum==$dismount_elnum ? 'D' : $elnum + 1;
-			$el_diff = $element[0];
-			$el_group = $element[1];
+			$el_diff = $element[0]; // difficulty letter: A, B, C
+			$el_group = $element[1]; // element group
 			
 			if(!$el_diff && !$el_group) continue; // blank row
 
@@ -69,8 +69,8 @@ switch($exe_rules['method']) {
 				}
 			}
 			else {
-				// check dismount group not used within routine
-				if($el_group==$routine_rules['group_dis']) {
+				// check element group is valid
+				if(!in_array($el_group, $exe_rules['elm_groups'])) {
 					$errors[] = "Dismount (element {$rownum}) must be on last row";
 					continue;
 				}
@@ -80,12 +80,18 @@ switch($exe_rules['method']) {
 			$routine_elcount++;
 			$group_count[$el_group]++;
 			$dscore['Value'] += $el_value;
+			
 			// group value for this element
-			$grp_key = $elnum==$dismount_elnum ? $routine_rules['group_dis'] : $el_group ;
-			$group_vals = $routine_rules['groups'][$grp_key];
+			$group_vals = $routine_rules['groups'][$el_group];
+			if($elnum==$dismount_elnum && $exe_rules['dis_values']) {
+				$group_vals = $exe_rules['dis_values'];
+			}
 			foreach($group_vals as $grp_diff=>$grp_worth) {
 				$grp_value = $routine_rules['difficulties'][$grp_diff];
-				if($el_value>=$grp_value) $dscore["EG{$grp_key}"] = $grp_worth;
+				if($el_value>=$grp_value) {
+					$dkey = "EG{$el_group}";
+					if($dscore[$dkey]<$grp_worth) $dscore[$dkey] = $grp_worth;
+				}
 			}
 		}
 		// count elements per group
@@ -127,9 +133,7 @@ foreach($dscore as $key=>$val) {
 		sprintf($score_format, $val)
 	];
 }
-$tfoot = ['D', sprintf($score_format, $dscore_total)];
-$table->setFooting($tfoot);
-echo $table->generate($tbody);
+$tfoot = [['<div title="D score">D</div>', $dscore_total]];
 
 // neutral deductions
 $nd = 0;
@@ -148,6 +152,19 @@ foreach($exercise['neutrals'] as $nkey=>$nval) {
 	}
 }
 if($nd) {
-	printf('<p class="my-0" title="neutral deductions"><strong>ND:</strong> %.1f</p>', $nd);
+	$tfoot[] = ['<div title="neutral deductions">ND</div>', $nd];
 }
 
+$tr = [];
+foreach(array_keys($tfoot[0]) as $colidx) {
+	$column = array_column($tfoot, $colidx);
+	if($colidx==1) {
+		foreach($column as $key=>$val) {
+			$column[$key] = sprintf($score_format, $val);
+		}
+	}
+	$tr[] = implode('', $column);
+}
+$table->setFooting($tr);
+
+echo $table->generate($tbody);

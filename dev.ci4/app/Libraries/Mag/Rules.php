@@ -10,7 +10,7 @@ const index = [
 	'Jnr' => 'FIG - Junior',
 	'U14' => 'BG - Under 14',
 	'U12' => 'BG - Under 12',
-	# 'Fig_2025' => 'FIG (2025)'
+	'Fig_2025' => 'FIG (2025)'
 ];
 
 static function load($setname=self::DEF_RULESETNAME) {

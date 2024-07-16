@@ -18,7 +18,7 @@ ToDo
 	
 public function index() {
 	$this->data['index'] = \App\Libraries\Mag\Rules::index;
-	return view('ma2/index', $this->data);
+	return view('mag/index', $this->data);
 }
 
 public function rules($rulesetname = null) {
@@ -34,7 +34,7 @@ public function rules($rulesetname = null) {
 	$this->data['rulesetname'] = $rulesetname;
 	$this->data['title'] = $this->data['ruleset']->title;
 	$this->data['heading'] = $this->data['ruleset']->title;
-	return view('ma2/rules', $this->data);
+	return view('mag/rules', $this->data);
 }
 
 public function routineSW() {

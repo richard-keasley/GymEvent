@@ -7,7 +7,8 @@ $this->section('content');?>
 	echo $time->toLocalizedString('d MMM yyyy'); ?></span>
 </p>
 
-<div class="d-md-flex">
+<div class="d-md-flex flex-wrap">
+
 <section class="border m-1 p-1">
 <h4>Element values</h4>
 <ul class="list-group"><?php
@@ -30,23 +31,29 @@ foreach($ruleset->routine['short'] as $count=>$penalty) {
 <section class="border m-1 p-1">
 <h4>Groups</h4>
 <ul class="list-group"><?php
-foreach($ruleset->routine['groups'] as $group_num=>$group_val) { 
+foreach($ruleset->routine['groups'] as $group_num=>$group_vals) { 
 	$label = [];
-	foreach($group_val as $dif=>$val) $label[] = "{$dif}={$val}";
-	printf('<li class="list-group-item"><strong>%s:</strong> %s.</li>', $group_num, implode(', ', $label));
+	foreach($group_vals as $dif=>$val) $label[] = "{$dif}={$val}";
+	printf('<li class="list-group-item"><strong>%s:</strong> %s</li>', $group_num, implode(' ', $label));
 } ?>
 </ul>
 <p>Max elements: <?php echo $ruleset->routine['group_max'];?></p>
-<h4>Dismount</h4>
-<p>Group <?php echo $ruleset->routine['group_dis'];?></p>
+</section>
+
+<section class="border m-1 p-1" style="max-width:20em">
+<h4>Dismount group / value</h4>
 <ul class="list-group">
 <?php foreach($ruleset->exes as $abbr=>$exe) {
 	if(!empty($exe['dis_groups'])) { ?>
-		<li class="list-group-item">
-		<?php
-		printf('<strong>%s:</strong> %s.', $exe['name'], implode(', ', $exe['dis_groups']));
-		?>
-		</li>
+		<li class="list-group-item"><?php
+		printf('<strong>%s:</strong> %s', $exe['name'], implode(', ', $exe['dis_groups']));
+		$group_vals = $exe['dis_values'] ?? null;
+		if($group_vals) {
+			$label = [];
+			foreach($group_vals as $dif=>$val) $label[] = "{$dif}={$val}";
+			printf('<br>%s', implode(' ', $label));
+		}
+		?></li>
 	<?php }
 }
 ?></ul>
@@ -96,6 +103,46 @@ $this->endSection();
 
 $this->section('top');
 
+# ToDo: convert all this from ma2 to mag */
+$ma2 = strpos(current_url(), '/ma2/')!==false;
+
+if($ma2) { ?>
+<div class="toolbar"><?php
+echo \App\Libraries\View::back_link("mag");
+$attrs = [
+	'class' => "btn btn-primary bi bi-pencil-square",
+	'title' => "Edit stored routines",
+	'href' => "/ma2/routine",
+];
+printf('<a %s></a>', stringify_attributes($attrs));
+
+$names = array_keys($index);
+$key = array_search($rulesetname, $names);
+if($key!==false) {
+	if(isset($names[$key - 1])) {
+		$name = $names[$key - 1];
+		$attrs = [
+			'class' => "btn btn-outline-dark bi-chevron-left",
+			'href' => "/ma2/rules/{$name}",
+			'title' => $index[$name]
+		];
+		printf('<a %s></a>', stringify_attributes($attrs));
+	}
+	
+	if(isset($names[$key + 1])) {
+		$name = $names[$key + 1];
+		$attrs = [
+			'class' => "btn btn-outline-dark bi-chevron-right",
+			'href' => "/ma2/rules/{$name}",
+			'title' => $index[$name]
+		];
+		printf('<a %s></a>', stringify_attributes($attrs));
+	}
+}
+?></div>	
+<?php }
+
+else { // start old version
 $attr = ['class' => "toolbar"];
 $hidden = ['rulesetname' => $rulesetname];
 echo form_open('mag/routine', $attr, $hidden);
@@ -116,6 +163,7 @@ if($key!==false) {
 	}
 }
 echo form_close();
+} // end old version
 $this->endSection(); 
 
 $this->section('bottom'); ?>

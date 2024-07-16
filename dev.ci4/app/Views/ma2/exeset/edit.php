@@ -9,7 +9,7 @@ $buttons = [
 	],
 	'print' => [
 		'class' => "btn btn-primary bi bi-printer",
-		'title' => "Printer friendly version of this exercise set",
+		'title' => "Printer friendly version of these routines",
 		'href' => "/ma2/routine/print",
 	],
 	'clone' => [
@@ -176,6 +176,7 @@ $link = anchor("#", $label, $attrs);
 echo "<h6>Rule set {$link}</h6>";
 ?>
 <p class="text-muted" id="help-ruleset"></p>
+<p>Please tell Richard if you find a mistake in these pages.</p>
 
 </div>
 <div class="modal-footer">

@@ -4,7 +4,6 @@ class Fig {
 	
 protected $attributes = [
 	'name' => null,
-	'id' => null,
 	'title' => null,
 	'version' => '2021-12-11',
 	'description' => "FIG senior code"
@@ -24,7 +23,9 @@ public $exes = [
 	'FX' => [
 		'name' => 'Floor',
 		'method' => 'routine',
+		'elm_groups' => [1, 2, 3],
 		'dis_groups' => [2, 3],
+		'dis_values' => null,
 		'connection' => true,
 		'neutrals' => [
 			['deduction' => 0.3, 'description' => 'All 4 corners'],
@@ -34,7 +35,9 @@ public $exes = [
 	'PH' => [
 		'name' => 'Pommels',
 		'method' => 'routine',
+		'elm_groups' => [1, 2, 3],
 		'dis_groups' => [4],
+		'dis_values' => null,
 		'connection' => false,
 		'neutrals' => [
 			['deduction' => 0.3, 'description' => 'Use whole horse']
@@ -43,7 +46,9 @@ public $exes = [
 	'SR' => [
 		'name' => 'Rings',
 		'method' => 'routine',
+		'elm_groups' => [1, 2, 3],
 		'dis_groups' => [4],
+		'dis_values' => null,
 		'connection' => false,
 		'neutrals' => [
 			['deduction' => 0.3, 'description' => 'Swing to handstand']
@@ -59,13 +64,17 @@ public $exes = [
 	'PB' => [
 		'name' => 'P-bars',
 		'method' => 'routine',
+		'elm_groups' => [1, 2, 3],
 		'dis_groups' => [4],
+		'dis_values' => null,
 		'connection' => false,
 		'neutrals' => []
 	],
 	'HB' => [
 		'name' => 'High bar',
 		'method' => 'routine',
+		'elm_groups' => [1, 2, 3],
+		'dis_values' => null,
 		'dis_groups' => [4],
 		'connection' => true,
 		'neutrals' => []
@@ -94,7 +103,6 @@ public $routine = [
 		4 => ['C' => 0.3, 'D' => 0.5 ]
 	],
 	'group_max' => 5, // elements per group
-	'group_dis' => 4 // dismount group
 ];
 
 public function routine_options($propname) {

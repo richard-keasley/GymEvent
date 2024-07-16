@@ -19,7 +19,7 @@ static function sanitize($arr) {
 }
 
 static function read_json($json) {
-	// returns an array of exercise sets
+	// returns an array of routine sets
 	$retval = [
 		'error' => null,
 		'exesets' => []

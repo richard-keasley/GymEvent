@@ -82,7 +82,7 @@ formdata: {
 		.fail(function(jqXHR) {
 			var message = jqXHR['message'] ?? 'server error' ;
 			exesets.exevals(message);
-			console.error(jqXHR);
+			console.error(jqXHR.responseJSON);
 		});
 	},
 		

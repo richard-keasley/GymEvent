@@ -216,21 +216,21 @@ $buttons = [
 	],
 	[
 		'class' => "btn btn-primary bi bi-arrow-down-square",
-		'title' => "Save this exercise set to your computer so the routines can be altered later",
+		'title' => "Save these routines to your computer so the routines can be altered later",
 		'type' => "submit",
 		'name' => "cmd",
 		'value' => "store"
 	],
 	[
 		'class' => "btn btn-primary bi bi-printer",
-		'title' => "Printer friendly version of this exercise set",
+		'title' => "Printer friendly version of these routines",
 		'type' => "submit",
 		'name' => "cmd",
 		'value' => "print"
 	],
 	[
 		'class' => "btn btn-primary bi bi-plus-square",
-		'title' => "Make a copy of this exercise set to use on another gymnast",
+		'title' => "Make a copy of these routines to use on another gymnast",
 		'type' => "button",
 		'name' => "clone"
 	],

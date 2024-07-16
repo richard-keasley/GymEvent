@@ -18,7 +18,7 @@ if(!empty($head)) echo $head;
 <?php 
 $attrs = [
 	'class' => "btn btn-primary bi bi-pencil-square",
-	'title' => "Edit this exercise set",
+	'title' => "Edit these routines",
 	'href' => "/ma2/routine",
 ];
 $idxsel = sprintf('<a %s></a>', stringify_attributes($attrs));
