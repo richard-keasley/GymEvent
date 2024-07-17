@@ -25,7 +25,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 				],
 				[
 					'type' => 'select',
-					'options' => $exeset->ruleset->select_options('tariff.groups'),
+					'options' => $exeset->ruleset->select_options('tarrif.groups'),
 					'class' => "form-control tarrif-1",
 					'placeholder' => 'grp'
 				],

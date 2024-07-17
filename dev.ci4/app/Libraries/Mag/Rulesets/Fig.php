@@ -93,7 +93,7 @@ $this->_routine = [
 	'group_max' => 5, // elements per group
 ];
 
-$this->tarrif = [
+$this->_tarrif = [
 	'groups' => [ 
 		1 => '1',
 		2 => '2',

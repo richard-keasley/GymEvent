@@ -23,7 +23,7 @@ public function __get($key) {
 	return match($key) {
 		'exes' => $this->_exes,
 		'routine' => $this->_routine,
-		'tarrif' => $this->tarrif,
+		'tarrif' => $this->_tarrif,
 		default => $this->attributes[$key] ?? null
 	};
 }
