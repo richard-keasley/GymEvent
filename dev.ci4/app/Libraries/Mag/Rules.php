@@ -6,7 +6,7 @@ const DEF_RULESETNAME = 'Fig';
 
 // ruleset basename(file) => title
 const index = [
-	self::DEF_RULESETNAME => 'FIG',
+	self::DEF_RULESETNAME => 'FIG (2022)',
 	'Jnr' => 'FIG - Junior',
 	'U14' => 'BG - Under 14',
 	'U12' => 'BG - Under 12',
@@ -15,14 +15,7 @@ const index = [
 
 static function load($setname=self::DEF_RULESETNAME) {
 	if(!self::exists($setname)) $setname = self::DEF_RULESETNAME;
-	$classname = "\\App\\Libraries\\Mag\\Rulesets\\{$setname}";
-	return new $classname;
-	/*
-	$ruleset = new $classname;
-	$ruleset->name = $classname;
-	$ruleset->title = self::index[$setname];
-	return $ruleset;
-	*/
+	return new ("\\App\\Libraries\\Mag\\Rulesets\\{$setname}");
 }
 
 static function exists($setname) {

@@ -1,25 +1,13 @@
 <?php namespace App\Libraries\Mag\Rulesets;
 
-class Fig {
-	
-protected $attributes = [
-	'name' => null,
-	'title' => null,
-	'version' => '2021-12-11',
-	'description' => "FIG senior code"
-];
-public function __get($key) {
-	return $this->attributes[$key] ?? null;
-}
-public function __construct() {
-	$classname = get_class($this);
-	$arr = explode('\\', $classname);
-	$name = array_pop($arr);
-	$this->attributes['name'] = $name;
-	$this->attributes['title'] = \App\Libraries\Mag\Rules::index[$name];
-}
+class Fig extends Ruleset {
 
-public $exes = [
+public function __construct() {
+parent::__construct();
+$this->attributes['version'] = '2021-12-11';
+$this->attributes['description'] = "FIG (2022-2024)";
+	
+$this->_exes = [
 	'FX' => [
 		'name' => 'Floor',
 		'method' => 'routine',
@@ -81,7 +69,7 @@ public $exes = [
 	]
 ];
 
-public $routine = [
+$this->_routine = [
 	'difficulties' => [
 		'A' => 0.1,
 		'B' => 0.2,
@@ -105,12 +93,15 @@ public $routine = [
 	'group_max' => 5, // elements per group
 ];
 
-public function routine_options($propname) {
-	$options = [''];
-	foreach($this->routine[$propname] as $key=>$val) {
-		$options[$key] = $key;
-	}
-	return $options;
+$this->tarrif = [
+	'groups' => [ 
+		1 => '1',
+		2 => '2',
+		3 => '3',
+		4 => '4',
+	],
+];
+	
 }
 
 }

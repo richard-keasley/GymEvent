@@ -31,20 +31,22 @@ include __DIR__ . '/idxsel.php';
 <script><?php
 ob_start();
 include __DIR__ . '/exesets.js';
-echo ob_get_clean();
-/*
-
-$minifier = new MatthiasMullie\Minify\JS();
-$minifier->add(ob_get_clean());
-echo $minifier->minify();
-*/
 ?>
-
 $(function() {
 exesets.idx = localStorage.getItem('mag-exesets-idx') ?? 0;
 var exeset = exesets.storage.load();
 exesets.printdata.set(exeset);
 });
+<?php 
+if(ENVIRONMENT=='development') { 
+	echo ob_get_clean();
+}
+else { 
+	$minifier = new MatthiasMullie\Minify\JS();
+	$minifier->add(ob_get_clean());
+	echo $minifier->minify();
+}
+?>
 </script>
 
 </body>

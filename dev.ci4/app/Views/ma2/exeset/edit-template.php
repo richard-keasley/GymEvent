@@ -10,8 +10,8 @@ $tab_items = [];
 foreach($exeset->exercises as $exekey=>$exercise) {
 	ob_start();
 	# d($exercise);
-	
 	$exe_rules = $exeset->ruleset->exes[$exekey] ?? [] ;
+	
 	switch($exe_rules['method']) {
 		case 'tariff':
 			$inputs = [
@@ -25,7 +25,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 				],
 				[
 					'type' => 'select',
-					'options' => $exeset->ruleset->routine_options('groups'),
+					'options' => $exeset->ruleset->select_options('tariff.groups'),
 					'class' => "form-control tarrif-1",
 					'placeholder' => 'grp'
 				],
@@ -42,13 +42,13 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$inputs = [
 				[
 					'type' => 'select',
-					'options' => $exeset->ruleset->routine_options('difficulties'),
+					'options' => $exeset->ruleset->select_options('routine.difficulties'),
 					'class' => "form-control routine-0",
 					'placeholder' => 'val'
 				],
 				[
 					'type' => 'select',
-					'options' => $exeset->ruleset->routine_options('groups'),
+					'options' => $exeset->ruleset->select_options('routine.groups'),
 					'class' => "form-control routine-1",
 					'placeholder' => 'grp'
 				],

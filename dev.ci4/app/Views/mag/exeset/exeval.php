@@ -69,8 +69,8 @@ switch($exe_rules['method']) {
 				}
 			}
 			else {
-				// check dismount group not used within routine
-				if($el_group==$routine_rules['group_dis']) {
+				// check element group is valid
+				if(!in_array($el_group, $exe_rules['elm_groups'])) {
 					$errors[] = "Dismount (element {$rownum}) must be on last row";
 					continue;
 				}
@@ -80,12 +80,18 @@ switch($exe_rules['method']) {
 			$routine_elcount++;
 			$group_count[$el_group]++;
 			$dscore['Value'] += $el_value;
+			
 			// group value for this element
-			$grp_key = $elnum==$dismount_elnum ? $routine_rules['group_dis'] : $el_group ;
-			$group_vals = $routine_rules['groups'][$grp_key];
+			$group_vals = $routine_rules['groups'][$el_group];
+			if($elnum==$dismount_elnum && $exe_rules['dis_values']) {
+				$group_vals = $exe_rules['dis_values'];
+			}
 			foreach($group_vals as $grp_diff=>$grp_worth) {
 				$grp_value = $routine_rules['difficulties'][$grp_diff];
-				if($el_value>=$grp_value) $dscore["EG{$grp_key}"] = $grp_worth;
+				if($el_value>=$grp_value) {
+					$dkey = "EG{$el_group}";
+					if($dscore[$dkey]<$grp_worth) $dscore[$dkey] = $grp_worth;
+				}
 			}
 		}
 		// count elements per group

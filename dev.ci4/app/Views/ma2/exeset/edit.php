@@ -441,15 +441,15 @@ magexes.show('import');
 });
 
 <?php 
-echo ob_get_clean();
-/*
-
-$minifier = new MatthiasMullie\Minify\JS();
-$minifier->add(ob_get_clean());
-echo $minifier->minify();
-*/
+if(ENVIRONMENT=='development') { 
+	echo ob_get_clean();
+}
+else { 
+	$minifier = new MatthiasMullie\Minify\JS();
+	$minifier->add(ob_get_clean());
+	echo $minifier->minify();
+}
 ?>
 </script>
 
-<?php
-$this->endSection(); 
+<?php $this->endSection(); 
