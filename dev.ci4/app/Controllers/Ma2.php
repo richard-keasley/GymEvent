@@ -75,7 +75,7 @@ public function routine($layout=null) {
 	
 	$this->data['title'] = 'MAG routines';
 	$this->data['heading'] = 'MAG routine sheets';
-	$this->data['breadcrumbs'][] = ['ma2/routine', "Routine sheet"];
+	$this->data['breadcrumbs'][] = ['ma2/routine', "Routine sheets"];
 		
 	return view("ma2/exeset/{$layout}", $this->data);
 }

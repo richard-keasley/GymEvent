@@ -68,7 +68,8 @@ $this->_exes = [
 		'method' => 'tariff',
 		'neutrals' => [],
 		'exe_count' => 2,
-		'd_max' => 6
+		'd_min' => 0.1,
+		'd_max' => 6,
 	],
 	'PB' => [
 		'name' => 'P-bars',
@@ -134,7 +135,7 @@ $this->_routine = [
 	'group_max' => 4, // elements per group
 ];
 
-$this->_tarrif = [
+$this->_tariff = [
 	'groups' => [ 
 		1 => '1',
 		2 => '2',

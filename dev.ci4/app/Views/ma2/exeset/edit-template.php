@@ -20,18 +20,18 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 					'step' => "0.1",
 					'min' => "0",
 					'max' => $exe_rules['d_max'],
-					'class' => "form-control tarrif-0",
+					'class' => "form-control tariff-0",
 					'placeholder' => 'tariff'
 				],
 				[
 					'type' => 'select',
-					'options' => $exeset->ruleset->select_options('tarrif.groups'),
-					'class' => "form-control tarrif-1",
+					'options' => $exeset->ruleset->select_options('tariff.groups'),
+					'class' => "form-control tariff-1",
 					'placeholder' => 'grp'
 				],
 				[
 					'type' => 'text',
-					'class' => "form-control tarrif-2",
+					'class' => "form-control tariff-2",
 					'placeholder' => 'description'
 				]
 			];

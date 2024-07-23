@@ -67,12 +67,12 @@ public function __construct($request=[]) {
 		switch($exe_rules['method']) {
 			case 'tariff':
 				$el_count = $exe_rules['exe_count'];
-				$col_count = 3;
+				$col_count = 3; // tariff, group, description
 				break;
 			case 'routine':
 			default:
 				$el_count = count($this->ruleset->routine['short']) - 1;
-				$col_count = 3;
+				$col_count = 3; // value, group, description
 		}
 		
 		$element = array_fill(0, $col_count,'');
@@ -80,6 +80,14 @@ public function __construct($request=[]) {
 		foreach($elements as $elnum=>$element) {
 			foreach($element as $colnum=>$default) {
 				$elements[$elnum][$colnum] = $request[$exekey]['elements'][$elnum][$colnum] ?? $default ;
+			}
+			switch($exe_rules['method']) {
+				case 'tariff':
+				$tariff = (float) $elements[$elnum][0];
+				$tariff = abs($tariff) ;
+				while($tariff > 10) { $tariff = $tariff / 10; }
+				$elements[$elnum][0] = $tariff ? number_format($tariff, 1) : '';
+				break;
 			}
 		}
 		$this->exercises[$exekey]['elements'] = $elements;
@@ -97,7 +105,7 @@ public function __construct($request=[]) {
 		}
 		$this->exercises[$exekey]['neutrals'] = $neutrals;	
 	}
-	}
+}
 
 public function __get($propname) {
 	if(isset($this->data[$propname])) return $this->data[$propname];

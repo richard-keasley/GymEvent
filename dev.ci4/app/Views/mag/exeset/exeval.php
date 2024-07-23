@@ -28,7 +28,7 @@ switch($exe_rules['method']) {
 			$errors[] = "Tariff can be no higher than {$exe_rules['d_max']}";
 		}
 		if($dscore['Tariff']<0) {
-			$errors[] = "Invalid tarrif";
+			$errors[] = "Invalid tariff";
 		}
 		break;
 	case 'routine':

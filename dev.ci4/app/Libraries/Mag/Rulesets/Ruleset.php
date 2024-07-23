@@ -5,7 +5,7 @@ class Ruleset {
 protected $attributes = [];
 protected $_exes = [];
 protected $_routine = [];
-protected $_tarrif = [];
+protected $_tariff = [];
 
 public function __construct() {
 	$classname = get_class($this);
@@ -23,7 +23,7 @@ public function __get($key) {
 	return match($key) {
 		'exes' => $this->_exes,
 		'routine' => $this->_routine,
-		'tarrif' => $this->_tarrif,
+		'tariff' => $this->_tariff,
 		default => $this->attributes[$key] ?? null
 	};
 }
