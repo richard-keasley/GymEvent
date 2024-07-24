@@ -48,7 +48,13 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	
 	$tr = [];
 	foreach($exercise['elements'] as $elkey=>$element) {
-		foreach($element as $key=>$val) $tr[$key] = $val ? $val : '' ;
+		$empty = true;
+		foreach($element as $key=>$val) {
+			if($val) $empty = false; else $val = '';
+			$tr[$key] = $val;
+		}
+		if($empty) continue;
+		
 		$row = [
 			'elnum' => $elkey==$dismount_num ? 'D' : $elkey + 1,
 			'elval' => "{$tr[0]} {$tr[1]}",

@@ -122,7 +122,7 @@ protected function download($data, $layout='table', $filetitle='download', $file
 		$response = "\xEF\xBB\xBF" . $response; 
 	}
 	
-	if(0) {
+	if(false) {
 		// view response for debug
 		if($filetype=='csv') {
 			$this->response->setHeader('content-type', 'text/plain;charset=UTF-8'); 

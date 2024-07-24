@@ -44,7 +44,6 @@ public function routineSW() {
 }
 
 public function routine($layout=null) {
-	
 	$this->data['upload'] = null;
 	$file = $this->request->getFile('upload');
 	if($file) {
@@ -82,6 +81,7 @@ public function routine($layout=null) {
 
 public function export() {
 	$json = $this->request->getPost('exesets');
+	if(!$json) $json = '[]';
 	$arr = json_decode($json, true);
 	
 	$export = [];

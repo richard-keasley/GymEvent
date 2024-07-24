@@ -9,9 +9,9 @@ idx: 0,
 
 tmpl: null,
 
-update: function() {
+update: function(display=null) {
 	var exeset = exesets.formdata.get();
-	exesets.formdata.set(exeset);
+	exesets.formdata.set(exeset, display);
 },
 
 clone: function() {
@@ -32,8 +32,8 @@ formdata: {
 		var formdata = {}, el = null;
 		
 		if(!fields) {
-			fields = exesets.tmpl.fields;
 			exesets.log('get form data');
+			fields = exesets.tmpl.fields;
 		}
 		
 		$.each(fields, function(key, value) {
@@ -56,7 +56,7 @@ formdata: {
 		return formdata;
 	},
 	
-	set: function(exeset) {
+	set: function(exeset, display=null) {
 		exesets.log('clean exeset via API');
 
 		exeset[exesets.csrf.token] = exesets.csrf.hash;
@@ -65,15 +65,22 @@ formdata: {
 		$.post(api, exeset)
 		.done(function(response) {
 			try {
-				// display cleaned data
+				// store cleaned data
 				exeset = response['data'] ?? false;
 				if(!exeset) throw new Error('No data returned');
 				exesets.formdata.htm(exeset);
 				
-				// display D score info
-				var html = response['html'] ?? false;
-				if(!html) throw new Error('No HTML returned');
-				exesets.exevals(html, 1);
+				switch(display) {
+					case 'print':
+					location.href = '<?php echo site_url("ma2/routine/print");?>';
+					break; 
+					
+					default:
+					// display D score info
+					var html = response['html'] ?? false;
+					if(!html) throw new Error('No HTML returned');
+					exesets.exevals(html, 1);	
+				}
 			}
 			catch(errorThrown) { 
 				exesets.exevals(errorThrown);
@@ -154,7 +161,7 @@ printdata: {
 		}
 		$('#printdata').html(htm);
 	}
-},
+}, // end printdata
 
 setTemplate: function(ruleset) {
 	var current = exesets.tmpl ?? false;
@@ -258,6 +265,7 @@ storage: {
 }, // end storage
 
 log: function(message) {
+	// enable this for debug
 	// console.log(message);
 }
 	

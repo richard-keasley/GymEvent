@@ -10,7 +10,8 @@ $buttons = [
 	'print' => [
 		'class' => "btn btn-primary bi bi-printer",
 		'title' => "Printer friendly version of these routines",
-		'href' => "/ma2/routine/print",
+		'type' => "button",
+		'onclick' => "magexes.show('print')",
 	],
 	'clone' => [
 		'class' => "btn btn-primary bi bi-plus-square",
@@ -34,8 +35,7 @@ $buttons = [
 		'class' => "btn btn-primary bi bi-arrow-down-square",
 		'title' => "Save the routines to your device",
 		'type' => "button",
-		'onclick' => "magexes.save()",
-		'data-bs-toggle' => "modal"
+		'onclick' => "magexes.save()"
 	],
 	'upload' => [
 		'class' => "btn btn-primary bi bi-arrow-up-square",
@@ -308,7 +308,7 @@ echo form_close();
 </div>
 
 <div class="modal-body"><?php 
-$import = []; // used in JS magexes.import()
+$import = []; // used in JS magexes.load()
 if($upload) {
 	$list = []; 
 	foreach($upload['exesets'] as $exeset) {
@@ -344,7 +344,7 @@ $attrs = [
 	'type' => "button",
 	'class' => "btn btn-success",
 	'title' => "Use this data (replace existing data)",
-	'onclick' => "magexes.import()"
+	'onclick' => "magexes.load()"
 ];
 $label = '<span class="bi bi-upload"></span> use these routines';
 printf('<button %s>%s</button>', stringify_attributes($attrs), $label);
@@ -357,7 +357,6 @@ echo $buttons['upload']['button'];
 </div>
 </div>
 </div>
-
 
 <?php 
 $attrs = ['id' => "magexes-save", 'class' => "d-none"];
@@ -385,52 +384,56 @@ init: function() {
 
 modals: null,
 show: function(showname) {
-	// prepare for modal display
+	// prepare modal content
 	switch(showname) {
+		// ensure it's saved
+		case 'print':
 		case 'data':
-		exesets.update();
+		exesets.update(showname);
 		break;
-		
+	
 		case 'delete':
 		var entname = $('#editform [name=name]').val();
 		$('#dlg_delete .entname').html(entname);
 	}
 	
-	// hide any other modals 
 	for(var modalname in magexes.modals) {
 		var modal = magexes.modals[modalname];
-		if(modalname==showname) {
+		if(modalname===showname) {
 			if(!modal._isShown) modal.show();
 		}
 		else {
+			// hide all other modals 
 			if(modal._isShown) modal.hide();
 		}
+	}
+},
+
+load: function() {
+	var data = <?php echo json_encode($import);?>;
+	if(data) {
+		exesets.storage.set(data);
+		localStorage.setItem('mag-exesets-idx', 0);	
+		window.location.assign('<?php echo base_url('ma2/routine');?>');
 	}
 },
 	
 save: function() {
 	var data = exesets.storage.get();
 	$('#magexes-save [name=exesets]').val(JSON.stringify(data));
-	$('#magexes-save').submit();		
+	$('#magexes-save').submit();
+	magexes.show('#'); // hides all modals		
 },
+
 clear: function() {
 	exesets.storage.set([]);
 	localStorage.setItem('mag-exesets-idx', 0);	
 	window.location.assign('<?php echo base_url('ma2/routine');?>');
-},
-import: function() {
-	var idata = <?php echo json_encode($import);?>;
-	if(idata) {
-		exesets.storage.set(idata);
-		localStorage.setItem('mag-exesets-idx', 0);	
-		window.location.assign('<?php echo base_url('ma2/routine');?>');
-	}
 }
 
 }
 
 $(function() {
-
 magexes.init();
 exesets.idx = localStorage.getItem('mag-exesets-idx') ?? 0;
 var exeset = exesets.storage.load();
