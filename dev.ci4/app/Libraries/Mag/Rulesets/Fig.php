@@ -48,7 +48,13 @@ $this->_exes = [
 		'neutrals' => [],
 		'exe_count' => 2,
 		'd_min' => 0.1,
-		'd_max' => 6
+		'd_max' => 6,
+		'groups' => [ 
+			1 => '1',
+			2 => '2',
+			3 => '3',
+			4 => '4'
+		],
 	],
 	'PB' => [
 		'name' => 'P-bars',

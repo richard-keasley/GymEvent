@@ -12,53 +12,57 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	# d($exercise);
 	$exe_rules = $exeset->ruleset->exes[$exekey] ?? [] ;
 	
+	
+	
 	switch($exe_rules['method']) {
 		case 'tariff':
-			$inputs = [
-				[
-					'type' => "number",
-					'step' => "0.1",
-					'min' => "0",
-					'max' => $exe_rules['d_max'],
-					'class' => "form-control tariff-0",
-					'placeholder' => 'tariff'
-				],
-				[
-					'type' => 'select',
-					'options' => $exeset->ruleset->select_options('tariff.groups'),
-					'class' => "form-control tariff-1",
-					'placeholder' => 'grp'
-				],
-				[
-					'type' => 'text',
-					'class' => "form-control tariff-2",
-					'placeholder' => 'description'
-				]
-			];
-			$dismount_num =  999;
-			break;
+				
+		$inputs = [
+			[
+				'type' => "number",
+				'step' => "0.1",
+				'min' => "0",
+				'max' => $exe_rules['d_max'],
+				'class' => "form-control tariff-0",
+				'placeholder' => 'tariff'
+			],
+			[
+				'type' => 'select',
+				'options' => $exeset->ruleset->exe_options($exekey, 'groups'),
+				'class' => "form-control tariff-1",
+				'placeholder' => 'grp'
+			],
+			[
+				'type' => 'text',
+				'class' => "form-control tariff-2",
+				'placeholder' => 'description'
+			]
+		];
+		$dismount_num =  999;
+		break;
+		
 		case 'routine':
-		default: 
-			$inputs = [
-				[
-					'type' => 'select',
-					'options' => $exeset->ruleset->select_options('routine.difficulties'),
-					'class' => "form-control routine-0",
-					'placeholder' => 'val'
-				],
-				[
-					'type' => 'select',
-					'options' => $exeset->ruleset->select_options('routine.groups'),
-					'class' => "form-control routine-1",
-					'placeholder' => 'grp'
-				],
-				[
-					'type' => 'text',
-					'class' => "form-control routine-2",
-					'placeholder' => 'description'
-				]
-			];
-			$dismount_num = array_key_last($exercise['elements']); 
+		default:
+		$inputs = [
+			[
+				'type' => 'select',
+				'options' => $exeset->ruleset->select_options('routine.difficulties'),
+				'class' => "form-control routine-0",
+				'placeholder' => 'val'
+			],
+			[
+				'type' => 'select',
+				'options' => $exeset->ruleset->exe_options($exekey, 'groups'),
+				'class' => "form-control routine-1",
+				'placeholder' => 'grp'
+			],
+			[
+				'type' => 'text',
+				'class' => "form-control routine-2",
+				'placeholder' => 'description'
+			]
+		];
+		$dismount_num = array_key_last($exercise['elements']); 
 	}
 
 	$last_elnum = array_key_last($exercise['elements']); 

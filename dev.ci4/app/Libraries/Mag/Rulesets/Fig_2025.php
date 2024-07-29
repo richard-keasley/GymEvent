@@ -37,10 +37,8 @@ $this->_exes = [
 			'H' => 0.8,
 			'I' => 0.9
 		],
+		'neutrals' => [],
 		'connection' => false,
-		'neutrals' => [
-			['deduction' => 0.3, 'description' => 'Use whole horse']
-		]
 	],
 	'SR' => [
 		'name' => 'Rings',
@@ -63,6 +61,7 @@ $this->_exes = [
 			['deduction' => 0.3, 'description' => 'Swing to handstand']
 		]
 	],
+	
 	'VT' => [
 		'name' => 'Vault',
 		'method' => 'tariff',
@@ -70,7 +69,15 @@ $this->_exes = [
 		'exe_count' => 2,
 		'd_min' => 0.1,
 		'd_max' => 6,
+		'groups' => [ 
+			1 => "single salto twist",
+			2 => "h'spring salto",
+			3 => "Tsukahara",
+			4 => 'RO with twist',
+			5 => "RO salto",
+		],
 	],
+	
 	'PB' => [
 		'name' => 'P-bars',
 		'method' => 'routine',
@@ -141,6 +148,7 @@ $this->_tariff = [
 		2 => '2',
 		3 => '3',
 		4 => '4',
+		5 => '5',
 	],
 ];
 

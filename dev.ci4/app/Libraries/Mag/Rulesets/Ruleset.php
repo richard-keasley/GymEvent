@@ -33,13 +33,27 @@ public function select_options($params) {
 	
 	$arr = explode('.', $params);
 	$propname = $arr[0] ?? null;
+	$key = $arr[1] ?? null;
 	if($propname) {
 		$prop = $this->$propname ?? [];
-		$key = $arr[1] ?? null;
 		$arr = $key ? $prop[$key] ?? [] : $prop ;
 		foreach(array_keys($arr) as $key) {
 			$options[$key] = $key;
 		}
+	}
+	return $options;
+}
+
+public function exe_options($exekey, $key) {
+	$options = [''];
+	$exe_rules = $this->exes[$exekey] ?? null;
+	if($exe_rules) {
+		$arr = $exe_rules[$key] ?? [];
+		if(!$arr) {
+			$params = "{$exe_rules['method']}.{$key}";
+			return $this->select_options($params);
+		}
+		foreach($arr as $key=>$val) $options[$key] = $val;
 	}
 	return $options;
 }
