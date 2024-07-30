@@ -11,9 +11,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	ob_start();
 	# d($exercise);
 	$exe_rules = $exeset->ruleset->exes[$exekey] ?? [] ;
-	
-	
-	
+		
 	switch($exe_rules['method']) {
 		case 'tariff':
 				

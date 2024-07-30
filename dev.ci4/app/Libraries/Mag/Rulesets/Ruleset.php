@@ -30,16 +30,13 @@ public function __get($key) {
 
 public function select_options($params) {
 	$options = [''];
-	
 	$arr = explode('.', $params);
 	$propname = $arr[0] ?? null;
 	$key = $arr[1] ?? null;
 	if($propname) {
 		$prop = $this->$propname ?? [];
 		$arr = $key ? $prop[$key] ?? [] : $prop ;
-		foreach(array_keys($arr) as $key) {
-			$options[$key] = $key;
-		}
+		foreach($arr as $key=>$val) $options[$key] = $key;
 	}
 	return $options;
 }
@@ -53,11 +50,9 @@ public function exe_options($exekey, $key) {
 			$params = "{$exe_rules['method']}.{$key}";
 			return $this->select_options($params);
 		}
-		foreach($arr as $key=>$val) $options[$key] = $val;
+		foreach($arr as $key=>$val) $options[$key] = $key;
 	}
 	return $options;
 }
-
-
 
 }
