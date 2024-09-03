@@ -1,12 +1,16 @@
 <?php namespace App\Views\Htm;
 
-class Accordion {
+class Accordion implements \Stringable {
 public $id = '';
 public $items = [];
 
 public function __construct($items=[], $id='tabs') {
 	$this->items = $items;
 	$this->id = $id;
+}
+
+public function __toString() {
+	return $this->htm();
 }
 
 public function set_item($heading, $content, $key=null) {

@@ -79,7 +79,7 @@ ob_start();?>
 <?php echo $event->staff;
 
 $staff = $clubret->staff;
-#d($staff);
+# d($staff);
 if(!$staff) { // provide one blank entry 
 	$staff = [[
 		'cat' => '', 'name' => ''
@@ -103,8 +103,12 @@ foreach(array_keys($inputs) as $key) {
 $tbody = []; 
 foreach($staff as $rowkey=>$row) {
 	$inputs['cat']['selected'] = $row['cat'];
-	$namestring = new \App\Entities\namestring($row['name']);
-	$inputs['name']['value'] = $namestring->csv;
+	if($row['name']) {
+		$namestring = new \App\Entities\namestring($row['name']);
+		$inputs['name']['value'] = $namestring->csv;
+	}
+	else $inputs['name']['value'] = '' ;
+
 	$tbody[] = [
 		'#' => $rowkey + 1, 
 		'cat' => form_dropdown($inputs['cat']),

@@ -1,15 +1,26 @@
 <?php $this->extend('default');
  
-$this->section('content');
-$include = __DIR__ . "/skills-{$skills['method']}.php";
-if(is_file($include)) include $include;
-else printf('<p class="alert alert-danger">%s not found</p>', $skills['method']);
+$this->section('content'); ?>
+<p><?php echo $ruleset->description;?>. 
+	<span class="text-muted fst-italic">updated <?php 
+	$time = new \CodeIgniter\I18n\Time($ruleset->version);
+	echo $time->toLocalizedString('d MMM yyyy'); ?></span>
+</p>
+
+<?php
+$accordion = new \App\Views\Htm\Accordion;
+foreach($ruleset->exes as $exekey=>$exercise) {
+	ob_start();
+	$data = ['exe_rules' => $ruleset->$exekey];
+	echo view("rulesets/view-{$data['exe_rules']['method']}", $data);
+	$accordion->set_item($data['exe_rules']['name'], ob_get_clean());
+}
+echo $accordion;
 $this->endSection(); 
 
-$this->section('top');?>
-<div class="toolbar sticky-top"><?php 
+$this->section('top'); ?>
+<div class="toolbar"><?php
 echo \App\Libraries\View::back_link($back_link);
-
 $attrs = [
 	'class' => "btn btn-primary bi bi-pencil-square",
 	'title' => "Edit routines",
@@ -19,7 +30,7 @@ printf('<a %s></a>', stringify_attributes($attrs));
 
 $names = array_keys($rule_options);
 $key = array_search($rulesetname, $names);
-$stub = "{$back_link}/skills/{$exekey}/";
+$stub = "{$back_link}/rules/";
 if($key!==false) {
 	$key_last = array_key_last($names);
 	$key_first = array_key_first($names);	
@@ -27,7 +38,7 @@ if($key!==false) {
 	$name = $names[$key - 1] ?? $names[$key_last];
 	$attrs = [
 		'class' => "btn btn-outline-dark bi-chevron-left",
-		'href' => site_url($stub . substr($name, 3)),
+		'href' => site_url($stub . $name),
 		'title' => $rule_options[$name]
 	];
 	printf('<a %s></a>', stringify_attributes($attrs));
@@ -35,26 +46,16 @@ if($key!==false) {
 	$name = $names[$key + 1] ?? $names[$key_first];
 	$attrs = [
 		'class' => "btn btn-outline-dark bi-chevron-right",
-		'href' => site_url($stub . substr($name, 3)),
+		'href' => site_url($stub . $name),
 		'title' => $rule_options[$name]
 	];
 	printf('<a %s></a>', stringify_attributes($attrs));
 
 }
-
-$href = [$back_link, 'skills', '__', substr($rulesetname, 3)];
-$format = str_replace('__', '%s', site_url($href));
-$def_rules = new \App\Libraries\Rulesets\Fv_gold;	
-foreach($def_rules->exes as $key=>$exe) {
-	if($key==$exekey) continue;
-	$attrs = [
-		'class' => "btn btn-outline-dark",
-		'href' => sprintf($format, $key),
-		'title' => $exe['name']
-	];
-	printf('<a %s>%s</a>', stringify_attributes($attrs), $key);
-}
-
-?></div>
+?></div>	
 <?php 
 $this->endSection(); 
+
+$this->section('bottom'); ?>
+<p>Please tell Richard Keasley if you spot any errors.</p>
+<?php $this->endSection(); 

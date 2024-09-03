@@ -5,13 +5,8 @@ $this->section('content');?>
 <?php $this->endSection(); 
 
 $this->section('sidebar');
-
-# ToDo: convert all this from ma2 to mag */
-$ma2 = strpos(current_url(), '/ma2')!==false;
-$root = $ma2 ? 'ma2' : 'mag' ;
-
 $nav = [
-	["{$root}/routine", 'Routine sheet']
+	["{$back_link}/routine", 'Routine sheets']
 ];
 $navbar = new \App\Views\Htm\Navbar($nav);
 echo $navbar->htm();
@@ -21,8 +16,8 @@ echo $navbar->htm();
 <?php
 
 $nav = [];
-foreach($index as $key=>$label) {
-	$nav[] = ["{$root}/rules/{$key}", $label];	
+foreach($rule_options as $key=>$label) {
+	$nav[] = ["{$back_link}/rules/{$key}", $label];	
 }
 echo $navbar->htm($nav);
 

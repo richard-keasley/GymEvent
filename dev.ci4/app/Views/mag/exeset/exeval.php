@@ -1,4 +1,9 @@
 <?php 
+// delete this. no longer used.
+// use ma2\exeset\exeval
+return;
+
+
 if(empty($exekey)) { 
 	echo '<p class="alert alert-danger">No exercise specified</p>';
 	return;
@@ -12,7 +17,6 @@ if(empty($exeset->exercises[$exekey])) {
 	return;
 }
 
-$exe_rules = $exeset->ruleset->exes[$exekey];
 $exercise = $exeset->exercises[$exekey];
 
 $errors = [];
@@ -20,92 +24,96 @@ $routine_elcount = 0;
 
 // D score 
 $dscore = [];
+$exe_rules = $exeset->ruleset->$exekey;
+
 switch($exe_rules['method']) {
 	case 'tariff':
-		# d($exe_rules);
-		$dscore['Tariff'] = floatval($exercise['elements'][0][0]);
-		if($dscore['Tariff']>$exe_rules['d_max']) {
-			$errors[] = "Tariff can be no higher than {$exe_rules['d_max']}";
-		}
-		if($dscore['Tariff']<0) {
-			$errors[] = "Invalid tariff";
-		}
-		break;
+	$dscore['Tariff'] = floatval($exercise['elements'][0][0]);
+	if($dscore['Tariff']>$exe_rules['d_max']) {
+		$errors[] = "Tariff can be no higher than {$exe_rules['d_max']}";
+	}
+	if($dscore['Tariff']<$exe_rules['d_min']) {
+		$errors[] = "Invalid tariff";
+	}
+	break;
+		
 	case 'routine':
 	default:
-		$routine_rules = $exeset->ruleset->routine;
-		$dscore['Value'] = 0;
-		$group_count = [];
-		foreach(array_keys($routine_rules['groups']) as $grp_key) {
-			$dscore["EG{$grp_key}"] = 0;
-			$group_count[$grp_key] = 0;
+	$routine_rules = $exeset->ruleset->routine;
+	$dscore['Value'] = 0;
+	$group_count = [];
+	foreach(array_keys($routine_rules['groups']) as $grp_key) {
+		$dscore["EG{$grp_key}"] = 0;
+		$group_count[$grp_key] = 0;
+	}
+	
+	$dismount_elnum = array_key_last($exercise['elements']); 
+	foreach($exercise['elements'] as $elnum=>$element) {
+		$rownum = $elnum==$dismount_elnum ? 'D' : $elnum + 1;
+		$el_diff = $element[0];
+		$el_group = $element[1];
+		
+		if(!$el_diff && !$el_group) continue; // blank row
+
+		// check difficulty
+		$el_value = $routine_rules['difficulties'][$el_diff] ?? 0 ;
+		if(!$el_value) {
+			$errors[] = "Element {$rownum} has no value";
+			continue;
+		}
+		// check group
+		if(!isset($routine_rules['groups'][$el_group])) {
+			$errors[] = "Enter a valid group for element {$rownum}";
+			continue;
+		}
+		// check dismount
+		if($elnum==$dismount_elnum) {
+			// check dismount element is in valid group
+			$dis_groups = $exe_rules['dis_groups'];	
+			if(!in_array($el_group, $dis_groups)) {
+				$errors[] = sprintf('Dismount must be in groups %s.', implode(', ', $dis_groups));
+				continue;
+			}
+		}
+		else {
+			// check element group is valid
+			if(!in_array($el_group, $exe_rules['elm_groups'])) {
+				$errors[] = "Dismount (element {$rownum}) must be on last row";
+				continue;
+			}
 		}
 		
-		$dismount_elnum = array_key_last($exercise['elements']); 
-		foreach($exercise['elements'] as $elnum=>$element) {
-			$rownum = $elnum==$dismount_elnum ? 'D' : $elnum + 1;
-			$el_diff = $element[0];
-			$el_group = $element[1];
-			
-			if(!$el_diff && !$el_group) continue; // blank row
-
-			// check difficulty
-			$el_value = $routine_rules['difficulties'][$el_diff] ?? 0 ;
-			if(!$el_value) {
-				$errors[] = "Element {$rownum} has no value";
-				continue;
-			}
-			// check group
-			if(!isset($routine_rules['groups'][$el_group])) {
-				$errors[] = "Enter a valid group for element {$rownum}";
-				continue;
-			}
-			// check dismount
-			if($elnum==$dismount_elnum) {
-				// check dismount element is in valid group
-				if(!in_array($el_group, $exe_rules['dis_groups'])) {
-					$errors[] = sprintf('Dismount must be in groups %s.', implode(', ', $exe_rules['dis_groups']));
-					continue;
-				}
-			}
-			else {
-				// check element group is valid
-				if(!in_array($el_group, $exe_rules['elm_groups'])) {
-					$errors[] = "Dismount (element {$rownum}) must be on last row";
-					continue;
-				}
-			}
-			
-			// valid element
-			$routine_elcount++;
-			$group_count[$el_group]++;
-			$dscore['Value'] += $el_value;
-			
-			// group value for this element
-			$group_vals = $routine_rules['groups'][$el_group];
-			if($elnum==$dismount_elnum && $exe_rules['dis_values']) {
-				$group_vals = $exe_rules['dis_values'];
-			}
-			foreach($group_vals as $grp_diff=>$grp_worth) {
-				$grp_value = $routine_rules['difficulties'][$grp_diff];
-				if($el_value>=$grp_value) {
-					$dkey = "EG{$el_group}";
-					if($dscore[$dkey]<$grp_worth) $dscore[$dkey] = $grp_worth;
-				}
+		// valid element
+		$routine_elcount++;
+		$group_count[$el_group]++;
+		$dscore['Value'] += $el_value;
+		
+		// group value for this element
+		$group_vals = $routine_rules['groups'][$el_group];
+		$dis_values = $exe_rules['dis_values'];
+		if($elnum==$dismount_elnum && $dis_values) {
+			$group_vals = $dis_values;
+		}
+		foreach($group_vals as $grp_diff=>$grp_worth) {
+			$grp_value = $routine_rules['difficulties'][$grp_diff];
+			if($el_value>=$grp_value) {
+				$dkey = "EG{$el_group}";
+				if($dscore[$dkey]<$grp_worth) $dscore[$dkey] = $grp_worth;
 			}
 		}
-		// count elements per group
-		foreach($group_count as $grp_key=>$count) {
-			if($count > $routine_rules['group_max']) {
-				$errors[] = "Too many elements in group {$grp_key}";
-			}
+	}
+	// count elements per group
+	foreach($group_count as $grp_key=>$count) {
+		if($count > $routine_rules['group_max']) {
+			$errors[] = "Too many elements in group {$grp_key}";
 		}
-		// connection 
-		if(array_sum($dscore) && $exe_rules['connection']) {
-			$val = $exercise['connection'] ?? 0 ;
-			if($val>0) $dscore['Connection'] = floatval($val);
-		}
-		// end routine
+	}
+	// connection
+	if(array_sum($dscore) && $exe_rules['connection']) {
+		$val = $exercise['connection'] ?? 0 ;
+		if($val>0) $dscore['Connection'] = floatval($val);
+	}
+	// end routine
 }
 
 if($errors) { ?>

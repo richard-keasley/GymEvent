@@ -3,33 +3,33 @@
 class Mag extends \App\Controllers\BaseController {
 
 public function __construct() {
+	$this->data['back_link'] = 'mag';
 	$this->data['breadcrumbs'][] = ['mag', "Men's Artistic"];
 	$this->data['title'] = "Men's Artistic";
 	$this->data['heading'] = "Men's Artistic";
 	$this->data['head'] = '
 <link rel="manifest" href="/app/mag/webmanifest.json">
 <meta name="apple-mobile-web-app-title" content="MAG routines">';
+	$this->data['rule_options'] = \App\Libraries\Rulesets::options('mag');
+
 }
 	
 public function index() {
-	$this->data['index'] = \App\Libraries\Mag\Rules::index;
 	return view('mag/index', $this->data);
 }
 
 public function rules($rulesetname = null) {
-	if(!\App\Libraries\Mag\Rules::exists($rulesetname)) {
-		$message = "Can't find MAG rule set {$rulesetname}";
+	if(!\App\Libraries\Rulesets::exists($rulesetname)) {
+		$message = "Can't find rule set {$rulesetname}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
-	
-	$this->data['index'] = \App\Libraries\Mag\Rules::index;
-	$this->data['ruleset'] = \App\Libraries\Mag\Rules::load($rulesetname);
+	$this->data['ruleset'] = \App\Libraries\Rulesets::load($rulesetname);
 	
 	$this->data['breadcrumbs'][] = ["mag/rules/{$rulesetname}", $this->data['ruleset']->title];
 	$this->data['rulesetname'] = $rulesetname;
 	$this->data['title'] = $this->data['ruleset']->title;
 	$this->data['heading'] = $this->data['ruleset']->title;
-	return view('mag/rules', $this->data);
+	return view('rulesets/view', $this->data);
 }
 
 public function routineSW() {

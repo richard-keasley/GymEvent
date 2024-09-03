@@ -132,6 +132,8 @@ public function edit($event_id=0, $user_id=0) {
 		$getPost['user_id'] = $user_id;
 		$getPost['stafffee'] = empty($getPost['stafffee']) ? 0 : 1;
 		
+		$trim_name = " ',.-_";
+		
 		// filter participants 
 		$participants = filter_json($this->request->getPost('participants'));
 		$filter = [
@@ -157,7 +159,7 @@ public function edit($event_id=0, $user_id=0) {
 			// remove blank lines from input
 			$names = [];
 			foreach($filtered['names'] as $name) {
-				$name = trim($name, " ',.-_");
+				$name = trim($name, $trim_name);
 				if($name) $names[] = $name;
 			}
 			$filtered['names'] = $names;
@@ -185,6 +187,7 @@ public function edit($event_id=0, $user_id=0) {
 		$filtered = [];
 		foreach($staff as $rowkey=>$row) {
 			$row = filter_var_array($row, $filter);
+			$row['name'] = trim($row['name'], $trim_name);
 			// skip blanks
 			if($row['name']) $filtered[] = $row;
 		}

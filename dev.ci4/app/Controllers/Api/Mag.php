@@ -20,7 +20,7 @@ public function exevals() {
 
 	foreach($exedata['exeset']->exercises as $exekey=>$exercise) {
 		$exedata['exekey'] = $exekey;
-		$response[$exekey] = \view('mag/exeset/exeval', $exedata);
+		$response[$exekey] = \view('rulesets/exeval', $exedata);
 	}
 	return $this->respond($response);
 }

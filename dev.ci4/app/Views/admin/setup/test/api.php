@@ -9,7 +9,7 @@ $payload = [
 d($payload);
 
 $attrs = [];
-echo form_open('api/ma2/test/post', $attrs, $payload); ?>
+echo form_open('api/exeset/test/post', $attrs, $payload); ?>
 <input type="submit" value="OK">
 <button type="button" onclick="testapi()">API</button>
 <?php echo form_close();
@@ -26,7 +26,7 @@ d($_POST);
 <script>
 function testapi() {
 	var payload = <?php echo json_encode($payload);?>;
-	var api = '<?php echo site_url("api/ma2/exeval");?>';
+	var api = '<?php echo site_url("api/exeset/exeval");?>';
 	// var api = '<?php echo site_url("/api/teamtime/control");?>';
 	console.log(api, payload);
 	$.post(api, payload)

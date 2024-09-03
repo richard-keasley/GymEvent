@@ -19,7 +19,7 @@ echo $minifier->minify();
 <div class="col-4" style="font-weight:bold">
 <?php echo $exeset->name;?><br>
 <?php 
-$options = \App\Libraries\Mag\Rules::index;
+$options = \App\Libraries\Rulesets::options('mag');
 echo $options[$exeset->rulesetname] ?? '' ;
 ?>
 </div>
@@ -86,7 +86,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	<div class="d-flex-column">
 	<?php 
 	$this->setData(['exekey' => $exekey]);
-	echo $this->include('mag/exeset/exeval');	
+	echo $this->include('rulesets/exeval');	
 	?>
 	<ul class="list-unstyled">
 	<?php 

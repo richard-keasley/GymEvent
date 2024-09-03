@@ -10,11 +10,12 @@ if($realpath) {
 	// extract logo if it's there
 	$pattern = 'logo.';
 	foreach($files as $file) {
-		if(strpos($file->getPathname(), $pattern)) {
-			$logo_src = substr($file->getPathname(), strlen(FCPATH));
+		$filename = $file->getPathname();
+		if(strpos($filename, $pattern)) {
+			$files->removeFile($filename);
+			$logo_src = substr($filename, strlen(FCPATH));
 		}
 	}
-	$files->removePattern($pattern);
 	if(!$can_edit) $files->removePattern('#\.xls#i');
 }
 

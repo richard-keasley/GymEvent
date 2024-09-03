@@ -32,10 +32,8 @@ public function setStaff($arr) {
 	$staff = [];
 	foreach($arr as $row) {
 		$namestring = new \App\Entities\namestring($row['name']);
-		if($namestring->name) {
-			$row['name'] = $namestring->csv;
-			$staff[] = $row;
-		}
+		$row['name'] = $namestring->csv;
+		$staff[] = $row;
 	}
 	$this->attributes['staff'] = json_encode($staff);
 	return $this;
@@ -298,7 +296,7 @@ function __construct($namestring) {
 			implode(' ', array_slice($names, 1))
 		];
 	}		
-	$this->attributes['name'] = implode(' ', $names);
+	$this->attributes['name'] = trim(implode(' ', $names));
 	
 	// re-build CSV
 	$csv = [

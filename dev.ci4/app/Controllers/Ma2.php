@@ -4,10 +4,13 @@ class Ma2 extends \App\Controllers\BaseController {
 
 public function __construct() {
 	helper('html');
+	$this->data['back_link'] = 'ma2';
 	$this->data['breadcrumbs'][] = ['ma2', "Men's Artistic"];
 	$this->data['title'] = "Men's Artistic";
 	$this->data['heading'] = "Men's Artistic";
 	$this->data['filename'] = "mag_routines";
+	$this->data['rule_options'] = \App\Libraries\Rulesets::options('mag');
+
 	$this->data['head'] = '';
 /*
 ToDo
@@ -17,30 +20,27 @@ ToDo
 }
 	
 public function index() {
-	$this->data['index'] = \App\Libraries\Mag\Rules::index;
 	return view('mag/index', $this->data);
 }
 
 public function rules($rulesetname = null) {
-	if(!\App\Libraries\Mag\Rules::exists($rulesetname)) {
-		$message = "Can't find MAG rule set {$rulesetname}";
+	if(!\App\Libraries\Rulesets::exists($rulesetname)) {
+		$message = "Can't find rule set {$rulesetname}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
-	
-	$this->data['index'] = \App\Libraries\Mag\Rules::index;
-	$this->data['ruleset'] = \App\Libraries\Mag\Rules::load($rulesetname);
+	$this->data['ruleset'] = \App\Libraries\Rulesets::load($rulesetname);
 	
 	$this->data['breadcrumbs'][] = ["ma2/rules/{$rulesetname}", $this->data['ruleset']->title];
 	$this->data['rulesetname'] = $rulesetname;
 	$this->data['title'] = $this->data['ruleset']->title;
 	$this->data['heading'] = $this->data['ruleset']->title;
-	return view('mag/rules', $this->data);
+	return view('rulesets/view', $this->data);
 }
 
 public function routineSW() {
 	// service worker
 	$this->response->setHeader('Content-Type', 'application/javascript');
-	return view('ma2/exeset/sw', $this->data);
+	return view('rulesets/sw', $this->data);
 }
 
 public function routine($layout=null) {
@@ -49,7 +49,7 @@ public function routine($layout=null) {
 	if($file) {
 		if($file->isValid()) {
 			$json = file_get_contents($file->getPathname());
-			$upload = \App\Libraries\Ma2\Exeset::read_json($json);
+			$upload = \App\Libraries\Rulesets\Exeset::read_json($json);
 			if($upload['error']) {
 				$this->data['messages'][] = $upload['error'];
 			}
@@ -68,15 +68,15 @@ public function routine($layout=null) {
 	if(!in_array($layout, $layouts)) $layout = 'edit';
 	
 	$config = new \config\paths;
-	$css = "{$config->viewDirectory}/ma2/exeset/{$layout}.css";
+	$css = "{$config->viewDirectory}/rulesets/{$layout}.css";
 	$minifier = new \MatthiasMullie\Minify\CSS($css);
 	$this->data['head'] .= sprintf('<style>%s</style>', $minifier->minify());
 	
 	$this->data['title'] = 'MAG routines';
 	$this->data['heading'] = 'MAG routine sheets';
 	$this->data['breadcrumbs'][] = ['ma2/routine', "Routine sheets"];
-		
-	return view("ma2/exeset/{$layout}", $this->data);
+
+	return view("rulesets/{$layout}", $this->data);
 }
 
 public function export() {
@@ -86,7 +86,7 @@ public function export() {
 	
 	$export = [];
 	foreach($arr as $request) {
-		$exeset = new \App\Libraries\Ma2\Exeset($request);
+		$exeset = new \App\Libraries\Rulesets\Exeset($request);
 		$export[] = $exeset->export();
 	}
 	return $this->download($export, null, $this->data['filename'], 'json');

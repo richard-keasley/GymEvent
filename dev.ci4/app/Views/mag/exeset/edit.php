@@ -33,7 +33,7 @@ echo form_open_multipart(current_url(), $attr, $hidden);
 		'class' => "form-control", 
 		'id' => "rulesetname",
 		'name' => "rulesetname",
-		'options' => \App\Libraries\Mag\Rules::index
+		'options' => \App\Libraries\Rulesets::options('mag')
 	];
 	echo form_dropdown($input);
 ?></div>
@@ -59,7 +59,8 @@ $tab_items = [];
 foreach($exeset->exercises as $exekey=>$exercise) {
 	ob_start();
 	
-	$exe_rules = $exeset->ruleset->exes[$exekey] ?? [] ;
+	$exe_rules = $exeset->ruleset->$exekey;
+	# d($exe_rules);
 	switch($exe_rules['method']) {
 		case 'tariff':
 			$inputs = [
@@ -73,7 +74,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 				],
 				[
 					'type' => 'select',
-					'options' => $exeset->ruleset->select_options('tariff.groups'),
+					'options' => $exeset->ruleset->exe_options($exe_rules, 'groups'),
 					'class' => "form-control tariff-1",
 					'placeholder' => 'grp'
 				],
@@ -90,13 +91,13 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 			$inputs = [
 				[
 					'type' => 'select',
-					'options' => $exeset->ruleset->select_options('routine.difficulties'),
+					'options' => $exeset->ruleset->exe_options($exe_rules, 'difficulties'),
 					'class' => "form-control routine-0",
 					'placeholder' => 'val'
 				],
 				[
 					'type' => 'select',
-					'options' => $exeset->ruleset->select_options('routine.groups'),
+					'options' => $exeset->ruleset->exe_options($exe_rules, 'groups'),
 					'class' => "form-control routine-1",
 					'placeholder' => 'grp'
 				],
@@ -189,7 +190,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 	<div id="exeval-<?php echo $exekey;?>">
 	<?php 
 	$this->setData(['exekey' => $exekey]);
-	echo $this->include('mag/exeset/exeval'); 
+	echo $this->include('rulesets/exeval'); 
 	?>
 	</div>
 	
