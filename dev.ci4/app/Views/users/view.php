@@ -55,9 +55,12 @@ foreach($nav as $item) {
 <?php 
 $model = new \App\Models\Logins();
 $logins = $model->where('user_id', $user->id)->orderBy('updated')->findAll();
+$ipinfo = new \App\Libraries\Ipinfo;
+$ip_keys = ['city', 'countryCode'];	
 $tbody = [];
 foreach($logins as $login) {
-	$ip_info = \App\Models\Logins::ip_info($login['ip'], ['city', 'countryCode']);
+	$ip_info = $ipinfo->get($login['ip'])->attributes($ip_keys);
+
 	$IP = $login['ip'];
 	$ip_check = $model->check_ip($login['ip']);
 	if(!$ip_check) $IP .= ' <i title="blocked" class="bi-x-circle text-danger"></i>';

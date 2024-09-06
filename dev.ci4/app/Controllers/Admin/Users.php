@@ -302,6 +302,8 @@ public function logins($filter='', $id='') {
 	
 	$user_names = [];
 	$this->data['logins'] = [];
+	$ipinfo = new \App\Libraries\Ipinfo;
+	$ip_keys = ['city', 'countryCode'];
 	foreach($lgn_model->where($where, $id)->orderBy('updated')->findAll() as $login) {
 		if($filter=='user_id') {
 			$login['user_name'] = $this->data['user']->name;
@@ -319,9 +321,8 @@ public function logins($filter='', $id='') {
 			}
 			$login['user_name'] = $user_names[$uid];
 		}
-		$login['check_ip'] = $lgn_model->check_ip($login['ip']);
-		$keys = ['city', 'countryCode'];
-		$login['ip_info'] = \App\Models\Logins::ip_info($login['ip'], $keys);
+		$login['check_ip'] = $lgn_model->check_ip($login['ip']);		
+		$login['ip_info'] = $ipinfo->get($login['ip'])->attributes($ip_keys);
 
 		$this->data['logins'][] = $login;
 	}

@@ -46,11 +46,12 @@ public function initController(\CodeIgniter\HTTP\RequestInterface $request, \Cod
 	// garbage collection
 	// https://www.php.net/manual/en/function.session-gc.php
 	$gc_file = WRITEPATH . 'php_session_last_gc';
-	$gc_period = 1800; // 30 minutes
+	$gc_period = 7200; // 2 hours
 	if(file_exists($gc_file)) {
 		if(filemtime($gc_file) < time() - $gc_period) {
 			# d('Garbage collection');
 			session_gc();
+			$count = (new \App\Libraries\Ipinfo)->clean();
 			touch($gc_file);
 		}
 	}
