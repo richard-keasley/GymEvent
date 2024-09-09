@@ -886,14 +886,21 @@ public function export($event_id=0, $download=0) {
 	
 	// look for export request
 	$filetype = $this->request->getGet('download');
-	// only using CSV
 	$this->data['filetypes'] = [
-		'csv' => "download",
+		'csv' => "download", // only using CSV
 		# 'json' => "braces",
 		# 'xml' => "code"
 	];
 	if(isset($this->data['filetypes'][$filetype])) {
-		return $this->download($this->data['export'], $this->data['layout'], $source, $filetype);
+		# d($this->data['export']);
+		// categorised table needs headings
+		if($this->data['layout']=='cattable') {
+			$export = [
+				'export' => $this->data['export'],
+				'headings' => $this->data['headings']
+			];
+		}
+		return $this->download($export, $this->data['layout'], $source, $filetype);
 	}
 	
 	// view

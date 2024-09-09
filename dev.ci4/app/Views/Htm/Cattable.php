@@ -11,16 +11,24 @@ public $data = null;
 public $headings = []; // data columns to convert to HTM headings
 public $table_header = false; // include table header
 public $template_name = 'bordered'; // table template
-private $compiled = null; // compiled data
+private $_compiled = []; // compiled data
 
 public function __construct($headings=[]) {
 	$this->headings = $headings;
+	$this->_compiled = [];
+}
+
+public function __get($key) {
+	return match($key) {
+		'compiled' => $this->compile(),
+		default => null
+	};
 }
 
 private function compile() {
-	$this->compiled = false;
-	
-	if(!$this->data) return;
+	if($this->_compiled) return $this->_compiled; // already done
+	if(!$this->data) return []; // no data
+	if(!$this->headings) return []; // no headings set
 	
 	// headings
 	$prev_headings = [];
@@ -58,15 +66,12 @@ private function compile() {
 		}
 		$compiled[$catkey]['tbody'][] = $row;
 	}
-	# d($compiled);
-	$this->compiled = $compiled;
+	# dd($compiled);
+	$this->_compiled = $compiled;
+	return $this->_compiled;
 }
 
-public function csv($data = false) {
-	if($data) $this->data = $data;
-	$this->compile();
-	if(!$this->compiled) return;
-	
+public function csv() {
 	$csv = new \App\Libraries\Csv;
 	foreach($this->compiled as $cattable) { 
 		foreach($cattable['headings'] as $level=>$heading) {
@@ -83,12 +88,9 @@ public function csv($data = false) {
 }
 
 public function __toString() {
-	$this->compile();
-	if(!$this->compiled) return '';
-		
-	$table = \App\Views\Htm\Table::load($this->template_name);
-	
+	# d($this->compiled);
 	ob_start(); 
+	$table = \App\Views\Htm\Table::load($this->template_name);
 	foreach($this->compiled as $cattable) { ?>
 		<section class="mw-100"><?php 
 		

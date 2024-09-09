@@ -110,11 +110,8 @@ protected function download($data, $layout='table', $filetitle='download', $file
 		
 		default:
 		$filetype = 'csv';
-		$export = [
-			'export' => $data,
-			'format' => $filetype
-		];		
-		$response = view("export/{$layout}", $export);
+		$data['format'] = $filetype;
+		$response = view("export/{$layout}", $data);
 		// remove DEBUG comments from view
 		$response = preg_replace('#<!--.*-->[\r\n]#', '', $response);
 		/* https://stackoverflow.com/questions/33592518/how-can-i-setting-utf-8-to-csv-file-in-php-codeigniter
