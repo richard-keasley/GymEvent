@@ -892,15 +892,7 @@ public function export($event_id=0, $download=0) {
 		# 'xml' => "code"
 	];
 	if(isset($this->data['filetypes'][$filetype])) {
-		# d($this->data['export']);
-		// categorised table needs headings
-		if($this->data['layout']=='cattable') {
-			$export = [
-				'export' => $this->data['export'],
-				'headings' => $this->data['headings']
-			];
-		}
-		return $this->download($export, $this->data['layout'], $source, $filetype);
+		return $this->download($this->data, $this->data['layout'], $source, $filetype);
 	}
 	
 	// view

@@ -1,6 +1,7 @@
 <?php
 $format = $format ?? 'htm';
 $headings = $headings ?? [];
+$export = $export ?? [];
 # print_r($headings);
  
 $cattable = new \App\Views\Htm\Cattable($headings);

@@ -1,6 +1,7 @@
 <?php
 $format = $format ?? 'htm';
 $table_header = $table_header ?? true;
+$export = $export ?? [];
 
 $thead = false; 
 if($export && $table_header) {
