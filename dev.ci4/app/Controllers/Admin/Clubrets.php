@@ -106,7 +106,7 @@ public function event($event_id=0) {
 		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
-	$download = $this->request->getPost('download');
+	$download = $this->request->getGet('dl');
 	$clubrets = $this->data['event']->clubrets();
 	
 	// create entries from returns
@@ -216,22 +216,29 @@ public function event($event_id=0) {
 		}
 		$tbody[$rowkey]['fees'] = $fees[$rowkey];
 	}
-	if($download=='summary') return $this->export($tbody, 'summary');
+	if($download=='summary') {
+		# print_r($tbody); return;
+		$export = ['export' => $tbody];
+		return $this->export($export, 'summary');
+	}
 	$this->data['summary'] = $tbody;
 	
 	// build staff table
 	$tbody = [];
 	foreach($this->data['event']->staff() as $entkey=>$entry) {
 		$tbody[] = [
-			# $entkey + 1,
-			$entry['club'],
-			humanize($entry['cat']),
-			$entry['name'],
-			$entry['bg'],
-			# date('d-M-Y', $entry['dob'])
+			# '#' => $entkey + 1,
+			'club' => $entry['club'],
+			'role' => humanize($entry['cat']),
+			'name' => $entry['name'],
+			'BG' => $entry['bg'],
+			# 'DoB' => date('d-M-Y', $entry['dob'])
 		];
 	}
-	if($download=='staff') return $this->export($tbody, 'staff');
+	if($download=='staff') {
+		$export = ['export' => $tbody];
+		return $this->export($export, 'staff');
+	}
 	$this->data['staff'] = $tbody;
 	
 	// build participants table
@@ -253,7 +260,10 @@ public function event($event_id=0) {
 			}
 		}
 	}
-	if($download=='participants') return $this->export($tbody, 'participants');
+	if($download=='participants') {
+		$export = ['export'=>$tbody];
+		return $this->export($export, 'participants');
+	}
 	$this->data['participants'] = $tbody;
 
 	// view
@@ -319,10 +329,10 @@ public function names($event_id=0) {
 	return view('clubrets/names', $this->data);
 }
 
-private function export($tbody, $suffix='') {
+private function export($export, $suffix='') {
 	$filetitle = $this->data['event']->title;
 	if($suffix) $filetitle .= "_{$suffix}";
-	return $this->download($tbody, 'table', $filetitle);
+	return $this->download($export, 'table', $filetitle);
 }
 
 }

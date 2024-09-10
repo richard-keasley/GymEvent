@@ -114,9 +114,10 @@ public function clubs($event_id=0) {
 	}
 	array_multisort($sort, $tbody);
 		
-	$download = $this->request->getPost('download');
+	$download = $this->request->getGet('dl');
 	if($download=='clubs') {
-		return $this->download($tbody, 'table', $download);
+		$export = ['export' => $tbody];
+		return $this->download($export, 'table', $download);
 	}
 		
 	$this->data['tbody'] = $tbody;
@@ -679,10 +680,17 @@ public function export($event_id=0, $download=0) {
 		foreach($this->data['entries'] as $dis) {
 			foreach($dis->cats as $cat) {
 				foreach($cat->entries as $rowkey=>$entry) {
-					$export_table[] = [
+					if(!$rowkey) $has_opt = $entry->opt;
+					$tr = [
+						'dis' => $dis->name,
+						'cat' => $cat->name,
 						'num' => $entry->num,
-						'name' => $entry->name
+						'club' => $ent_users[$entry->user_id]->abbr ?? '?',
+						'name' => $entry->name,
+						'opt' => humanize($entry->opt),
 					];
+						
+					$export_table[] = $tr;
 					$sort[] = $entry->num;
 				}
 			}
@@ -690,7 +698,7 @@ public function export($event_id=0, $download=0) {
 		array_multisort($sort, $export_table);
 
 		$this->data['layout'] = 'table';
-		$this->data['table_header'] = false;
+		$this->data['table_header'] = true;
 		break;
 		
 		case 'running_order':

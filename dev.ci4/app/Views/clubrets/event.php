@@ -5,16 +5,11 @@ $this->section('content');?>
 <div class="d-flex flex-wrap gap-3 d-print-block mb-1">
 
 <section class="mw-100">
-<?php 
-$attr = ['class' => ""];
-echo form_open(current_url(), $attr);
-?>
 <h4>Club returns
-<button type="submit" name="download" value="summary" class="btn btn-sm btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>
+<a href="?dl=summary" class="btn btn-sm btn-secondary" title="Download this spreadsheet"><span class="bi-download"></span></a>
 </h4>
 
-<?php echo form_close();
-
+<?php 
 $tbody = []; $tr = []; $thead = []; $tfoot = [];
 foreach($summary as $row) {
 	if(!$thead) {
@@ -50,11 +45,10 @@ echo $table->generate($tbody);
 </section>
 
 <section class="mw-100">
-<?php echo form_open(current_url(), $attr); ?>
 <h4>Staff
-	<button type="submit" name="download" value="staff" class="btn btn-sm btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>
+<a href="?dl=staff" class="btn btn-sm btn-secondary" title="Download this spreadsheet"><span class="bi-download"></span></a>
 </h4>
-<?php echo form_close();
+<?php 
 $table->setHeading(['club', 'type', 'name', 'BG']);
 $table->setFooting([]);
 echo $table->generate($staff);
@@ -63,11 +57,9 @@ echo $table->generate($staff);
 
 </div>
 
-<?php echo form_open(current_url()); ?>
 <h4>Participants
-	<button type="submit" name="download" value="participants" class="btn btn-sm btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>
+<a href="?dl=participants" class="btn btn-sm btn-secondary" title="Download this spreadsheet"><span class="bi-download"></span></a>
 </h4>
-<?php echo form_close(); ?>
 
 <div class="d-flex flex-wrap gap-3 d-print-block"><?php
 	$headings = ['dis', 'cat'];

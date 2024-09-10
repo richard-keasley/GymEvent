@@ -128,7 +128,7 @@ public function view($event_id=0) {
 		'item_id' => $event_id
 	];
 	
-	$download = $this->request->getPost('download');
+	$download = $this->request->getGet('dl');
 	
 	// build entries table
 	$tbody = [];
@@ -160,11 +160,11 @@ public function view($event_id=0) {
 		}
 	}
 	if($download=='entries') {
-		$export = [];
+		$export = ['export' => []];
 		foreach($tbody as $dis) {
 			$row = ['dis' => $dis['disname']];
 			foreach($dis['cats'] as $cat) {
-				$export[] = array_merge($row, $cat);
+				$export['export'][] = array_merge($row, $cat);
 			}
 		}
 		return $this->export($export, 'entries');
@@ -280,10 +280,10 @@ public function edit($event_id=0) {
 	return view('events/edit', $this->data);
 }
 
-private function export($tbody, $suffix='') {
+private function export($export, $suffix='') {
 	$filetitle = $this->data['event']->title;
 	if($suffix) $filetitle .= "_{$suffix}";
-	return $this->download($tbody, 'table', $filetitle);
+	return $this->download($export, 'table', $filetitle);
 }
 	
 }
