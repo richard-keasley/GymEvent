@@ -24,18 +24,6 @@ $table->setHeading($thead);
 echo $table->generate($tbody);
 ?>
 
-<?php /*
-<h5>Video states</h5>
-<?php 
-$tbody = [
-	['public', $nothing, $nothing, 'view all', $nothing],
-	['club', $nothing, 'edit own', 'view all', $nothing],
-	['admin', 'edit all', 'edit all', 'edit all', $nothing]
-];
-$table->setHeading($thead);
-echo $table->generate($tbody);
-// */ ?>
-
 <h5>Music states</h5>
 <?php 
 

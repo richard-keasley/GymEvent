@@ -67,11 +67,6 @@ $tmp = [
 		'type' => 'text',
 		'class' => 'form-control',
 		'style' => 'min-width:5em;'
-	], 
-	'videos' => [
-		'type' => 'text',
-		'class' => 'form-control',
-		'style' => 'min-width:5em;'
 	]
 ];
 

@@ -53,7 +53,23 @@ $id = "sel-{$exeset->ruleset->name}-{$exekey}";
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
   
-<div class="modal-body"><?php
+<div class="modal-body">
+<div class="input-group my-1" title="filter results">
+<span class="input-group-text bi-filter"></span>
+<input type="text" class="form-control" id="filter1" placeholder="filter">
+<script>
+$(document).ready(function() {
+$("#filter1").on("keyup", function() {
+	var value = $(this).val().toLowerCase();
+	$(".accordion-body button").filter(function() {
+		$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+	});
+});
+});
+</script> 
+</div>
+
+<?php
 $items = [];
 foreach($buffer as $grp=>$grp_skills) {
 	$heading = $exe_rules['group_labels'][$grp] ?? '' ;

@@ -6,7 +6,6 @@ class EntryCat extends Entity {
 	
 protected $casts = [
 	'music' => 'json-array',
-	'videos' => 'json-array'
 ];
 
 }

@@ -273,37 +273,7 @@ static function path_role($path) {
 			return 'club';
 		}
 	}
-				
-	if($controller=='videos') {
-		switch($method) {
-			case 'view':
-			$events = new \App\Models\Events;
-			$event = $events->find($param1);
-			if($event) {
-				if($event->private) return 'controller';
-				return match(intval($event->videos)) {
-					\App\Entities\Event::states['edit'] => 'club',
-					\App\Entities\Event::states['view'] => self::roles[0],
-					default => 'admin'
-				};
-			}
-			break;
-						
-			case 'edit':
-			$entries = new \App\Models\Entries;
-			$entry = $entries->find($param1);
-			if($entry) {
-				$event = $entry->get_event();
-				if($event->private) return 'controller';
-				return $entry->role($controller, 'edit');
-			}
-			break;
-						
-			default:
-			return self::roles[0];
-		}
-	}
-	
+		
 	if($controller=='entries') {
 		switch($method) {
 			case 'view':

@@ -5,7 +5,7 @@ class Entries extends Model {
 
 protected $table      = 'evt_entries';
 protected $primaryKey = 'id';
-protected $allowedFields = ['num', 'category_id', 'user_id', 'name', 'dob', 'guest', 'music', 'videos', 'runorder', 'opt'];
+protected $allowedFields = ['num', 'category_id', 'user_id', 'name', 'dob', 'guest', 'music', 'runorder', 'opt'];
 protected $returnType   = 'App\Entities\Entry';
 
 protected $disciplines = null;
@@ -222,7 +222,7 @@ class EntryCats extends Model {
 
 protected $table      = 'evt_categories';
 protected $primaryKey = 'id';
-protected $allowedFields = ['discipline_id', 'name', 'abbr', 'sort', 'exercises', 'music', 'videos'];
+protected $allowedFields = ['discipline_id', 'name', 'abbr', 'sort', 'exercises', 'music'];
 protected $returnType   = 'App\Entities\EntryCat';
 
 protected $validationRules = [

@@ -60,7 +60,6 @@ if(!$event->deleted_at) {
 	}
 
 	echo $event->link('player');
-	echo $event->link('videos');
 	echo $event->link('teamtime');
 } 
 

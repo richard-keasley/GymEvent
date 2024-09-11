@@ -1,1 +1,1 @@
-<p>Entries are complete for these events. Please inform the competition organisers as soon as possible if you see any errors. If you need to submit music or videos for this event, you should hear from us soon. Please be aware entries' numbers may change in the forthcoming days.</p>
+<p>Entries are complete for these events. Please inform the competition organisers as soon as possible if you see any errors. If you need to submit music for this event, you should hear from us soon. Please be aware entries' numbers may change in the forthcoming days.</p>

@@ -20,7 +20,6 @@ protected $allowedFields = [
 	'clubrets', 
 	'music', 
 	'player', 
-	'videos', 
 	'discats', 
 	'staffcats', 
 	'stafffee', 

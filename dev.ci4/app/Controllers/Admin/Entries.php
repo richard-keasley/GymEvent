@@ -288,10 +288,6 @@ public function categories($event_id=0) {
 		$col_names[] = 'music';
 		$array_fields[] = 'music';
 	}
-	if(\App\Libraries\Video::enabled()) {
-		$col_names[] = 'videos';
-		$array_fields[] = 'videos';
-	}	
 	
 	$filter = []; $flds = ['disid'];
 	foreach($flds as $fld) $filter[$fld] = $this->request->getGet($fld);

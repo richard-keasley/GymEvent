@@ -38,7 +38,6 @@ foreach($clubrets as $clubret) {
 	}		
 	if($event->clubrets==2) { // view	
 		$links[] = getlink("entries/view/{$event->id}", $event_label);
-		if($event->videos) $links[] = getlink("videos/view/{$event->id}", 'videos');
 		if($event->music) $links[] = getlink("music/view/{$event->id}", 'music');
 	}
 	if($links) $nav[] = implode(' ', $links);

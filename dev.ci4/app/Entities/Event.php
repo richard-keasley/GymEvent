@@ -7,7 +7,6 @@ class Event extends Entity {
 protected $casts = [
 	'staffcats' => 'csv',
 	'clubrets' => 'integer',
-	'videos' => 'integer',
 	'music' => 'integer',
 	'private' => 'integer'
 ];
@@ -395,34 +394,6 @@ public function link($type, $user_id=0) {
 			case self::states['view']:
 				return getlink("entries/view/{$this->id}", 'entries');
 				break;
-		}
-		break;
-
-		case 'videos':
-		if(!\App\Libraries\Video::enabled()) return '';
-		switch($this->videos) {
-			case self::states['edit']:
-				$href = "videos/view/{$this->id}";
-				$label = "videos";
-				if($user_id) {
-					$attr = [
-						'class' => 'nav-link', 
-						'title' => "Alter your videos"
-					];
-				}
-				else {
-					$attr = [
-						'class' => 'btn btn-outline-secondary', 
-						'title' => "login to alter videos"
-					];
-				}
-				return anchor($href, $label, $attr);
-			
-			case self::states['view']:
-				return getlink("videos/view/{$this->id}", 'videos');
-			
-			default:
-			return '';
 		}
 		break;
 

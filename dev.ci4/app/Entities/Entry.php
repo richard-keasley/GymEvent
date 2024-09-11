@@ -16,8 +16,7 @@ private $model;
 function breadcrumb($controller) {
 	switch($controller) {
 		case 'music': 
-		case 'videos': 
-			return [$this->url($controller), $this->num];
+		return [$this->url($controller), $this->num];
 	}
 	return '';
 }
@@ -25,8 +24,7 @@ function breadcrumb($controller) {
 function url($controller) {
 	switch($controller) {
 		case 'music': 
-		case 'videos': 
-			return "{$controller}/edit/{$this->id}";
+		return "{$controller}/edit/{$this->id}";
 	}
 	return '';
 }
@@ -40,16 +38,12 @@ function role($controller, $method) {
 		case 'music-edit-1':
 		case 'music-view-1':
 		case 'music-view-2':
-		case 'videos-edit-1':
-		case 'videos-view-1':
-			$user_id = intval(session('user_id'));			
-			return $user_id===$this->user_id ? 'club' : 'admin' ;
-		case 'videos-view-2':
-			return '-';
+		$user_id = intval(session('user_id'));			
+		return $user_id===$this->user_id ? 'club' : 'admin' ;
+	
 		case 'music-edit-2':			
-		case 'videos-edit-2':
 		default:
-			return 'admin';
+		return 'admin';
 	}
 }
 
@@ -84,28 +78,6 @@ public function get_event() {
 		}
 	}
 	return $this->_event;
-}
-
-public function getVideos() {
-	$db_val = filter_json($this->attributes['videos'] ?? null);
-	$entity_val = [];
-	$cat = $this->get_category();
-	foreach($cat->videos as $exe) {
-		$entity_val[$exe] = isset($db_val[$exe]) ? $db_val[$exe] : '' ;
-	}
-	return $entity_val;
-}
-
-public function setVideos($entity_val) {
-	$db_val = json_encode($entity_val);
-	$this->attributes['videos'] = $db_val;
-	return $db_val;
-}  
-
-public function updateVideos() {
-	$data = ['videos' => $this->attributes['videos']];
-	$model = new \App\Models\Entries;
-	$model->update($this->id, $data);
 }
 
 public function getMusic() {

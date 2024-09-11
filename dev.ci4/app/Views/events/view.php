@@ -97,7 +97,6 @@ $this->section('bottom'); ?>
 echo \App\Libraries\View::back_link($back_link);
 echo $event->link('admin');
 echo $event->link('clubrets');
-echo $event->link('videos');
 echo $event->link('music');
 echo $event->link('player');
 echo $event->link('teamtime');

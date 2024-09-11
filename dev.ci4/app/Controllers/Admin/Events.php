@@ -21,7 +21,6 @@ private function find($event_id) {
 	$this->data['states'] = [];
 	if(\App\Entities\Clubret::enabled()) $this->data['states'][] = 'clubrets';
 	if(\App\Libraries\Track::enabled()) $this->data['states'][] = 'music';
-	if(\App\Libraries\Video::enabled()) $this->data['states'][] = 'videos';
 		
 	$this->data['id'] = $event_id;
 	$this->data['title'] = $this->data['event']->title;
@@ -42,7 +41,7 @@ public function add($event_id=0) {
 	$event = $event_id ? $this->mdl_events->withDeleted()->find($event_id) : null ;
 	if($event) {
 		$attribs = $event->toArray();
-		$keys = ['id', 'clubrets', 'videos', 'music', 'deleted_at', 'player'];
+		$keys = ['id', 'clubrets', 'music', 'deleted_at', 'player'];
 		foreach($keys as $key) unset($attribs[$key]);
 		$this->data['heading'] = $event->title . ' - clone';
 	}
