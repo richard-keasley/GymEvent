@@ -1,7 +1,7 @@
 <?php namespace App\Views\Htm;
 
 class Editor implements \stringable {
-const version = '6.7.0';
+const version = '7.3.0' ; # '6.7.0';
 static $script_done = false;
 
 private $attrs = [
@@ -21,41 +21,42 @@ public function __get($key) {
 }
 
 public function __toString() {
-	ob_start();
-	$id = "{$this->attrs['name']}-editor";
-	printf('<div id="%s">', $id);
-	if($this->label) printf('<label>%s</label>', humanize($this->name));
-	echo form_textarea($this->attrs);
-	?>
-	<script>
-	$(function(){
-	tinymce.init({
-		relative_urls: false,
-		remove_script_host: false,
-		document_base_url: '<?php echo base_url();?>',
-		selector: '#<?php echo $id;?> textarea',
-		promotion: false,
-		branding: false,
-		menubar: false,
-		browser_spellcheck: true,
-		plugins: 'link code lists help',
-		toolbar: 'Undo Redo | Blocks | Bold Italic bullist | link code | help',
-		content_css: '<?php echo site_url('/app/gymevent.css');?>'
-	});
-	});
-	</script>
-	<?php
-	echo '</div>';
-	
-	if(!self::$script_done) {
-		$attrs = [
-			'src' => sprintf('/app/tinymce_%s/tinymce/js/tinymce/tinymce.min.js', self::version)
-		];
-		printf('<script %s></script>', stringify_attributes($attrs));
-	}
-	self::$script_done = true;
-	
-	return ob_get_clean();
+ob_start();
+$id = "{$this->attrs['name']}-editor";
+printf('<div id="%s">', $id);
+if($this->label) printf('<label>%s</label>', humanize($this->name));
+echo form_textarea($this->attrs);
+?>
+<script>
+$(function() {
+tinymce.init({
+	selector: '#<?php echo $id;?> textarea',
+	license_key: 'gpl',
+	relative_urls: false,
+	remove_script_host: false,
+	document_base_url: '<?php echo base_url();?>',
+	promotion: false,
+	branding: false,
+	menubar: false,
+	browser_spellcheck: true,
+	plugins: 'link code lists help',
+	toolbar: 'Undo Redo | Blocks | Bold Italic bullist | link code | help',
+	content_css: '<?php echo site_url('/app/gymevent.css');?>'
+});
+});
+</script>
+<?php
+echo '</div>';
+
+if(!self::$script_done) {
+	$attrs = [
+		'src' => sprintf('/app/tinymce_%s/tinymce/js/tinymce/tinymce.min.js', self::version)
+	];
+	printf('<script %s></script>', stringify_attributes($attrs));
+}
+self::$script_done = true;
+
+return ob_get_clean();
 }
 
 }
