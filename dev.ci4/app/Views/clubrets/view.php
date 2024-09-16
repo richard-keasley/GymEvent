@@ -69,7 +69,7 @@ echo $clubret->errors('participants'); ?>
 <section>
 <h2>Payment</h2>
 <div class="textarea"><?php echo $event->payment;?></div>
-<?php echo $clubret->fees('htm');?>
+<?php echo $clubret->fees('htm'); ?>
 </section>
 <?php $this->endSection(); 
 

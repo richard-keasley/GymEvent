@@ -126,7 +126,7 @@ echo form_hidden('staff', json_encode($staff));
 <?php echo $clubret->errors('staff'); ?>
 </div>
 
-<?php if(floatval($event->stafffee)) { ?>
+<?php if($event->stafffee) { ?>
 <p class="mt-2 form-check">
 <?php 
 $input = [

@@ -201,9 +201,8 @@ public function fees($op=1) {
 		$fees[$dis][1] += $fee;
 	}
 	
-	$stafffee = floatval($event->stafffee);
-	if($stafffee && !$this->stafffee) {
-		$fees['_stafffee'] = ['Staff', $stafffee];
+	if($event->stafffee && !$this->stafffee) {
+		$fees['_stafffee'] = ['Staff', $event->stafffee];
 	}
 		
 	if($op=='fees') return $fees;
@@ -214,11 +213,17 @@ public function fees($op=1) {
 		$vartable = new \App\Views\Htm\Vartable;
 		foreach($fees as $fee) {
 			$vartable->items[$fee[0]] = \App\Views\Htm\Table::money($fee[1]);
-			
 		}
 		$vartable->footer = [\App\Views\Htm\Table::money($total), 'Total'];
-		return $vartable->htm();
+		$retval = $vartable->htm();
+		
+		if($event->stafffee && !$this->stafffee) {
+			$retval .= sprintf('<p class="text-bg-light fw-bold">&pound;%1.2f has been added to you entry fee to cover staff costs for this event', $event->stafffee);
+		}
+		
+		return $retval;
 	}
+	
 	return $total;
 }
 

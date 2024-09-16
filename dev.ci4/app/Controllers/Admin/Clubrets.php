@@ -162,8 +162,6 @@ public function event($event_id=0) {
 	
 	// build summary table
 	$fees = []; $cols = []; $count = []; $tbody = [];
-	$stafffee = floatval($this->data['event']->stafffee);
-
 	foreach($clubrets as $rowkey=>$clubret) {
 		$user = $clubret->user();
 		if($download=='summary') {
@@ -187,7 +185,7 @@ public function event($event_id=0) {
 			'updated' => $clubret->updated
 		];
 		
-		if($stafffee) {
+		if($this->data['event']->stafffee) {
 			$val = $clubret->stafffee ? 'X' : '' ;
 			if($download!=='summary') {
 				$val = $val ?

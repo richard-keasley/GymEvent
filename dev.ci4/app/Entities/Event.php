@@ -8,7 +8,8 @@ protected $casts = [
 	'staffcats' => 'csv',
 	'clubrets' => 'integer',
 	'music' => 'integer',
-	'private' => 'integer'
+	'private' => 'integer',
+	'stafffee' => 'float',
 ];
 
 const icons = [
