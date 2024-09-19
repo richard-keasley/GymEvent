@@ -2,20 +2,20 @@
 <div class="card-header">Versions</div>
 <div class="card-body">
 <?php
-$tbody = [
-	['component', '<abbr title="version">v</abbr>'],
-	['PHP', phpversion()],
-	['CodeIgniter', \CodeIgniter\CodeIgniter::CI_VERSION],
-	['Bootstrap', '<span id="bsv"></span>'],
-	['Bootstrap icons', '1.5.0'],
-	['jQuery', '<span id="jqv"></span>'],
-	['TinyMCE', \App\Views\Htm\Editor::version]
+$vars = [
+	'PHP' => phpversion(),
+	'CodeIgniter' => \CodeIgniter\CodeIgniter::CI_VERSION,
+	'Bootstrap' => '<span id="bsv"></span>',
+	'Bootstrap icons' => '1.5.0',
+	'jQuery' => '<span id="jqv"></span>',
+	'TinyMCE' => \App\Views\Htm\Editor::version,
+	'Minify' => '1.3.73',
+	'Path-converter' => '1.1.3'
 ];
-$table = \App\Views\Htm\Table::load('small');
-echo $table->generate($tbody);
+echo new \App\Views\Htm\Vartable($vars);
 ?>
 <script>
-$(function(){
+$(function() {
 $('#jqv').text(jQuery().jquery);
 $('#bsv').text(bootstrap.Tooltip.VERSION);
 });
