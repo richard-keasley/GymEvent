@@ -20,7 +20,7 @@ $attrs = [
 	'id' => "exeset-editlink",
 	'class' => "btn btn-primary bi bi-pencil-square",
 	'title' => "Edit these routines",
-	'href' => "/ma2/routine",
+	'href' => "", // set in JS after page load
 ];
 $idxsel = sprintf('<a %s></a>', stringify_attributes($attrs));
 include __DIR__ . '/idxsel.php'; 

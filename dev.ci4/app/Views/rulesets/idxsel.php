@@ -2,9 +2,9 @@
 <div class="col-auto">
 <select style="min-width:15em" class="form-select" name="idx" onchange="exesets.idxsel.change();"></select>
 </div>
-<div class="col-auto">
-<?php echo $idxsel; ?>
-</div>
+<div class="col-auto"><?php 
+echo $idxsel; 
+?></div>
 </div>
 <script>
 $(function(){
