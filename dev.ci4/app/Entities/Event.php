@@ -485,8 +485,9 @@ public function placeholders() {
 			break;
 			
 			case 'dates':
+			$retval[$key] = [];
 			foreach($val as $subkey=>$subval) {
-				$retval[$key][$subkey] = $subval ? $subval->format('l j F') : '?' ;
+				$retval[$key][$subkey] = (new \datetime((string) $subval))->format('l j F');
 			}
 			break;
 			

@@ -35,7 +35,7 @@ public function index() {
 
 public function view($event_id=0) {
 	$this->find($event_id);
-	
+
 	# d($this->request->getPost());
 
 	if($this->request->getPost('set_state')) {
@@ -159,7 +159,7 @@ public function clubs($event_id=0) {
 		$parser = \Config\Services::parser();
 		$placeholders = [
 			'event' => $this->data['event']->placeholders()
-		];		
+		];
 		
 		$count = 0;
 		$error = null;
@@ -173,9 +173,9 @@ public function clubs($event_id=0) {
 			$email->setBCC($app_mailto);
 			$email_to = (ENVIRONMENT == 'production') ? $recipient->email : $app_mailto;
 			$email->setTo($email_to);
-			# d($translate); d($email_message); 
+			# d($translate); 
+			# echo $email_message; 
 			# d($email); 
-			# die;
 			
 			if($email->send()) {
 				$count++; 
