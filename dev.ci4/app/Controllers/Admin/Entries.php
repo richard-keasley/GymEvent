@@ -683,6 +683,7 @@ public function export($event_id=0, $download=0) {
 						'num' => $entry->num,
 						'club' => $ent_users[$entry->user_id]->abbr ?? '?',
 						'name' => $entry->name,
+						'DoB' => $entry->dob,
 						'opt' => humanize($entry->opt),
 					];
 						
