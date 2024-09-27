@@ -144,7 +144,8 @@ public function edit($entry_id=0) {
 	$event = $entry->get_event();
 
 	// update 
-	if($this->request->getPost('upload')) {
+	$cmd = $this->request->getPost('cmd');
+	if($cmd=='upload') {
 		$file = $this->request->getFile('file');
 		$error = '';
 		if(!$file) $error = 'No file selected';
@@ -163,7 +164,7 @@ public function edit($entry_id=0) {
 		if(!$error) {
 			$filesize = $file->getSizeByUnit('mb');
 			$max_filesize = \App\Libraries\Track::$max_filesize;
-			if($filesize > $max_filesize) $error = "Upload too large ($filesize MB). Please ensure uploaded tracks are less than $max_filesize MB.";
+			if($filesize > $max_filesize) $error = "Upload too large ({$filesize} MB). Please ensure uploaded tracks are less than {$max_filesize} MB.";
 		}
 		if(!$error) {
 			$exe = $this->request->getPost('exe');
@@ -197,6 +198,56 @@ public function edit($entry_id=0) {
 		if($error) $this->data['messages'][] = $error;
 		else $this->data['messages'][] = ["Upload added", 'success'];
 		#var_dump($file);
+	}
+
+	if($cmd=='copytrack') {
+		$exe = $this->request->getPost('exe');
+		$dest = new \App\Libraries\Track();
+		$dest->event_id = $event->id; 
+		$dest->entry_num = $entry->num; 
+		$dest->exe = $exe; 
+		$dest->check_state = 0; // unchecked
+		
+		try {
+			$json = $this->request->getPost('src');
+			if(!$json) throw new \exception("No source specified");
+			$json = json_decode($json);
+			if(!$json) throw new \exception("Invalid source parameters");
+					
+			$source = new \App\Libraries\Track();
+			$source->event_id = $json->event ?? 0; 
+			$source->entry_num = $json->entry?? 0; 
+			$source->exe = $json->exe ?? '';
+			$src_file = $source->file();
+			if(!$src_file) throw new \exception("Could not find source track");
+					
+			// clear existing uploads
+			if($dest->delete()) {
+				$this->data['messages'][] = ["Existing track deleted", 'warning'];
+			}
+			
+			// copy track
+			$ext = $src_file->getExtension();
+			$filebase = $dest->filebase($ext);
+			$dest_file = $dest->filepath() . $dest->filebase($ext);
+			if(!copy($src_file->getPathname(), $dest_file)) {
+				throw new \exception("Could not copy track");
+			}
+			// update database
+			$ent_music = $entry->music;
+			$ent_music[$exe] = $dest->check_state;
+			$entry->music = $ent_music;
+			if($entry->hasChanged('music')) {
+				$entry->updateMusic();
+			}
+			// read
+			$entry = $this->mdl_entries->find($entry_id);
+			// all done 
+			$this->data['messages'][] = ["Please play the copied track to ensure it is correct!", 'success'];
+		}
+		catch(\throwable $ex) {
+			$this->data['messages'][] = [$ex->getMessage(), 'danger'];
+		}
 	}
 
 	// view

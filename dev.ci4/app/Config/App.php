@@ -35,9 +35,10 @@ public function __construct() {
 	// remote server for music uploads / teamtime
 	public $hostname = 'gymevent.uk';
 	// system emails BCC
-	public $mailto = ''; 
-	
-		
+	public $mailto = '';
+	// allowable disk usage for events (bytes)
+	public $events_space = 1073741824; // 1GB
+			
 	/**
      * --------------------------------------------------------------------------
      * Base Site URL

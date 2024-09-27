@@ -13,7 +13,7 @@ foreach($files as $file) $notlisted[] = $file->getFilename();
 # d($notlisted);
 # d($event);
 # d($event->player);
-
+# d($action);
 ?>
 <div class="toolbar sticky-top">
 <?php echo $this->include('Htm/Playtrack');?>
@@ -94,27 +94,49 @@ $track->exe = $round['exe'];
 <?php $this->endSection(); 
 
 $this->section('bottom'); ?>
-<footer class="toolbar">
-<?php 
-$label = '<i class="bi bi-gear-fill"></i>';
-$attrs = [
-	'title' => "Setup event",
-	'class' => "btn btn-outline-secondary"
+<div class="toolbar">
+<?php
+$links = [];
+if($action=='save') {
+	$links[] = [
+		'label' => '<i class="bi bi-globe"></i>',
+		'attrs' => [
+			'title' => "View media player online",
+			'class' => "btn btn-outline-secondary"
+		],
+		'href' => "control/player/view/{$event->id}"
+	];
+}
+$links[] = [
+	'label' => '<i class="bi bi-download"></i>',
+	'attrs' => [
+		'title' => "Save media player to local device",
+		'class' => "btn btn-primary"
+	],
+	'href' => "control/player/view/{$event->id}/save"
 ];
-echo anchor("control/player/edit/{$event->id}", $label, $attrs);
+if($action=='view') {
+	$links[] = [
+		'label' => '<i class="bi bi-gear-fill"></i>',
+		'attrs' => [
+			'title' => "Setup event",
+			'class' => "btn btn-outline-secondary"
+		],
+		'href' => "control/player/edit/{$event->id}"
+	];
+	$links[] = [
+		'label' => 'Auto',
+		'attrs' => [
+			'title' => "Start auto-player",
+			'class' => "btn btn-outline-secondary"
+		],
+		'href' => "control/player/auto"
+	];
+}
 
-$label = '<i class="bi bi-download"></i>';
-$attrs = [
-	'title' => "Save media player to local device",
-	'class' => "btn btn-outline-secondary"
-];
-echo anchor(current_url() . '/save', $label, $attrs);	
-
-$attrs = [
-	'title' => "Start auto-player",
-	'class' => "btn btn-outline-secondary"
-];
-echo anchor("control/player/auto", 'Auto', $attrs);
+foreach($links as $link) {
+	echo anchor($link['href'], $link['label'], $link['attrs']);
+}
 ?>
-</footer>
+</div>
 <?php $this->endSection(); 

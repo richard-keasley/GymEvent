@@ -171,7 +171,6 @@ public function view($event_id=0) {
 	$this->data['entries'] = $tbody;
 			
 	// view
-	$this->data['disk_space'] = $this->data['event']->disk_space();
 	$this->data['back_link'] = "/admin/events";
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['clubrets'] = $this->data['event']->clubrets();

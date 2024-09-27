@@ -154,27 +154,18 @@ public function getFiles() {
 	return $files;
 }
 
-public function disk_space($path = null) {
-	if(!$path) $path = FCPATH . "public/events/{$this->id}/";
-	$retval = ['count' => 0, 'size' => 0];
-	$path = rtrim(realpath($path), '/');
-	if(!$path) return $retval;
-	
-	$files = glob("{$path}/*");
-	foreach($files as $file) {
-		if(is_dir($file)) {
-			$sub = $this->disk_space($file);
-			foreach($sub as $key=>$val) {
-				$retval[$key] += $sub[$key];
-			}
-		}
-		if(is_file($file)) {
-			$file = new \CodeIgniter\Files\File($file);
-			$retval['size'] += $file->getSize();
-			$retval['count'] ++;			
-		}
+public function disk_space() {
+	$filepath = FCPATH . "public/events/{$this->id}";
+	$files = new \CodeIgniter\Files\FileCollection();
+	if(is_dir($filepath)) {
+		$files->addDirectory($filepath, true);
 	}
-	return($retval);
+	$file_size = 0;
+	foreach($files as $file) $file_size += $file->getSize();
+	return [
+		'count' => count($files),
+		'size' => $file_size
+	];
 }
 
 private $_clubrets = null;

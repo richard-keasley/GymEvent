@@ -64,4 +64,18 @@ static function delete_path($path) {
 	} 
 }
 
+static function disk_space() {
+	$filepath = FCPATH . "public/events";
+	$files = new \CodeIgniter\Files\FileCollection();
+	if(is_dir($filepath)) {
+		$files->addDirectory($filepath, true);
+	}
+	$file_size = 0;
+	foreach($files as $file) $file_size += $file->getSize();
+	return [
+		'count' => count($files),
+		'size' => $file_size
+	];
+}
+
 }

@@ -1,16 +1,27 @@
-<p>Select the event you are interested in.</p>
+<section><?php 
+$disk_space = \App\Models\Events::disk_space();
+$allowed = config('App')->events_space;
+$pc = 100 * $disk_space['size'] / $allowed;
+$colour = ($pc>80) ? 'danger' : 'light' ;
+$format = '<p class="bg-%s-subtle p-1">Event files occupy %s of disk space (%u%% of %s allowance).</p>';
+printf($format, 
+	$colour,
+	formatBytes($disk_space['size']),
+	100 * $disk_space['size'] / $allowed,
+	formatBytes($allowed)
+);
+?></section>
+
+<section>
 <p>Club returns and music use the following states:</p>
 <ul class="list list-unstyled">
 <li><?php echo \App\Entities\Event::icons['future'];?> 0: Waiting: Not yet open</li>
-<li><?php echo \App\Entities\Event::icons['current'];?> 1: Edit: Open for uploads / edits</li>
-<li><?php echo \App\Entities\Event::icons['current'];?> 2: View: Read-only</li>
+<li><?php echo \App\Entities\Event::icons['current'];?> 1: Current (either for edits or complete)</li>
 <li><?php echo \App\Entities\Event::icons['past'];?> 3: Finished</li>
-</ul>
-<p>Additionally, events may be marked as follows:</p>
-<ul class="list list-unstyled">
 <li><?php echo \App\Entities\Event::icons['hidden'];?> Ready for deletion (hidden)</li>
 <li><?php echo \App\Entities\Event::icons['private'];?> Private event (hidden from public)</li>
 </ul>
+</section>
 
 <ul class="list list-unstyled"><?php
 $today = new \datetime('today');

@@ -47,14 +47,14 @@ public function index() {
 	return view('events/index', $this->data);
 }
 
-public function view($event_id=0, $action='') {
+public function view($event_id=0, $action='view') {
 	$this->data['event'] = $this->find($event_id);
 	$this->data['title'] = 'Music player';
 	$this->data['heading'] = $this->data['event']->title;
+	$this->data['action'] = $action;
 	
 	if($action=='save') {
 		$this->data['breadcrumbs'] = null;
-		$this->data['head'] = '<script>$(function(){$("footer").hide()})</script>';
 	}
 	else {
 		$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb();
@@ -66,14 +66,16 @@ public function view($event_id=0, $action='') {
 
 	// remove timestamp info
 	$page = preg_replace('#\?t=\d+"#', '"', $page);
-	// make paths relative	
+	// make paths relative and hide footers
 	$replacements = [
 		[base_url('app/'), 'app/'],
-		[base_url("public/events/{$event_id}/music/"), 'music/']
+		[base_url("public/events/{$event_id}/music/"), 'music/'],
+		['<footer ', '<footer style="display:none;" '],
 	];
 	foreach($replacements as $replacement) {
 		$page = str_replace($replacement[0], $replacement[1], $page);
 	}
+		
 	return $this->response->download('player.htm', $page);	
 }
 

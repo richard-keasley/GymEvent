@@ -2,6 +2,7 @@
 $ip = filter_input(INPUT_POST, 'ip');
 
 $this->section('content');
+
 $hidden = [];
 $attrs = [];
 echo form_open('', $attrs, $hidden); ?>
