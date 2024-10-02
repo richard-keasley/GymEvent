@@ -9,7 +9,7 @@ public function __construct() {
 	$this->data['title'] = "events";
 	$this->data['heading'] = "Events";
 	$this->data['admin'] = \App\Libraries\Auth::check_role('admin');
-}
+} 
 	
 private function find($event_id) {
 	$this->data['event'] = $this->mdl_events->withDeleted()->find($event_id);
