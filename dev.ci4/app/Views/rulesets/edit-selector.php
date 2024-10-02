@@ -46,7 +46,7 @@ foreach($skills['skills'] as $skill) {
 $id = "sel-{$exeset->ruleset->name}-{$exekey}";
 ?>
 <div class="modal fade" id="dlg<?php echo $id;?>" tabindex="-1">
-<div class="modal-dialog modal-xl">
+<div class="modal-dialog modal-xl modal-fullscreen-lg-down">
 <div class="modal-content">
 <div class="modal-header">
 <h5 class="modal-title">Skill selector: <?php echo $exekey;?></h5>

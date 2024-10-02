@@ -74,8 +74,7 @@ class Filters extends BaseFilters
 			'csrf' => [
 				'except' => [
 					'/',
-					'api/teamtime/remote/*',
-					'mag/routine'
+					'api/teamtime/remote/*'
 				]
 			]
 		],

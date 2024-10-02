@@ -3,15 +3,20 @@
 class Mag extends \App\Controllers\BaseController {
 
 public function __construct() {
+	helper('html');
 	$this->data['back_link'] = 'mag';
 	$this->data['breadcrumbs'][] = ['mag', "Men's Artistic"];
 	$this->data['title'] = "Men's Artistic";
 	$this->data['heading'] = "Men's Artistic";
-	$this->data['head'] = '
-<link rel="manifest" href="/app/mag/webmanifest.json">
-<meta name="apple-mobile-web-app-title" content="MAG routines">';
+	$this->data['filename'] = "mag_routines";
 	$this->data['rule_options'] = \App\Libraries\Rulesets::options('mag');
 
+	$this->data['head'] = '';
+/*
+ToDo
+'<link rel="manifest" href="/app/mag/webmanifest.json">
+<meta name="apple-mobile-web-app-title" content="MAG routines">';
+*/
 }
 	
 public function index() {
@@ -35,43 +40,56 @@ public function rules($rulesetname = null) {
 public function routineSW() {
 	// service worker
 	$this->response->setHeader('Content-Type', 'application/javascript');
-	return view('mag/exeset/sw', $this->data);
+	return view('rulesets/sw', $this->data);
 }
 
-public function routine($name='') {
-	$getPost = $this->request->getPost();
-	$this->data['exeset'] = new \App\Libraries\Mag\Exeset($getPost);
-	$gymnast_name = $this->data['exeset']->name ? 
-		$this->data['exeset']->name : 
-		humanize($name);
-	if($gymnast_name) {
-		$this->data['title'] = $gymnast_name;
-		$this->data['heading'] = $gymnast_name; 
+public function routine($layout=null) {
+	$this->data['upload'] = null;
+	$file = $this->request->getFile('upload');
+	if($file) {
+		if($file->isValid()) {
+			$json = file_get_contents($file->getPathname());
+			$upload = \App\Libraries\Rulesets\Exeset::read_json($json);
+			if($upload['error']) {
+				$this->data['messages'][] = $upload['error'];
+			}
+			else {
+				$this->data['upload'] = $upload;
+				$this->data['upload']['file'] = $file;
+			}
+			
+		}
+		else {
+			$this->data['messages'][] = "Upload: {$file->getErrorString()}";
+		}
 	}
-	else {
-		$this->data['title'] = $this->data['exeset']->ruleset->title;
-		$this->data['heading'] = $this->data['exeset']->ruleset->description;
-	}
-	$this->data['breadcrumbs'][] = ['mag/routine', "Routine sheet"];
 	
-	$cmd = $this->request->getPost('cmd');		
-	switch($cmd) {
-		case 'print':
-		case 'store':
-		$getPost['cmd'] = 'edit';
-		$this->data['post'] = $getPost;
-		if($cmd=='print') return view('mag/exeset/print', $this->data);
-		// store
-		$filename = preg_replace('#[^a-z_ ]#i', '', $this->data['exeset']->name);
-		$filename = str_replace(' ', '_', $filename);
-		if(!$filename) $filename = 'routine';
-		$this->response->setHeader('Content-Disposition', "attachment; filename={$filename}.html");
-		return view('mag/exeset/print', $this->data);
-		
-		default:
-		$this->data['head'] .= '<link rel="stylesheet" type="text/css" href="/app/mag/exeset-edit.css">';
-		return view('mag/exeset/edit', $this->data);
-	}
+	$layouts = ['edit', 'print'];
+	if(!in_array($layout, $layouts)) $layout = 'edit';
+	
+	$config = new \config\paths;
+	$css = "{$config->viewDirectory}/rulesets/{$layout}.css";
+	$minifier = new \MatthiasMullie\Minify\CSS($css);
+	$this->data['head'] .= sprintf('<style>%s</style>', $minifier->minify());
+	
+	$this->data['title'] = 'MAG routines';
+	$this->data['heading'] = 'MAG routine sheets';
+	$this->data['breadcrumbs'][] = ['mag/routine', "Routine sheets"];
+
+	return view("rulesets/{$layout}", $this->data);
 }
 
-} 
+public function export() {
+	$json = $this->request->getPost('exesets');
+	if(!$json) $json = '[]';
+	$arr = json_decode($json, true);
+	
+	$export = [];
+	foreach($arr as $request) {
+		$exeset = new \App\Libraries\Rulesets\Exeset($request);
+		$export[] = $exeset->export();
+	}
+	return $this->download($export, null, $this->data['filename'], 'json');
+}
+
+}
