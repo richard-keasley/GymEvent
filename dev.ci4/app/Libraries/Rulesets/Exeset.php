@@ -54,6 +54,7 @@ public function __construct($request=[]) {
 	$this->data = [
 		'name' => $request['name'] ?? '',
 		'event' => $request['event'] ?? '',
+		'club' => $request['club'] ?? '',
 		'rulesetname' => $this->ruleset->name,
 		'saved' => date('Y-m-d H:i:s')
 	];

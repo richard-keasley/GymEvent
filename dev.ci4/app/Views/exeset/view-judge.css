@@ -1,0 +1,22 @@
+
+.routine tr td {
+	border: var(--tableborder);
+	padding: 0 0.4em;
+}
+
+.routine tr td.eljudge {
+	display: none;
+}
+
+@media print {
+@page {
+	size: A4 landscape; 
+}
+
+.routine tr td.eljudge {
+	width: 45%;
+	height: 3.5em;
+	display: table-cell;
+}
+
+}

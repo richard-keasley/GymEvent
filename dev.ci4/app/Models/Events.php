@@ -36,15 +36,45 @@ public function delete_all($event_id) {
 	if(!$event) return false;
 	
 	self::delete_path(dirname($event->filepath()));
-	
-	$model = new \App\Models\Clubrets;
-	$model->delete_event($event_id);
-	
-	$model = new \App\Models\Entries;
-	$model->delete_event($event_id);
-	
 	$this->delete($event_id, true);
-	return true;
+	
+	// remove orphans
+	$sql = "SELECT `evt_disciplines`.`id` FROM `evt_disciplines` 
+	LEFT JOIN `events` ON `evt_disciplines`.`event_id` = `events`.`id`
+	WHERE `events`.id IS NULL;";
+	$query = $this->db->query($sql);
+	foreach($query->getResult() as $row) {
+		$sql = "DELETE FROM `evt_disciplines` WHERE `evt_disciplines`.`id`={$row->id};";
+		$this->db->query($sql);
+	}
+
+	$sql = "SELECT `evt_categories`.`id` FROM `evt_categories` 
+	LEFT JOIN `evt_disciplines` ON `evt_categories`.`discipline_id` = `evt_disciplines`.`id`
+	WHERE `evt_disciplines`.id IS NULL;";
+	$query = $this->db->query($sql);
+	foreach($query->getResult() as $row) {
+		$sql = "DELETE FROM `evt_categories` WHERE `evt_categories`.`id`={$row->id};";
+		$this->db->query($sql);
+	}
+
+	$sql = "SELECT `evt_entries`.`id` FROM `evt_entries` 
+	LEFT JOIN `evt_categories` ON `evt_entries`.`category_id` = `evt_categories`.`id`
+	WHERE `evt_categories`.id IS NULL;";
+	$query = $this->db->query($sql);
+	foreach($query->getResult() as $row) {
+		$sql = "DELETE FROM `evt_entries` WHERE `evt_entries`.`id`={$row->id};";
+		$this->db->query($sql);
+	}
+
+	$sql = "SELECT `clubrets`.`id` FROM `clubrets` 
+	LEFT JOIN `events` ON `clubrets`.`event_id` = `events`.`id`
+	WHERE `events`.id IS NULL;";
+	$query = $this->db->query($sql);
+	foreach($query->getResult() as $row) {
+		$sql = "DELETE FROM `clubrets` WHERE `clubrets`.`id`={$row->id};";
+		$this->db->query($sql);
+	}
+	return true;	
 }
 
 static function delete_path($path) {

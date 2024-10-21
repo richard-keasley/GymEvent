@@ -42,8 +42,25 @@ class Autoload extends AutoloadConfig
     public $psr4 = [
         APP_NAMESPACE => APPPATH, // For custom app namespace
         'Config'      => APPPATH . 'Config',
+		
+		// used for minifier
 		'MatthiasMullie\Minify' => APPPATH . 'ThirdParty/minify-1.3.73/src',
-		'MatthiasMullie\PathConverter' => APPPATH . 'ThirdParty/path-converter-1.1.3/src'
+		'MatthiasMullie\PathConverter' => APPPATH . 'ThirdParty/path-converter-1.1.3/src',
+		
+		/* used for websockets 
+		* not used (using Server Sent events)
+		'WebSocket' => APPPATH . 'ThirdParty/websocket-php-3.2.0/src',
+		'Phrity\Net' => [
+			APPPATH . 'ThirdParty/phrity-net-stream-2.1.0/src',
+			APPPATH . 'ThirdParty/phrity-net-uri-2.1.0/src',
+		],
+		'Phrity\Util' => APPPATH . 'ThirdParty/phrity-util-errorhandler-1.1.1/src',
+		'Psr\Http\Message' => [
+			APPPATH . 'ThirdParty/http-message-2.0/src',
+			APPPATH . 'ThirdParty/http-factory-1.1.0/src',
+		],
+		// */
+			
     ];
 
     /**

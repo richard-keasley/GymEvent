@@ -117,6 +117,14 @@ public function playbtn($opts=[]) {
 		$ret[] = form_input($attrs);
 	}
 	
+	if(in_array('date', $opts)) {
+		$file = $this->file();
+		if($file) {
+			$date = date('j M H:i', $file->getMTime());
+			$ret[] = sprintf('<div class="text-muted"><small>%s</small></div>', $date);
+		}
+	}
+	
 	return sprintf('<span class="track">%s</span>', implode(' ', $ret));
 }
 

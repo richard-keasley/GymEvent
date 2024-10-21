@@ -67,43 +67,33 @@ function skills($exekey='', $level='gold') {
 public function routineSW() {
 	// service worker
 	$this->response->setHeader('Content-Type', 'application/javascript');
-	return view('rulesets/sw', $this->data);
+	return view('exeset/sw', $this->data);
 }
 
-public function routine($layout=null) {
-	$this->data['upload'] = null;
+public function routine($viewname='', $layout='') {
 	$file = $this->request->getFile('upload');
-	if($file) {
-		if($file->isValid()) {
-			$json = file_get_contents($file->getPathname());
-			$upload = \App\Libraries\Rulesets\Exeset::read_json($json);
-			if($upload['error']) {
-				$this->data['messages'][] = $upload['error'];
-			}
-			else {
-				$this->data['upload'] = $upload;
-				$this->data['upload']['file'] = $file;
-			}
+	$exelib = new \App\Libraries\Exeset;
+	$data = $exelib->routine($viewname, $layout, $file);
+	foreach($data as $key=>$val) {
+		switch($key) {
+			case 'messages':
+			$this->data[$key][] = $val;
+			break;
 			
-		}
-		else {
-			$this->data['messages'][] = "Upload: {$file->getErrorString()}";
+			case 'style':
+			$this->data['head'] .= sprintf('<style>%s</style>', $val);
+			break;
+			
+			default:
+			$this->data[$key] = $val;
 		}
 	}
-	
-	$layouts = ['edit', 'print'];
-	if(!in_array($layout, $layouts)) $layout = 'edit';
-	
-	$config = new \config\paths;
-	$css = "{$config->viewDirectory}/rulesets/{$layout}.css";
-	$minifier = new \MatthiasMullie\Minify\CSS($css);
-	$this->data['head'] .= sprintf('<style>%s</style>', $minifier->minify());
-	
+		
 	$this->data['title'] = 'General routines';
 	$this->data['heading'] = 'General gymnastics routine sheets';
 	$this->data['breadcrumbs'][] = ['general/routine', "Routine sheets"];
 	
-	return view("rulesets/{$layout}", $this->data);
+	return view("exeset/{$this->data['viewname']}", $this->data);
 }
 
 public function export() {

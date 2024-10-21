@@ -261,7 +261,7 @@ static function path_role($path) {
 			$entry = $entries->find($param1);
 			if($entry) {
 				$event = $entry->get_event();
-				if($event->private) return 'controller';
+				if($event && $event->private) return 'controller';
 				return $entry->role($controller, 'edit');
 			}
 			break;

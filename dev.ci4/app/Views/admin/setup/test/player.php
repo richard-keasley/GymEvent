@@ -2,6 +2,7 @@
 
 $this->section('content'); 
 
+/*
 $tracks = [
 	'089_FX.mp3',
 	'145_FX.mp3'
@@ -20,9 +21,27 @@ foreach($tracks as $basename) {
 	];
 	printf('<p><a %s>%s</a></p>', stringify_attributes($attrs), $basename);
 }
+*/
+/*
+$config = config('autoload');
+d($config->psr4['WebSocket']);
+
+$files = glob($config->psr4['WebSocket'] . '/*.php');
+# foreach($files as $file) include($file);
+d($files);
+
+$ws = null ;
+
+$ws = new WebSocket\Server();
+$ws = new WebSocket\Client("wss://echo.websocket.org/");
 
 
+d($ws);
+*/
+d($this);
+$stream = new \App\Libraries\Sse\Stream('test');
 
+# $stream->send(2);
+die;
 
-?>
-<?php $this->endSection();
+$this->endSection();

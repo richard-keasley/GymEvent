@@ -123,36 +123,6 @@ public function control() {
 	return $this->respond($runvars);	
 }
 
-public function remote($varname='') {
-	$error = false;
-	
-	if(!$error) {
-		$remote = tt_lib::get_value('settings', 'remote');
-		if($remote!='receive') $error = 'Remote not receiving';
-	}
-	if(!$error) {
-		$remote_key = tt_lib::get_value('settings', 'remote_key');
-		if(!$remote_key) $error = 'Remote key not set on receiver';
-	}
-	if(!$error) {
-		$postval = $this->request->getPost('remote_key');
-		if($remote_key!=$postval) $error = "Invalid remote key supplied";
-	}
-	if(!$error) {
-		$postval = $this->request->getPost('value');
-		if(!$postval) $error = "No data sent for {$varname}";
-	}
-	if($error) return $this->failUnauthorized($error);
-	
-	// update 
-	# $error = "remote control disabled";
-	if(!$error) {
-		$error = tt_lib::save_value($varname, $postval);
-	}
-	
-	return $error ? $this->fail($error) : $this->respond('OK');
-}
-
 public function display_view($ds_id=0, $ds_updated=0, $vw_updated=0) {
 	$reload = false;
 	

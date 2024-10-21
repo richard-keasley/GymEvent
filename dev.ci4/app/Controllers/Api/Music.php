@@ -22,68 +22,75 @@ public function index() {
 public function track_url($event_id=0, $entry_num=0, $exe='') {
 	$track = $this->getTrack();
 	$url = $track->url();
-	return $url ? 
-		$this->respond($url): 
-		$this->failNotfound("No music found for {$entry_num} {$exe}");
+	$response = [
+		'status' => $url ? 'ok' : 'error',
+		'message' => $url ? $url : "No music found for {$entry_num} {$exe}"
+	];
+	return $this->respond($response);
 }
 
-public function _track($event_id=0, $entry_num=0, $exe='') {
-	// ToDo: delete this function (4 June 2024)
-	$track = $this->getTrack();
-	$file = $track->file();
-	if(!$file) return $this->failNotfound("No music found for {$entry_num} {$exe}");
-	$filename = $track->filepath() . $file->getFilename();
-	return $this->response->download($filename, null); 
-}
-
-public function set_remote() {
+public function sse() {
 	if(!\App\Libraries\Auth::check_role('controller')) {
 		return $this->failUnauthorized('Permission denied');
 	}
 	
-	$getPost = []; $post_fail = 0;
-	foreach(['event', 'entry', 'exe', 'state'] as $key) {
-		$getPost[$key] = $this->request->getPost($key);
-		if(is_null($getPost[$key])) $post_fail = 1;
-	}
-	if($post_fail) {
-		return $this->fail('Incomplete post');
-	}
-		
-	$track = new \App\Libraries\Track();
-	$track->event_id = $getPost['event'];
-	$track->entry_num = $getPost['entry'];
-	$track->exe = $getPost['exe'];
-	$getPost['url'] = $track->url();
-	$getPost['label'] = $track->label();
-		
-	$appvars = new \App\Models\Appvars();
-	$appvar = new \App\Entities\Appvar;
-	$appvar->id = 'music.remote';
-	$appvar->value = $getPost;
-	$appvars->save_var($appvar);
+	$stream = new \App\Libraries\Sse\Stream('music');
+	$event = $stream->channel->read();
 	
-	if($getPost['url']) {
-		return $this->respond($appvar->value);
+	$id = $event->id ?? 0 ;
+	$id++;
+	if($id > 999) $id = 1;
+		
+	$arr = [
+		'id' => $id,
+		'event' => $this->request->getPost('state'),
+		'data' => '',
+	];
+	$response = [
+		'state' => $arr['event'],
+		'label' => ''
+	];
+	
+	if($arr['event']=='play') {
+		// find track for this entry
+		$track = new \App\Libraries\Track;
+		$track->event_id = $this->request->getPost('event');
+		$track->entry_num = $this->request->getPost('num');
+		$track->exe = $this->request->getPost('exe');	
+		$file = $track->file();
+		if($file) {
+			$arr['data'] = $file->getFilename();
+			$response['label'] = $arr['data'];
+		}
+		else {
+			$label = explode('_', $track->filebase());
+			$label[0] = intval($label[0]);
+			$response = [
+				'state' => 'error', 
+				'label' => sprintf('%s - not found', implode(' ', $label))
+			];
+			$arr['event'] = 'pause';
+			$arr['data'] = $response['label'];
+		}
 	}
-	else {
-		return $this->failNotfound("No music found for {$getPost['entry']} {$getPost['exe']}");
+	$event = new \App\Libraries\Sse\Event($arr);
+	$success = $stream->channel->write($event);
+	if(!$success) {
+		$response = ['state'=>'error', 'label'=>'API error'];
 	}
-}
 
-public function auto($ch_id=0) {
-	$response = '';
-	switch(intval($ch_id)) {
-		case 1:
-			$appvars = new \App\Models\Appvars();
-			$appvar = $appvars->find('music.remote');
-			if(!$appvar) return $this->fail("Can't find music.remote");
-			$response = $appvar->value;
-			if($response['url']) $response['url'] = base_url($response['url']);
-			$response['updated'] = $appvar->updated_at->toDateTimeString();
-	}
-	if($response) return $this->respond($response);
-	else return $this->fail('error');
+	return $this->respond($response);
+	
+	
+	
+	
+	
+	
+	$response = [
+		'status' => $url ? 'ok' : 'error',
+		'message' => $url ? $url : "No music found for {$entry_num} {$exe}"
+	];
+	return $this->respond($response);
 }
 
 public function usertracks($user_id=0, $ent_id=0) {

@@ -10,16 +10,16 @@ $hidden = [
 	'save' => "1"
 ];
 echo form_open(current_url(), $attr, $hidden);
-$evt_model = new \App\Models\Events();
+$evt_model = new \App\Models\Events;
 $events = $evt_model->orderBy('date')->findAll();
 $event_opts = [];
-foreach($events as $event) { 
-	$date = new DateTime($event->date);
+foreach($events as $event) {
+	if($event->clubrets<2) continue;
+	# if($event->music<2) continue;
+	$date = new \DateTime($event->date);
 	$event_opts[$event->id] = sprintf('%s: %s', $date->format('j-M-y'), $event->title);
 }
-$player_opts = ['local'=>'local', 'remote'=>'remote'];
-$remote_opts = ['off', 'send'=>'send', 'receive'=>'receive'];
-$remote_val = tt_lib::get_value('settings', 'remote');
+$player_opts = ['local'=>'local', 'sender'=>'sender'];
 
 $inputs = [
 'event_id' => [
@@ -39,38 +39,7 @@ $inputs = [
 	'class' => 'form-control',
 	'value' => tt_lib::get_value('settings', 'run_rows')
 ],
-'remote' => [
-	'type' => 'select',
-	'class' => 'form-control',
-	'value' => $remote_val,
-	'options' => $remote_opts
-]
 ];
-
-switch($remote_val) {
-	case 'send':
-	$inputs['remote_server'] = [
-		'type' => 'url',
-		'class' => 'form-control',
-		'value' => tt_lib::get_value('settings', 'remote_server')
-	];
-	$inputs['remote_key'] = [
-		'type' => 'text',
-		'class' => 'form-control',
-		'value' => tt_lib::get_value('settings', 'remote_key')
-	];
-	break;
-	
-	case 'receive':
-	$inputs['remote_key'] = [
-		'readonly' => "readonly",
-		'type' => 'text',
-		'class' => 'form-control',
-		'value' => tt_lib::get_value('settings', 'remote_key')
-	];
-	break;
-	
-}
 
 foreach($inputs as $key=>$input) { ?>
 	<div class="my-1 row">

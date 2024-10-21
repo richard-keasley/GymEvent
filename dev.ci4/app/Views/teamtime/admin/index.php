@@ -1,14 +1,12 @@
 <?php $this->extend('default');
 use \App\Libraries\Teamtime as tt_lib;
 
-$event_id = tt_lib::get_value("settings", "event_id");
-$remote = tt_lib::get_value('settings', 'remote');
 $music_player = tt_lib::get_value("settings", "music_player");
 
 $this->section('sidebar');
 
 $attrs = [
-	'class' => $remote=='receive' ? "d-none" : "mw-100",
+	'class' => "mw-100",
 	'style' => "width:21em;",
 	'id' => 'runvars'
 ];
@@ -110,11 +108,20 @@ echo form_open('', $attrs); ?>
 <div class="cmode-only my-2 p-1 border"><?php 
 $include = match($music_player) {
 	'local' => 'Htm/Playtrack',
-	'remote' => 'player/remote',
+	'sender' => 'player/sender',
 	default => null
 };
 if($include) echo $this->include($include);
 else echo $music_player;
+if($music_player=='sender') { ?>
+<script>
+// set up sender play button
+$('#sse-play').click(function() {
+	ttcontrol.player.sse.play();
+});
+	
+</script>	
+<?php }
 ?></div>
 
 <?php 
@@ -144,7 +151,6 @@ echo $this->include('teamtime/admin/progjump');
 
 const ttcontrol = {
 
-music_player: '<?php echo $music_player;?>',
 track_api: '<?php echo base_url("/api/music/track_url/{$event_id}");?>',
 event_id: <?php echo $event_id;?>,
 
@@ -159,6 +165,71 @@ jumpto: function(row, col) {
 	$('#runvars [name=row]').val(row);
 	$('#runvars [name=col]').val(col);
 	set_runvars('jump');
+},
+
+player: {
+	name: '<?php echo $music_player;?>',
+	reset: function() {
+		// pause current track
+		switch(ttcontrol.player.name) {
+			case 'local': playtrack.pause(); 
+			break;
+			
+			case 'sender': 
+			ttcontrol.player.sse.pause();	
+			break;
+		}
+		
+		if(runvars.mode=='c') {
+			// load next track
+			var api = [
+				ttcontrol.track_api, 
+				progtable[runvars.row][runvars.col], // entry
+				progtable[0][runvars.col] // exercise
+			].join('/');			
+			$.get(api, function(response) {
+				var status = response['status'] ?? 'error' ;
+				var message = response['message'] ?? null ;
+				if(!message) {
+					status = 'error';
+					message = 'No reply';
+				}
+				switch(ttcontrol.player.name) {
+					case 'local': 
+					if(status=='ok') playtrack.load(message, 0); // NB: no autoplay
+					else playtrack.msg(message, 'danger');
+					break;
+					
+					case 'sender': 
+					// unsupported
+					break;
+				}
+			});
+		}
+	},
+	sse: {
+		state: 'pause',
+		play: function() {
+			params = {
+				event: <?php echo $event_id;?>,
+				num: progtable[runvars['row']][runvars['col']],
+				exe: progtable[0][runvars['col']],
+			};
+			sse.send('play', params);
+			ttcontrol.player.sse.state = 'play';
+		},
+		pause: function() {
+			if(ttcontrol.player.sse.state=='pause') {
+				// hide current error (if any)
+				sse.message(null, 'pause');
+			}
+			else {
+				// only send pause if we are playing
+				sse.send('pause'); 
+			}
+			ttcontrol.player.sse.state = 'pause';
+		}
+	}
 }
 
 };
@@ -216,21 +287,9 @@ function show_runvars(arr) {
 	}
 	else $('.cmode-only').hide();
 	
-	if(ttcontrol.music_player=='local' && runvars.cmd!='refresh') {
-		playtrack.pause();
-		if(runvars.mode=='c') {
-			entry = progtable[runvars.row][runvars.col];
-			exe = progtable[0][runvars.col];
-			url = [ttcontrol.track_api, entry, exe];
-			
-			$.get(url.join('/'), function(response) {
-				// console.log(response);
-				playtrack.load(response, 0); // NB: no autoplay
-			})
-			.fail(function(jqXHR) {
-				playtrack.msg(get_error(jqXHR), 'danger');
-			});
-		}
+	// pause music
+	if(runvars.cmd!='refresh' && runvars.cmd!='reload') {
+		ttcontrol.player.reset();
 	}
 		
 	$('#run_place h6').html(prog_section(runvars['row']));
@@ -276,7 +335,7 @@ $(function() {
 
 url = '<?php echo site_url("/api/teamtime/get/runvars");?>';
 $.get(url, function(response) {
-	response.cmd = 'reload';
+	response.cmd = 'start';
 	show_runvars(response);
 })
 .fail(function(jqXHR) {

@@ -10,8 +10,8 @@ public function __construct() {
 	$this->data['heading'] = "Men's Artistic";
 	$this->data['filename'] = "mag_routines";
 	$this->data['rule_options'] = \App\Libraries\Rulesets::options('mag');
-
 	$this->data['head'] = '';
+
 /*
 ToDo
 '<link rel="manifest" href="/app/mag/webmanifest.json">
@@ -40,43 +40,33 @@ public function rules($rulesetname = null) {
 public function routineSW() {
 	// service worker
 	$this->response->setHeader('Content-Type', 'application/javascript');
-	return view('rulesets/sw', $this->data);
+	return view('exeset/sw', $this->data);
 }
 
-public function routine($layout=null) {
-	$this->data['upload'] = null;
+public function routine($viewname='', $layout='') {
 	$file = $this->request->getFile('upload');
-	if($file) {
-		if($file->isValid()) {
-			$json = file_get_contents($file->getPathname());
-			$upload = \App\Libraries\Rulesets\Exeset::read_json($json);
-			if($upload['error']) {
-				$this->data['messages'][] = $upload['error'];
-			}
-			else {
-				$this->data['upload'] = $upload;
-				$this->data['upload']['file'] = $file;
-			}
+	$exelib = new \App\Libraries\Exeset;
+	$data = $exelib->routine($viewname, $layout, $file);
+	foreach($data as $key=>$val) {
+		switch($key) {
+			case 'messages':
+			$this->data[$key][] = $val;
+			break;
 			
-		}
-		else {
-			$this->data['messages'][] = "Upload: {$file->getErrorString()}";
+			case 'style':
+			$this->data['head'] .= sprintf('<style>%s</style>', $val);
+			break;
+			
+			default:
+			$this->data[$key] = $val;
 		}
 	}
-	
-	$layouts = ['edit', 'print'];
-	if(!in_array($layout, $layouts)) $layout = 'edit';
-	
-	$config = new \config\paths;
-	$css = "{$config->viewDirectory}/rulesets/{$layout}.css";
-	$minifier = new \MatthiasMullie\Minify\CSS($css);
-	$this->data['head'] .= sprintf('<style>%s</style>', $minifier->minify());
 	
 	$this->data['title'] = 'MAG routines';
 	$this->data['heading'] = 'MAG routine sheets';
 	$this->data['breadcrumbs'][] = ['mag/routine', "Routine sheets"];
 
-	return view("rulesets/{$layout}", $this->data);
+	return view("exeset/{$this->data['viewname']}", $this->data);
 }
 
 public function export() {

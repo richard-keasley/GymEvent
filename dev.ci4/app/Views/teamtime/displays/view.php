@@ -46,26 +46,25 @@ function get_view() {
 	// console.log(url);
 	$.get(url, function(response) {
 		try {
-			var reload = response.reload;
-			if(reload) {
-				<?php if(ENVIRONMENT == 'development') { ?>
-				// console.log(response);
-				// console.log(view);
-				<?php } ?>
-				switch(reload) {
-					case 'view':
-					view.updated = response.updated;
-					view.info = response.view.info;
-					view.images = response.view.images;
-					$('#info').html(response.view.html);
-					break;
+			switch(response.reload) {
+				case 'view':
+				view.updated = response.updated;
+				view.info = response.view.info;
+				view.images = response.view.images;
+				$('#info').html(response.view.html);
+				show_msg('');
+				break;
 
-					case 'display':
-					location.reload()
-					break;
-				}
+				case 'display':
+				location.reload()
+				break;
 			}
-			show_msg('');
+			<?php if(ENVIRONMENT == 'development__') { ?>
+			if(response.reload) {
+				console.log(response);
+				console.log(view);
+			}
+			<?php } ?>
 		}
 		catch(errorThrown) {
 			show_msg('400: ' + errorThrown);

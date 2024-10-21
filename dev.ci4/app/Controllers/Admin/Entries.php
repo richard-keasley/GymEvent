@@ -274,7 +274,12 @@ public function edit($event_id=0) {
 	
 	if($opt_count && $opt_count!=count($this->data['cat_entries'])) {
 		$this->data['messages'][] = ['Entry options should to be entered for <em>all</em> entries or <em>none</em>.', 'warning'];
-	}	
+	}
+	
+	if(!$this->data['entries']) {
+		$this->data['messages'][] = ['There are no entries in this event', 'danger'];
+		return view('entries/view', $this->data);
+	}
 		
 	return view('entries/edit', $this->data);
 }
@@ -878,10 +883,11 @@ public function export($event_id=0, $download=0) {
 			# $export_table[$rowkey]['order'] = implode('-', $sort[$rowkey]);
 		}
 	}
-		
-	$this->data['export'] = []; $tr = [];
+
+	$this->data['export'] = [];
 	foreach($export_table as $row) {
 		$row = array_flatten_with_dots($row);
+		$tr = [];
 		foreach($row as $key=>$val) {
 			$key = str_replace('.', '_', $key);
 			$tr[$key] = $val;

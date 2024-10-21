@@ -117,16 +117,17 @@ echo getlink("admin/music/clubs/{$event->id}", 'clubs');
 <ul class="list-unstyled"><?php
 $now = new \datetime;
 $dates = $event->dates;
+$dates['event'] = $event->date;
 asort($dates);
 foreach($dates as $key=>$val) {
-	if(strpos($key, 'music_')!==0) continue;
-	if($val) {
-		$date = new \datetime($val);			
-		$format = $date < $now ?
-			'<li><em>%s: %s</em></li>' : 
-			'<li>%s: %s</li>';
-		printf($format, humanize($key), $date->format('j F'));
-	}
+	if(strpos($key, 'clubrets_')===0) continue;
+	if(!$val) continue; 
+	
+	$date = new \datetime($val);			
+	$format = $date < $now ?
+		'<li><em>%s: %s</em></li>' : 
+		'<li>%s: %s</li>';
+	printf($format, humanize($key), $date->format('j F Y'));
 }
 ?></ul>
 

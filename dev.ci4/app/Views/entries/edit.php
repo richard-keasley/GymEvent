@@ -272,7 +272,7 @@ $attrs = [
 $hidden = ['update_exeset' => '1'];
 echo form_open('', $attrs, $hidden); 
 ?>
-<label class="form-label"><strong>Exercises</strong></label>
+<label class="form-label"><strong>Exercise set</strong></label>
 <?php
 $scoreboard = new \App\ThirdParty\scoreboard;
 
@@ -301,7 +301,7 @@ foreach($scoreboard->get_exesets() as $exeset) {
 ?></em>
 <?php echo form_close();
 
-$music = $this_cat->music;
+$music = $this_cat->music ?? [];
 if($music) { ?>
 <div class="col-auto d-flex flex-column">
 <label class="form-label"><strong>Music</strong></label>

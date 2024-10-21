@@ -1,0 +1,96 @@
+body {
+	max-width: 30cm;
+}
+
+#viewdata {
+	--themecolour: #b7561b;
+	--tableborder: 1px solid #b7561b44;
+}
+
+#viewdata pre {
+	font-family: inherit;
+	font-size: inherit;
+	margin: 0;
+}
+
+#viewdata .text-muted {
+	font-size: 90%;
+}
+
+#viewdata header {
+	margin: 0 0 0.3em 0;
+	border-bottom: 1px solid var(--themecolour);
+	padding: 0.3em 0;
+}
+#viewdata header ul {
+	white-space: nowrap;
+}
+#viewdata header ul strong {
+	display: inline-block;
+	min-width: 6em;
+	text-align: right;
+	margin-right: .3em;
+}
+
+#viewdata section {
+	border-bottom: 1px solid var(--themecolour);
+	padding: .2em 0;
+	margin: 0;
+	page-break-inside: avoid;
+}
+
+#viewdata .table {
+	margin: 0;
+}
+#viewdata .table.table-sm td {
+	padding: 0em 0.2em;
+}
+#viewdata .dscore td {
+	border: 0;
+}
+#viewdata .dscore tfoot td {
+	font-weight: bold;
+	border-top: 1px solid #0004;
+}
+#viewdata .dscore thead th {
+	text-align: left;
+}
+
+#viewdata .dscore .list-unstyled {
+	margin:0; 
+	padding: 0;
+}
+
+.routine {
+	overflow: hidden;
+}
+.routine table {
+	border: var(--tableborder);
+	width: 100%;
+}
+
+.routine tr td.elnum {
+	width: 2em;
+	min-width: 2em;
+	max-width: 2em;
+	color: var(--themecolour);
+}
+.routine tr td.elval {
+	width: 2em;
+	white-space: nowrap;
+}
+
+@media print {
+	
+body.container-fluid { 
+	margin: 0; 
+	padding: 0;
+	line-height: 1.25;
+	font-size: 10.5pt;
+}
+
+#toolbarContainer {
+	display:none;
+}
+
+}

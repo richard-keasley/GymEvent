@@ -30,18 +30,30 @@ public function exeval() {
 	];
 	foreach($exeset->exercises as $exekey=>$exercise) {
 		$viewdata['exekey'] = $exekey;
-		$response['html'][$exekey] = \view('rulesets/exeval', $viewdata);
+		$response['html'][$exekey] = \view('exeset/exeval', $viewdata);
 	}
 	
 	return $this->respond($response);
 }
 
-public function print() {
+public function view() {
 	$request = $this->request->getPost();
+	
+	$layout = $request['layout'] ?? 'default' ;
+	$pattern = 'exeset/view-%s';
+	$viewname = sprintf($pattern, $layout);
+	$include = config('Paths')->viewDirectory . "/{$viewname}.php";
+	if(!file_exists($include)) {
+		$layout = 'default';
+		$viewname = sprintf($pattern, $layout);
+	}
+	# return $viewname;
+	
 	$data = [
 		'exeset' => new \App\Libraries\Rulesets\Exeset($request),
 	];
-	$html = \view('rulesets/print-exeset', $data);
+	
+	$html = \view($viewname, $data);
 	return $this->respond($html);
 }
 

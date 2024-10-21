@@ -14,7 +14,7 @@ $track->entry_num = $entry->num;
 foreach($entry->music as $exe=>$check_state) {
 	$track->exe = $exe;
 	$track->check_state = $check_state;
-	$tr[$exe] = $track->playbtn();
+	$tr[$exe] = $track->playbtn(['date']);
 	if(!$empty && !$track->file()) $empty = $track->exe;
 	$exe_opts[$exe] = $exe;
 }
