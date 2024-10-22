@@ -12,7 +12,7 @@ $accordion = new \App\Views\Htm\Accordion;
 foreach($ruleset->exes as $exekey=>$exercise) {
 	ob_start();
 	$data = ['exe_rules' => $ruleset->$exekey];
-	echo view("exeset/view-{$data['exe_rules']['method']}", $data);
+	echo view("rulesets/view-{$data['exe_rules']['method']}", $data);
 	$accordion->set_item($data['exe_rules']['name'], ob_get_clean());
 }
 echo $accordion;
