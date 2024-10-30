@@ -9,12 +9,17 @@ $run_rows = $settings['run_rows'] ?? [];
 $row_count = count($run_rows);
 
 $thead = $progtable[0];
+// find previous title row
 $row_num = $runvars['row'];
 do { 
 	if($progtable[$row_num][0]=='t') break;
 	$row_num--; 
 } while($row_num>0);
-$thead[0] = humanize($progtable[$row_num][1]);
+$title = humanize($progtable[$row_num][1]);
+// reduce title to fit in table
+$title = explode(' ', $title);
+if($title) $title[0] = substr($title[0], 0, 1);
+$thead[0] = implode(' ', $title);
 
 $tbody = array_slice($progtable, $runvars['row'], $row_count);
 $mode = $tbody[0][0] ?? '';
