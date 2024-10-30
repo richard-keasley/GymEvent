@@ -73,13 +73,22 @@ foreach($inputs as $key=>$input) { ?>
 
 echo form_close();
 
-$count = count(tt_lib::get_images());	
+$images = tt_lib::get_images();
+$count = count($images);
 $event_id = $inputs['event_id']['value'];
 $image_path = "/public/events/{$event_id}/teamtime";
-if($count) {
-	$format = '<p class="alert alert-success">%s images in %s</p>';
-	printf($format, $count, $image_path);
-} else {
+
+if($count) { ?>
+	<div class="border p-1">
+	<p>Image path: <code><?php echo $image_path;?></code></p>
+	<div class="row"><?php 
+	$format = '<div class="col-auto" style="max-width:12em"><img src="%s" class="my-1"></div>';
+	foreach($images as $src) printf($format, $src);
+	?></div>
+	</div>
+<?php }
+
+else {
 	$format = '<p class="alert alert-danger">No images found in %s!</p>';
 	printf($format, $image_path);
 }

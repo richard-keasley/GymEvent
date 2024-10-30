@@ -32,8 +32,9 @@ foreach($links as $link) {
 ?>
 </div>
 
-<p>The receiver plays tracks requested by the GymEvent server.
-All tracks must be available in <code><?php echo $music_path;?></code></p>
+<p>This receiver plays tracks requested by the remote "sending" server 
+(<code><?php echo $source_url;?></code>).</p>
+<p>All tracks must be available in <code><?php echo $music_path;?></code>.</p>
 
 <div id="rcvalert"></div>
 
