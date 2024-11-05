@@ -7,7 +7,7 @@ $this->section('content');
 $event_id = tt_lib::get_value('settings', 'event_id');
 $mdl_events = new \App\Models\Events;
 $event = $mdl_events->find($event_id);
-$title = $event->title ?? '' ;
+$title = $event->title ?? 'TeamTime' ;
 echo "<h2>{$title}</h2>";
 ?>
 <p>This app displays the current state of a Team-gym event on many screens across a venue. Messaging, timers and music playback are included.</p>
@@ -42,6 +42,10 @@ $this->section('bottom'); ?>
 <div class="toolbar"><?php
 echo \App\Libraries\View::back_link('');
 echo getlink('control/teamtime', 'TT control');
-echo getlink('admin');
+if($event_id) {
+	echo getlink("admin/events/view/{$event_id}", 'admin');
+	echo getlink("events/view/{$event_id}", '<span class="bi bi-eye"></span>');
+}
+	
 ?></div>
 <?php $this->endSection(); 
