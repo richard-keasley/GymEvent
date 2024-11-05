@@ -35,7 +35,6 @@ public function delete_all($event_id) {
 	$event = $this->onlyDeleted()->find($event_id);
 	if(!$event) return false;
 	
-	self::delete_path(dirname($event->filepath()));
 	$this->delete($event_id, true);
 	
 	// remove orphans
@@ -77,35 +76,13 @@ public function delete_all($event_id) {
 	return true;	
 }
 
-static function delete_path($path) {
-	if(is_dir($path)) { 
-		foreach(scandir($path) as $object) { 
-			if($object != "." && $object != "..") {
-				$object = $path. DIRECTORY_SEPARATOR .$object;
-				if(is_dir($object) && !is_link($object)) {
-					self::delete_path($object);
-				}
-				if(is_file($object)) {
-					unlink($object); 
-				}
-			} 
-		}
-		rmdir($path); 
-	} 
-}
-
-static function disk_space() {
+static function files() {
 	$filepath = FCPATH . "public/events";
 	$files = new \CodeIgniter\Files\FileCollection();
 	if(is_dir($filepath)) {
 		$files->addDirectory($filepath, true);
 	}
-	$file_size = 0;
-	foreach($files as $file) $file_size += $file->getSize();
-	return [
-		'count' => count($files),
-		'size' => $file_size
-	];
+	return $files;
 }
 
 }

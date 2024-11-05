@@ -234,7 +234,7 @@ public function edit($event_id=0) {
 		// delete file
 		if($getPost['cmd']=='delfile' && $getPost['key']!=='') {
 			$key = intval($getPost['key']);
-			foreach($this->data['event']->files as $fkey=>$file) {
+			foreach($this->data['event']->downloads as $fkey=>$file) {
 				if($fkey==$key) {
 					$filename = sprintf('<code>%s</code>', $file->getBasename());
 					if(unlink($file->getRealPath())) {
@@ -251,7 +251,7 @@ public function edit($event_id=0) {
 		if($getPost['cmd']=='upload') {
 			$file = $this->request->getFile('file');
 			if($file->isValid()) {
-				$filepath = $this->data['event']->filepath();
+				$filepath = $this->data['event']->filepath('files');
 				if($file->move($filepath, $file->getClientName())) {
 					$this->data['messages'][] = ["Upload added", 'success'];
 				} else {

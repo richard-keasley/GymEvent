@@ -335,7 +335,7 @@ ob_start(); // Downloads
 <p><strong>NB:</strong> Upload an image named 'logo.*' to use it as an image on the main event page.</p>
 
 <?php 
-$downloads = new \App\Views\Htm\Downloads($event->files);
+$downloads = new \App\Views\Htm\Downloads($event->downloads);
 $downloads->template['item_after'] = ' <button type="button" name="cmd" value="delfile" data-key="%1$u" class="btn btn-sm btn-danger bi-trash"></button>';
 echo $downloads->htm();
 ?>

@@ -707,12 +707,35 @@ public function export($event_id=0, $download=0) {
 		if($teamgym) {
 			$progtable = tt_lib::get_value('progtable');
 			if($progtable) {
+				$teams = [];
+				foreach($this->data['entries'] as $dis) {
+					foreach($dis->cats as $cat) {
+						foreach($cat->entries as $rowkey=>$entry) {
+							$teams[$entry->num] = $entry->name;
+						}
+					}
+				}
+				
+				// first row provides keys
 				$keys = array_shift($progtable);
-				$keys[0] = 'mode';
 				$export_row = [];
 				foreach($progtable as $rowkey=>$row) {
-					foreach($keys as $int=>$key) {
-						$export_row[$key] = $row[$int] ?? '' ;
+					$runmode = $row[0];
+					foreach($keys as $colnum=>$key) {
+						// ignore run mode
+						if($colnum) {
+							$val = $row[$colnum] ?? '';
+							switch($runmode) {
+								case 't':
+								$val = humanize($val);
+								break;
+							
+								default:
+								$team = $teams[$val] ?? null ;
+								if($team) $val = "{$val}, {$team}" ;
+							}
+							$export_row[$key] = $val;
+						}
 					}
 					$export_table[] = $export_row;
 				}

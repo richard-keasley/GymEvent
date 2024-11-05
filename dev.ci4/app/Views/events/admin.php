@@ -1,7 +1,9 @@
 <?php $this->extend('default');
 $table = \App\Views\Htm\Table::load('small');
-$can_edit = \App\Libraries\Auth::check_path("admin/events/edit/{$event->id}");	
-$disk_space = $event->disk_space();
+$can_edit = \App\Libraries\Auth::check_path("admin/events/edit/{$event->id}");
+$files = $event->files;
+$file_size = 0;
+foreach($files as $file) $file_size += $file->getSize();
 
 $this->section('top'); ?>
 <h5><?php $date = new \DateTime($event->date); echo $date->format('j F Y');?></h5>
@@ -29,7 +31,7 @@ echo getlink("admin/events/add/{$event->id}", $label);
 if($event->deleted_at) { ?>
 	<button type="submit" name="state" value="list" title="list this event" class="btn btn-success bi-check-circle"></button>
 
-	<?php if(!$disk_space['count']) { ?>
+	<?php if(!count($files)) { ?>
 	<button type="button" title="Delete this event" class="btn btn-danger bi-trash" data-bs-toggle="modal" data-bs-target="#modal_delete"></button>
 	<?php } ?>
 
@@ -77,20 +79,20 @@ foreach($states as $fldname) {
 } 
 ?></section>
 
-<section class="my-2 row">
-<label class="col-auto me-1 fw-bold">Current disk usage:</label>
-<?php foreach($disk_space as $key=>$val) { ?>
-<div class="col-auto mx-2">
-<?php
-if($key=='size') $val = formatBytes($val);
-printf('%s: %s</div>', humanize($key), $val);
-?>
-</div>
-<?php }
-if($disk_space['count'] && $event->deleted_at) { ?>
-<div class="col-auto bg-info-subtle">Clear event files to delete this event</div>
-<?php } ?>
-</section>
+<section class="my-2 row"><?php 
+$arr = [
+	'<span class="fw-bold">Current disk usage:</span>',
+	'Disk space: ' . formatBytes($file_size),
+	'File count: ' . count($files)
+];
+if(count($files) && $event->deleted_at) { 
+	$arr[] = '<span class="px-1 bg-info-subtle">Clear event files to delete this event</span>';
+}
+
+$format = '<div class="col-auto">%s</div>';
+foreach($arr as $val) printf($format, $val);
+
+?></section>
 
 <section class="my-2 row">
 <ul class="list-unstyled"><?php
