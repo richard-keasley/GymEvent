@@ -44,8 +44,9 @@ foreach($entries as $dis) {
 			if($filter['cat'] && $filter['cat']!=$cat->id) continue;
 			$tbody = [];
 			$thead = ['#', 'Club', 'Name'];
+			$head_done = false;
 
-			foreach($cat->entries as $key=>$entry) {
+			foreach($cat->entries as $entry) {
 				$track->entry_num = $entry->num;
 				if($filter['user'] && $filter['user']!=$entry->user_id) continue;
 				$ent_row = [
@@ -56,7 +57,7 @@ foreach($entries as $dis) {
 				
 				$show_entry = 0; $ent_states = [];
 				foreach($entry->music as $exe=>$check_state) {
-					if(!$key) $thead[] = $exe;	
+					if(!$head_done) $thead[] = $exe;	
 						
 					$track->exe = $exe;
 					$track->check_state = $check_state;
@@ -65,6 +66,7 @@ foreach($entries as $dis) {
 					$ent_states[] = $status;
 					if(!$filter['status'] || $filter['status']==$status) $show_entry = 1;
 				}
+				$head_done = true;
 				
 				if($show_entry) {
 					$count_entries++;
