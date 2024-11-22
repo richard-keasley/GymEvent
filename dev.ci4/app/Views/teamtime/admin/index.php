@@ -15,29 +15,31 @@ echo form_open('', $attrs); ?>
 <fieldset class="collapse" id="topfields">
 
 <div class="input-group my-1">
-	<label class="input-group-text">View</label>
-	<select name="view" class="form-control" onchange="set_runvars('refresh')"><?php 
-	foreach(tt_lib::get_value('views') as $key=>$view) {
-		$label = $view ? $view['title'] : 'default' ;
-		printf('<option value="%u">%s</option>', $key, $label);
-	}
-	?></select>
+<label class="input-group-text">View</label>
+<select name="view" class="form-control" onchange="set_runvars('refresh')"><?php 
+foreach(tt_lib::get_value('views') as $key=>$view) {
+	$label = $view ? $view['title'] : 'default' ;
+	printf('<option value="%u">%s</option>', $key, $label);
+}
+?></select>
 </div>
 
 <div class="input-group my-1">
-	<label class="input-group-text">Timer</label>
-	<input type="number" name="timer" class="form-control">
+<label class="input-group-text">Timer</label>
+<input type="number" name="timer" class="form-control">
 </div>
 
 <div class="form-floating my-1">
-  <input name="message" class="form-control" id="fldmessage" placeholder="message">
-  <label for="fldmessage">Message</label>
+<input name="message" class="form-control" id="fldmessage" placeholder="message">
+<label for="fldmessage">Message</label>
 </div>
 
 <div class="navbar my-1">
 
 <span>
-<button type="button" class="btn btn-primary bi bi-arrow-repeat" onclick="set_runvars('refresh')" title="update view"></button>
+<?php echo \App\Libraries\View::back_link('teamtime'); ?>
+
+<button type="button" class="btn btn-primary bi bi-arrow-repeat" onclick="set_runvars('refresh')" title="update displays"></button>
 
 <button class="btn btn-primary" type="button" title="Jump to programme place" data-bs-toggle="modal" data-bs-target="#tt-progjump"><i class="bi-grid-3x3-gap"></i></button>
 <input type="hidden" name="row" class="form-control">
@@ -45,29 +47,31 @@ echo form_open('', $attrs); ?>
 </span>
 
 <span>
-<?php echo \App\Libraries\View::back_link('teamtime'); ?>
-
-
-<button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#debug" title="View API replies"><i class="bi-wrench"></i></button>
-
-<button type="button" class="btn btn-warning bi bi-arrow-counterclockwise" onclick="set_runvars('reload')" title="reload displays"></button>
 
 <span class="dropdown">
-	<button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi bi-list"></span></button>
-	<ul class="dropdown-menu dropdown-menu-end bg-light" aria-labelledby="dropdownMenuButton1">
-	<?php
-	$methods = get_class_methods('\\App\\Controllers\\Control\\Teamtime');
-	$exclude = ['index', '__construct', 'initController'];
-	$methods = array_diff($methods, $exclude);
-	$query = http_build_query(['bl' => 'control/teamtime']);
-	$attrs = ['class' => "dropdown-item"];
-	foreach($methods as $method) {
-		$link = anchor("control/teamtime/{$method}?{$query}", $method, $attrs);
-		echo "<li>{$link}</li>";
-	}	
-	?>
-	</ul> 
-</span>	
+<button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi bi-list"></span></button>
+<ul class="dropdown-menu dropdown-menu-end bg-light">
+<?php
+$methods = get_class_methods('\\App\\Controllers\\Control\\Teamtime');
+$exclude = ['index', '__construct', 'initController'];
+$methods = array_diff($methods, $exclude);
+$query = http_build_query(['bl' => 'control/teamtime']);
+$attrs = ['class' => "dropdown-item"];
+foreach($methods as $method) {
+	$link = anchor("control/teamtime/{$method}?{$query}", $method, $attrs);
+	echo "<li>{$link}</li>";
+}	
+
+?>
+<li><hr class="dropdown-divider"></li>
+<li><span class="dropdown-item">
+<button type="button" class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#debug" title="View API replies"><i class="bi-wrench"></i></button>
+<button type="button" class="btn btn-warning bi bi-arrow-counterclockwise" onclick="set_runvars('reload')" title="reload displays"></button>
+</span></li>
+
+</ul> 
+</span>
+
 </span>
 
 </div>
