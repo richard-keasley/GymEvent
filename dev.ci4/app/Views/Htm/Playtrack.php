@@ -4,25 +4,31 @@
 <script>
 const playtrack = {
 load: function(track_url, autoplay=1) {
-	playtrack.pause();
+	playtrack.pause();    
+
 	if(track_url) {
 		var temp = track_url.split('/').pop(); // filename
 		var html = temp.split('?')[0]; // remove query
 		html = html.replace(/^0+/, ''); // trim leading zeros
 		html = html.replace('.', ' (') + ')'; // place extension in bracket
 		html = html.replace('_', ' ');
+		// force UI to show full volume
+		playtrack.audio.volume = 1;
+		$('#playtrack audio').animate({volume: .99}, 0);
+		$('#playtrack audio').animate({volume: 1}, 1);
 		playtrack.msg(html, 'warning');
 		playtrack.audio.src = track_url;
 		playtrack.audio.muted = false;
-		playtrack.audio.volume = 1;
 		playtrack.audio.load();	
 		playtrack.autoplay = autoplay;
 	}
-},
+}, 
 
-pause: function() {
-	playtrack.msg('ready&hellip;', 'light');
-	playtrack.audio.pause();
+pause: function(fade=0) {
+	$('#playtrack audio').animate({volume: 0}, fade, function() {
+        playtrack.msg('ready&hellip;', 'light');
+		playtrack.audio.pause();    
+	});
 },
 
 msg: function(html, alert) {

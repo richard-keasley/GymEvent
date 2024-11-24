@@ -80,8 +80,8 @@ foreach($methods as $method) {
 
 <div class="bg-light my-1 p-1 navbar">
 <span class="pe-3 runnav">
-<button type="button" class="btn btn-primary bi bi-caret-left-fill" onclick="set_runvars('prev')" title="Previous"></button>
-<button type="button" class="btn btn-primary bi bi-caret-right-fill" onclick="set_runvars('next')" title="Next"></button>
+<button type="button" class="btn btn-primary bi bi-arrow-left" onclick="set_runvars('prev')" title="Previous"></button>
+<button type="button" class="btn btn-primary bi bi-arrow-right" onclick="set_runvars('next')" title="Next"></button>
 </span>
 
 <button class="ps-3 btn btn-outline-primary collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#topfields" aria-expanded="false" aria-controls="topfields">
@@ -102,7 +102,7 @@ foreach($methods as $method) {
 <div class="row omode-only my-2 p-1 border">
 <div class="col-auto py-1">
 	Timer: 
-	<span class="bg-dark text-light py-1 px-2" style="width: 8em" id="timertick"></span>
+	<span class="bg-dark text-light py-1 px-2" style="width:8em" id="timertick"></span>
 </div>
 <div class="col-auto">
 	<button type="button" class="btn btn-primary btn-sm bi bi-skip-backward-fill" onclick="set_runvars('timer0')"></button>
@@ -176,7 +176,8 @@ player: {
 	reset: function() {
 		// pause current track
 		switch(ttcontrol.player.name) {
-			case 'local': playtrack.pause(); 
+			case 'local': 
+			playtrack.pause(); 
 			break;
 			
 			case 'sender': 
@@ -346,7 +347,7 @@ $.get(url, function(response) {
 	ttcontrol.message( get_error(jqXHR) ); 
 });
 
-var tt = setInterval(function(){
+var tt = setInterval(function() {
 	$('#timertick').html(timeticker.tick(['time']));
 }, 1000);
 

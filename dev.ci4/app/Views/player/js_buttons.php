@@ -9,18 +9,23 @@ function playbutton(button) {
 	// is a button active?
 	if(active_btn) {
 		active_btn.className = BUTTONS.repeat;
-		playtrack.pause();
 		if(active_btn.title==button.title) {
-			// stopping current track
+			// fade current track
+			playtrack.pause(1000);
 			active_btn = 0;
 			return true;
 		}
+		else {
+			// jumping to new track
+			playtrack.pause();
+		}
 	}
-	
-	// play new track
+	// play requested track
+	playtrack.load(track_url);
+		
+	// set active button
 	active_btn = button;
 	active_btn.className = BUTTONS.pause;
-	playtrack.load(track_url);
 	return true;
 }
 </script>

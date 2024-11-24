@@ -77,7 +77,7 @@ open: function() {
 	receiver.source.addEventListener("pause", (event) => {
 		receiver.log(event);
 		if(!receiver.check_repeat(event)) return;
-		playtrack.pause();
+		playtrack.pause(1000);
 	}, false);
 
 	receiver.source.addEventListener("play", (event) => {
