@@ -1,6 +1,6 @@
-<button type="button" class="btn badge bg-info float-end" data-bs-toggle="modal" data-bs-target="#modalHelp" data-stub="<?php echo $help;?>"><span class="bi bi-question-circle"></span></button>
+<button type="button" id="btnhelp" class="btn badge bg-info float-end" data-bs-toggle="modal" data-bs-target="#dlghelp" data-stub="<?php echo $help;?>"><span class="bi bi-question-circle"></span></button>
 
-<div class="modal fade" id="modalHelp" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="dlghelp" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog modal-dialog-scrollable modal-lg">
 <div class="modal-content">
 <div class="modal-header">
@@ -17,12 +17,12 @@
 </div>
 
 <script>
-const modalHelp = document.getElementById('modalHelp');
-modalHelp.addEventListener('show.bs.modal', function (event) {
+const dlghelp = document.getElementById('dlghelp');
+dlghelp.addEventListener('show.bs.modal', function (event) {
 	var button = event.relatedTarget;
 	var stub = button.getAttribute('data-stub');
-	var modalTitle = modalHelp.querySelector('.modal-title');
-	var modalBody = modalHelp.querySelector('.modal-body');
+	var modalTitle = dlghelp.querySelector('.modal-title');
+	var modalBody = dlghelp.querySelector('.modal-body');
 	var url = '<?php echo site_url("api/help/view");?>/' + stub;
 	$.get(url, function(response) {
 		try {

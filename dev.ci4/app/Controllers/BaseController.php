@@ -133,4 +133,25 @@ protected function download($data, $layout='table', $filetitle='download', $file
 	return $this->response->download($filename, $response);
 }
 
+protected function saveplayer($event_id, $name, $html) {
+	/* used by 
+	App\Controllers\Control\Player
+	App\Controllers\Control\Teamtime
+	*/
+	
+	// remove timestamp info
+	$html = preg_replace('#\?t=\d+"#', '"', $html);
+	// make paths relative and hide footers
+	$replacements = [
+		[base_url('app/'), 'app/'],
+		[base_url("public/events/{$event_id}/music/"), 'music/'],
+		['<footer ', '<footer style="display:none;" '],
+	];
+	foreach($replacements as $replacement) {
+		$html = str_replace($replacement[0], $replacement[1], $html);
+	}
+		
+	return $this->response->download($name, $html);	
+}
+
 }

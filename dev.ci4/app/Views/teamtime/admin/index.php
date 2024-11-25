@@ -10,13 +10,14 @@ $attrs = [
 	'style' => "width:21em;",
 	'id' => 'runvars'
 ];
-echo form_open('', $attrs); ?>
+$hidden = ['row' => '', 'col'=>'', 'id'=>''];
+echo form_open('', $attrs, $hidden); ?>
 
 <fieldset class="collapse" id="topfields">
 
 <div class="input-group my-1">
 <label class="input-group-text">View</label>
-<select name="view" class="form-control" onchange="set_runvars('refresh')"><?php 
+<select name="view" class="form-control" onchange="ttrun.set('refresh')"><?php 
 foreach(tt_lib::get_value('views') as $key=>$view) {
 	$label = $view ? $view['title'] : 'default' ;
 	printf('<option value="%u">%s</option>', $key, $label);
@@ -39,11 +40,11 @@ foreach(tt_lib::get_value('views') as $key=>$view) {
 <span>
 <?php echo \App\Libraries\View::back_link('teamtime'); ?>
 
-<button type="button" class="btn btn-primary bi bi-arrow-repeat" onclick="set_runvars('refresh')" title="update displays"></button>
+<button type="button" class="btn btn-primary bi bi-arrow-repeat" onclick="ttrun.set('refresh')" title="update displays"></button>
 
 <button class="btn btn-primary" type="button" title="Jump to programme place" data-bs-toggle="modal" data-bs-target="#tt-progjump"><i class="bi-grid-3x3-gap"></i></button>
-<input type="hidden" name="row" class="form-control">
-<input type="hidden" name="col" class="form-control">
+
+<button type="button" class="btn bg-info" data-bs-toggle="modal" data-bs-target="#dlghelp" data-stub="control/teamtime"><span class="bi bi-question-circle"></span></button>
 </span>
 
 <span>
@@ -66,7 +67,7 @@ foreach($methods as $method) {
 <li><hr class="dropdown-divider"></li>
 <li><span class="dropdown-item">
 <button type="button" class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#debug" title="View API replies"><i class="bi-wrench"></i></button>
-<button type="button" class="btn btn-warning bi bi-arrow-counterclockwise" onclick="set_runvars('reload')" title="reload displays"></button>
+<button type="button" class="btn btn-warning bi bi-arrow-counterclockwise" onclick="ttrun.set('reload')" title="reload displays"></button>
 </span></li>
 
 </ul> 
@@ -79,14 +80,14 @@ foreach($methods as $method) {
 </fieldset>
 
 <div class="bg-light my-1 p-1 navbar">
-<span class="pe-3 runnav">
-<button type="button" class="btn btn-primary bi bi-arrow-left" onclick="set_runvars('prev')" title="Previous"></button>
-<button type="button" class="btn btn-primary bi bi-arrow-right" onclick="set_runvars('next')" title="Next"></button>
+<span class="pe-3">
+<button type="button" class="btn btn-primary bi bi-arrow-left" onclick="ttrun.set('prev')" title="Previous"></button>
+<button type="button" class="btn btn-primary bi bi-arrow-right" onclick="ttrun.set('next')" title="Next"></button>
 </span>
 
 <button class="ps-3 btn btn-outline-primary collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#topfields" aria-expanded="false" aria-controls="topfields">
-<span class="bi bi-arrows-expand" title="show settings"></span>
-<span class="bi bi-arrows-collapse" title="hide settings"></span>
+<span class="bi bi-arrows-collapse" title="show settings"></span>
+<span class="bi bi-arrows-expand" title="hide settings"></span>
 </button>
 	
 </div>
@@ -100,12 +101,12 @@ foreach($methods as $method) {
 </div>
 
 <div class="row omode-only my-2 p-1 border">
-<div class="col-auto py-1">
-	Timer: 
-	<span class="bg-dark text-light py-1 px-2" style="width:8em" id="timertick"></span>
+<div class="col-auto">Timer</div>
+<div class="col-auto bg-dark text-light text-center" style="width:4.5em">
+	<span class="fw-bold align-middle" id="timertick"></span>
 </div>
 <div class="col-auto">
-	<button type="button" class="btn btn-primary btn-sm bi bi-skip-backward-fill" onclick="set_runvars('timer0')"></button>
+	<button type="button" class="btn btn-primary btn-sm bi bi-skip-backward-fill" onclick="ttrun.set('timer0')"></button>
 </div>
 </div>
 
@@ -117,15 +118,7 @@ $include = match($music_player) {
 };
 if($include) echo $this->include($include);
 else echo $music_player;
-if($music_player=='sender') { ?>
-<script>
-// set up sender play button
-$('#sse-play').click(function() {
-	ttcontrol.player.sse.play();
-});
-	
-</script>	
-<?php }
+
 ?></div>
 
 <?php 
@@ -150,8 +143,12 @@ echo $this->include('teamtime/admin/progjump');
 ?>
 
 <script>
-// const csrf_token = '<?php echo csrf_token();?>';
-// const csrf_hash = '<?php echo csrf_hash();?>';
+// set up sender play button
+<?php if($music_player=='sender') { ?>
+$('#sse-play').click(function() {
+	ttcontrol.player.play();
+});
+<?php } ?>
 
 const ttcontrol = {
 
@@ -168,11 +165,22 @@ message: function(text='', alert='danger') {
 jumpto: function(row, col) {
 	$('#runvars [name=row]').val(row);
 	$('#runvars [name=col]').val(col);
-	set_runvars('jump');
+	ttrun.set('jump');
 },
 
 player: {
 	name: '<?php echo $music_player;?>',
+	play: function(){
+		switch(ttcontrol.player.name) {
+			case 'local':
+			playtrack.play();
+			break;
+			
+			case 'sender':
+			ttcontrol.player.sse.play();
+			break;
+		}
+	},
 	reset: function() {
 		// pause current track
 		switch(ttcontrol.player.name) {
@@ -185,12 +193,12 @@ player: {
 			break;
 		}
 		
-		if(runvars.mode=='c') {
+		if(ttrun.val.mode=='c') {
 			// load next track
 			var api = [
 				ttcontrol.track_api, 
-				progtable[runvars.row][runvars.col], // entry
-				progtable[0][runvars.col] // exercise
+				ttlib.progtable[ttrun.val.row][ttrun.val.col], // entry
+				ttlib.progtable[0][ttrun.val.col] // exercise
 			].join('/');			
 			$.get(api, function(response) {
 				var status = response['status'] ?? 'error' ;
@@ -202,7 +210,7 @@ player: {
 				switch(ttcontrol.player.name) {
 					case 'local': 
 					if(status=='ok') playtrack.load(message, 0); // NB: no autoplay
-					else playtrack.msg(message, 'danger');
+					else playtrack.msg(message);
 					break;
 					
 					case 'sender': 
@@ -212,13 +220,14 @@ player: {
 			});
 		}
 	},
+	
 	sse: {
 		state: 'pause',
 		play: function() {
 			params = {
 				event: <?php echo $event_id;?>,
-				num: progtable[runvars['row']][runvars['col']],
-				exe: progtable[0][runvars['col']],
+				num: ttlib.progtable[ttrun.val['row']][ttrun.val['col']],
+				exe: ttlib.progtable[0][ttrun.val['col']],
 			};
 			sse.send('play', params);
 			ttcontrol.player.sse.state = 'play';
@@ -239,75 +248,55 @@ player: {
 
 };
 
-let runvars = null;	
-let entry = 0;
-let exe = '';
-let url = '';
+const ttrun = {
+val: null,
 
-function set_runvars(cmd='') {
-var postvar = {cmd:cmd};
-var fields = $('#runvars').serializeArray();
-jQuery.each(fields, function(i, field) {
-	postvar[field.name] = field.value;
-});
-// console.log(postvar);
-
-// send to control
-url = '<?php echo site_url("/api/teamtime/control");?>';
-$.post(url, postvar)
-.done(function(response) {
-	//console.log(response);
-	show_runvars(response);
-	if(response.error) ttcontrol.message(response.error);
-})
-.fail(function(jqXHR) {
-	ttcontrol.message(get_error(jqXHR)); 
-});
-
-};
-
-function show_runvars(arr) {
-	runvars = arr;
-	runvars['row'] = parseInt(runvars['row']);
-	runvars['col'] = parseInt(runvars['col']);
-		
-	$('#debug pre').html(JSON.stringify(runvars, null, 1));
-	
-	$('[name=col]').val(runvars['col']);
-	$('[name=row]').val(runvars['row']);
-	$('[name=timer]').val(runvars['timer']);
-	$('[name=message]').val(runvars['message']);
-	$('[name=view] option').each(function() {
-		this.selected = this.value==runvars['view'];			
+get: function(arr) {
+	var keys = ['event','col','row','timer','timer_current','timer_start'];
+	keys.forEach((key) => {
+		arr[key] = parseInt(arr[key] ?? 0);
 	});
+	ttrun.val = arr;
+	// console.log(ttrun.val);
+	
+	keys = ['event','col','row','timer','message'];
+	keys.forEach((key) => {
+		var val = ttrun.val[key] ?? '' ;
+		$('[name='+key+']').val(val);		
+	});
+	$('[name=view] option').each(function() {
+		this.selected = this.value==ttrun.val['view'];			
+	});
+	$('#debug pre').html(JSON.stringify(ttrun.val, null, 1));
+	
 	ttcontrol.message();
-	if(runvars.mode=='o') {
+	if(ttrun.val.mode=='o') {
 		$('.omode-only').show();
-		timeticker.init(runvars['timer'], runvars['timer_current']);
+		ttlib.timer.init(ttrun.val['timer'], ttrun.val['timer_current']);
 	}
 	else $('.omode-only').hide();
 	
-	if(runvars.mode=='c') {
+	if(ttrun.val.mode=='c') {
 		$('.cmode-only').show(); 
 	}
 	else $('.cmode-only').hide();
 	
 	// pause music
-	if(runvars.cmd!='refresh' && runvars.cmd!='reload') {
+	if(ttrun.val.cmd!='refresh' && ttrun.val.cmd!='reload') {
 		ttcontrol.player.reset();
 	}
 		
-	$('#run_place h6').html(prog_section(runvars['row']));
-	var row_num = runvars['row'];
-	var prog_row = progtable[row_num];
+	$('#run_place h6').html(ttlib.prog_section(ttrun.val['row']));
+	var row_num = ttrun.val['row'];
+	var prog_row = ttlib.progtable[row_num];
 	var html = '';
 	var attr = '';
 	if(prog_row[0]!='t') {
 		prog_row.forEach(function(number, index) {
 			if(index) {
 				attr = prog_row[0] + 'mode';
-				if(index==runvars['col']) attr += ' active';
-				html += '<li class="'+attr+'">'+team_name(number)+'</li>';
+				if(index==ttrun.val['col']) attr += ' active';
+				html += '<li class="'+attr+'">'+ttlib.team_name(number)+'</li>';
 			}
 		});
 	}		
@@ -315,67 +304,84 @@ function show_runvars(arr) {
 
 	html = '';
 	row_num ++;
-	var prog_row = progtable[row_num];
+	var prog_row = ttlib.progtable[row_num];
 	if(typeof prog_row!=='undefined') {
 		if(prog_row[0]=='t') {
-			html = '<li><em>'+prog_section(row_num)+'</em></li>';
+			html = '<li><em>'+ttlib.prog_section(row_num)+'</em></li>';
 		}
 		else {
 			prog_row.forEach(function(number, index) {
-				if(index) html += '<li>'+team_name(number)+'</li>';
+				if(index) html += '<li>'+ttlib.team_name(number)+'</li>';
 			});
 		}
 	}
 	$('#run_place .next_row').html(html);
-}
+},
 
-function team_name(number) {
-	if(number==='-') return number;
-	var team_name = teams[number];
-	if(typeof team_name==='undefined') team_name = '<em>no name</em>';
-	return number + '. ' + team_name;
+set: function(cmd) {
+	var postvar = {cmd:cmd};
+	var fields = $('#runvars').serializeArray();
+	jQuery.each(fields, function(i, field) {
+		postvar[field.name] = field.value;
+	});
+	console.log(postvar);
+	
+	// send to control
+	url = '<?php echo site_url("/api/teamtime/control");?>';
+	$.post(url, postvar)
+	.done(function(response) {
+		// console.log(response);
+		ttrun.get(response);
+		if(response.error) ttcontrol.message(response.error);
+	})
+	.fail(function(jqXHR) {
+		ttcontrol.message(get_error(jqXHR)); 
+	});
 }
+};
 
 $(function() {
 
-url = '<?php echo site_url("/api/teamtime/get/runvars");?>';
+var url = '<?php echo site_url("/api/teamtime/get/runvars");?>';
 $.get(url, function(response) {
 	response.cmd = 'start';
-	show_runvars(response);
+	ttrun.get(response);
 })
 .fail(function(jqXHR) {
 	ttcontrol.message( get_error(jqXHR) ); 
 });
 
 var tt = setInterval(function() {
-	$('#timertick').html(timeticker.tick(['time']));
+	$('#timertick').html(ttlib.timer.tick(['time']));
 }, 1000);
 
-// short cut keys for buttons
+/* 
+shortcut keys for buttons
+event.altKey 
+event.ctrlKey 
+*/
 $("body").keyup(function(event) {
-	if(event.ctrlKey && event.altKey) {
-		switch(event.key) {
-			case 'ArrowRight':
-				set_runvars('next');
-				break;
-			case 'ArrowLeft':
-				set_runvars('prev');
-				break;
-			case 'ArrowUp':
-				if(runvars.mode=='c') {
-					playtrack.player.trigger('play');
-				}
-				break;
-			case 'ArrowDown':
-				playtrack.player.trigger('pause');
-				break;
-		}
-	}
+if(event.ctrlKey) {
 	switch(event.key) {
-		case 'Enter': 
-			set_runvars('refresh');
-			break;
+		case 'ArrowRight':
+		ttrun.set('next');
+		break;
+
+		case 'ArrowLeft':
+		ttrun.set('prev');
+		break;
+
+		case 'ArrowUp':
+		if(ttrun.val.mode=='c') {
+			ttcontrol.player.play();
+		}
+		break;
+
+		case 'ArrowDown':
+		ttcontrol.player.reset();
+		break;
 	}
+}
 });
 
 // remember collapse state

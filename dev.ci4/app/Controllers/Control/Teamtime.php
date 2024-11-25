@@ -169,26 +169,9 @@ function player($action='') {
 	$page = view("player/teamtime", $this->data);
 
 	return ($action=='save') ?
-		$this->savepage($event_id, 'player.htm', $page) :
+		$this->saveplayer($event_id, 'player.htm', $page) :
 		$page ;
 	
-}
-
-private function savepage($event_id, $name, $html) {
-	// copy from App\Controllers\Control\Player::savepage
-	// remove timestamp info
-	$html = preg_replace('#\?t=\d+"#', '"', $html);
-	// make paths relative and hide footers
-	$replacements = [
-		[base_url('app/'), 'app/'],
-		[base_url("public/events/{$event_id}/music/"), 'music/'],
-		['<footer ', '<footer style="display:none;" '],
-	];
-	foreach($replacements as $replacement) {
-		$html = str_replace($replacement[0], $replacement[1], $html);
-	}
-		
-	return $this->response->download($name, $html);	
 }
 
 function appvars() {

@@ -31,7 +31,14 @@ pause: function(fade=0) {
 	});
 },
 
-msg: function(html, alert) {
+play: function() {
+	playtrack.audio.play().catch(error => {
+		// Autoplay was blocked. Do something
+		playtrack.msg("Check autoplay is allowed on this page");
+	});
+},
+
+msg: function(html, alert='danger') {
 	playtrack.message.innerHTML = html;
 	playtrack.message.className = 'p-1 my-0 alert alert-' + alert;
 },

@@ -144,6 +144,9 @@ alert: (message, type="danger") => {
 <?php $this->endSection();
 
 $this->section('top');
+if($action=='view') { ?>
+<p class="alert alert-warning">The music receiver is not designed to be used here. Please download it to your device.</p>
+<?php }
 echo $this->include('player/notfound');
 echo $this->include('Htm/Playtrack');
 $this->endSection();

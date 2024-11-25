@@ -21,10 +21,13 @@ public function control() {
 	if(!\App\Libraries\Auth::check_role('controller')) {
 		return $this->failUnauthorized('Permission denied');
 	}
-
+	if(strtolower($this->request->getMethod())!='post') {
+		return $this->get('runvars');
+	}
+	
 	$progtable = tt_lib::get_value("progtable");
 	if(!$progtable) return $this->fail("No programme set");
-	
+		
 	$runvars = tt_lib::get_value("runvars");
 	// get run place before any updates
 	$row = $runvars['row'] ?? '#';
@@ -117,6 +120,13 @@ public function control() {
 		$runvars['timer_start'] = 0;
 	}
 	
+	// server sent events
+	$arr = [
+		'event' => $runvars['cmd'],
+		# 'data' => '',
+	];
+	$runvars['event'] = tt_lib::set_event($arr);
+			
 	$error = tt_lib::save_value('runvars', $runvars);
 	$runvars = tt_lib::get_value("runvars");
 	$runvars['error'] = $error;

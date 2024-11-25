@@ -1,11 +1,19 @@
 <div id="sender" class="m-0 p-1 alert alert-secondary">
-<div class="d-flex">
-<?php 
-echo anchor("control/player/receiver/{$event_id}", 'Receiver'); ?>&nbsp;&nbsp;&nbsp; 
-<button type="button" id="sse-play" class="btn btn-sm btn-primary bi bi-play-fill mx-1"></button>
-<button type="button" class="btn btn-sm btn-primary bi bi-stop-fill mx-1" onclick="sse.send('pause')"></button>
-<div class="mx-1 bg-dark text-light py-1 px-2" style="width:5em" id="ssetimer"></div>
+
+<div class="row">
+<div class="col-auto"><?php
+$attrs = ['class' => "me-1"]; 
+echo anchor("control/player/receiver/{$event_id}", 'Receiver', $attrs); 
+?></div>
+<div class="col-auto"> 
+<button id="sse-play" type="button" class="btn btn-sm btn-primary bi bi-play-fill px-3"></button>
+<button id="sse-pause" type="button" class="btn btn-sm btn-primary bi bi-stop-fill px-3" onclick="sse.send('pause')"></button>
 </div>
+<div class="col-auto bg-dark text-light text-center" style="width:4.7em">
+	<span class="fw-bold align-middle" id="sse-timer"></span>
+</div>
+</div>
+
 <p>ready...</p>
 </div>
 <script>
@@ -33,14 +41,14 @@ send: function(state, params={}) {
 	});
 	
 	// update timer
-		switch(state) {
-			case 'play':
-			sse.timer.start();
-			break;
-			case 'pause':
-			sse.timer.reset();
-			break;
-		}
+	switch(state) {
+		case 'play':
+		sse.timer.start();
+		break;
+		case 'pause':
+		sse.timer.reset();
+		break;
+	}
 },
 
 message: function(message, state='error') {
@@ -65,7 +73,7 @@ message: function(message, state='error') {
 
 timer: {
 	timer: null,
-	el: $('#ssetimer'),
+	el: $('#sse-timer'),
 	start: function() {
 		var secs = 0;
 		sse.timer.timer = setInterval(function() {

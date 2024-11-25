@@ -43,7 +43,7 @@ public function view($event_id=0, $action='view') {
 	$page = view("player/view", $this->data);
 	
 	return ($action=='save') ?
-		$this->savepage($event_id, 'player.htm', $page) :
+		$this->saveplayer($event_id, 'player.htm', $page) :
 		$page ;
 }
 
@@ -71,14 +71,12 @@ public function receiver($event_id=0, $action='view') {
 	$page = view("player/receiver", $this->data);
 
 	return ($action=='save') ?
-		$this->savepage($event_id, 'receiver.htm', $page) :
+		$this->saveplayer($event_id, 'receiver.htm', $page) :
 		$page ;
 }
 
 public function edit($event_id=0) {
-	
 	$event = $this->find($event_id);
-	
 	$cmd = $this->request->getPost('cmd');
 	
 	if($cmd=='update') { 
@@ -179,23 +177,6 @@ public function edit($event_id=0) {
 	$this->data['title'] = 'Music player - edit';
 	$this->data['heading'] = $this->data['event']->title;
 	return view("player/edit", $this->data);
-}
-
-private function savepage($event_id, $name, $html) {
-	// copy from App\Controllers\Control\Teamtime::savepage
-	// remove timestamp info
-	$html = preg_replace('#\?t=\d+"#', '"', $html);
-	// make paths relative and hide footers
-	$replacements = [
-		[base_url('app/'), 'app/'],
-		[base_url("public/events/{$event_id}/music/"), 'music/'],
-		['<footer ', '<footer style="display:none;" '],
-	];
-	foreach($replacements as $replacement) {
-		$html = str_replace($replacement[0], $replacement[1], $html);
-	}
-		
-	return $this->response->download($name, $html);
 }
 
 private function find($event_id) {

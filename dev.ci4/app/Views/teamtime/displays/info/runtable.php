@@ -61,12 +61,12 @@ foreach($tbody as $row_key=>$tr) {
 </div>
 <script>
 var runvars = <?php echo json_encode($runvars);?>;
-timeticker.init(runvars['timer'], runvars['timer_current']);
-timeticker.custom = ['#C00','#C30',"#C60","#C90","#9C0","#6C0","#3C0",'#0C0'];
+ttlib.timer.init(runvars['timer'], runvars['timer_current']);
+ttlib.timer.custom = ['#C00','#C30',"#C60","#C90","#9C0","#6C0","#3C0",'#0C0'];
 var timer_val = [];
 var $timer = $('#timertick .progbar')[0];
 var tt = setInterval(function() {
-	timer_val = timeticker.tick(['%', 'custom', 'raw']);
+	timer_val = ttlib.timer.tick(['%', 'custom', 'raw']);
 	// console.log(timer_val);
 	$timer.style.width = timer_val[0];
 	$timer.style.background = timer_val[1];
