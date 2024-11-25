@@ -119,13 +119,6 @@ public function control() {
 	else { // cancel timer
 		$runvars['timer_start'] = 0;
 	}
-	
-	// server sent events
-	$arr = [
-		'event' => $runvars['cmd'],
-		# 'data' => '',
-	];
-	$runvars['event'] = tt_lib::set_event($arr);
 			
 	$error = tt_lib::save_value('runvars', $runvars);
 	$runvars = tt_lib::get_value("runvars");

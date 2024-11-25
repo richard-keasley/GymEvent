@@ -6,13 +6,14 @@ const min_delay = 1000;
 private $attrs = [];
 
 function __construct($channel) {
+	// CI not required
 	$pattern = __DIR__ . '/channel/%s.php';
 	$include = sprintf($pattern, $channel);
 	if(!is_file($include)) {
 		$channel = 'none';
 		$include = sprintf($pattern, $channel);
 	}
-	include $include;
+	include_once $include;
 	$class = "\\App\\Libraries\\Sse\\channel\\{$channel}";
 	$this->attrs = [
 		'channel' => new $class

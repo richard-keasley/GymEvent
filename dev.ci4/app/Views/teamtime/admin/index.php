@@ -252,14 +252,14 @@ const ttrun = {
 val: null,
 
 get: function(arr) {
-	var keys = ['event','col','row','timer','timer_current','timer_start'];
+	var keys = ['col','row','timer','timer_current','timer_start'];
 	keys.forEach((key) => {
 		arr[key] = parseInt(arr[key] ?? 0);
 	});
 	ttrun.val = arr;
 	// console.log(ttrun.val);
 	
-	keys = ['event','col','row','timer','message'];
+	keys = ['col','row','timer','message'];
 	keys.forEach((key) => {
 		var val = ttrun.val[key] ?? '' ;
 		$('[name='+key+']').val(val);		

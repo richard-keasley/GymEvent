@@ -75,7 +75,7 @@ timer: {
 		}.bind(this)); 
 		return retval;
 	}
-}
+},
 
 };
 </script>
