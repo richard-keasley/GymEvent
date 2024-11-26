@@ -324,7 +324,7 @@ set: function(cmd) {
 	jQuery.each(fields, function(i, field) {
 		postvar[field.name] = field.value;
 	});
-	console.log(postvar);
+	// console.log(postvar);
 	
 	// send to control
 	url = '<?php echo site_url("/api/teamtime/control");?>';

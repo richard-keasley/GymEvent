@@ -12,11 +12,9 @@ load: function(track_url, autoplay=1) {
 		html = html.replace(/^0+/, ''); // trim leading zeros
 		html = html.replace('.', ' (') + ')'; // place extension in bracket
 		html = html.replace('_', ' ');
-		// force UI to show full volume
-		playtrack.audio.volume = 1;
-		$('#playtrack audio').animate({volume: .99}, 0);
-		$('#playtrack audio').animate({volume: 1}, 1);
 		playtrack.msg(html, 'warning');
+		
+		playtrack.audio.volume = 1;
 		playtrack.audio.src = track_url;
 		playtrack.audio.muted = false;
 		playtrack.audio.load();	
@@ -27,7 +25,8 @@ load: function(track_url, autoplay=1) {
 pause: function(fade=0) {
 	$('#playtrack audio').animate({volume: 0}, fade, function() {
         playtrack.msg('ready&hellip;', 'light');
-		playtrack.audio.pause();    
+		playtrack.audio.pause();
+		$('#playtrack audio').animate({volume: 1}, 1);		
 	});
 },
 

@@ -9,18 +9,14 @@ echo anchor("control/player/receiver/{$event_id}", 'Receiver', $attrs);
 <button id="sse-play" type="button" class="btn btn-sm btn-primary bi bi-play-fill px-3"></button>
 <button id="sse-pause" type="button" class="btn btn-sm btn-primary bi bi-stop-fill px-3" onclick="sse.send('pause')"></button>
 </div>
-<div class="col-auto bg-dark text-light text-center" style="width:4.7em">
-	<span class="fw-bold align-middle" id="sse-timer"></span>
+<div class="col-auto">
+<?php echo new \App\Views\Htm\Timer('ssetimer'); ?>
 </div>
 </div>
 
 <p>ready...</p>
 </div>
 <script>
-$(function() {
-sse.timer.reset();
-});
-
 const sse = {
 
 send: function(state, params={}) {
@@ -43,10 +39,10 @@ send: function(state, params={}) {
 	// update timer
 	switch(state) {
 		case 'play':
-		sse.timer.start();
+		this.timer.start();
 		break;
 		case 'pause':
-		sse.timer.reset();
+		this.timer.reset();
 		break;
 	}
 },
@@ -71,29 +67,7 @@ message: function(message, state='error') {
 	$('#sender')[0].className = 'm-0 p-1 alert alert-' + alert;	
 },
 
-timer: {
-	timer: null,
-	el: $('#sse-timer'),
-	start: function() {
-		var secs = 0;
-		sse.timer.timer = setInterval(function() {
-			secs++;
-			sse.timer.show(secs);
-		}, 1000);
-	},
-	reset: function() {
-		if(sse.timer.timer) clearInterval(sse.timer.timer);
-		sse.timer.show(0);
-	},
-	show: function(secs) {
-		var mins = Math.floor(secs/60); 
-		secs = secs % 60;
-		mins = mins.toString().length < 2 ? '0' + mins : mins;
-		secs = secs.toString().length < 2 ? '0' + secs : secs;
-		// console.log(mins + ':' + secs);
-		sse.timer.el.text(mins + ':' + secs);
-	}
-}
+timer: new timer('ssetimer')
 
 }
 </script>

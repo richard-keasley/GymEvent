@@ -380,10 +380,8 @@ $('#discats [name=add]').click(function() {
 
 $('#discats [name=del]').click(function() {
 	var count = $('#discats tbody tr').length;
-	console.log(count);
 	if(count<2) return;
 	var $tr = $(this).closest('tr');
-	console.log($tr);	
 	$tr.remove();
 });
 

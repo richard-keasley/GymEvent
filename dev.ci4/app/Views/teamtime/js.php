@@ -59,17 +59,20 @@ timer: {
 			var val;
 			switch(format) {
 				case '%':
-					val = Math.floor(100 * (1 - remainder / this.duration)) + '%';
-					break;
+				val = Math.floor(100 * (1 - remainder / this.duration)) + '%';
+				break;
+
 				case 'time':
-					val = this.formatTime(remainder);
-					break;
+				val = this.formatTime(remainder);
+				break;
+				
 				case 'custom': 
-					var index = Math.floor(this.custom.length * remainder / this.duration);
-					val = this.custom[index];
-					break;
+				var index = Math.floor(this.custom.length * remainder / this.duration);
+				val = this.custom[index];
+				break;
+				
 				default:
-					val = Math.floor(remainder);
+				val = Math.floor(remainder);
 			}
 			retval.push(val);
 		}.bind(this)); 
