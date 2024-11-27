@@ -75,7 +75,7 @@ close: function() {
 open: function() {
 	$('#receiver_open').hide();
 	$('#receiver_close').show();
-	$('#messages').text('');
+	receiver.messages.text('');
 	
 	var event = {data: 'Opening ' + receiver.url};
 	receiver.log(event);

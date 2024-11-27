@@ -52,11 +52,12 @@ function get_view() {
 				view.info = response.view.info;
 				view.images = response.view.images;
 				$('#info').html(response.view.html);
-				show_msg('');
+				receiver.alert('');
 				break;
 
 				case 'display':
-				location.reload()
+				// now handled by SSE receiver
+				// location.reload()
 				break;
 			}
 			<?php if(ENVIRONMENT == 'development__') { ?>
@@ -67,14 +68,15 @@ function get_view() {
 			<?php } ?>
 		}
 		catch(errorThrown) {
-			show_msg('400: ' + errorThrown);
+			receiver.alert('400: ' + errorThrown);
 		}
 	})
 	.fail(function(jqXHR) {
-		show_msg(get_error(jqXHR));
+		receiver.alert(get_error(jqXHR));
 	})
 	.always(function() {
-		setTimeout(function(){ get_view(); }, display.tick);
+		// now handled by SSE receiver
+		// setTimeout(function(){ get_view(); }, display.tick);
 	});
 }
 
@@ -102,11 +104,77 @@ function frame_ticker() {
 	setTimeout(function(){ frame_ticker(); }, frame_period * 1000);
 };
 
-function show_msg(msg) { 
+const receiver = {
+
+url: '<?php echo site_url('apx/sse.php?ch=teamtime');?>',
+source: null,
+last_id: 0,
+
+close: function() {
+	receiver.source.close();
+	receiver.last_id = 0;
+	var event = {data: 'Connection closed'};
+	receiver.log(event);
+},
+
+open: function() {
+	var event = {data: 'Opening ' + receiver.url};
+	receiver.log(event);
+	receiver.source = new EventSource(receiver.url);
+	
+	receiver.source.addEventListener("display", (event) => {
+		if(receiver.last_id) {
+			console.log('#reload ' + receiver.last_id);
+			receiver.alert(event['data'] ?? 'reloading...');
+			receiver.close();
+			location.reload();
+		}
+		var new_event = receiver.log(event);
+		get_view();
+	}, false);
+
+	receiver.source.addEventListener("view", (event) => {
+		var new_event = receiver.log(event);
+		get_view();
+	}, false);
+	
+	receiver.source.onmessage = (event) => {
+		var new_event = receiver.log(event);
+	} 
+},
+
+log: function(event) {
+	var id = Number.parseInt(event['lastEventId'] ?? 0);
+	var new_event = (id!==receiver.last_id);
+	receiver.last_id = id;
+		
+	var text = [];
+	if(id) text.push(id+'.');
+	var type = event['type'] ?? null;
+	if(type=='message') type=null;
+	if(type) text.push('('+type+')');
+	
+	var data = event['data'] ?? null;
+	if(data) text.push(data);
+	
+	text = text.join(' ');
+			
+	// console.log(event);
+	console.log(text);
+	
+	return new_event;
+},
+
+alert: (msg) => {
 	if(msg) msg = '<p>'+msg+'</p>'; 
 	$('#msg').html(msg); 
 }
 
+};
+
+$(function(){
+receiver.open();
+});
 </script>
 
 <?php $this->endSection();
