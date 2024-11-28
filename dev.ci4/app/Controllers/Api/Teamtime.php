@@ -163,5 +163,26 @@ public function display_view($ds_id=0, $ds_updated=0, $vw_updated=0) {
 	return $this->respond($response, 200);
 }
 
+public function getview($ds_id='#') {
+	// look up display and view
+	$display = tt_lib::get_value('displays', $ds_id);
+	if(!$display) return $this->fail("Display {$ds_id} not found");
+	$view = tt_lib::display_view($display);
+	if(!$view) return $this->fail("Can't find view for display {$ds_id}");
+	
+	// compile HTML for this view
+	$view['html'] = tt_lib::view_html($view['html']);
+	
+	$stream = new \App\Libraries\Sse\Stream('teamtime');
+	$event = $stream->channel->read();
+	
+	$response = [
+		'view' => $view,
+		'updated' => $event->updated,
+		'event' => $event->id,
+	];
+	return $this->respond($response, 200);
+}
+
 
 }

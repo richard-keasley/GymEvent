@@ -40,31 +40,21 @@ let frame_display = null ; // CSS display style of frame
 let chk = 0;
 
 // get view from server
-get_view();
-function get_view() {
+// getview(); handled by SSE
+function getview() {
 	var url = '<?php echo site_url("/api/teamtime/display_view/{$ds_id}/{$ds_updated}");?>/'+view.updated;
-	// console.log(url);
+	url = '<?php echo site_url("/api/teamtime/getview/{$ds_id}");?>';
+	console.log(url);
 	$.get(url, function(response) {
 		try {
-			switch(response.reload) {
-				case 'view':
-				view.updated = response.updated;
-				view.info = response.view.info;
-				view.images = response.view.images;
-				$('#info').html(response.view.html);
-				receiver.alert('');
-				break;
-
-				case 'display':
-				// now handled by SSE receiver
-				// location.reload()
-				break;
-			}
-			<?php if(ENVIRONMENT == 'development__') { ?>
-			if(response.reload) {
-				console.log(response);
-				console.log(view);
-			}
+			view.updated = response.updated;
+			view.info = response.view.info;
+			view.images = response.view.images;
+			$('#info').html(response.view.html);
+			receiver.alert('');
+			<?php if(ENVIRONMENT=='_development') { ?>
+			console.log(response);
+			console.log(view);
 			<?php } ?>
 		}
 		catch(errorThrown) {
@@ -73,10 +63,6 @@ function get_view() {
 	})
 	.fail(function(jqXHR) {
 		receiver.alert(get_error(jqXHR));
-	})
-	.always(function() {
-		// now handled by SSE receiver
-		// setTimeout(function(){ get_view(); }, display.tick);
 	});
 }
 
@@ -106,7 +92,13 @@ function frame_ticker() {
 
 const receiver = {
 
-url: '<?php echo site_url('apx/sse.php?ch=teamtime');?>',
+url: '<?php 
+	$query = [
+		'ch' => "teamtime",
+		'd' => intval($display['tick'] / 1000),
+	];
+	echo site_url('apx/sse.php?' . http_build_query($query));?>',
+
 source: null,
 last_id: 0,
 
@@ -124,18 +116,19 @@ open: function() {
 	
 	receiver.source.addEventListener("display", (event) => {
 		if(receiver.last_id) {
-			console.log('#reload ' + receiver.last_id);
-			receiver.alert(event['data'] ?? 'reloading...');
+			var message = receiver.last_id + ' reloading...';
+			receiver.log(message);
+			receiver.alert(message);
 			receiver.close();
 			location.reload();
 		}
 		var new_event = receiver.log(event);
-		get_view();
+		getview();
 	}, false);
 
 	receiver.source.addEventListener("view", (event) => {
 		var new_event = receiver.log(event);
-		get_view();
+		getview();
 	}, false);
 	
 	receiver.source.onmessage = (event) => {
@@ -160,7 +153,7 @@ log: function(event) {
 	text = text.join(' ');
 			
 	// console.log(event);
-	console.log(text);
+	if(text) console.log(text);
 	
 	return new_event;
 },

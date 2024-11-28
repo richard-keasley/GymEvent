@@ -13,12 +13,14 @@ function __construct() {
 
 function read() {
 	// CI not required 
-	$sql = "SELECT `value` FROM `appvars` WHERE `id`='sse.teamtime' LIMIT 1;";
+	$sql = "SELECT * FROM `appvars` WHERE `id`='sse.teamtime' LIMIT 1;";
 	$result = $this->db->query($sql);
 	$row = $result->fetch_object();
 	$result->close();
+	
 	$arr = $row ? json_decode($row->value, 1) : null ;
-	if(!$arr) $arr = [];
+	if($arr) $arr['updated'] = $row->updated_at;
+	else $arr = [];
 	return new \App\Libraries\Sse\Event($arr);
 }
 
