@@ -40,11 +40,9 @@ let frame_display = null ; // CSS display style of frame
 let chk = 0;
 
 // get view from server
-// getview(); handled by SSE
 function getview() {
-	var url = '<?php echo site_url("/api/teamtime/display_view/{$ds_id}/{$ds_updated}");?>/'+view.updated;
-	url = '<?php echo site_url("/api/teamtime/getview/{$ds_id}");?>';
-	console.log(url);
+	var url = '<?php echo site_url("/api/teamtime/getview/{$ds_id}");?>';
+	// console.log(url);
 	$.get(url, function(response) {
 		try {
 			view.updated = response.updated;
@@ -93,11 +91,9 @@ function frame_ticker() {
 const receiver = {
 
 url: '<?php 
-	$query = [
-		'ch' => "teamtime",
-		'd' => intval($display['tick'] / 1000),
-	];
-	echo site_url('apx/sse.php?' . http_build_query($query));?>',
+	$stream = new \App\Libraries\Sse\Stream('teamtime');
+	echo $stream->url($display['tick']);
+	?>',
 
 source: null,
 last_id: 0,
