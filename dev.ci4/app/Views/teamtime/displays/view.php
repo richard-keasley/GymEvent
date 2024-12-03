@@ -60,7 +60,8 @@ function getview() {
 		}
 	})
 	.fail(function(jqXHR) {
-		receiver.alert(get_error(jqXHR));
+		var msg = get_error(jqXHR);
+		if(msg) receiver.alert(msg);		
 	});
 }
 
@@ -112,8 +113,7 @@ open: function() {
 	
 	receiver.source.addEventListener("display", (event) => {
 		if(receiver.last_id) {
-			var message = receiver.last_id + ' reloading...';
-			receiver.log(message);
+			var message = '['+receiver.last_id + '] reloading...';
 			receiver.alert(message);
 			receiver.close();
 			location.reload();
@@ -147,15 +147,20 @@ log: function(event) {
 	if(data) text.push(data);
 	
 	text = text.join(' ');
-			
+
+	<?php if(ENVIRONMENT=='_development') { ?>
 	// console.log(event);
 	if(text) console.log(text);
+	<?php } ?>
 	
 	return new_event;
 },
 
 alert: (msg) => {
-	if(msg) msg = '<p>'+msg+'</p>'; 
+	if(msg) {
+		console.log(msg);
+		msg = '<p>'+msg+'</p>'; 
+	}
 	$('#msg').html(msg); 
 }
 
