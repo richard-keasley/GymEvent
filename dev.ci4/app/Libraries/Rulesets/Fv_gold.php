@@ -6,7 +6,7 @@ public function __construct() {
 parent::__construct();
 $this->attributes['version'] = '2024-08-08';
 $this->attributes['description'] = "Floor &amp; Vault (Gold)";
-	
+
 $this->_exes = [
 	'FX' => [
 		'name' => 'Floor',
@@ -25,10 +25,15 @@ $this->_exes = [
 			2 => 'mat pile',
 			3 => 'vault',
 		],
-		'd_min' => 3.5,
-		'd_max' => 5.0,
+		# 'd_min' => 0,
+		# 'd_max' => 0,
 	],
 ];
+
+$skills = $this->skills('VT');
+$tariffs = array_column($skills['skills'], 'tariff');
+$this->_exes['VT']['d_min'] = (float) min($tariffs);
+$this->_exes['VT']['d_max'] = (float) max($tariffs);
 
 $this->_routine = [
 	'difficulties' => [
@@ -79,7 +84,7 @@ function skills($exekey) {
 	$ret_skill = [];
 	switch($exekey) {
 		case 'VT':
-		$keys = ['id','tariff','group','description'];
+		$keys = ['id', 'tariff', 'group', 'description'];
 		$filter = $this->title[0];
 		foreach($skills['skills'] as $skill) {
 			$include = $skill[$filter] ?? false;
