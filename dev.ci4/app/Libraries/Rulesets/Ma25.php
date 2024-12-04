@@ -1,6 +1,6 @@
 <?php namespace App\Libraries\Rulesets;
 
-class Fig_2025 extends Ruleset {
+class Ma25 extends Ruleset {
 	
 public function __construct() {
 parent::__construct();
@@ -12,7 +12,7 @@ $this->_exes = [
 		'name' => 'Floor',
 		'method' => 'routine',
 		'elm_groups' => [1, 2, 3, 4],
-		'dismount' => false,
+		'dismount' => true,
 		'dis_groups' => [2, 3, 4],
 		'dis_values' => [],
 		'connection' => true,
@@ -88,7 +88,7 @@ $this->_routine = [
 	'group_max' => 4, // elements per group
 	'elm_groups' => [1, 2, 3], // groups in routine body
 	'dismount' => true, // last element==dismount
-	'dis_groups' => [4], // groups in dismount
+	'dis_groups' => [4], // allowed groups in dismount
 	'dis_values' => [
 		'A' => 0.1,
 		'B' => 0.2,

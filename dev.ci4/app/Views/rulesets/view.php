@@ -29,7 +29,7 @@ $attrs = [
 printf('<a %s></a>', stringify_attributes($attrs));
 
 $names = array_keys($rule_options);
-$key = array_search($rulesetname, $names);
+$key = array_search($ruleset->name, $names);
 $stub = "{$back_link}/rules/";
 if($key!==false) {
 	$key_last = array_key_last($names);

@@ -18,7 +18,7 @@ $attrs = [
 printf('<a %s></a>', stringify_attributes($attrs));
 
 $names = array_keys($rule_options);
-$key = array_search($rulesetname, $names);
+$key = array_search($ruleset->name, $names);
 $stub = "{$back_link}/skills/{$exekey}/";
 if($key!==false) {
 	$key_last = array_key_last($names);
@@ -42,7 +42,7 @@ if($key!==false) {
 
 }
 
-$href = [$back_link, 'skills', '__', substr($rulesetname, 3)];
+$href = [$back_link, 'skills', '__', substr($ruleset->name, 3)];
 $format = str_replace('__', '%s', site_url($href));
 $def_rules = new \App\Libraries\Rulesets\Fv_gold;	
 foreach($def_rules->exes as $key=>$exe) {

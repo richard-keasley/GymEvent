@@ -28,10 +28,9 @@ public function rules($rulesetname = null) {
 		$message = "Can't find rule set {$rulesetname}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
-	$this->data['ruleset'] = \App\Libraries\Rulesets::load($rulesetname);
 	
+	$this->data['ruleset'] = \App\Libraries\Rulesets::load($rulesetname);	
 	$this->data['breadcrumbs'][] = ["mag/rules/{$rulesetname}", $this->data['ruleset']->title];
-	$this->data['rulesetname'] = $rulesetname;
 	$this->data['title'] = $this->data['ruleset']->title;
 	$this->data['heading'] = $this->data['ruleset']->title;
 	return view('rulesets/view', $this->data);
