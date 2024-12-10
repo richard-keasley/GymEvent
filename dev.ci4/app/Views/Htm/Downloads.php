@@ -3,20 +3,6 @@
 class Downloads {
 
 static $trimstart = null; // used for item href
-
-/* used for downloads 
-static $icons = [
-	'pdf' => 'pdf',
-	'docx' => 'richtext',
-	'xlsx' => 'spreadsheet',
-	'csv' => 'spreadsheet',
-	'png' => 'image',
-	'jpg' => 'image',
-	'svg' => 'image',
-	'sql' => 'code',
-	'html' => 'code'
-];
-*/
 	
 public $template = [
 	'items_start' => '<ul class="list-group">',
@@ -39,14 +25,15 @@ public function __construct($files=[]) {
 
 public function htm() {
 	if(!count($this->files)) return '';
-	$retval = $this->template['items_start'];
+	ob_start();
+	echo $this->template['items_start'];
 	foreach($this->files as $key=>$file) {
-		$retval .= $this->template['item_start'];
-		$retval .= $this->item($key, $file);
-		$retval .= $this->template['item_end'];
+		echo $this->template['item_start'];
+		echo $this->item($key, $file);
+		echo $this->template['item_end'];
 	}
-	$retval .= $this->template['items_end'];
-	return $retval;
+	echo $this->template['items_end'];
+	return ob_get_clean();
 }
 
 public function item($key, $file) {

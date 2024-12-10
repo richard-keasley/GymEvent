@@ -234,16 +234,17 @@ public function edit($event_id=0) {
 		// delete file
 		if($getPost['cmd']=='delfile' && $getPost['key']!=='') {
 			$key = intval($getPost['key']);
-			foreach($this->data['event']->downloads as $fkey=>$file) {
-				if($fkey==$key) {
-					$filename = sprintf('<code>%s</code>', $file->getBasename());
-					if(unlink($file->getRealPath())) {
-						$this->data['messages'][] = ["File {$filename} deleted", 'success'];
-					} 
-					else { 
-						$this->data['messages'][] = "Error deleting file {$filename}";
-					};
-				}
+			$files = $this->data['event']->downloads;
+			$list = $files->get();
+			$filename = $list[$key] ?? null;
+			if($filename) {
+				$basename = sprintf('<code>%s</code>', basename($filename));
+				if(unlink($filename)) {
+					$this->data['messages'][] = ["{$basename} deleted", 'success'];
+				} 
+				else { 
+					$this->data['messages'][] = "Error deleting {$basename}";
+				};
 			}
 		}
 		

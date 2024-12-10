@@ -4,7 +4,7 @@ helper('inflector');
 $this->section('content'); 
 #d($event);
 
-$attr = [
+$attrs = [
 	'id' => "editform"
 ];
 $hidden = [
@@ -12,7 +12,7 @@ $hidden = [
 	'cmd' => '',
 	'key' => ''
 ];
-echo form_open_multipart(current_url(), $attr, $hidden); 
+echo form_open_multipart(current_url(), $attrs, $hidden); 
  
 $acc = new \App\Views\Htm\Accordion;
 
