@@ -15,7 +15,7 @@ foreach($buffer as $grp=>$grp_skills) {
 		echo '<div class="col-auto" style="max-width:23em">';
 		printf('<h5>%s</h5><ul class="list list-unstyled">', $diff);
 		foreach($diff_skills as $id=>$diff_skill) {
-			printf('<li class="my-2">%s</li>', $diff_skill);
+			printf('<li class="my-2">%s</li>', new \App\Views\Htm\Pretty($diff_skill));
 		}
 		echo '</ul></div>';
 	}

@@ -1,0 +1,15 @@
+.fraction {
+	display: inline-block;
+}
+.fraction .fran {
+	font-size: .6em;
+	vertical-align: super;
+	font-weight: 600;
+	margin: 0 .2em 0 0;
+}
+.fraction .frad {
+	font-size: .6em;
+	vertical-align: baseline;
+	font-weight: 600;
+	margin: 0 0 0 .2em;
+}

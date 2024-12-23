@@ -71,7 +71,7 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		$row = [
 			'elnum' => $elnum,
 			'elval' => "{$tr[0]} {$tr[1]}",
-			'eldes' => $tr[2],
+			'eldes' => new \App\Views\Htm\Pretty($tr[2]),
 			'eljudge' => ""
 		];
 		

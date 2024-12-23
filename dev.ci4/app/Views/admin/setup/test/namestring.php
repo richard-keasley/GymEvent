@@ -107,6 +107,16 @@ foreach($test_data as $key=>$row) {
 $this->endSection();
 
 $this->section('top'); ?>
+<p class="border">
+fraction:
+
+<?php 
+$str = '1/1 1/2 2/1 &frac12;';
+echo new \App\Views\Htm\Pretty($str);
+
+?>
+</p>
+
 <pre class="alert alert-light">
 the ongoing battle against stupidity
 Assume users
