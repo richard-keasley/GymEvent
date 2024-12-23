@@ -117,7 +117,7 @@ foreach($links as $link) {
 <?php $this->endSection(); 
 
 $this->section('top');
-echo $this->include('player/notfound');
+echo $this->include('player/local');
 echo $this->include('player/js_buttons');
 ?>
 <div class="sticky-top pb-1"><?php 

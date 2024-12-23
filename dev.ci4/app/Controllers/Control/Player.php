@@ -51,7 +51,9 @@ public function receiver($event_id=0, $action='view') {
 	$this->data['event'] = $this->find($event_id);
 	$this->data['title'] = 'Music receiver';
 	$this->data['heading'] = $this->data['event']->title;
-	$this->data['source_url'] = site_url('apx/sse.php?ch=music');
+	
+	$stream = new \App\Libraries\Sse\Stream('music');
+	$this->data['source_url'] = $stream->url();
 	
 	switch($action) {
 		case 'save':

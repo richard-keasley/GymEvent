@@ -2,7 +2,7 @@
 namespace App\Libraries\Sse;
 
 class Stream {
-const min_delay = 1000;
+
 private $attrs = [];
 
 function __construct($channel) {
@@ -24,7 +24,14 @@ function __get($key) {
 	return $this->attrs[$key] ?? null ;
 }
 
-function send($delay=0, $ttl=0) {
+function url($tick=0, $ttl=0) {
+	$query = ['ch' => $this->channel->name];
+	if($tick) $query['tk'] = $tick;
+	if($ttl) $query['tl'] = $ttl;
+	return site_url('apx/sse.php?' . http_build_query($query));
+}
+
+function send($tick, $ttl=0) {
 try {
 	header('Content-Type: text/event-stream');
 	header('Cache-Control: no-cache');
@@ -36,19 +43,22 @@ try {
 	}
 	flush();
 	
-	$delay = max($delay, 1); // 1 second minimum
+	if(!$tick) $tick = 1000; // milliseconds default
+	$tick = max($tick, 500); // milliseconds minimum
+	$tick_s = $tick / 1000; // milliseconds -> seconds
+	$usleep = $tick * 1000; // milliseconds -> microseconds
+	
 	if(!$ttl) $ttl = 1800; // seconds 1800=30 minutes
 	$poke = 600; // keep alive signal (seconds)
 	
 	$event = ['data' => [
-		"Channel:{$this->channel->name}",
-		"TTL:{$ttl}",
-		"delay:{$delay}",
-		"poke:{$poke}",
+		"Channel: {$this->channel->name}",
+		"tick: {$tick_s} sec",
+		"TTL: {$ttl} sec",
+		"poke: {$poke} sec",
 	]];
 	echo (string) new \App\Libraries\Sse\Event($event);	
 	
-	$usleep = $delay * 1000000; // seconds -> microseconds
 	$retry = null;
 	$last_id = 0;
 	$end = time() + $ttl; // stop here
@@ -69,8 +79,8 @@ try {
 		if($now > $end) {
 			$event = [
 				'id' => 0,
-				'retry' => $delay * 1000, // seconds -> milliseconds
-				'data' => "retry in {$delay}s"
+				'retry' => $tick, // milliseconds
+				'data' => "retry in {$tick_s} sec"
 			];
 			echo (string) new \App\Libraries\Sse\Event($event);
 			break;

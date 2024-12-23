@@ -126,39 +126,23 @@ public function control() {
 	return $this->respond($runvars);	
 }
 
-public function display_view($ds_id=0, $ds_updated=0, $vw_updated=0) {
-	$reload = false;
-	
-	// when were displays updated?
-	$displays_var = tt_lib::get_var('displays');
-	$updated = tt_lib::timestamp($displays_var->updated_at);
-	if($updated>$ds_updated) $reload = true;
-	if($reload) return $this->respond(['reload' => 'display'], 200);
-		
-	// when were views or runvars updated?
-	$views_var = tt_lib::get_var('views');
-	$runvars_var = tt_lib::get_var('runvars');
-	$updated = [
-		tt_lib::timestamp($views_var->updated_at),
-		tt_lib::timestamp($runvars_var->updated_at)
-	];
-	$updated = max($updated);
-	if($updated>$vw_updated) $reload = true;
-		
-	// nothing to update
-	if(!$reload) return $this->respond(['reload' => false], 200);
-		
+public function getview($ds_id='#') {
 	// look up display and view
 	$display = tt_lib::get_value('displays', $ds_id);
 	if(!$display) return $this->fail("Display {$ds_id} not found");
 	$view = tt_lib::display_view($display);
 	if(!$view) return $this->fail("Can't find view for display {$ds_id}");
+	
 	// compile HTML for this view
 	$view['html'] = tt_lib::view_html($view['html']);
+	
+	$stream = new \App\Libraries\Sse\Stream('teamtime');
+	$event = $stream->channel->read();
+	
 	$response = [
-		'reload' => 'view',
-		'updated' => $updated,
-		'view' => $view
+		'view' => $view,
+		'updated' => $event->updated,
+		'event' => $event->id,
 	];
 	return $this->respond($response, 200);
 }

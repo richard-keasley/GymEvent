@@ -341,12 +341,13 @@ idxsel: {
 
 
 log: function(message, type='log') {
+	/*
 	// disable this for debug
-	return;
 	switch(type) {
 		case 'error': console.error(message); break;
 		default: console.log(message);
 	}
+	// */
 }
 	
 };

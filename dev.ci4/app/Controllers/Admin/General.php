@@ -11,6 +11,40 @@ public function __construct() {
 }
 
 public function index() {
+	$cmd = $this->request->getPost('cmd');
+	switch($cmd) {
+		case 'upload':
+		$file = $this->request->getFile('file');
+		if($file->isValid()) {
+			$filepath = \App\Libraries\General::filepath;
+			if($file->move($filepath, $file->getClientName())) {
+				$this->data['messages'][] = ["Upload added", 'success'];
+			} else {
+				$this->data['messages'][] = $file->getErrorString();
+			}
+		}
+		else { 
+			$this->data['messages'][] = $file->getErrorString();
+		}
+		break;
+		
+		case 'delfile':
+		$key = $this->request->getPost('key');
+		$files = \App\Libraries\General::files();
+		$list = $files->get();
+		$filename = $list[$key] ?? null;
+		if($filename) {
+			$basename = sprintf('<code>%s</code>', basename($filename));
+			if(unlink($filename)) {
+				$this->data['messages'][] = ["{$basename} deleted", 'success'];
+			} 
+			else { 
+				$this->data['messages'][] = "Error deleting {$basename}";
+			};
+		}
+		break;
+	}
+	
 	$this->data['back_link'] = 'admin';
 	return view('general/admin/index', $this->data);
 }

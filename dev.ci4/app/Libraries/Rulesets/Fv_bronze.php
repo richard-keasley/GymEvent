@@ -13,9 +13,6 @@ $this->_exes['FX']['difficulties'] = [
 	'D' => 0.4,
 ];
 
-$this->_exes['VT']['d_min'] = 3.5;
-$this->_exes['VT']['d_max'] = 4.0;
-
 }
 
 }

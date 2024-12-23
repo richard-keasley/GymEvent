@@ -1,8 +1,11 @@
 <script>
 function get_error(jqXHR) { 
-	var msg = '';
+	var status = jqXHR.status ?? 0;
+	if(!status) return ''; // no status on reload
+	
+	var msg;
 	if(typeof jqXHR.responseJSON==='undefined') {
-		msg = jqXHR.responseText;
+		msg += jqXHR.responseText;
 	}
 	else {
 		msg = jqXHR.responseJSON;
@@ -11,6 +14,6 @@ function get_error(jqXHR) {
 		if(typeof msg.message!=='undefined') msg = msg.message;
 	}
 	if(!msg) msg = 'Undefined error';
-	return jqXHR.status + ': ' + msg;
+	return status + ': ' + msg;
 }
 </script>

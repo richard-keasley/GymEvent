@@ -97,11 +97,11 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 		
 		if($selector) {
 			$attrs = [
-				'class' => "btn bg-primary-subtle {$class}",
+				'class' => "btn bg-primary-subtle d-print-none {$class}",
 				'type' => "button",
 				'onclick' => "esedit.selector.show('{$exeset->ruleset->name}','{$exekey}',{$elkey})"
 			];
-			printf('<button %s><span class="bi-box-arrow-in-down"></span></button>', stringify_attributes($attrs));;
+			printf('<button %s><span class=" bi-box-arrow-in-down"></span></button>', stringify_attributes($attrs));;
 		} 
 
 		?>

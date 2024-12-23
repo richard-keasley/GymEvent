@@ -30,7 +30,6 @@ public function rules($rulesetname = null) {
 	$this->data['ruleset'] = \App\Libraries\Rulesets::load($rulesetname);
 	
 	$this->data['breadcrumbs'][] = ["general/rules/{$rulesetname}", $this->data['ruleset']->title];
-	$this->data['rulesetname'] = $rulesetname;
 	$this->data['title'] = $this->data['ruleset']->title;
 	$this->data['heading'] = $this->data['ruleset']->title;
 	return view('rulesets/view', $this->data);
@@ -42,8 +41,7 @@ function skills($exekey='', $level='gold') {
 		$message = "Can't find {$rulesetname}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
-	$classname = "\\App\\Libraries\\Rulesets\\{$rulesetname}";
-	$ruleset = new $classname;
+	$ruleset = \App\Libraries\Rulesets::load($rulesetname);
 	
 	$exekey = strtoupper($exekey);
 	$this->data['skills'] = $ruleset->skills($exekey);
@@ -55,11 +53,9 @@ function skills($exekey='', $level='gold') {
 	$title = humanize("{$level} " . ($this->data['skills']['name'] ?? 'skills')) ;
 	$this->data['breadcrumbs'][] = ["general/skills/{$exekey}/{$level}", $title];
 	
-	$this->data['rulesetname'] = $rulesetname;
 	$this->data['title'] = $title;
 	$this->data['heading'] = "General: {$title}";
-
-	$this->data['exe_rules'] = $ruleset->$exekey;
+	$this->data['ruleset'] = $ruleset;
 	$this->data['exekey'] = $exekey;
 	return view('general/skills', $this->data);
 }
