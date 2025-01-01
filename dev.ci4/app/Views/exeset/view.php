@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<style><?php
+$minifier = new \MatthiasMullie\Minify\CSS(config('Paths')->viewDirectory . '/custom.css');
+echo $minifier->minify();
+?></style> 
 <title><?php echo $title;?></title>
 <?php 
 echo \App\ThirdParty\jquery::script(); 
