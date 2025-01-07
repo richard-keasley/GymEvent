@@ -37,9 +37,11 @@ foreach($skills['skills'] as $skill) {
 			'data-skill' => implode('|', $data)
 		];
 		
-		
 		$buffer[$grp_id][] = sprintf('<div %s><button %s>%s</button></div>', 
-			\stringify_attributes($div),\stringify_attributes($button), $label);
+			\stringify_attributes($div),
+			\stringify_attributes($button), 
+			new \App\Views\Htm\Pretty($label),
+		);
 	}
 }
 
@@ -68,19 +70,17 @@ $("#filter1").on("keyup", function() {
 });
 </script> 
 </div>
-
 <?php
 $items = [];
 foreach($buffer as $grp=>$grp_skills) {
 	$heading = $exe_rules['group_labels'][$grp] ?? '' ;
 	if($heading) $heading = ": {$heading}";
-	$heading = "Group {$grp}{$heading}";
-	
-	$content = sprintf('<div class="row">%s</div>', implode('', $grp_skills));
+
+	$content = implode('', $grp_skills);
 
 	$items[] = [
-		'heading' => $heading,
-		'content' => $content
+		'heading' => "Group {$grp}{$heading}",
+		'content' => sprintf('<div class="row">%s</div>', $content),
 	];
 }
 echo new \App\Views\Htm\Accordion($items, "acc{$id}");
