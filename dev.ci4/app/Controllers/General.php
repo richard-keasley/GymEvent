@@ -60,6 +60,13 @@ function skills($exekey='', $level='gold') {
 	return view('general/skills', $this->data);
 }
 
+public function videos() {
+	$this->data['breadcrumbs'][] = ['general/videos', "Videos"];
+	$this->data['heading'] = "F&amp;V videos";
+	$this->data['title'] = "Videos";
+	return view('general/videos', $this->data);
+}
+
 public function routineSW() {
 	// service worker
 	$this->response->setHeader('Content-Type', 'application/javascript');

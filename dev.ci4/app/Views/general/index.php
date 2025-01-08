@@ -42,6 +42,8 @@ foreach($def_rules->exes as $exekey=>$exe) {
 	$nav[] = ["general/skills/{$exekey}", "{$exe['name']} skills"];
 }
 
+$nav[] = ['general/videos', "Videos"];
+
 $navbar = new \App\Views\Htm\Navbar($nav);
 echo $navbar->htm();
 ?>
