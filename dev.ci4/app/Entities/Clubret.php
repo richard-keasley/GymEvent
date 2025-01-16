@@ -32,7 +32,7 @@ public function setStaff($arr) {
 	$staff = [];
 	foreach($arr as $row) {
 		$namestring = new \App\Entities\namestring($row['name']);
-		$row['name'] = $namestring->csv;
+		$row['name'] = (string) $namestring;
 		$staff[] = $row;
 	}
 	$this->attributes['staff'] = json_encode($staff);
@@ -114,11 +114,11 @@ public function setParticipants($arr) {
 		$row_names = [];
 		foreach($row['names'] as $name) {
 			$namestring = new \App\Entities\namestring($name);
-			if($namestring->name) $row_names[] = $namestring->csv;
+			if($namestring->name) $row_names[] = (string) $namestring;
 		}
 		if($row_names) {
 			$row['names'] = implode("\n", $row_names);
-			$row['cat'] = implode(',',$row['cat']);
+			$row['cat'] = implode(',', $row['cat']);
 			$participants[] = $row;
 		}	
 	}
@@ -127,6 +127,8 @@ public function setParticipants($arr) {
 }
 
 public function check() {
+	$event = $this->event();
+	
 	$this->errors = [];
 	$errors = [];
 	if($this->participants) { 
@@ -136,7 +138,7 @@ public function check() {
 			if(empty($row['cat'])) $row_error = "has invalid category";
 			foreach($row['names'] as $name) {
 				$namestring = new \App\Entities\namestring($name);
-				$name_error = $namestring->error();
+				$name_error = $namestring->error;
 				if($name_error) $row_error = $name_error;
 			}
 			if($row_error) $errors[] = sprintf('row %u %s', $rowkey+1, $row_error);
@@ -145,15 +147,19 @@ public function check() {
 	else {
 		$errors[] = "No participants entered in this return";
 	}
+	
+	if($event->terms && !$this->terms) {
+		$errors[] = "Clubs entries will only be accepted after they agree to the terms of this event";
+	}
+	
 	if($errors) $this->errors['participants'] = $errors;
 	
-	$event = $this->event();
 	if(!empty($event->staffcats[0])) {
 		$errors = [];
 		if($this->staff) {
 			foreach($this->staff as $rowkey=>$row) {
 				$namestring = new \App\Entities\namestring($row['name']);
-				$error = $namestring->error();
+				$error = $namestring->error;
 				if($error) $errors[] = sprintf('row %u %s', $rowkey+1, $error);
 			}
 		}
@@ -232,148 +238,80 @@ public function fees($op=1) {
 class namestring implements \Stringable {
 /* 
 a namestring is a comma separated string containing:
-name 1, name 2, BG number, DoB
-DoB is UNIX timestamp
+name 1 name 2, DoB
 Only used in entity "clubret"
 Each item in "participants" contains an array of namestring
 Each item in "staff" contains a single namestring
+
+See views/admin/setup/test/namestring
 */
 
+const hint = '<span class="bg-primary-subtle">Full name (name1 name2), Date of birth (dd/mm/yy)</span>';
+
 private $attributes = [];
+private $_error = null ;
 
 function __construct($namestring) {
-	/* 	See setup/test/namestring	*/
-	
 	$namestring = filter_string($namestring);
-	$this->attributes['namestring'] = $namestring;
-	
 	$input = preg_split("/ *[\t,] */", $namestring);
-	$input = array_pad($input, 8, '');
-	$used = [];
 	
-	// look for BG 
-	$bg_key = 2; // BG should be 2
-	$check_order = [2, 3, 0, 1, 4, 5, 6, 7];
-	$keys = array_diff($check_order, $used);
-	foreach($keys as $key) {
-		if(self::sanitize_bg($input[$key])) {
-			$bg_key = $key;
-			break;
-		}
-	}
-	$this->attributes['bg'] = $input[$bg_key];
-	$used[] = $bg_key;
-		
-	// look for DoB 
-	$dob_key = 3; // DoB should be 3
-	$check_order = [3, 2, 0, 1, 4, 5, 6, 7];
-	$keys = array_diff($check_order, $used);
-	foreach($keys as $key) {
-		$dob = self::sanitize_date($input[$key]);
-		if($dob) {
-			$dob_key = $key;
-			break;
-		}
-	}
-	// DoB is stored as Unix timestamp
-	$this->attributes['dob'] = $dob;
-	$used[] = $dob_key;		
-	// valid DoB as HTML or preserve input
-	$dob = $dob ? $this->htm_dob() : $input[$dob_key];
-
-	// build name from unused input
-	$names = [];
-	$check_order = [0, 1, 2, 3];
-	$keys = array_diff($check_order, $used);
-	foreach($keys as $key) {
-		$val = trim($input[$key]);
-		if($val) $names[] = $val;
+	$dob = count($input)>1 ? array_pop($input) : '' ;
+	$name = [];
+	foreach($input as $val) {
+		if(intval($val)) continue; 
+		$name[] = $val;
 	}
 	
-	// ensure 2 names are present
-	if(count($names)==1) {
-		$names = preg_split('#[\s,]+#', $names[0], 2);
-	}
-	if(count($names)<2) $names = array_pad($names, 2, '');
-	if(count($names)>2) {
-		$names = [
-			$names[0],
-			implode(' ', array_slice($names, 1))
-		];
-	}		
-	$this->attributes['name'] = trim(implode(' ', $names));
+	$dt = self::sanitize_dob($dob);
+	if($dt) $dob = $dt->format('d-M-Y');
 	
-	// re-build CSV
-	$csv = [
-		$names[0],
-		$names[1],
-		$input[$bg_key],
-		$dob
+	$this->attributes = [
+		'name' => implode(' ', $name),
+		'dob' => $dob,
 	];
-	$this->attributes['csv'] = implode(', ', $csv);
+	
+	$this->_error = $this->error($dt);
 }
 
-public function __get($key) {
-	return $this->attributes[$key] ?? null ;
+function __get($key) {
+	return match($key) {
+		'error' => $this->_error,
+		default => $this->attributes[$key] ?? null
+	};
 }
 
-public function __debugInfo() {
-	return $this->attributes;
+function __debugInfo() {
+	$arr =  $this->attributes;
+	if($this->_error) $arr['error'] = $this->_error; 
+	return $arr;
 }
 
-function htm_dob() {
-	return $this->dob ? date('d-M-Y', $this->dob) : '' ;
+function __toString(): string {
+	return implode(', ', $this->attributes);
 }
 
-public function __toString(): string {
-	$arr = [];
-	foreach($this->__debugInfo() as $key=>$val) {
-		$val = match($key) {
-			'dob' => date(' (j M Y)', $val),
-			'namestring' => sprintf('<span style="white-space:pre">%s</span>', $val),
-			default => $val
-		};
-		$arr[] = "{$key}: {$val}";
-	}
+private function error($dt) {
+	if(!$this->name) return "has no name";
+	if(strlen($this->name)<6) return "has invalid name";
+	if(!substr_count($this->name, ' ')) return "is not a full name"; 
 	
-	$error = $this->error();
-	if($error) $arr[] = sprintf('<span class="text-bg-danger">Entry %s</span>', $error);
-	
-	return sprintf('<div class="border p-1 m-1">%s</div>', implode('<br>', $arr));
-}
-
-function error() {
-	$val = $this->namestring;
-	if(!$val) return "is empty";
-
-	$val = $this->name;
-	if(!$val) return "has no name";
-	if(strlen($val)<6) return "has invalid name";
-	
-	$val = $this->bg;
-	if(empty($val)) return "has no BG number";
-	if(!self::sanitize_bg($val)) return "has invalid BG number";
-	
-	$val = $this->dob;
-	if(empty($val)) return "has no DoB";
-	else {
-		$yr0 = date('Y') - 90;
-		$yr1 = date('Y') - 3;
-		$yr = date('Y', $val);
-		if($yr<$yr0 || $yr>$yr1) return "has invalid YoB";
-	}
-	
+	if(!$this->dob) return "has no DoB";
+	if(!$dt) return "has invalid DoB";
+	$now = new \DateTimeImmutable;
+	$dob = $dt->format('Y-m-d');
+	$period = new \DateInterval("P5Y");
+	$check = $now->sub($period)->format('Y-m-d');
+	if($dob>$check) return "has invalid DoB";
+	$period = new \DateInterval("P90Y");
+	$check = $now->sub($period)->format('Y-m-d');
+	if($dob<$check) return "has invalid DoB";
+		
 	// no error
-	return '';
+	return null;
 }
 
-static function sanitize_bg($val) {
-	// only contains digits
-	return ctype_digit($val) ? $val : false;
-}
-
-static function sanitize_date($str) {
-	if(!$str) return false;
+static function sanitize_dob($str) {
+	if(!$str) return null;
 	try {
 		$formats = [
 			'd/m/Y', // standard UK
@@ -383,31 +321,31 @@ static function sanitize_date($str) {
 			false // create from string
 		];
 		foreach($formats as $format) {
-			$dt = $format ? 
+			# d($format);
+			$retval = $format ? 
 				\DateTime::createFromFormat($format, $str) : 
 				new \DateTime($str) ;
-			if($dt) break;	
+			if($retval) break;	
+			
 		}
 		// strip time from datetime
-		$dt->setTime(0,0);
+		$retval->setTime(0,0);
 		
-		$yr = (int) $dt->format('Y');
+		$yr = (int) $retval->format('Y');
 		if($yr<100) {
 			// 2 digit year, bring it to this century
 			$now = new \datetime;
 			$now = (int) $now->format('y');
 			$add = $yr>$now ? 1900 : 2000 ;
 			# d($yr, $add);
-			$dt->add(new \DateInterval("P{$add}Y"));
+			$retval->add(new \DateInterval("P{$add}Y"));
 		}
-		
-		return $dt->getTimestamp();
 	}
 	catch(\exception $ex) {
 		# d($ex);
+		$retval = null;
 	}
-	// fail
-	return false;
+	return $retval;
 }
 
 }

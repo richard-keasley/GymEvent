@@ -74,7 +74,7 @@ if(!empty($event->staffcats[0])) {
 
 ob_start();?>
 <div id="staff">
-<p>Staff details should be entered as: <span class="bg-primary-subtle">Name1, Name2, BG number, <abbr title="Date of birth as dd/mm/yy">DoB</abbr></span>. Each piece of information is separated by a comma. Each staff member should be entered in a separate box.</p>
+<p>Staff details should be entered as: <?php echo \App\Entities\namestring::hint;?>. Each piece of information is separated by a comma. Each staff member should be entered in a separate box.</p>
 <?php echo $event->staff;
 
 $staff = $clubret->staff;
@@ -104,7 +104,7 @@ foreach($staff as $rowkey=>$row) {
 	$inputs['cat']['selected'] = $row['cat'];
 	if($row['name']) {
 		$namestring = new \App\Entities\namestring($row['name']);
-		$inputs['name']['value'] = $namestring->csv;
+		$inputs['name']['value'] = (string) $namestring;
 	}
 	else $inputs['name']['value'] = '' ;
 
@@ -148,7 +148,7 @@ $tabs->set_item('Staff', ob_get_clean(), 'staff');
 if($event->discats) {
 ob_start();	?>
 <div id="participants">
-<p>Gymnasts' details are entered as: <span class="bg-primary-subtle">Name1, Name2, BG number, <abbr title="Date of birth as dd/mm/yy">DoB</abbr></span>. Each piece of information is separated by a comma.</p>
+<p>Gymnasts' details are entered as: <?php echo \App\Entities\namestring::hint;?>. Each piece of information is separated by a comma.</p>
 <ul>
 <li>Each gymnast is placed on a separate line.</li>
 <li>If an entry comprises more than one gymnast (e.g. Acro and Team-gym), enter each gymnast on a separate line within the same box.</li>
@@ -228,9 +228,30 @@ foreach($participants as $rowkey=>$row) {
 $table->setHeading(['','category','',"Gymnasts' details",'']);
 printf('<div class="clubent">%s</div>', $table->generate($tbody));
 echo form_hidden('participants', json_encode($participants));
+
 ?>
+
 <button name="add" type="button" class="btn btn-success bi-person-plus-fill"></button>
 <?php echo $clubret->errors('participants');?>
+
+<?php if($event->terms) { ?>
+<section class="mt-3">
+<p class="form-check"><label class="form-check-label"><?php 
+$input = [
+	'class' => "form-check-input",
+	'name' => "terms",
+	'type' => "checkbox",
+	'value' => "1",
+];
+if($clubret->terms) $input['checked'] = "checked";
+echo form_input($input); ?>
+This club will ensure all its staff and participants adhere to the terms below:</label></p>
+<div class="bg-secondary-subtle p-1">
+<?php echo $event->terms; ?>
+</div>
+</section>
+<?php } ?>
+
 </div>
 <?php
 $tabs->set_item('Participants', ob_get_clean(), 'participants');

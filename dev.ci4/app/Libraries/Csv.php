@@ -12,7 +12,7 @@ public $data = [];
 
 function add_row($row) {
 	foreach($row as $key=>$val) {
-		$row[$key] =  html_entity_decode($val, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
+		$row[$key] =  html_entity_decode((string) $val, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
 	}	
 	$this->data[] = $row;
 }

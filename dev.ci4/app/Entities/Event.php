@@ -249,6 +249,7 @@ public function participants() {
 		$subcats[$dis_name] =$this->discat_inf($dis['name'], 'cat');
 		$teams[$dis_name] = $this->discat_inf($dis['name'], 'team');
 	}
+	# d($subcats);
 
 	foreach($this->clubrets() as $clubret) {
 		$user = $mdl_users->withDeleted()->find($clubret->user_id);
@@ -284,13 +285,15 @@ public function participants() {
 				'user_id' => $clubret->user_id,
 				'club' => $club,
 				'opt' => $row['opt']
-			];
-
+			];	
+			
 			// get category
 			$cat_name = implode(' ', $row['cat']);
-			$subcat = isset($subcats[$dis_name]) ? $subcats[$dis_name] : '';
+			$subcat = $subcats[$dis_name] ?? false ;
 			if($subcat) {
-				$cat_name .= ' ' . date($subcat, $entry['dob']);
+				$cat_name .= ' ';
+				$dt = \App\Entities\namestring::sanitize_dob($entry['dob']);
+				$cat_name .= $dt ? $dt->format($subcat) : '??' ;
 			}
 
 			$cat_key = array_search($cat_name, $cat_names[$dis_key]);
@@ -350,7 +353,7 @@ public function staff() {
 					'cat' => $row['cat'],
 					'name' => $namestring->name,
 					'dob' => $namestring->dob,
-					'bg' => $namestring->bg
+					# 'bg' => $namestring->bg
 				];
 			}
 		}

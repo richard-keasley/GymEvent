@@ -25,12 +25,11 @@ foreach($clubret->staff as $rowkey=>$row) {
 		$rowkey + 1,
 		humanize($row['cat']),
 		$namestring->name,
-		$namestring->bg,
-		$namestring->htm_dob()
+		$namestring->dob
 	];
 }
 if($tbody) {
-	$table->setHeading(['#', '', 'name', 'BG', 'DoB']);
+	$table->setHeading(['#', '', 'name', 'DoB']);
 	echo $table->generate($tbody);
 }
 echo $clubret->errors('staff'); 
@@ -53,16 +52,23 @@ foreach($participants as $rowkey=>$row) {
 			$key ? '' : humanize(implode(' ', $row['cat'])),
 			$namestring->name,
 			$option,
-			$namestring->bg,
-			$namestring->htm_dob()
+			$namestring->dob
 		];
 		$option = '';
 	}
 }
 if($tbody) {
-	$table->setHeading(['#', 'dis', 'category', 'name', '', 'BG', 'DoB']);
+	$table->setHeading(['#', 'dis', 'category', 'name', '', 'DoB']);
 	echo $table->generate($tbody);
 }
+
+if($event->terms) { ?>
+<div class="mb-3">
+<p><strong>Clubs agree to the following:</strong></p>
+<?php echo $event->terms; ?>
+</div>
+<?php }
+
 echo $clubret->errors('participants'); ?>
 </section>
 

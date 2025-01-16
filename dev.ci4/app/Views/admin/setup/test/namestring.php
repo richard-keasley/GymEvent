@@ -3,16 +3,15 @@ $clubret = new \App\Entities\Clubret;
 
 $this->section('content'); ?>
 
-<div class="p-1 alert alert-light">
 <?php echo form_open(); ?>
+<div class="p-1 alert alert-light">
+<p>Hint: enter data as <?php echo \App\Entities\namestring::hint;?>.</p>
 
 <div><?php
 $value = $postvars['namestring'] ?? '' ;
 if($value) {
-	# d(htmlentities($value));
 	$namestring = new \App\Entities\namestring($value);
-	$value = $namestring->csv;
-	# d(htmlentities($value));
+	$value = (string) $namestring;
 }
 
 $attrs = [
@@ -32,13 +31,14 @@ $attrs = [
 ];
 echo form_input($attrs);
 ?></div>
-<?php
-if($value) echo $namestring;
-
-echo form_close();
-?></div>
-
-<?php
+<p><?php
+if($value) {
+	echo $namestring;
+	if($namestring->error) echo "<br><strong>input {$namestring->error}</strong>";
+}
+?></p>
+</div>
+<?php echo form_close();
 
 /* date checker 
 $dates = [
@@ -56,12 +56,8 @@ $dates = [
 ];
 $dt = new \datetime; 
 foreach($dates as $date) {
-	$timestamp = \App\Entities\namestring::sanitize_date($date);
-	if($timestamp) {
-		$dt->setTimeStamp($timestamp);
-		$result = $dt->format('j F Y');
-	}
-	else $result = 'fail';
+	$dob = \App\Entities\namestring::sanitize_dob($date);
+	$result = $dob ? $dob->format('j F Y') : 'fail' ;
 	if(!$date) $date = '[empty]';
 	echo "<div>{$date} =&gt; {$result}</div>";
 }
@@ -70,12 +66,12 @@ foreach($dates as $date) {
 /* name checker 
 
 $test_string = 
-'Elizabeth ,  Rimmer-Leeming, 3328970, 18-Mar-2007
-name1, name2, 12346, 7-8-2010
+'Elizabeth ,  Rimmer-Leeming, 18-Mar-2007
+name1 name2, 7-8-2010
 name1, name2, 12346, 7/8/10
 name1, name2, 12346, 7/14/10
 name1,    name2, 12346, 7 aug 2010    
-name1, name2, 12346, 7 aug 2024    
+name1  name2, dunno    
 name1, name2, 12346, 7 aug 1920    
 name1, name2, 12346, 7 aug 2010, another, name, 76575, 8-aug-90  
 name1, name2, 12346, 7 aug 2010    
@@ -99,8 +95,17 @@ name1,name2
 $test_data = explode("\n", $test_string);
 foreach($test_data as $key=>$row) {
 	$namestring = new \App\Entities\namestring($row);
-	echo $namestring;
+	$arr = [sprintf('<span style="white-space:pre">%s</span>', trim($row))];
+	foreach($namestring->__debugInfo() as $key=>$val) {
+		if($key=='error') {
+			$val = sprintf('<strong>entry %s</strong>', $val);
+		}
+		$arr[] = "{$key}: {$val}";
+	}
+	printf('<div class="border p-1 m-1">%s</div>', implode('<br>', $arr));
 }
+
+
 // name checker */
 
 
@@ -111,7 +116,7 @@ $this->section('top'); ?>
 fraction:
 
 <?php 
-$str = '1/1 1/2 2/1 &frac12;';
+$str = '1/1 2/1 1/2 &frac12;';
 echo new \App\Views\Htm\Pretty($str);
 
 ?>
@@ -121,7 +126,6 @@ echo new \App\Views\Htm\Pretty($str);
 the ongoing battle against stupidity
 Assume users
 - blank lines
-- input data in wrong order
 - add middle name as a separate data item
 - include more than one name 
 - don't separate name with comma

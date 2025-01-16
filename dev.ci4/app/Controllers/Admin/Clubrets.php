@@ -193,8 +193,18 @@ public function event($event_id=0) {
 					'<span class="bi-x text-danger"></span>' ;
 			}
 			$tbody[$rowkey]['staff'] = $val;
-		}	
-				
+		}
+
+		if($this->data['event']->terms) {
+			$val = $clubret->terms ? 'X' : '' ;
+			if($download!=='summary') {
+				$val = $val ?
+					'<span class="bi-check text-success"></span>' : 
+					'<span class="bi-x text-danger"></span>' ;
+			}
+			$tbody[$rowkey]['terms'] = $val;
+		}
+						
 		$count[$rowkey] = [];
 		foreach($clubret->participants as $participant) {
 			$dis = $participant['dis'];
@@ -229,7 +239,7 @@ public function event($event_id=0) {
 			'club' => $entry['club'],
 			'role' => humanize($entry['cat']),
 			'name' => $entry['name'],
-			'BG' => $entry['bg'],
+			# 'BG' => $entry['bg'],
 			# 'DoB' => date('d-M-Y', $entry['dob'])
 		];
 	}
@@ -250,7 +260,7 @@ public function event($event_id=0) {
 					'cat' => humanize($cat['name']),
 					'club' => $entry['club'],
 					'name' => $entry['name'],
-					'DoB' => date('d-M-Y', $entry['dob'])
+					'DoB' => $entry['dob'],
 				];
 				if(!$entkey) $has_opt = $entry['opt'];
 				if($has_opt) $row['opt'] = humanize($entry['opt']);
