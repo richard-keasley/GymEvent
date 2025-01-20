@@ -14,7 +14,7 @@ if(!empty($style)) echo "<style>{$style}</style>";
 ?>
 </head>
 <body><?php 
-$this->renderSection('body'); 
+echo $this->renderSection('body'); 
 echo $this->include('includes/js');
 ?></body>
 </html>

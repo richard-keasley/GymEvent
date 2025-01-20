@@ -24,7 +24,7 @@ class Paths
      * This must contain the name of your "system" folder. Include
      * the path if the folder is not in the same directory as this file.
      */
-	public $systemDirectory = '/home/gymevent/ci4/4.5.7/system';
+	public $systemDirectory = '/home/gymevent/ci4/4.6.0/system';
 
     /**
      * ---------------------------------------------------------------

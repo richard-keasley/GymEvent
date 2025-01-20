@@ -1,4 +1,5 @@
 <?php
+# include FCPATH . 'paths.php';
 
 /*
  *---------------------------------------------------------------
@@ -11,7 +12,7 @@ if (version_compare(PHP_VERSION, $minPhpVersion, '<')) {
     $message = sprintf(
         'Your PHP version must be %s or higher to run CodeIgniter. Current version: %s',
         $minPhpVersion,
-        PHP_VERSION
+        PHP_VERSION,
     );
 
     header('HTTP/1.1 503 Service Unavailable.', true, 503);
@@ -45,8 +46,8 @@ if (getcwd() . DIRECTORY_SEPARATOR !== FCPATH) {
 
 // LOAD OUR PATHS CONFIG FILE
 // This is the line that might need to be changed, depending on your folder structure.
-include FCPATH . 'paths.php';
 # require FCPATH . '../app/Config/Paths.php';
+include FCPATH . 'paths.php';
 // ^^^ Change this line if you move your application folder
 
 $paths = new Config\Paths();

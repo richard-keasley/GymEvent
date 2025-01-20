@@ -7,30 +7,28 @@ $nav = new \App\Views\Htm\Breadcrumbs;
 echo $nav->htm($breadcrumbs);
 ?>
 
-<main class="clearfix">
-<?php 
+<main class="clearfix"><?php 
 
-$this->renderSection('top');
+echo $this->renderSection('top');
 
 if(empty($this->sections['sidebar'])) {
-	$this->renderSection('content');
+	echo $this->renderSection('content');
 } 
 else { ?>
 <div class="row">
 	<div class="col-sm-auto">
-	<?php $this->renderSection('sidebar'); ?>
+	<?php echo $this->renderSection('sidebar'); ?>
 	</div>
 
 	<div class="col-sm" style="min-width: 15em;">
-	<?php $this->renderSection('content'); ?>
+	<?php echo $this->renderSection('content'); ?>
 	</div>
 </div>
 <?php }
 
-$this->renderSection('bottom');
+echo $this->renderSection('bottom');
 
-?>
-</main>
+?></main>
 
 <?php 
 

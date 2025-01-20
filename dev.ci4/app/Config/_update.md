@@ -2,9 +2,11 @@
 - App
 - Email
 - Exceptions
+- Feature
 - Filters
 - Paths
 - Routes
+- Routing
 - Security
 
 ## additional config files
