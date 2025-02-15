@@ -188,7 +188,12 @@ public function populate($event_id) {
 				foreach($cat['entries'] as $entry) {
 					$entry['category_id'] = $cat_id;
 					unset($entry['club']);
-					$entry['dob'] = date('Y-m-d', $entry['dob']);
+					
+					$entry['dob'] = 'last year';
+					try {$dt = new \datetime($entry['dob']);}
+					catch(\throwable) {$dt = null;}
+					$entry['dob'] = $dt ? $dt->format('Y-m-d') : null ;
+				
 					$this->add_entry($entry);
 					$count++;
 				}

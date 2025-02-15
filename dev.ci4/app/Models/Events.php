@@ -17,6 +17,7 @@ protected $allowedFields = [
 	'payment', 
 	'participants', 
 	'staff', 
+	'terms', 
 	'clubrets', 
 	'music', 
 	'player', 

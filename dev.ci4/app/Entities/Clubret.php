@@ -253,20 +253,25 @@ private $_error = null ;
 
 function __construct($namestring) {
 	$namestring = filter_string($namestring);
-	$input = preg_split("/ *[\t,] */", $namestring);
+	$buffer = preg_split("/ *[\t,] */", $namestring);
 	
-	$dob = count($input)>1 ? array_pop($input) : '' ;
-	$name = [];
-	foreach($input as $val) {
-		if(intval($val)) continue; 
-		$name[] = $val;
+	//strip integers from array
+	$input = [];
+	foreach($buffer as $val) {
+		if(!ctype_digit($val)) $input[] = $val;
 	}
+	# d($buffer, $input);
 	
+	// dob is last
+	$dob = count($input)>1 ? array_pop($input) : '' ;
 	$dt = self::sanitize_dob($dob);
 	if($dt) $dob = $dt->format('d-M-Y');
 	
+	// name is the rest
+	$name = implode(' ', $input);
+			
 	$this->attributes = [
-		'name' => implode(' ', $name),
+		'name' => $name,
 		'dob' => $dob,
 	];
 	
@@ -291,26 +296,22 @@ function __toString(): string {
 }
 
 private function error($dt) {
+	self::calc();
 	if(!$this->name) return "has no name";
 	if(strlen($this->name)<6) return "has invalid name";
 	if(!substr_count($this->name, ' ')) return "is not a full name"; 
 	
 	if(!$this->dob) return "has no DoB";
-	if(!$dt) return "has invalid DoB";
-	$now = new \DateTimeImmutable;
-	$dob = $dt->format('Y-m-d');
-	$period = new \DateInterval("P5Y");
-	$check = $now->sub($period)->format('Y-m-d');
-	if($dob>$check) return "has invalid DoB";
-	$period = new \DateInterval("P90Y");
-	$check = $now->sub($period)->format('Y-m-d');
-	if($dob<$check) return "has invalid DoB";
+	if(!$dt) return "has invalid DoB";	
+	if($dt>self::$calc['dob_max']) return "has invalid DoB";
+	if($dt<self::$calc['dob_min']) return "has invalid DoB";
 		
 	// no error
 	return null;
 }
 
 static function sanitize_dob($str) {
+	self::calc();
 	if(!$str) return null;
 	try {
 		$formats = [
@@ -330,14 +331,11 @@ static function sanitize_dob($str) {
 		}
 		// strip time from datetime
 		$retval->setTime(0,0);
-		
+		// check for 2 digit year	
 		$yr = (int) $retval->format('Y');
 		if($yr<100) {
 			// 2 digit year, bring it to this century
-			$now = new \datetime;
-			$now = (int) $now->format('y');
-			$add = $yr>$now ? 1900 : 2000 ;
-			# d($yr, $add);
+			$add = $yr>self::$calc['now_yr'] ? 1900 : 2000 ;
 			$retval->add(new \DateInterval("P{$add}Y"));
 		}
 	}
@@ -346,6 +344,21 @@ static function sanitize_dob($str) {
 		$retval = null;
 	}
 	return $retval;
+}
+
+static $calc = null;
+static function calc() {
+	if(self::$calc) return;
+	$calc = [];
+	$now = new \DateTimeImmutable;
+	$period = new \DateInterval("P5Y");
+	$calc['dob_max'] = $now->sub($period);
+	$period = new \DateInterval("P90Y");
+	$calc['dob_min'] = $now->sub($period);
+	$calc['now'] = $now;
+	$calc['now_yr'] = (int) $now->format('y');
+	
+	self::$calc = $calc;
 }
 
 }
