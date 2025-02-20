@@ -127,7 +127,7 @@ look in controllers/admin/entries->export()
 	
 	if($this->_rundata===null) {
 		$scoreboard = new \App\ThirdParty\scoreboard;
-		$rundata = $this->runorder;		
+		$rundata = $this->runorder;
 		$cat = $this->get_category();
 						
 		$exe = [];
