@@ -38,11 +38,15 @@ $acc->set_item('Details', ob_get_clean());
 
 ob_start(); // staff 
 
+$params = [
+	'height' => "8em",
+	'statusbar' => false,
+];
 $attrs = [
 	'name' => 'staff',
 	'value' => $event->staff
 ];
-echo new \App\Views\Htm\Editor($attrs);
+echo new \App\Views\Htm\Editor($attrs, $params);
 
 $edit_locked = $event->clubrets > 0;
 if($edit_locked) { ?>
@@ -89,7 +93,18 @@ $attrs = [
 	'name' => 'participants',
 	'value' => $event->participants
 ];
-echo new \App\Views\Htm\Editor($attrs);
+$params = [
+	'height' => "8em",
+	'statusbar' => false,
+];
+echo new \App\Views\Htm\Editor($attrs, $params);
+
+$attrs = [
+	'name' => 'terms',
+	'value' => $event->terms
+];
+echo new \App\Views\Htm\Editor($attrs, $params);
+
 
 $edit_locked = $event->clubrets > 0;
 

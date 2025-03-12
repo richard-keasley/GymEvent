@@ -10,19 +10,14 @@ public function index() {
 	return $this->respondNoContent();
 }
 
-public function view(...$segments) {
-	if(!$segments) $segments = ['index'];
-	$stub = implode('/', $segments);
-		
-	$viewname = "help/{$stub}";
-	# if(!\App\Libraries\Auth::check_path($viewname)) return $this->error('Access denied');
-	
-	$include = config('Paths')->viewDirectory . "/{$viewname}.php";
-	if(!file_exists($include)) return $this->error("Can't find help for {$stub}");
-	return $this->respond(view($viewname));
+public function view($id=0) {
+	$htmls = new \App\Models\Htmls;
+	$html = $htmls->find($id);
+	if(!$html) return $this->error("Can't find help for {$id}");;
+	return $this->respond($html->value);
 }
 
-public function error($msg) {
+public function error($msg='error') {
 	return sprintf('<p class="alert alert-danger">%s!</p>', $msg);
 }
 

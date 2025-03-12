@@ -8,3 +8,6 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 
 $routes->get('x/(:segment)', 'Links::view/$1');
+
+$routes->get('about/(:segment)', 'About::view/$1');
+

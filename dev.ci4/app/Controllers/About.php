@@ -2,42 +2,72 @@
 
 class About extends \App\Controllers\BaseController {
 	
+private $options = [
+	'index' => [
+		'title' => 'About us', 
+		'html_path' => '~about-us',
+	],
+	'data' => [
+		'title' => 'Data policy', 
+		'html_path' => '~about-data'
+	],
+	'preparation' => [
+		'title' => 'Preparations', 
+		'html_path' => '~about-preparation'
+	],
+	'hardware' => [
+		'title' => 'Hardware', 
+		'html_path' => '~about-hardware'
+	],
+];
+	
 public function __construct() {
 	$this->data['breadcrumbs'][] = 'about';
-	$this->data['nav'] = 
-		'<nav class="nav">' . 
-		getlink('about', 'About us') .
-		getlink('about/policy', 'Data Policy') .
-		getlink('about/timeline', 'Preparations') .
-		getlink('about/hardware', 'Hardware') .
-		'</nav>';
+	
+	$this->data['nav'] = '<nav class="nav">';
+	foreach($this->options as $stub=>$option) {
+		$url = $stub=='index' ? 
+			'about' : 
+			"about/{$stub}" ;
+		$this->data['nav'] .= getlink($url, $option['title']);
+		$this->options[$stub]['url'] = $url; 
+	}
+	$this->data['nav'] .= '</nav>';
 }
 	
 public function index() {
-	$this->data['title'] = 'About';
-	$this->data['heading'] = 'About our service';
+	return $this->view('index');
+}
+
+public function view($stub='index') {
+	$option = $this->options[$stub] ?? false ;
+	# d($stub, $this->options, $option);
+	if(!$option) {
+		$message = "Can't find '{$stub}'";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
+	$html = (new \App\Models\Htmls)->find_path($option['html_path']);
+	if(!$html) {
+		$message = "Can't find '{$option['html_path']}'";
+		throw \App\Exceptions\Exception::not_found($message);
+	}	
+	
+	if($stub!='index') {
+		$this->data['breadcrumbs'][] = [$option['url'], $option['title']];
+	}
+	
+	foreach($option as $key=>$val) {
+		$this->data[$key] = $val;
+	}
+	$this->data['heading'] = $html->heading ?? $option['title'] ;
+	$this->data['html'] = $html;
+	$this->data['stub'] = $stub;
+	
 	return view('about/index', $this->data);
 }
 
-public function policy() {
-	$this->data['breadcrumbs'][] = 'about/policy';
-	$this->data['title'] = 'GDPR';
-	$this->data['heading'] = 'Data Protection policy';
-	return view('about/policy', $this->data);
-}
 
-public function timeline() {
-	$this->data['breadcrumbs'][] = 'about/timeline';
-	$this->data['title'] = 'Timeline';
-	$this->data['heading'] = 'Timeline for preparations';
-	return view('about/timeline', $this->data);
-}
 
-public function hardware() {
-	$this->data['breadcrumbs'][] = 'about/hardware';
-	$this->data['title'] = 'Hardware';
-	$this->data['heading'] = 'Hardware requirements';
-	return view('about/hardware', $this->data);
-}
+
 
 }

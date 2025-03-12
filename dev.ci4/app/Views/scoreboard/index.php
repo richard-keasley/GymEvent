@@ -1,12 +1,10 @@
 <?php $this->extend('default');
 
-$this->section('content'); ?>
-<div class="item-image"><img src="/app/scoreboard/screen.png" alt="screen"></div>
+$this->section('content'); 
+echo $html;
+$this->endSection();
 
-<?php
-$appvars = new \App\Models\Appvars();
-echo $appvars->get_value('scoreboard.home');
-?>
+$this->section('bottom'); ?>
 
 <div class="toolbar"><?php 
 echo \App\Libraries\View::back_link("/");
@@ -23,4 +21,3 @@ foreach($keys as $key) {
 ?></div>
 
 <?php $this->endSection();
-	

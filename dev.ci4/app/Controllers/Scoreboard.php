@@ -7,8 +7,16 @@ public function __construct() {
 }
 
 public function index() {
+	$path = '~scoreboard';
+	$html = (new \App\Models\Htmls)->find_path($path);
+	if(!$html) {
+		$message = "Can't find '{$path}'";
+		throw \App\Exceptions\Exception::not_found($message);
+	}
+	
 	$this->data['title'] = 'Scoreboard';
-	$this->data['heading'] = 'Scoreboard';
+	$this->data['html'] = $html;
+	$this->data['heading'] = $html->heading;
 	return view('scoreboard/index', $this->data);
 }
 

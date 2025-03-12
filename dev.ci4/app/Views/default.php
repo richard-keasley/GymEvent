@@ -1,7 +1,7 @@
 <?php 
 echo $this->include('includes/_head');
 
-if($help) echo $this->include('includes/help');
+echo $this->include('html/popup');
 
 $nav = new \App\Views\Htm\Breadcrumbs;
 echo $nav->htm($breadcrumbs);

@@ -40,7 +40,7 @@ foreach($controllers as $controller=>$enabled) { ?>
 
 <nav class="nav flex-column">
 <?php 
-echo getlink('admin/help/stub?view=setup', 'Permissions');
+echo getlink('setup/help', 'Help');
 echo getlink('setup/scoreboard', 'Scoreboard');
 echo getlink('setup/links', 'Shortcut links');
 echo getlink('setup/php_info', 'PHP info');

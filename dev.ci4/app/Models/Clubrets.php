@@ -12,7 +12,7 @@ protected $allowedFields = [
 	'name', 'address', 'phone', 'other', 
 	'participants', 
 	'staff', 
-	'stafffee', 
+	'stafffee', 'terms',
 	'updated'
 ];
 

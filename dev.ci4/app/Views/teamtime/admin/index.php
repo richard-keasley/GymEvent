@@ -44,7 +44,8 @@ foreach(tt_lib::get_value('views') as $key=>$view) {
 
 <button class="btn btn-primary" type="button" title="Jump to programme place" data-bs-toggle="modal" data-bs-target="#tt-progjump"><i class="bi-grid-3x3-gap"></i></button>
 
-<button type="button" class="btn bg-info" data-bs-toggle="modal" data-bs-target="#dlghelp" data-stub="control/teamtime"><span class="bi bi-question-circle"></span></button>
+<button type="button" class="btn bg-info" onclick="$('#btnhelp').click()"><span class="bi bi-question-circle"></span></button>
+
 </span>
 
 <span>
