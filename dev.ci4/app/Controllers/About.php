@@ -59,7 +59,7 @@ public function view($stub='index') {
 	foreach($option as $key=>$val) {
 		$this->data[$key] = $val;
 	}
-	$this->data['heading'] = $html->heading ?? $option['title'] ;
+	$this->data['heading'] = $html->heading ? $html->heading : $option['title'] ;
 	$this->data['html'] = $html;
 	$this->data['stub'] = $stub;
 	

@@ -16,5 +16,3 @@ $this->section('top'); ?>
 <a class="btn btn-outline-primary" href="<?php echo site_url("setup/help/edit/{$html->id}");?>"><span class="bi bi-pencil"></span></a>
 </div>
 <?php $this->endSection();
-
-

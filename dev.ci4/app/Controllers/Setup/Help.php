@@ -16,16 +16,32 @@ public function __construct() {
 		$this->data['stubs'][$key] = substr($file, $start, $length);
 	}
 		
+	$this->data['breadcrumbs'][] = 'admin';
 	$this->data['breadcrumbs'][] = 'setup';
 	$this->data['breadcrumbs'][] = 'setup/help';
 }
 	
 public function index() {
+	$htmls = new \App\Models\Htmls;
+		
+	$del_item = $this->request->getPost('cmd')=='del_item';
+	$item_id = (int) $this->request->getPost('item_id');
+	if($del_item && $item_id) {
+		$htmls->delete($item_id);
+	}
+	
 	$new_path = $this->request->getPost('path');
 	if($new_path) {
 		$data = ['path' => $new_path];
-		$htmls = new \App\Models\Htmls;
-		$htmls->insert($data);
+		$new_id = $htmls->insert($data);
+		if($new_id) {
+			return redirect()->to("setup/help/edit/{$new_id}");
+		}
+		else {
+			foreach($htmls->errors() as $msg) {
+				$this->data['messages'][] = $msg;
+			}
+		}
 	}
 	
 	return view('html/index', $this->data);
@@ -38,7 +54,7 @@ public function view($html_id=0) {
 		$message = "Can't find HTML entry {$html_id}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
-	$this->data['breadcrumbs'][] = ["setup/help/view/{$html_id}", 'view'];
+	$this->data['breadcrumbs'][] = ["setup/help/view/{$html_id}", "#{$html_id}"];
 	return view('html/view', $this->data);
 }
 
@@ -63,7 +79,14 @@ public function edit($html_id=0) {
 		$this->data['html'] = $htmls->find($html_id);
 	}
 	
-	$this->data['breadcrumbs'][] = ["setup/help/view/{$html_id}", 'view'];
+	$this->data['modal_delete'] = [
+		'action' => 'setup/help',
+		'title' => "Delete this HTML entry",
+		'description' => "<p>Are you sure you want to delete this entry?</p>",
+		'item_id' => $html_id
+	];
+	
+	$this->data['breadcrumbs'][] = ["setup/help/view/{$html_id}", "#{$html_id}"];
 	$this->data['breadcrumbs'][] = ["setup/help/edit/{$html_id}", 'edit'];
 	return view('html/edit', $this->data);
 }

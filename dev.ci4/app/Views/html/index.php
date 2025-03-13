@@ -10,7 +10,7 @@ $this->section('content');?>
 <div class="modal-dialog modal-md">
 <?php 
 $attrs = ['class' => "modal-content"];
-$hidden = ['newentry' => '1'];
+$hidden = [];
 echo form_open('', $attrs, $hidden); 
 ?>
 <div class="modal-header">

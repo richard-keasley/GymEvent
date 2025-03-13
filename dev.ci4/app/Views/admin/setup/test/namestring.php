@@ -63,7 +63,7 @@ foreach($dates as $date) {
 }
 // date checker */
 
-/* name checker 
+/* name checker */
 
 $test_string = 
 'Elizabeth ,  Rimmer-Leeming, 18-Mar-2007

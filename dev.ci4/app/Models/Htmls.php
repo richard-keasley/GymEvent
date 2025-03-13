@@ -10,7 +10,7 @@ protected $updatedField  = 'updated';
 protected $allowedFields = ['id', 'path', 'heading', 'value', 'updated'];
 
 protected $validationRules = [
-	'id' => 'required',
+	'id' => 'permit_empty',
 	'path' => 'required|is_unique[htmls.path,id,{id}]',
 ];
 
