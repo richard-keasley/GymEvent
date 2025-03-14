@@ -47,7 +47,7 @@ $this->section('content'); ?>
 
 <p><?php echo $paths['APPPATH'];?> holds the GymEvent application. Edit files in here to alter the application's behaviour.</p>
 
-<p><?php echo $paths['WRITEPATH'];?> will be used to write cache files and logs / etc. It can be empty for a new installation, but make sure it is writeable.</p>
+<p><?php echo $paths['WRITEPATH'];?> used to write cache files and logs / etc. Needs to be writeable.</p>
 
 <p><?php echo $paths['FCPATH'];?> is the document root (publicly accessible) for this domain. You may have to use a different folder name for this (e.g. using primary domain on cPanel).</p>
 
@@ -154,10 +154,10 @@ function path_label($const_name, $file='') {
 
 function htm_folderlist($path, $filelist=true) {
 	$subdirs = [
-		'/home/gymevent/dev.ci4/public/public',		
+		FCPATH . 'public',		
 	];
 	$dirlists = [
-		'/home/gymevent/dev.ci4/public/app' => 'app resource folders',
+		FCPATH . 'app' => 'app resource folders',
 	];
 	
 	$pathlist = [];

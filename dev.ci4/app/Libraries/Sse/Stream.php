@@ -28,7 +28,7 @@ function url($tick=0, $ttl=0) {
 	$query = ['ch' => $this->channel->name];
 	if($tick) $query['tk'] = $tick;
 	if($ttl) $query['tl'] = $ttl;
-	return site_url('apx/sse.php?' . http_build_query($query));
+	return site_url('app/sse.php?' . http_build_query($query));
 }
 
 function send($tick, $ttl=0) {
@@ -116,7 +116,7 @@ die;
 
 static function database() {
 	// database with no CI framework
-	$paths = new \Config\Paths(); // loaded in /apx/sse.php
+	$paths = new \Config\Paths(); // loaded in /app/sse.php
 	$appdir = realpath($paths->appDirectory);
 	$include = dirname($appdir) . '/.env';
 	if(!is_file($include)) die("{$include} not found");
