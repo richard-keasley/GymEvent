@@ -35,18 +35,23 @@ public function index() {
 	if($id) $this->usr_model->delete($id);
 	
 	// delete
-	$cmd = $this->request->getPost('cmd');
-	$item_id = intval($this->request->getPost('item_id'));
-	if($cmd=='del_user' && $item_id) {
-		if($this->usr_model->delete($item_id, true)) {
-			$this->data['messages'][] = ["User {$item_id} deleted", 'success'];
+	$delsure = [
+		'title' => 'Delete this user',
+		'message' => '<p>Delete this user? (Event entries are preserved.)</p>',	
+	];
+	$delsure = new \App\Views\Htm\Delsure($delsure);
+	$del_id = $delsure->request;
+	if($del_id) {
+		if($this->usr_model->delete($del_id, true)) {
+			$this->data['messages'][] = ["User {$del_id} deleted", 'success'];
 		}
 		else {
 			$this->data['messages'] = $this->usr_model->errors();
-			$this->data['messages'][] = "User {$item_id} not deleted.";
+			$this->data['messages'][] = "User {$del_id} not deleted.";
 		}
 	}
-		
+	$this->data['delsure'] = $delsure;
+			
 	$update = $this->request->getPost('update');
 	if($update) {
 		$roles = [''];
@@ -82,20 +87,35 @@ public function index() {
 		$this->data['messages'][] = ["Minimum login role is '{$min_role}'", 'warning'];
 	}
 	
-	$this->data['modal_delete'] = [
-		'cmd' => 'del_user',
-		'title' => 'Delete <span class="dataname">user</span>',
-		'description' => '<p>Delete this user? (Event entries are preserved.)</p>',
-		'item_id' => 0
-	];
 	return view('users/index', $this->data);
 }
 
 public function view($user_id=0) {
 	$this->find($user_id);
 	
+	$delsure = [
+		'title' => "Delete '{$this->data['user']->name}'",
+		'message' => '<p>Delete this user? (Event entries are preserved.)</p>',
+	];
+	$delsure = new \App\Views\Htm\Delsure($delsure);
+			
 	if(!$this->data['user_self']) {
-				
+		if($this->data['user']->deleted_at) {
+			$del_id = $delsure->request;
+			if($del_id) {
+				if($this->usr_model->delete($del_id, true)) {
+					$this->data['messages'][] = ["User {$del_id} deleted", 'success'];
+					$session = \Config\Services::session();
+					$session->setFlashdata('messages', $this->data['messages']);
+					return redirect()->to(site_url('admin/users'));
+				}
+				else {
+					$this->data['messages'] = $this->usr_model->errors();
+					$this->data['messages'][] = "User {$del_id} not deleted.";
+				}
+			}
+		}
+			
 		$set_enabled = $this->request->getPost('enable');
 		if($set_enabled) {
 			switch($set_enabled) {
@@ -164,15 +184,8 @@ public function view($user_id=0) {
 	if(!$this->data['user_self']) {
 		if($this->data['user']->deleted_at) {
 			$this->data['toolbar'][] = '<button name="enable" value="enable" type="submit" title="enable" class="btn btn-success bi-check-circle"></button>';
-			$this->data['toolbar'][] = '<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#del_user" title="Delete this user"><span class="bi bi-trash"></span></button>';
-			$this->data['modal_delete'] = [
-				'action' => 'admin/users',
-				'id' => 'del_user',
-				'title' => "Delete '{$this->data['user']->name}'",
-				'description' => '<p>Delete this user? (Event entries are preserved.)</p>',
-				'cmd' => "del_user",
-				'item_id' => $this->data['user']->id
-			];
+			$this->data['toolbar'][] = $delsure->button($user_id);
+			$this->data['delsure'] = $delsure;
 		}
 		else {
 			$this->data['toolbar'][] = '<button name="enable" value="disable" type="submit" title="disable" class="btn bi-x-circle btn-danger"></button>';

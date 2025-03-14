@@ -10,7 +10,7 @@ $consts = [
 // create HTML for path constants
 foreach($consts as $const) {
 	$paths[$const] = path_label($const);
-} 
+}
 
 $this->section('sidebar'); ?>
 <ul class="list-unstyled">
@@ -18,34 +18,20 @@ $this->section('sidebar'); ?>
 <ul class="list-unstyled ps-3">
 	<li class="bi bi-folder my-1"> <?php echo $paths['APPPATH'];?>
 		<ul class="list-unstyled ps-3">
-			<li class="bi bi-list"> [application folders]</li>
-			<?php htm_pathlist(APPPATH); ?>
+			<?php htm_filelist(APPPATH, 'application folders'); ?>
 		</ul>
 	</li>
 	<li class="bi bi-folder my-1"> <?php echo $paths['SYSTEMPATH'];?></li>
 	<li class="bi bi-folder my-1"> <?php echo $paths['WRITEPATH'];?></li>
 	<li class="bi bi-folder my-1"> <?php echo $paths['FCPATH'];?>
-		<ul class="list-unstyled ps-3">
-			<li class="bi bi-folder"> public
-				<ul class="list-unstyled ps-3">
-					<li class="bi bi-folder"> events
-					<ul class="list-unstyled ps-3">
-						<li class="bi bi-list"> event uploads</li>
-					</ul></li>
-					<li class="bi bi-folder"> teamtime</li>
-				</ul>
-			</li>
-			<li class="bi bi-folder"> app
-				<ul class="list-unstyled ps-3">
-					<li class="bi bi-list"> App resources</li>
-					<li class="bi bi-file-code"> *.css</li>
-					<li class="bi bi-file-code"> *.js</li>
-				</ul>
-			</li>
-			<?php htm_pathlist(FCPATH); ?>
+		<ul class="list-unstyled ps-3"> 
+			<?php 
+			htm_folderlist(FCPATH);
+			htm_filelist(FCPATH); 
+			?>
 		</ul>
 	</li>
-	<?php htm_pathlist(ROOTPATH); ?>
+	<?php htm_filelist(ROOTPATH); ?>
 </ul>
 </li>
 </ul>
@@ -65,10 +51,9 @@ $this->section('content'); ?>
 
 <p><?php echo $paths['FCPATH'];?> is the document root (publicly accessible) for this domain. You may have to use a different folder name for this (e.g. using primary domain on cPanel).</p>
 
-<p><?php echo path_label('FCPATH', 'public');?>
-is used for downloads and files accessible to the public. All front-end <abbr title="e.g. bootstrap, jQuery, CSS">site resources</abbr> are in 
-<?php echo path_label('FCPATH', 'public');?>. 
-Event specific files (and installation specific files) are in <?php echo path_label('FCPATH', 'public/events');?>.</p>
+<p><?php echo path_label('FCPATH', 'app');?>: All front-end <abbr title="e.g. bootstrap, jQuery, CSS">site resources</abbr>.</p>
+<p><?php echo path_label('FCPATH', 'public');?>: installation specific files (not updated with app updates).</p>
+<p><?php echo path_label('FCPATH', 'public/events');?> Event specific files .</p>
 
 <p>Read about CodeIgniter's <a href="https://codeigniter.com/user_guide/concepts/structure.html">directory structure</a>.</p>
 </section>
@@ -167,21 +152,59 @@ function path_label($const_name, $file='') {
 	return sprintf('<mark data-bs-toggle="tooltip" title="%s">%s</mark>', $title, $text);
 }
 
-function htm_pathlist($path) {
-	$files = [];
-	foreach(scandir($path) as $file) {
-		$file = new \CodeIgniter\Files\File($path . $file);
-		switch($file->getExtension()) {
-			case 'ico': 
-				$icon = 'file-image'; break;
-			case 'txt': 
-			case 'md':
-				$icon = 'file'; break;
-			default:
-			$icon = 'file-code';
+function htm_folderlist($path, $filelist=true) {
+	$subdirs = [
+		'/home/gymevent/dev.ci4/public/public',		
+	];
+	$dirlists = [
+		'/home/gymevent/dev.ci4/public/app' => 'app resource folders',
+	];
+	
+	$pathlist = [];
+	$pattern = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '*';
+	foreach(glob($pattern, GLOB_ONLYDIR) as $entry) {
+		ob_start();
+		if(in_array($entry, $subdirs)) {
+			htm_folderlist($entry, false);
 		}
-		if($file->isFile()) {
-			printf('<li class="bi bi-%s"> %s</li>', $icon, $file->getBasename());
+		if($filelist) {
+			$dirlist = $dirlists[$entry] ?? null ;
+			htm_filelist($entry, $dirlist);
 		}
-	}	
+		$sub = ob_get_clean();
+		if($sub) $sub = sprintf('<ul class="list-unstyled ps-3">%s</ul>', $sub);
+		
+		$dir = new \CodeIgniter\Files\File($entry);
+		$pathlist[] = ['folder', $dir->getBasename() . $sub];			
+	}
+
+	foreach($pathlist as $row) {
+		printf('<li class="bi bi-%s"> %s</li>', $row[0], $row[1]);
+	}
+}
+
+function htm_filelist($path, $dirlist=null) {
+	$pathlist = [];
+	if($dirlist) {
+		$pathlist[] = ['list', "<em>{$dirlist}</em>"];
+	}
+	
+	$files = new \CodeIgniter\Files\FileCollection();
+	$files->addDirectory($path);
+	foreach($files as $file) {
+		$label = $file->getBasename();
+		if($label=='index.htm') continue;
+		$icon = match($file->getExtension()) {
+			'ico' => 'file-image',
+			'txt' => 'file',
+			'md' => 'file',
+			default => 'file-code'
+		};
+		$pathlist[] = [$icon, $label];	
+	}
+	
+	# d($pathlist);
+	foreach($pathlist as $row) {
+		printf('<li class="bi bi-%s"> %s</li>', $row[0], $row[1]);
+	}
 }

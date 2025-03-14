@@ -55,12 +55,15 @@ $this->section('top'); ?>
 <div class="toolbar">
 <?php echo \App\Libraries\View::back_link("setup/help/view/{$html->id}"); ?>
 <button class="btn btn-primary" type="submit" name="cmd" value="save" form="editform">save</button>
-<button type="button" title="Delete this entry" class="btn btn-danger bi-trash" data-bs-toggle="modal" data-bs-target="#modal_delete"></button>
+<?php 
+$title = "Delete HTML for {$html->path}";
+echo $delsure->button($html->id, $title); ?>
 </div>
-<?php $this->endSection();
+<?php 
+$this->endSection();
 
 $this->section('bottom');
-echo $this->include('includes/modal_delete');
+echo $delsure->form();
 $this->endSection();
 
 

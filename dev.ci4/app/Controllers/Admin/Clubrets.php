@@ -57,10 +57,15 @@ public function view($event_id=0, $user_id=0) {
 			}
 		}
 	}
-
-	if($this->request->getPost('cmd')=='del_item') {
-		$item_id = $this->request->getPost('item_id');
-		if($this->model->delete($item_id)) {
+	
+	$delsure = [
+		'title' => 'Delete this return?',
+		'message' => '<p>Are you sure you want to delete this return? <span class="bg-warning-subtle">This process is irreversible.</span></p>',
+	];
+	$this->data['delsure'] = new \App\Views\Htm\Delsure($delsure);
+	$del_id = $this->data['delsure']->request;
+	if($del_id) {
+		if($this->model->delete($del_id)) {
 			$this->data['messages'][] = ["Return deleted", 'success'];
 			$session = \Config\Services::session();
 			$session->setFlashdata('messages', $this->data['messages']);
@@ -68,15 +73,9 @@ public function view($event_id=0, $user_id=0) {
 		}
 		else {
 			$this->data['messages'] = $this->model->errors();
-		}
+		}	
 	}
-	$this->data['modal_delete'] = [
-		'title' => 'Delete this return',
-		'description' => '<p>Are you sure you want to delete this return? <span class="bg-warning-subtle">This process is irreversible.</span></p>',
-		'cmd' => "del_item",
-		'item_id' => $this->data['clubret']->id
-	];
-
+	
 	$this->data['clubret']->check();
 	
 	// only allow users who do not have returns for this event

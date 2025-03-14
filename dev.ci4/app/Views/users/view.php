@@ -1,6 +1,7 @@
 <?php $this->extend('default');
 $template = ['table_open' => '<table class="table table-hover">'];
 $table = new \CodeIgniter\View\Table($template);
+$delsure = $delsure ?? null;
 
 $this->section('content'); 
 if($user->deleted_at) { ?>
@@ -94,8 +95,6 @@ $this->section('bottom');
 if(isset($users_dialogue)) {
 	echo $this->include('includes/users/dialogue');
 }
-if(isset($modal_delete)) {
-	echo $this->include('includes/modal_delete');
-}
+if($delsure) echo $delsure->form();
 
 $this->endSection(); 

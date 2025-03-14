@@ -90,18 +90,22 @@ public function view($event_id=0) {
 		$this->find($event_id);
 	}
 	
-	$cmd = $this->request->getPost('cmd');
-	if($cmd=='del_item') {
-		$item_id = $this->request->getPost('item_id');
-		if($this->mdl_events->delete_all($item_id)) {
-			$this->data['messages'][] = ["Event {$item_id} deleted", 'success'];
+	$delsure = [
+		'title' => "Delete '{$this->data['event']->title}'",
+		'message' => "<p>Are you sure you want to delete this event?</p><p class=\" bg-warning-subtle\">All related entries and club returns will also be deleted.</p><p>Ensure the files for event {$event_id} are also deleted.</p>",
+	];
+	$this->data['delsure'] = new \App\Views\Htm\Delsure($delsure);
+	$del_id = $this->data['delsure']->request;
+	if($del_id) {
+		if($this->mdl_events->delete_all($del_id)) {
+			$this->data['messages'][] = ["Event {$del_id} deleted", 'success'];
 			$session = \Config\Services::session();
 			$session->setFlashdata('messages', $this->data['messages']);
 			return redirect()->to(site_url('admin/events'));
 		}
 		else {
 			$this->data['messages'] = $this->mdl_events->errors();
-			$this->data['messages'][] = "Event {$item_id} not deleted.";
+			$this->data['messages'][] = "Event {$del_id} not deleted.";
 		}
 	}
 		
@@ -120,13 +124,7 @@ public function view($event_id=0) {
 			$state = '';
 	}
 	if($state) $this->find($event_id);
-	
-	$this->data['modal_delete'] = [
-		'title' => "Delete '{$this->data['event']->title}'",
-		'description' => "<p>Are you sure you want to delete this event?</p><p class=\" bg-warning-subtle\">All related entries and club returns will also be deleted.</p><p>Ensure the files for event {$event_id} are also deleted.</p>",
-		'item_id' => $event_id
-	];
-	
+		
 	$download = $this->request->getGet('dl');
 	
 	// build entries table

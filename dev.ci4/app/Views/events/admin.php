@@ -31,9 +31,9 @@ echo getlink("admin/events/add/{$event->id}", $label);
 if($event->deleted_at) { ?>
 	<button type="submit" name="state" value="list" title="list this event" class="btn btn-success bi-check-circle"></button>
 
-	<?php if(!count($files)) { ?>
-	<button type="button" title="Delete this event" class="btn btn-danger bi-trash" data-bs-toggle="modal" data-bs-target="#modal_delete"></button>
-	<?php } ?>
+	<?php if(!count($files)) { 
+	echo $delsure->button($event->id);
+	} ?>
 
 <?php }
 
@@ -177,7 +177,7 @@ $this->section('bottom');
 // edit dialogues
 if($can_edit) {
 echo $this->include('entries/populate/form');
-echo $this->include('includes/modal_delete');
+echo $delsure->form();
 }
 // end edit dialogues
 

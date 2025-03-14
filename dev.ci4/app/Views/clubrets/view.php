@@ -1,5 +1,6 @@
 <?php $this->extend('default');
 $table = \App\Views\Htm\Table::load('responsive');
+$delsure = $delsure ?? null ;
 
 $this->section('content'); ?>
 <section>
@@ -89,11 +90,9 @@ if(isset($users_dialogue)) { ?>
 	<?php
 	echo $this->include('includes/users/dialogue');
 }
-if(isset($modal_delete)) { ?>
-	<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal_delete" title="Delete this return"><span class="bi bi-trash"></span></button>
-	<?php 
-	echo $this->include('includes/modal_delete');
-}
+
+if($delsure) echo $delsure->button($clubret->id);
+
 ?>
 </div>
 
@@ -111,3 +110,7 @@ if($user->deleted_at) { ?>
 # d($event);
 
 $this->endSection(); 
+
+$this->section('bottom');
+if($delsure) echo $delsure->form();
+$this->endSection();

@@ -395,8 +395,18 @@ public function import($event_id=0) {
 		'exeset' => 'Exercise set (int)' // optional
 	];
 
+	$delsure = [
+		'title' => "Import new entries",
+		'message' => '<p>Importing deletes all existing entries for this event. Are you sure you want to do this?</p>',
+		'button' => 'primary',
+		'icon' => 'file-arrow-down'
+	];
+	$delsure = new \App\Views\Htm\Delsure($delsure);
+	$del_id = $delsure->request;
+	$this->data['delsure'] = $delsure;
+
 	$getPost = $this->request->getPost('csv');
-	if($getPost) {
+	if($del_id && $getPost) {
 		try {
 			// use this code for custom exceptions
 			$ex_code = 999;
