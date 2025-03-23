@@ -2,6 +2,9 @@
 
 class Music extends \App\Controllers\BaseController {
 
+private $mdl_entries = null;
+private $mdl_events = null;
+
 public function __construct() {
 	$this->mdl_entries = new \App\Models\Entries;
 	$this->mdl_events = new \App\Models\Events;

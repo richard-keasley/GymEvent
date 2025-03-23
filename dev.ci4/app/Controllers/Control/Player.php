@@ -1,6 +1,8 @@
 <?php namespace App\Controllers\Control;
 
 class Player extends \App\Controllers\BaseController {
+
+private $mdl_events = null;
 	
 function __construct() {
 	$this->data['breadcrumbs'][] = "events";

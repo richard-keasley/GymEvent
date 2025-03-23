@@ -2,6 +2,8 @@
 
 class Events extends \App\Controllers\BaseController {
 
+private $mdl_events = null;
+
 function __construct() {
 	$this->data['breadcrumbs'][] = "events";
 	$this->mdl_events = new \App\Models\Events;

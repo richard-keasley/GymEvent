@@ -11,11 +11,13 @@ foreach($tables as $data) {
 	}
 }
 
-if($kills) { ?>
+if($kills) {
+/*	?>
 <ul class="list-unstyled"><?php
 foreach($kills as $kill) echo "<li><code>{$kill}</code></li>";
 ?></ul>
 <?php 
+*/
 $attr = [
 	'class' =>"toolbar"
 ];

@@ -2,11 +2,15 @@
 
 class Clubrets extends \App\Controllers\BaseController {
 
+private $model = null;
+private $events = null;
+private $usr_model = null;
+
 function __construct() {
-	$this->data['breadcrumbs'][] = 'events';
 	$this->model = new \App\Models\Clubrets();
 	$this->events = new \App\Models\Events();
 	$this->usr_model = new \App\Models\Users();
+	$this->data['breadcrumbs'][] = 'events';
 	$this->data['clubret'] = new \App\Entities\Clubret();
 }
 	
@@ -130,7 +134,11 @@ public function edit($event_id=0, $user_id=0) {
 		$getPost['id'] = $this->data['clubret']->id;
 		$getPost['event_id'] = $event_id;
 		$getPost['user_id'] = $user_id;
-		$getPost['stafffee'] = empty($getPost['stafffee']) ? 0 : 1;
+		// checkboxes
+		$keys = ['stafffee', 'terms'];
+		foreach($keys as $key) {
+			$getPost[$key] = empty($getPost[$key]) ? 0 : 1;
+		}
 		
 		$trim_name = " ',.-_";
 		

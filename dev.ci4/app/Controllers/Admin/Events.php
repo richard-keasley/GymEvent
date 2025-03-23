@@ -1,6 +1,8 @@
 <?php namespace App\Controllers\Admin;
 
 class Events extends \App\Controllers\BaseController {
+	
+private $mdl_events = null;
 
 public function __construct() {
 	$this->mdl_events = new \App\Models\Events();

@@ -9,7 +9,7 @@ $consts = [
 ];
 // create HTML for path constants
 foreach($consts as $const) {
-	$paths[$const] = path_label($const);
+	$paths[$const] = local::path($const);
 }
 
 $this->section('sidebar'); ?>
@@ -18,7 +18,7 @@ $this->section('sidebar'); ?>
 <ul class="list-unstyled ps-3">
 	<li class="bi bi-folder my-1"> <?php echo $paths['APPPATH'];?>
 		<ul class="list-unstyled ps-3">
-			<?php htm_filelist(APPPATH, 'application folders'); ?>
+			<?php local::files(APPPATH, 'application folders'); ?>
 		</ul>
 	</li>
 	<li class="bi bi-folder my-1"> <?php echo $paths['SYSTEMPATH'];?></li>
@@ -26,12 +26,12 @@ $this->section('sidebar'); ?>
 	<li class="bi bi-folder my-1"> <?php echo $paths['FCPATH'];?>
 		<ul class="list-unstyled ps-3"> 
 			<?php 
-			htm_folderlist(FCPATH);
-			htm_filelist(FCPATH); 
+			local::folders(FCPATH);
+			local::files(FCPATH); 
 			?>
 		</ul>
 	</li>
-	<?php htm_filelist(ROOTPATH); ?>
+	<?php local::files(ROOTPATH); ?>
 </ul>
 </li>
 </ul>
@@ -51,9 +51,9 @@ $this->section('content'); ?>
 
 <p><?php echo $paths['FCPATH'];?> is the document root (publicly accessible) for this domain. You may have to use a different folder name for this (e.g. using primary domain on cPanel).</p>
 
-<p><?php echo path_label('FCPATH', 'app');?>: All front-end <abbr title="e.g. bootstrap, jQuery, CSS">site resources</abbr>.</p>
-<p><?php echo path_label('FCPATH', 'public');?>: installation specific files (not updated with app updates).</p>
-<p><?php echo path_label('FCPATH', 'public/events');?> Event specific files .</p>
+<p><?php echo local::path('FCPATH', 'app');?>: All front-end <abbr title="e.g. bootstrap, jQuery, CSS">site resources</abbr>.</p>
+<p><?php echo local::path('FCPATH', 'public');?>: installation specific files (not updated with app updates).</p>
+<p><?php echo local::path('FCPATH', 'public/events');?> Event specific files .</p>
 
 <p>Read about CodeIgniter's <a href="https://codeigniter.com/user_guide/concepts/structure.html">directory structure</a>.</p>
 </section>
@@ -72,7 +72,7 @@ $this->section('content'); ?>
 $this->section('bottom'); ?>
 <section>
 <h4>Prepare PHP for CodeIgniter</h4>
-<p>Ensure the php.ini files (<?php echo path_label('FCPATH', 'php.ini');?> &amp; <?php echo path_label('FCPATH', '.user.ini');?>) are appropriate for the server.</p>
+<p>Ensure the php.ini files (<?php echo local::path('FCPATH', 'php.ini');?> &amp; <?php echo local::path('FCPATH', '.user.ini');?>) are appropriate for the server.</p>
 
 <p>PHP requirements<br>
 <code>sudo apt-get install php-intl<br>
@@ -85,15 +85,15 @@ sudo systemctl restart apache2</code></p>
 <p>Ensure <?php echo $paths['WRITEPATH'];?> is writeable. You may also need to create specific folders (e.g. cache).<br>
 <code>chmod 777 -R writable</code></p>
 
-<p>Edit <?php echo path_label('ROOTPATH', '.env');?> according to the specific set-up of each server. Include database connection information and base URL. Leave <code>app.baseURL</code> blank for laptops / etc (an over-ride in <code>\App\Config\App</code> will calculate this). If you are not using mod_rewrite (below) then include the line <code>app.indexPage = index.php</code>.</p>
+<p>Edit <?php echo local::path('ROOTPATH', '.env');?> according to the specific set-up of each server. Include database connection information and base URL. Leave <code>app.baseURL</code> blank for laptops / etc (an over-ride in <code>\App\Config\App</code> will calculate this). If you are not using mod_rewrite (below) then include the line <code>app.indexPage = index.php</code>.</p>
 
 
-<p>Edit the front controller (<?php echo path_label('FCPATH', 'index.php');?>) to make <code>$pathsPath</code> point to <?php echo path_label('APPPATH', 'Config/Paths.php');?>.<br>Example: <code>$pathsPath = FCPATH . '../<em>{ci4}</em>/app/Config/Paths.php';</code></p>
+<p>Edit the front controller (<?php echo local::path('FCPATH', 'index.php');?>) to make <code>$pathsPath</code> point to <?php echo local::path('APPPATH', 'Config/Paths.php');?>.<br>Example: <code>$pathsPath = FCPATH . '../<em>{ci4}</em>/app/Config/Paths.php';</code></p>
 </section>
 
 <section>
 <h4>Enable Rewrite</h4>
-<p><?php echo path_label('FCPATH', '.htaccess');?> contains instructions for the "rewrite engine" to route requests for non-existent resources to the front controller (<?php echo path_label('FCPATH', 'index.php');?>).</p>
+<p><?php echo local::path('FCPATH', '.htaccess');?> contains instructions for the "rewrite engine" to route requests for non-existent resources to the front controller (<?php echo local::path('FCPATH', 'index.php');?>).</p>
 
 <p>Make sure the server domain <em>allows</em> rewrite (it probably doesn't by default). Edit the httpd configuration<br>
 <code>sudo nano /etc/apache2/sites-available/000-default.conf</code></p>
@@ -108,8 +108,8 @@ DocumentRoot /var/www/html/public
 &lt;/Directory&gt;
 </pre>
 <p><strong>NB:</strong> 
-App is installed in <code>/var/www/html</code> (<mark>APPPATH</mark>). 
-DocumentRoot is <code>/var/www/html/public</code> (<mark>FCPATH</mark>).</p> 
+App is installed in <code>/var/www/html</code> (<?php echo local::path('APPPATH');?>). 
+DocumentRoot is <code>/var/www/html/public</code> (<?php echo local::path('FCPATH');?>).</p> 
 
 <p>Make sure the relevant Apache modules are enabled.<br>
 <code>sudo a2enmod rewrite<br>
@@ -127,7 +127,7 @@ GRANT ALL PRIVILEGES ON 'gymevent_main'.* To 'db_user'@'localhost';
 FLUSH PRIVILEGES;
 </pre>
 <p><strong>NB:</strong> <q>db_user</q> and <q>db_password</q> need to be entered into 
-<?php echo path_label('ROOTPATH', '.env');?>.</p>
+<?php echo local::path('ROOTPATH', '.env');?>.</p>
 
 <p>Export database from live website (phpMyAdmin). Copy it into Richard’s documents.</p>
 <p><code>cd  [wherever the MySQL script was saved]<br>
@@ -145,14 +145,16 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 
 <?php $this->endSection();
 
-function path_label($const_name, $file='') {
+class local {
+	
+static function path($const_name, $file='') {
 	$title = rtrim(constant($const_name), DIRECTORY_SEPARATOR) . "/{$file}";
 	$text = $const_name;
 	if($file) $text .= "/{$file}";
 	return sprintf('<mark data-bs-toggle="tooltip" title="%s">%s</mark>', $title, $text);
 }
 
-function htm_folderlist($path, $filelist=true) {
+static function folders($path, $filelist=true) {
 	$subdirs = [
 		FCPATH . 'public',		
 	];
@@ -165,11 +167,11 @@ function htm_folderlist($path, $filelist=true) {
 	foreach(glob($pattern, GLOB_ONLYDIR) as $entry) {
 		ob_start();
 		if(in_array($entry, $subdirs)) {
-			htm_folderlist($entry, false);
+			local::folders($entry, false);
 		}
 		if($filelist) {
 			$dirlist = $dirlists[$entry] ?? null ;
-			htm_filelist($entry, $dirlist);
+			local::files($entry, $dirlist);
 		}
 		$sub = ob_get_clean();
 		if($sub) $sub = sprintf('<ul class="list-unstyled ps-3">%s</ul>', $sub);
@@ -183,7 +185,7 @@ function htm_folderlist($path, $filelist=true) {
 	}
 }
 
-function htm_filelist($path, $dirlist=null) {
+static function files($path, $dirlist=null) {
 	$pathlist = [];
 	if($dirlist) {
 		$pathlist[] = ['list', "<em>{$dirlist}</em>"];
@@ -207,4 +209,6 @@ function htm_filelist($path, $dirlist=null) {
 	foreach($pathlist as $row) {
 		printf('<li class="bi bi-%s"> %s</li>', $row[0], $row[1]);
 	}
+}
+
 }

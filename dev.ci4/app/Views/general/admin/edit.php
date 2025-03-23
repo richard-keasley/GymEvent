@@ -1,6 +1,7 @@
 <?php $this->extend('default');
 
-$this->section('content'); 
+$this->section('content');
+
 $attr = [
 	'id' => "editform"
 ];
@@ -27,7 +28,18 @@ if($value) {
 
 $this->section('top'); ?>
 <div class="toolbar sticky-top"> 
-	<?php echo \App\Libraries\View::back_link($back_link); ?>
+	<?php 
+	echo \App\Libraries\View::back_link($back_link); 
+	foreach($def_rules->exes as $exekey=>$exe) {
+		if($exekey==$title) continue;
+		$href = base_url("admin/general/edit/{$exekey}");
+		$attrs = [
+			'class' => "btn btn-outline-primary",
+			'title' => $exe['name'],
+		];
+		echo anchor($href, $exekey, $attrs);	
+	}
+	?>
 	<button form="editform" class="btn btn-primary" type="submit" name="save" value="1">save</button>
 </div>
 <?php $this->endSection(); 

@@ -3,9 +3,11 @@
 use CodeIgniter\Controller;
 
 class User extends \App\Controllers\BaseController {
+
+private $usr_model = null;
 	
 function __construct() {
-	$this->usr_model = new \App\Models\Users();
+	$this->usr_model = new \App\Models\Users;
 	$this->data['breadcrumbs'][] = 'user';
 	$user_id = intval(session('user_id'));
 	// compare to /admin/users/find

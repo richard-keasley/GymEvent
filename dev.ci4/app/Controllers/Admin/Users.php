@@ -1,6 +1,8 @@
 <?php namespace App\Controllers\Admin;
 
 class Users extends \App\Controllers\BaseController {
+	
+private $usr_model = null;
 
 public function __construct() {
 	$this->usr_model = new \App\Models\Users();

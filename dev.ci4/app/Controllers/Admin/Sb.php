@@ -2,9 +2,6 @@
 
 class Sb extends \App\Controllers\BaseController {
 
-public function __construct() {
-}
-	
 function test() {
 // careful here... it's accessing scoreboard. 
 die ('disabled'); 

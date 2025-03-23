@@ -5,8 +5,8 @@ class Entries extends \App\Controllers\BaseController {
 private $model = null;
 
 function __construct() {
-	$this->data['breadcrumbs'][] = 'events';
 	$this->model = new \App\Models\Entries;
+	$this->data['breadcrumbs'][] = 'events';
 	$this->data['title'] = "entries";
 	$this->data['heading'] = "Event entries";
 }

@@ -4,6 +4,9 @@ use CodeIgniter\Controller;
 
 class Reset extends \App\Controllers\BaseController {
 
+private $usr_model = null;
+private $lgn_model = null;
+
 function __construct() {
 	$this->usr_model = new \App\Models\Users;
 	$this->lgn_model = new \App\Models\Logins;
