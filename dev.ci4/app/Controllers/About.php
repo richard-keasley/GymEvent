@@ -66,8 +66,4 @@ public function view($stub='index') {
 	return view('about/index', $this->data);
 }
 
-
-
-
-
 }
