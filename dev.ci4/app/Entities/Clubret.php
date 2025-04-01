@@ -31,7 +31,7 @@ public function getStaff() {
 public function setStaff($arr) {
 	$staff = [];
 	foreach($arr as $row) {
-		$namestring = new \App\Entities\namestring($row['name']);
+		$namestring = new \App\Libraries\Namestring($row['name']);
 		$row['name'] = (string) $namestring;
 		$staff[] = $row;
 	}
@@ -113,7 +113,7 @@ public function setParticipants($arr) {
 	foreach($arr as $row) {
 		$row_names = [];
 		foreach($row['names'] as $name) {
-			$namestring = new \App\Entities\namestring($name);
+			$namestring = new \App\Libraries\Namestring($name);
 			if($namestring->name) $row_names[] = (string) $namestring;
 		}
 		if($row_names) {
@@ -137,7 +137,7 @@ public function check() {
 			if(empty($row['dis'])) $row_error = "has invalid discipline";
 			if(empty($row['cat'])) $row_error = "has invalid category";
 			foreach($row['names'] as $name) {
-				$namestring = new \App\Entities\namestring($name);
+				$namestring = new \App\Libraries\Namestring($name);
 				$name_error = $namestring->error;
 				if($name_error) $row_error = $name_error;
 			}
@@ -158,7 +158,7 @@ public function check() {
 		$errors = [];
 		if($this->staff) {
 			foreach($this->staff as $rowkey=>$row) {
-				$namestring = new \App\Entities\namestring($row['name']);
+				$namestring = new \App\Libraries\Namestring($row['name']);
 				$error = $namestring->error;
 				if($error) $errors[] = sprintf('row %u %s', $rowkey+1, $error);
 			}
@@ -231,134 +231,6 @@ public function fees($op=1) {
 	}
 	
 	return $total;
-}
-
-}
-
-class namestring implements \Stringable {
-/* 
-a namestring is a comma separated string containing:
-name 1 name 2, DoB
-Only used in entity "clubret"
-Each item in "participants" contains an array of namestring
-Each item in "staff" contains a single namestring
-
-See views/admin/setup/test/namestring
-*/
-
-const hint = '<span class="bg-primary-subtle">Full name (name1 name2), Date of birth (dd/mm/yy)</span>';
-
-private $attributes = [];
-private $_error = null ;
-
-function __construct($namestring) {
-	$namestring = filter_string($namestring);
-	$buffer = preg_split("/ *[\t,] */", $namestring);
-	
-	//strip integers from array
-	$input = [];
-	foreach($buffer as $val) {
-		if(!ctype_digit($val)) $input[] = $val;
-	}
-	# d($buffer, $input);
-	
-	// dob is last
-	$dob = count($input)>1 ? array_pop($input) : '' ;
-	$dt = self::sanitize_dob($dob);
-	if($dt) $dob = $dt->format('d-M-Y');
-	
-	// name is the rest
-	$name = implode(' ', $input);
-			
-	$this->attributes = [
-		'name' => $name,
-		'dob' => $dob,
-	];
-	
-	$this->_error = $this->error($dt);
-}
-
-function __get($key) {
-	return match($key) {
-		'error' => $this->_error,
-		default => $this->attributes[$key] ?? null
-	};
-}
-
-function __debugInfo() {
-	$arr =  $this->attributes;
-	if($this->_error) $arr['error'] = $this->_error; 
-	return $arr;
-}
-
-function __toString(): string {
-	return implode(', ', $this->attributes);
-}
-
-private function error($dt) {
-	self::calc();
-	if(!$this->name) return "has no name";
-	if(strlen($this->name)<6) return "has invalid name";
-	if(!substr_count($this->name, ' ')) return "is not a full name"; 
-	
-	if(!$this->dob) return "has no DoB";
-	if(!$dt) return "has invalid DoB";	
-	if($dt>self::$calc['dob_max']) return "has invalid DoB";
-	if($dt<self::$calc['dob_min']) return "has invalid DoB";
-		
-	// no error
-	return null;
-}
-
-static function sanitize_dob($str) {
-	self::calc();
-	if(!$str) return null;
-	try {
-		$formats = [
-			'd/m/Y', // standard UK
-			'd-m-Y', 
-			'd.m.Y', // German
-			'd m Y', 
-			false // create from string
-		];
-		foreach($formats as $format) {
-			# d($format);
-			$retval = $format ? 
-				\DateTime::createFromFormat($format, $str) : 
-				new \DateTime($str) ;
-			if($retval) break;	
-			
-		}
-		// strip time from datetime
-		$retval->setTime(0,0);
-		// check for 2 digit year	
-		$yr = (int) $retval->format('Y');
-		if($yr<100) {
-			// 2 digit year, bring it to this century
-			$add = $yr>self::$calc['now_yr'] ? 1900 : 2000 ;
-			$retval->add(new \DateInterval("P{$add}Y"));
-		}
-	}
-	catch(\exception $ex) {
-		# d($ex);
-		$retval = null;
-	}
-	return $retval;
-}
-
-static $calc = null;
-static function calc() {
-	if(self::$calc) return;
-	$calc = [];
-	$now = new \DateTimeImmutable;
-	$period = new \DateInterval("P5Y");
-	$calc['dob_max'] = $now->sub($period);
-	$period = new \DateInterval("P90Y");
-	$calc['dob_min'] = $now->sub($period);
-	$calc['now'] = $now;
-	$calc['now_yr'] = (int) $now->format('y');
-	
-	self::$calc = $calc;
 }
 
 }

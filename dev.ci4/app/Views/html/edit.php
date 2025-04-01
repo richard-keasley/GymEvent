@@ -57,7 +57,8 @@ $this->section('top'); ?>
 <button class="btn btn-primary" type="submit" name="cmd" value="save" form="editform">save</button>
 <?php 
 $title = "Delete HTML for {$html->path}";
-echo $delsure->button($html->id, $title); ?>
+echo $delsure->button($html->id, $title); 
+?>
 </div>
 <?php 
 $this->endSection();

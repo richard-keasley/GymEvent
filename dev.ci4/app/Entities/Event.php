@@ -273,7 +273,7 @@ public function participants() {
 			// build entry
 			$arr = [];
 			foreach($row['names'] as $name) {
-				$namestring = new \App\Entities\namestring($name);
+				$namestring = new \App\Libraries\Namestring($name);
 				$arr['name'][] = $namestring->name;
 				$arr['dob'][] = $namestring->dob;				
 			}
@@ -292,7 +292,7 @@ public function participants() {
 			$subcat = $subcats[$dis_name] ?? false ;
 			if($subcat) {
 				$cat_name .= ' ';
-				$dt = \App\Entities\namestring::sanitize_dob($entry['dob']);
+				$dt = \App\Libraries\Namestring::get_dt($entry['dob']);
 				$cat_name .= $dt ? $dt->format($subcat) : '??' ;
 			}
 
@@ -346,7 +346,7 @@ public function staff() {
 			$user = $mdl_users->withDeleted()->find($clubret->user_id);
 			$club = $user ? $user->abbr : '';
 			foreach($clubret->staff as $row) {
-				$namestring = new \App\Entities\namestring($row['name']);
+				$namestring = new \App\Libraries\Namestring($row['name']);
 				$this->_staff[] = [
 					'club' => $club,
 					'user_id' => $clubret->user_id,

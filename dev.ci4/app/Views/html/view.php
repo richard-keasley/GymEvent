@@ -2,7 +2,10 @@
 
 $this->section('content');?>
 <h3><?php echo $html->heading;?></h3>
-<p class="border p-1"><strong>Path:</strong> <?php echo $html->path;?></p>
+<p class="border p-1"><strong>Path:</strong> <?php 
+echo $html->path;
+?></p>
+
 <div><?php
 echo $html;
 ?></div>

@@ -9,7 +9,7 @@ public function __tostring() {
 	try {
 		$dt = new \datetime($this->updated);
 		$format = '<p class="bg-light p-1 border d-inline-block">Updated: %s</p>';
-		$retval .= sprintf($format, $dt->format('d M Y'));
+		$retval .= sprintf($format, $dt->format('j M Y'));
 	}
 	catch(\throwable $ex) {}
 	

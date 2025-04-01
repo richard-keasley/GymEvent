@@ -74,7 +74,7 @@ if(!empty($event->staffcats[0])) {
 
 ob_start();?>
 <div id="staff">
-<p>Staff details should be entered as: <?php echo \App\Entities\namestring::hint;?>. Each piece of information is separated by a comma. Each staff member should be entered in a separate box.</p>
+<p>Staff details should be entered as: <?php echo \App\Libraries\Namestring::hint;?>. Each piece of information is separated by a comma. Each staff member should be entered in a separate box.</p>
 <?php echo $event->staff;
 
 $staff = $clubret->staff;
@@ -103,7 +103,7 @@ $tbody = [];
 foreach($staff as $rowkey=>$row) {
 	$inputs['cat']['selected'] = $row['cat'];
 	if($row['name']) {
-		$namestring = new \App\Entities\namestring($row['name']);
+		$namestring = new \App\Libraries\Namestring($row['name']);
 		$inputs['name']['value'] = (string) $namestring;
 	}
 	else $inputs['name']['value'] = '' ;
@@ -148,7 +148,7 @@ $tabs->set_item('Staff', ob_get_clean(), 'staff');
 if($event->discats) {
 ob_start();	?>
 <div id="participants">
-<p>Gymnasts' details are entered as: <?php echo \App\Entities\namestring::hint;?>. Each piece of information is separated by a comma.</p>
+<p>Gymnasts' details are entered as: <?php echo \App\Libraries\Namestring::hint;?>. Each piece of information is separated by a comma.</p>
 <ul>
 <li>Each gymnast is placed on a separate line.</li>
 <li>If an entry comprises more than one gymnast (e.g. Acro and Team-gym), enter each gymnast on a separate line within the same box.</li>

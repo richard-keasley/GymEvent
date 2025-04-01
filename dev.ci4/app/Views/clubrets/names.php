@@ -1,6 +1,7 @@
 <?php $this->extend('default');
 
-$this->section('content');
+$this->section('content'); 
+
 if($names) {
 	$table = \App\Views\Htm\Table::load('responsive');
 	$table->setHeading(array_keys($names[0]));

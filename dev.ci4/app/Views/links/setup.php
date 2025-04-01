@@ -1,13 +1,13 @@
 <?php $this->extend('default');
 
 $this->section('content'); 
-$attr = [
+$attrs = [
 	'id' => "editform"
 ];
 $hidden = [
 	'save' => "1"
 ];
-echo form_open('', $attr, $hidden); ?>
+echo form_open('', $attrs, $hidden); ?>
 <h4>Edit external links</h4>
 <?php 
 
@@ -35,6 +35,7 @@ echo $table->generate($tbody);
 <div class="toolbar">
 	<?php echo \App\Libraries\View::back_link("setup");?>
 	<button type="submit" class="btn btn-primary">save</button>
+	<a title="View client home page" class="btn btn-outline-secondary" href="/links"><span class="bi bi-eye"></span></a>
 </div>
 
 <?php 

@@ -1,16 +1,15 @@
 <?php $this->extend('default');
-$clubret = new \App\Entities\Clubret;
 
 $this->section('content'); ?>
 
 <?php echo form_open(); ?>
 <div class="p-1 alert alert-light">
-<p>Hint: enter data as <?php echo \App\Entities\namestring::hint;?>.</p>
+<p>Hint: enter data as <?php echo \App\Libraries\Namestring::hint;?>.</p>
 
 <div><?php
 $value = $postvars['namestring'] ?? '' ;
 if($value) {
-	$namestring = new \App\Entities\namestring($value);
+	$namestring = new \App\Libraries\Namestring($value);
 	$value = (string) $namestring;
 }
 
@@ -33,14 +32,13 @@ echo form_input($attrs);
 ?></div>
 <p><?php
 if($value) {
-	echo $namestring;
-	if($namestring->error) echo "<br><strong>input {$namestring->error}</strong>";
+	if($namestring->error) echo "<strong>input {$namestring->error}</strong>";
 }
 ?></p>
 </div>
 <?php echo form_close();
 
-/* date checker 
+/* date checker
 $dates = [
 	'  7-8-2010',
 	'7/8/20',
@@ -54,12 +52,11 @@ $dates = [
 	'',
 	0
 ];
-$dt = new \datetime; 
-foreach($dates as $date) {
-	$dob = \App\Entities\namestring::sanitize_dob($date);
-	$result = $dob ? $dob->format('j F Y') : 'fail' ;
-	if(!$date) $date = '[empty]';
-	echo "<div>{$date} =&gt; {$result}</div>";
+foreach($dates as $string) {
+	$dt = \App\Libraries\Namestring::get_dt($string);
+	$result = $dt ? $dt->format('j F Y') : 'fail' ;
+	if(!$string) $string = '[empty]';
+	echo "<div>{$string} =&gt; {$result}</div>";
 }
 // date checker */
 
@@ -67,23 +64,26 @@ foreach($dates as $date) {
 
 $test_string = 
 'Elizabeth ,  Rimmer-Leeming, 18-Mar-2007
-name1 name2, 7-8-2010
+name1 name2, 123, 
+name1 name2, 7/8/80, 
 name1, name2, 12346, 7/8/10
-name1, name2, 12346, 7/14/10
+name1, name2, 7/2/10, 12346
 name1,    name2, 12346, 7 aug 2010    
-name1  name2, dunno    
-name1, name2, 12346, 7 aug 1920    
+name1  name2, 123 
+name1 middle name2, 123, 3 dec 01    
+name1, o\'connor, 12346, 7 aug 1920    
 name1, name2, 12346, 7 aug 2010, another, name, 76575, 8-aug-90  
 name1, name2, 12346, 7 aug 2010    
 123456, name1, name2, 7 aug 10    
 123456, 7 aug 2010, name1, name2    
 Anaya Akisanya, , 2845451, 23-Jan-2009
 Anaya middle Akisanya, , 2845451, 23-Jan-2009
+Anaya middle, Akisanya, 2845451, 23-Jan-2009
 Anaya, middle, Akisanya, 2845451, 23-Jan-2009
 name1 name2, 4522575, 09-Sep-2013
 name1, name2, , 7-8-2010
 name1, name2, 1.2, 7-8-2010
-Raon12
+one_name
 name1, name2, 12346
 name1, name2, 12346, random
 name1, name2, 0, yesterday
@@ -93,18 +93,21 @@ name1,name2
 465, 5/3/90';
 
 $test_data = explode("\n", $test_string);
-foreach($test_data as $key=>$row) {
-	$namestring = new \App\Entities\namestring($row);
-	$arr = [sprintf('<span style="white-space:pre">%s</span>', trim($row))];
-	foreach($namestring->__debugInfo() as $key=>$val) {
-		if($key=='error') {
-			$val = sprintf('<strong>entry %s</strong>', $val);
-		}
-		$arr[] = "{$key}: {$val}";
-	}
-	printf('<div class="border p-1 m-1">%s</div>', implode('<br>', $arr));
-}
 
+foreach($test_data as $rowkey=>$row) {
+	$arr = [$row];
+	
+	$namestring = new \App\Libraries\Namestring($row);
+		
+	$arr[] = sprintf('<em class="text-muted"> values: [ %s ]</em>', implode(', ', $namestring->__toArray()));
+	
+	$arr[] = $namestring;
+	if($namestring->error) {
+		$rownum = $rowkey + 1;
+		$arr[] = "<strong>Row {$rownum} {$namestring->error}</strong>";
+	}
+	printf('<p class="border p-1">%s</p>', implode('<br>', $arr));
+}
 
 // name checker */
 

@@ -299,33 +299,36 @@ public function names($event_id=0) {
 		$message = "Can't find event {$event_id}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
-	
-	$download = $this->request->getPost('download');
-	
+		
 	// build participants table
 	$mdl_users = new \App\Models\Users();
 	$tbody = [];
 	foreach($this->data['event']->clubrets() as $clubret) {
 		$user = $mdl_users->withDeleted()->find($clubret->user_id);
 		foreach($clubret->participants as $rowkey=>$row) {
-			foreach($row['names'] as $key=>$name) {
-				$namestring = new \App\Entities\namestring($name);
-				$tbody[] = [
-					'club' => $user ? $user->abbr : '?',
-					'row' => $rowkey + 1,
+			foreach($row['names'] as $rowkey=>$name) {
+				$tr = [
+					'club' => $user->abbr ?? '?',
 					'dis' => $row['dis'],
 					'cat' => humanize(implode(' ', $row['cat'])),
-					'name' => $namestring->name,
-					'BG' => $namestring->bg,
-					'DoB' => $namestring->htm_dob()
-				];
+				];				
+				$namestring = new \App\Libraries\Namestring($name);
+				foreach($namestring->__toArray() as $key=>$val) {
+					$tr[$key] = $val;
+				}
+				$tbody[] = $tr;
 			}
 		}
 	}
-	if($download=='names') return $this->export($tbody, 'names');
-	$this->data['names'] = $tbody;
+	
+	$download = $this->request->getPost('download');
+	if($download=='names') {
+		$export = ['export'=>$tbody];
+		return $this->export($export, 'names');
+	}
 	
 	// view
+	$this->data['names'] = $tbody;
 	$this->data['back_link'] = "/admin/clubrets/event/{$event_id}";
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['breadcrumbs'][] = ["admin/clubrets/event/{$event_id}", 'Returns'];

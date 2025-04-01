@@ -21,7 +21,7 @@ $this->section('content'); ?>
 <?php 
 $tbody = []; 
 foreach($clubret->staff as $rowkey=>$row) {
-	$namestring = new \App\Entities\namestring($row['name']);
+	$namestring = new \App\Libraries\Namestring($row['name']);
 	$tbody[] = [
 		$rowkey + 1,
 		humanize($row['cat']),
@@ -46,7 +46,7 @@ foreach($participants as $rowkey=>$row) {
 	if($row['team']) $option[] = $row['team'];
 	$option = $option ? sprintf('(%s)', implode(', ', $option)) : '' ;
 	foreach($row['names'] as $key=>$name) {
-		$namestring = new \App\Entities\namestring($name);
+		$namestring = new \App\Libraries\Namestring($name);
 		$tbody[] = [
 			$key ? '' : $rowkey + 1,
 			$key ? '' : $row['dis'],

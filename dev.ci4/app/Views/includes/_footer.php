@@ -24,7 +24,7 @@ if(!empty($exception)) return;
 <div class="col-sm"><?php 
 $links = [
 	['setup/dev', 'Development notes'],
-	['setup/update', 'Update the App']
+	['setup/update', 'Update the App'],
 ];
 $navbar = new \App\Views\Htm\Navbar($links);
 $navbar->template['items_start'] = '<ul class="nav">';

@@ -16,6 +16,7 @@ public function index() {
 	// default values
 	$links = [
 		'follow' => "", 
+		'watch' => "", 
 		'scores' => "",
 		'judges' => "",
 		'info' => ""
