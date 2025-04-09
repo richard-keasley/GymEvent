@@ -63,7 +63,7 @@ sort($dates);
 
 // don't show dates too far in the future
 $last = new \datetime;
-$last->add(new \DateInterval("P3M")); // 3 months
+$last->add(new \DateInterval("P42D")); // 42 days
 
 $format = '<li class="py-1"><span class="text-%s bi bi-%s"></span> %s %s %s</li>';
 foreach($dates as $row) {

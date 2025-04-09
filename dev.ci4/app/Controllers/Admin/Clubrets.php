@@ -175,7 +175,9 @@ public function event($event_id=0) {
 			
 			$ok = $clubret->check();
 			if(!$ok) $club .= ' <span class="bi bi-exclamation-triangle-fill text-warning" title="There are errors in this return"></span>';
+			
 			$club = getlink($clubret->url('view', 'admin'), $club);
+			
 			if($user) $club .= ' ' . $user->link();
 		}
 		

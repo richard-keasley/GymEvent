@@ -18,6 +18,11 @@ echo $updated_at ? $updated_at->format('j M y') : '[never]';
 <section class="mt-3 table-responsive">
 <?php 
 if($value) {
+	$trkey = 'description';
+	foreach($value as $rowkey=>$row) {
+		$value[$rowkey][$trkey] = new \App\Views\Htm\Pretty($row[$trkey]);
+	}
+		
 	$table = \App\Views\Htm\Table::load('bordered');
 	$table->setHeading(array_keys(current($value)));
 	echo $table->generate($value);
