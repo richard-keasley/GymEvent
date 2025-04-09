@@ -304,13 +304,16 @@ public function names($event_id=0) {
 		
 	// build participants table
 	$mdl_users = new \App\Models\Users();
+	$users = [];
 	$tbody = [];
 	foreach($this->data['event']->clubrets() as $clubret) {
 		$user = $mdl_users->withDeleted()->find($clubret->user_id);
-		foreach($clubret->participants as $rowkey=>$row) {
-			foreach($row['names'] as $rowkey=>$name) {
+		$club = $user->abbr ?? '?';
+				
+		foreach($clubret->participants as $row) {
+			foreach($row['names'] as $name) {
 				$tr = [
-					'club' => $user->abbr ?? '?',
+					'club' => $club,
 					'dis' => $row['dis'],
 					'cat' => humanize(implode(' ', $row['cat'])),
 				];				
@@ -320,6 +323,18 @@ public function names($event_id=0) {
 				}
 				$tbody[] = $tr;
 			}
+		}
+		foreach($clubret->staff as $row) {
+			$tr = [
+				'club' => $club,
+				'dis' => 'staff',
+				'cat' => humanize($row['cat']),
+			];	
+			$namestring = new \App\Libraries\Namestring($row['name']);
+			foreach($namestring->__toArray() as $key=>$val) {
+				$tr[$key] = $val;
+			}
+			$tbody[] = $tr;
 		}
 	}
 	
