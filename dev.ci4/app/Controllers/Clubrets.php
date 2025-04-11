@@ -110,6 +110,8 @@ public function add($event_id=0, $user_id=0) {
 	
 	$this->data['heading'] = sprintf('New return for %s / %s', $this->data['user']->name, $this->data['event']->title);
 	$this->data['clubret'] = $clubret;
+	$this->data['clubret'] = $clubret;
+	$this->data['terms_layout'] = 'edit';
 	return view('clubrets/edit', $this->data);
 }
 
@@ -246,6 +248,7 @@ public function edit($event_id=0, $user_id=0) {
 	$this->data['breadcrumbs'][] = $this->data['clubret']->breadcrumb('edit');
 	
 	if($this->data['event']->clubrets!=1) $this->data['messages'][] = ["Club returns are closed for this event", 'warning'];
+	$this->data['terms_layout'] = 'edit';
 	return view('clubrets/edit', $this->data);
 }
 

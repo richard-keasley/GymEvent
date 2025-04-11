@@ -63,12 +63,8 @@ if($tbody) {
 	echo $table->generate($tbody);
 }
 
-if($event->terms) { ?>
-<div class="mb-3">
-<p><strong>Clubs agree to the following:</strong></p>
-<?php echo $event->terms; ?>
-</div>
-<?php }
+
+echo $this->include('events/_terms');
 
 echo $clubret->errors('participants'); ?>
 </section>

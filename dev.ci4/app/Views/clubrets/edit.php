@@ -1,7 +1,7 @@
 <?php $this->extend('default'); 
 $table = \App\Views\Htm\Table::load('responsive');
 
-$this->section('content'); 
+$this->section('content');
 #  d($event->discats);
 
 // namestring textarea
@@ -230,30 +230,17 @@ printf('<div class="clubent">%s</div>', $table->generate($tbody));
 echo form_hidden('participants', json_encode($participants));
 
 ?>
-
 <button name="add" type="button" class="btn btn-success bi-person-plus-fill"></button>
-<?php echo $clubret->errors('participants');?>
+<?php 
 
-<?php if($event->terms) { ?>
-<section class="mt-3">
-<p class="form-check"><label class="form-check-label"><?php 
-$input = [
-	'class' => "form-check-input",
-	'name' => "terms",
-	'type' => "checkbox",
-	'value' => "1",
-];
-if($clubret->terms) $input['checked'] = "checked";
-echo form_input($input); ?>
-This club will ensure all its staff and participants adhere to the terms below:</label></p>
-<div class="bg-secondary-subtle p-1">
-<?php echo $event->terms; ?>
-</div>
-</section>
-<?php } ?>
+echo $clubret->errors('participants', 6);
 
+echo $this->include('events/_terms');
+
+?>
 </div>
 <?php
+
 $tabs->set_item('Participants', ob_get_clean(), 'participants');
 } 
 
@@ -391,4 +378,11 @@ function update_partrows() {
 
 <?php 
 echo form_close();
+$this->endSection();
+
+$this->section('bottom');
+if($event->terms && !$clubret->terms) {
+	// show nag-screen every page load
+	echo $this->include('events/_terms_modal');
+}
 $this->endSection();

@@ -44,12 +44,7 @@ if($event->dates['clubrets_closes']) {
 } ?>.
 We will use the details within your return at that point (there is no "submit" button).</p>
 
-<?php if($event->terms) { ?>
-<div class="mb-3">
-<p><strong>Clubs entering this event must ensure all staff and participants adhere to the terms below:</strong></p>
-<?php echo $event->terms; ?>
-</div>
-<?php } ?>
+<?php echo $this->include('events/_terms'); ?>
 
 <?php } ?>
 

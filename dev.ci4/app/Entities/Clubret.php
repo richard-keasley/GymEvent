@@ -77,13 +77,17 @@ function url($method='', $controller='') {
 }
 
 public $errors = [];
-function errors($err_type=null) {
+function errors($err_type=null, $max=999) {
 	$ret = '';
+	$count = 0;
 	foreach($this->errors as $type=>$errors) {
 		if(!$err_type || $err_type===$type) {
-			$text1 = $err_type ? '' : "$type: ";
+			$text1 = $err_type ? '' : "{$type}: ";
 			foreach($errors as $error) {
-				$ret .= sprintf('<li class="list-group-item list-group-item-danger">%s%s</li>', $text1, $error);
+				if($count<$max) {
+					$ret .= sprintf('<li class="list-group-item list-group-item-danger">%s%s</li>', $text1, $error);
+					$count++;
+				}
 			}
 		}
 	}
