@@ -8,10 +8,9 @@
 	  
 <div class="modal-body">
 <?php
-$orig_layout = $terms_layout ?? null;
 $terms_layout = 'view';
 include __DIR__ . '/_terms.php';
-$terms_layout = $orig_layout;
+$terms_layout = $this->data['terms_layout'] ?? null ;
 ?></div>
 
 <div class="modal-footer">
