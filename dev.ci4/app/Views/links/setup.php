@@ -10,14 +10,17 @@ $hidden = [
 echo form_open('', $attrs, $hidden); ?>
 <h4>Edit external links</h4>
 <?php 
+# d($links);
+
+$tbody = []; 
 
 $input = [
 	'type' => 'url',
 	'class' => 'form-control',
 	'style' => 'min-width:30em'
 ];
-$tbody = []; 
 foreach($links as $key=>$link) {
+	if($key=='event') continue;
 	$input['value'] = $link;		
 	$input['name'] = $key;		
 	$tbody[] = [
@@ -27,7 +30,7 @@ foreach($links as $key=>$link) {
 }
 
 $table = \App\Views\Htm\Table::load('responsive');
-$table->setHeading(['', 'url']);
+$table->autoHeading = false;
 echo $table->generate($tbody);
 
 ?>

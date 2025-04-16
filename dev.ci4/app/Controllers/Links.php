@@ -6,10 +6,12 @@ public function __construct() {
 	$this->data['breadcrumbs'][] = 'links';
 	
 	$appvars = new \App\Models\Appvars();
-	$this->data['links'] = $appvars->get_value('home.links');
+	$links = $appvars->get_value('home.links');
+	$this->data['links'] = $links;
 }
 
 public function index() {
+	$this->data['title'] = 'links';
 	return view('links/index', $this->data);
 }
 
