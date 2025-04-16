@@ -146,6 +146,7 @@ $tabs->set_item('Staff', ob_get_clean(), 'staff');
 } 
 
 if($event->discats) {
+/* participants tab */
 ob_start();	?>
 <div id="participants">
 <p>Gymnasts' details are entered as: <?php echo \App\Libraries\Namestring::hint;?>. Each piece of information is separated by a comma.</p>
@@ -244,12 +245,32 @@ echo $this->include('events/_terms');
 $tabs->set_item('Participants', ob_get_clean(), 'participants');
 } 
 
-ob_start(); ?>
+
+/* payment tab */
+ob_start();
+
+if($event->dates['clubrets_closes']) { 
+	$dt_closes = new \datetime($event->dates['clubrets_closes']);
+	$dt_now = new \datetime();
+	$past = $dt_closes <= $dt_now;
+	if($past) {
+		$class = 'alert alert-warning';
+		$datestring = 'as soon as possible';
+	} else {
+		$class = '';
+		$datestring = 'by ' . $dt_closes->format('l j F');
+	}
+	$format = '<p class="%s">All entries must be completed <strong>%s</strong>.</p>';
+	printf($format, $class, $datestring);
+}
+
+?>
 <div><?php echo $event->payment;?></div>
 <?php echo $clubret->fees('htm');?>
 <p><strong>NB:</strong> Save any changes to update the fees calculation.</p>
 <?php 
 $tabs->set_item('Payment', ob_get_clean(), 'payment');
+
 
 echo $tabs->htm();
 
