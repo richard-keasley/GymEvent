@@ -11,13 +11,11 @@ $this->section('content'); ?>
 <p><strong>Address:</strong><br><span class="textarea"><?php echo $clubret->address;?></span></p>
 <p><strong>Phone:</strong> <?php echo $clubret->phone;?></p>
 <p><strong>Other info:</strong><br><span class="textarea"><?php echo $clubret->other;?></span></p>
+<p><strong>Updated:</strong> <?php echo date('d-M-Y H:i', strtotime($clubret->updated));?></p>
 </section>
 
 <section>
-<h2>Details</h2>
-<p><strong>Updated:</strong> <?php echo date('d-M-Y H:i', strtotime($clubret->updated));?></p>
-
-<h5>Staff</h5>
+<h2>Staff</h2>
 <?php 
 $tbody = []; 
 foreach($clubret->staff as $rowkey=>$row) {
@@ -35,8 +33,10 @@ if($tbody) {
 }
 echo $clubret->errors('staff'); 
 ?>
+</section>
 
-<h5>Participants</h5>
+<section>
+<h2>Participants</h2>
 <?php 
 $tbody = [];
 $participants = $clubret->participants;
@@ -62,12 +62,19 @@ if($tbody) {
 	$table->setHeading(['#', 'dis', 'category', 'name', '', 'DoB']);
 	echo $table->generate($tbody);
 }
+echo $clubret->errors('participants'); 
 
-
-echo $this->include('events/_terms');
-
-echo $clubret->errors('participants'); ?>
+?>
 </section>
+
+<?php
+$html = $this->include('events/_terms');
+if($html) { ?>
+<section>
+<h2>Terms</h2>
+<?php echo $html; ?>
+</section>
+<?php } ?>
 
 <section>
 <h2>Payment</h2>
