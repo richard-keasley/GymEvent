@@ -98,11 +98,14 @@ private function error() {
 private function sanitize($filter, $val) {
 	switch($filter) {
 		case 'dob':
+		$strip = str_split('()<>{}~#@,:;');
+		$val = str_replace($strip, '', $val);
 		$this->attribs['dt'] = self::get_dt($val);
 		return $this->dt ? $this->dt->format('j-M-Y') : null ;
 			
 		case 'mem_num':
-		return ctype_digit($val) ? (int) $val : null ;
+		$val = (int) $val;
+		return $val ? (int) $val : null ;
 			
 		case 'name1':
 		case 'name2': 
