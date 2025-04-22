@@ -30,11 +30,12 @@ $attrs = [
 ];
 echo form_input($attrs);
 ?></div>
-<p><?php
+<?php
 if($value) {
-	if($namestring->error) echo "<strong>input {$namestring->error}</strong>";
+	printf('<div><em>[ %s ]</em></div>', implode(', ', $namestring->__toArray()));
+	if($namestring->error) echo "<div><strong>input {$namestring->error}</strong></div>";
 }
-?></p>
+?>
 </div>
 <?php echo form_close();
 
@@ -99,7 +100,7 @@ foreach($test_data as $rowkey=>$row) {
 	
 	$namestring = new \App\Libraries\Namestring($row);
 		
-	$arr[] = sprintf('<em class="text-muted"> values: [ %s ]</em>', implode(', ', $namestring->__toArray()));
+	$arr[] = sprintf('<em class="text-muted">values: [ %s ]</em>', implode(', ', $namestring->__toArray()));
 	
 	$arr[] = $namestring;
 	if($namestring->error) {

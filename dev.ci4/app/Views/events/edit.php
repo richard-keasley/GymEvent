@@ -53,6 +53,7 @@ if($edit_locked) { ?>
 <p class="alert alert-danger">Staff categories can only be altered when the event state 'clubrets' is set to 'waiting'.</p>
 <?php } ?>
 
+<section class="mt-3">
 <p>A comma separated list of all staff categories. E.g. <code>coach, judge, helper</code>. Items should not include spaces or special characters.</p>
 <?php 
 
@@ -63,10 +64,11 @@ $input = [
 ];
 if($edit_locked) $input['readonly'] = "readonly";
 echo form_input($input);
-
 ?>
-<section class="my-2 p-1 border">
-<div>Staff fee is applied to the club return fee calculation unless the user agrees all staffing requirements have been met.</div>
+</section>
+
+<section class="mt-3">
+<p>Staff fee is applied to the club return fee calculation unless the user agrees all staffing requirements have been met.</p>
 <div class="input-group">
 <label class="input-group-text">Staff fee &pound;</label>
 <?php
@@ -149,7 +151,7 @@ $input = [
 	'name' => 'opts',
 	'class' => 'form-control',
 	'cols' => 5,
-	'rows' =>5,
+	'rows' => 5,
 	'style' => "min-width:6em;"
 ]
 ];
