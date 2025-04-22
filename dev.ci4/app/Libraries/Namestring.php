@@ -99,7 +99,8 @@ private function sanitize($filter, $val) {
 	switch($filter) {
 		case 'dob':
 		$strip = str_split('()<>{}~#@,:;');
-		$val = str_replace($strip, '', $val);
+		$val = str_replace($strip, ' ', $val);
+		$val = trim($val);
 		$this->attribs['dt'] = self::get_dt($val);
 		return $this->dt ? $this->dt->format('j-M-Y') : null ;
 			
