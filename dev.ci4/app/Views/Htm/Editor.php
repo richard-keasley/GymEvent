@@ -7,6 +7,7 @@ static $script_done = false;
 private $attrs = [
 	'name' => 'html',
 	'value' => '',
+	'label' => true,
 ];
 
 private $params = [
@@ -21,10 +22,9 @@ private $params = [
 	'toolbar' => 'Undo Redo | Blocks | Bold Italic bullist | link code | help',
 ];
 
-public $label = true;
-
 public function __construct($attrs=[], $params=[]) {
 	foreach($attrs as $key=>$val) $this->attrs[$key] = $val;
+	
 	$this->params['document_base_url'] = base_url();
 	$this->params['content_css'] = site_url('/app/gymevent.css');
 	foreach($params as $key=>$val) $this->params[$key] = $val;

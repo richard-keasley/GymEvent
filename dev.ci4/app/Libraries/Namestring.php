@@ -12,7 +12,7 @@ See views/admin/setup/test/namestring
 
 class Namestring implements \Stringable {
 
-const hint = '<span class="bg-primary-subtle">Name1, Name2, Membership No., Date of birth (dd/mm/yy)</span>';
+const hint = '<span class="bg-primary-subtle">Name1, Name2, Membership, Date of birth (eg. <code>John, Doe, 123, 12/6/2000</code> )</span>';
 
 private $values = ['name1'=>'', 'name2'=>'', 'mem_num'=>0, 'dob'=>''];
 private $attribs = [

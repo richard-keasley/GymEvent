@@ -274,16 +274,17 @@ echo form_hidden('discats', '');
 $acc->set_item('Participants', ob_get_clean());
 
 ob_start(); // Payment
+?>
+<p>How clubs should pay. Include bank details and any dead-lines.</p>
+<?php
 $attrs = [
 	'name' => 'payment',
-	'value' => $event->payment
+	'value' => $event->payment,
+	'label' => false,
 ];
 echo new \App\Views\Htm\Editor($attrs);
-?> 
-<p>This explains how clubs should pay. Include bank details and any dead-lines.</p>
-<?php
-$acc->set_item('Payment', ob_get_clean());
 
+$acc->set_item('Payment', ob_get_clean());
 
 ob_start(); // Event states
 ?>

@@ -149,10 +149,11 @@ if($event->discats) {
 /* participants tab */
 ob_start();	?>
 <div id="participants">
-<p>Gymnasts' details are entered as: <?php echo \App\Libraries\Namestring::hint;?>. Each piece of information is separated by a comma.</p>
 <ul>
-<li>Each gymnast is placed on a separate line.</li>
-<li>If an entry comprises more than one gymnast (e.g. Acro and Team-gym), enter each gymnast on a separate line within the same box.</li>
+<li>Gymnasts' details are entered as: <?php echo \App\Libraries\Namestring::hint;?>. Each piece of information is separated by a comma.</li>
+<li>Each gymnast occupies a separate line.</li>
+<li>Each entry is in a separate box.</li>
+<li>If an entry comprises more than one gymnast (e.g. Acro and Team-gym), enter each gymnast on a separate line <em>within the same box</em>.</li>
 </ul>
 <?php 
 echo $event->participants; 
@@ -395,6 +396,7 @@ function update_partrows() {
 		else $(this).find('[data-field=team]').hide();	
 	});
 }
+
 </script>
 
 <?php 
