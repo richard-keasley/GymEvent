@@ -76,13 +76,19 @@ foreach($dates as $row) {
 		 1 => 'future'
 	};
 	
+	$arr = explode('_', $row['event']);
+	$event_type = $arr[0] ?? null ;
+	$icon = match($event_type) {
+		'music' => 'music-note',
+		'clubrets' => 'bell',
+		default => 'calendar-event'
+	};
+	# d($icon);
+	
 	$event = str_replace('clubrets', 'online entry', $row['event']);
 	$event = humanize($event);
 	if($event) $event = "({$event})";
-	
-	$icon = $event ? 'bell' : 'calendar-event' ;
-	if($state=='today') $icon .= '-fill';
-	
+
 	$colour = ($state=='future') ? 'dark' : 'danger' ;
 	
 	printf($format, $colour, $icon, $date->format('j M Y'), $row['link'], $event);

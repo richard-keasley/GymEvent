@@ -7,7 +7,7 @@ public function index() {
 	$this->data['datasets'] = [
 	[	'source' => rtrim(ROOTPATH, DIRECTORY_SEPARATOR), 
 		'dest' => dirname(ROOTPATH) . '/public.ci4',
-		'paths' => ['/app', '/ci']
+		'paths' => ['/app']
 	],
 	[	'source' => rtrim(FCPATH, DIRECTORY_SEPARATOR), 
 		'dest' => dirname(ROOTPATH) . '/public_html',
