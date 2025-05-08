@@ -1,1 +1,0 @@
-[23-Dec-2024 16:04:42 Europe/London] PHP Fatal error:  Class App\Views\Htm\Pretty contains 1 abstract method and must therefore be declared abstract or implement the remaining methods (Stringable::__toString) in /home/gymevent/dev.ci4/app/Views/Htm/Pretty.php on line 3
