@@ -31,13 +31,14 @@ $today = new \datetime('today');
 $dates = [];
 foreach($events as $event) {
 	if($event->deleted_at) continue;
-	$clubrets = $event->clubrets < 3;
-	$music = $event->music < 3;
-	$link = site_url("admin/events/view/{$event->id}");
-	$link = sprintf('<a href="%s">%s</a>', $link, $event->title);
-
 	$date = new \datetime($event->date);
 	if($date<$today) continue;
+		
+	$clubrets = $event->clubrets < 3;
+	$music = $event->music < 3;
+	
+	$link = site_url("admin/events/view/{$event->id}");
+	$link = sprintf('<a href="%s">%s</a>', $link, $event->title);
 	
 	$dates[] = [
 		'date' => $event->date,

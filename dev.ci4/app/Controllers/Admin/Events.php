@@ -43,7 +43,7 @@ public function add($event_id=0) {
 	$event = $event_id ? $this->mdl_events->withDeleted()->find($event_id) : null ;
 	if($event) {
 		$attribs = $event->toArray();
-		$keys = ['id', 'clubrets', 'music', 'deleted_at', 'player'];
+		$keys = ['id', 'clubrets', 'music', 'deleted_at', 'player', 'dates'];
 		foreach($keys as $key) unset($attribs[$key]);
 		$this->data['heading'] = $event->title . ' - clone';
 	}
