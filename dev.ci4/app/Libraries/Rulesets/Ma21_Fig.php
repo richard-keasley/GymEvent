@@ -1,6 +1,6 @@
 <?php namespace App\Libraries\Rulesets;
 
-class Fig extends Ruleset {
+class Ma21_Fig extends Ruleset {
 
 public function __construct() {
 parent::__construct();

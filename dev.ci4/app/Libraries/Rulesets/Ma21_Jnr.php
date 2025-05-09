@@ -1,6 +1,6 @@
 <?php namespace App\Libraries\Rulesets;
 
-class Jnr extends Fig {
+class Ma21_Jnr extends Ma21_Fig {
 
 public function __construct() {
 	parent::__construct();

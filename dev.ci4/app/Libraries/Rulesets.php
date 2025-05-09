@@ -5,15 +5,20 @@ class Rulesets {
 // ruleset basename(file) => title
 const index = [
 	'mag' => [
+		/* 2025 CoP */
 		'Ma25' => 'FIG',
 		'Ma25_u14' => 'Under 14',
 		'Ma25_u12' => 'Under 12',
-		'Fig' => '(old) FIG ',
-		'Jnr' => '(old) Junior',
-		'U14' => '(old) Under 14',
-		'U12' => '(old) Under 12',
+		
+		/* 2021 CoP 
+		'Ma21_Fig' => '(old) FIG ',
+		'Ma21_Jnr' => '(old) Junior',
+		'Ma21_U14' => '(old) Under 14',
+		'Ma21_U12' => '(old) Under 12',
+		*/
 	],
 	'general' => [
+		/* 2025 Reg FV */
 		'Fv_gold' => 'Gold',
 		'Fv_silver' => 'Silver',
 		'Fv_bronze' => 'Bronze',

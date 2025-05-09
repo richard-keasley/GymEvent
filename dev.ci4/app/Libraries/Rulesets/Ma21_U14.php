@@ -1,6 +1,6 @@
 <?php namespace App\Libraries\Rulesets;
 
-class U14 extends Fig {
+class Ma21_U14 extends Ma21_Fig {
 
 public function __construct() {
 	parent::__construct();
