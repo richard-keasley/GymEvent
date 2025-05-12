@@ -1,5 +1,7 @@
 <?php
-// look for help file
+if(!$showhelp) return;
+
+// look for help entry
 $htmls = new \App\Models\Htmls;
 $html = $htmls->find_path();
 if(!$html) return;

@@ -157,6 +157,7 @@ function player($action='') {
 	$this->data['h2'] = $event ? $event->title : 'Event not found' ;
 
 	if($action=='save') {
+		$this->data['showhelp'] = false;
 		$this->data['breadcrumbs'] = null;
 	}
 	else {
@@ -167,7 +168,7 @@ function player($action='') {
 
 	// get view
 	$page = view("player/teamtime", $this->data);
-
+	
 	return ($action=='save') ?
 		$this->saveplayer($event_id, 'player.htm', $page) :
 		$page ;

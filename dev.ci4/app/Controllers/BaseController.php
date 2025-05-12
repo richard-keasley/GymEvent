@@ -27,6 +27,7 @@ protected $data = [
 	'messages' => [],
 	'body' => '',
 	'back_link' => '',
+	'showhelp' => true,
 	'breadcrumbs' => [['', '<span class="bi-house-fill"></span>']]
 ];
 
@@ -60,19 +61,6 @@ public function initController(RequestInterface $request, ResponseInterface $res
 	}
 	else touch($gc_file);
 		
-	// look for help file
-	$stub = $this->request->getUri()->getSegments();
-	foreach(array_reverse($stub) as $segment) {
-		$ok = 1;
-		if(is_numeric($segment)) $ok = 0;
-		if($segment=='home') $ok = 0;
-		if($ok) break;
-		array_pop($stub);
-	}
-	$stub = $stub ? implode('/', $stub) : 'index';
-	$include = config('Paths')->viewDirectory . "/help/{$stub}.php";
-	$this->data['help'] = file_exists($include) ? $stub : '';
-	
 	// look for back_link
 	$back_link = $this->request->getGet('bl');
 	if($back_link) $this->data['back_link'] = $back_link;
@@ -153,7 +141,8 @@ protected function saveplayer($event_id, $name, $html) {
 	foreach($replacements as $replacement) {
 		$html = str_replace($replacement[0], $replacement[1], $html);
 	}
-		
+	
+	# return $html; // debug
 	return $this->response->download($name, $html);	
 }
 

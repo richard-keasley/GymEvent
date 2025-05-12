@@ -28,10 +28,11 @@ public function view($event_id=0, $action='view') {
 	$this->data['event'] = $this->find($event_id);
 	$this->data['title'] = 'Music player';
 	$this->data['heading'] = $this->data['event']->title;
-	
+		
 	switch($action) {
 		case 'save':
 		$this->data['breadcrumbs'] = null;
+		$this->data['showhelp'] = false;
 		break;
 		
 		default:

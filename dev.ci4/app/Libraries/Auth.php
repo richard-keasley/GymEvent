@@ -203,13 +203,13 @@ static function path_role($path) {
 	$path = trim($path, "\/\\ ");
 	$segments = array_pad(explode('/', $path), 7, '');
 	
-	$zones = ['api', 'user', 'control', 'admin'];
-	$zone = in_array($segments[0], $zones) ? array_shift($segments) : 'home';
-	if($zone=='api' && $segments[0]=='help') {
-		$zone = array_shift($segments); // $zone=help
-		array_shift($segments); // $segments[0] = view
-	}
+	if($segments[0]=='api') array_shift($segments);
 	
+	$zones = ['user', 'control', 'admin', 'setup'];
+	$zone = in_array($segments[0], $zones) ? array_shift($segments) : 'home';
+	
+	# d($zone, $segments);
+		
 	$controller = $segments[0];
 	$method = $segments[1];
 	$param1 = intval($segments[2]);
@@ -219,22 +219,14 @@ static function path_role($path) {
 	if(in_array($controller, self::$disabled)) return 'disabled';
 	
 	switch($zone) {
-		case 'help': 
-			switch($controller) {
-				case 'admin': return 'admin';
-				case 'user':  return 'club';
-				case 'control': return 'controller';
-			}
-			if($method=='edit') return self::roles[1];
-			return self::roles[0];
-		case 'admin': return 'admin';
 		case 'user':  return 'club';
 		case 'control': return 'controller';
+		case 'admin': return 'admin';
+		case 'setup': return self::roles[99];
 	}
 				
 	if(!$controller) return self::roles[0]; // home page
 	
-	if($controller=='setup') return self::roles[99];
 	
 	foreach(self::roles as $role) {
 		if($controller==$role) return $role;

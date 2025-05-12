@@ -24,10 +24,10 @@ load: function(track_url, autoplay=1) {
 
 pause: function(fade=0) {
 	$('#playtrack audio').animate({volume: 0}, fade, function() {
-        playtrack.msg('ready&hellip;', 'light');
-		playtrack.audio.pause();
+        playtrack.audio.pause();
 		$('#playtrack audio').animate({volume: 1}, 1);		
 	});
+	playtrack.msg('ready&hellip;', 'light');	
 },
 
 play: function() {
