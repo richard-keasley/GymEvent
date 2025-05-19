@@ -23,6 +23,7 @@ echo form_input($input); ?>
 This club agrees its staff and participants will adhere to the terms &amp; conditions below:</strong></label></p>
 <?php 
 
+break;
 case 'view':
 default: ?> 
 <p><strong>Clubs entering this event must agree to ensure all staff and participants adhere to the terms &amp; conditions for this event (below).</strong></p>
