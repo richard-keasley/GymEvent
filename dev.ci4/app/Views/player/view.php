@@ -118,7 +118,6 @@ foreach($links as $link) {
 
 $this->section('top');
 echo $this->include('player/local');
-echo $this->include('player/js_buttons');
 ?>
 <div class="sticky-top pb-1"><?php 
 echo $this->include('Htm/Playtrack');
@@ -128,7 +127,7 @@ var active_tab = 0;
 
 $(function() {
 $('button[name=trk]').click(function() {
-	var success = playbutton(this);
+	var success = playtrack.button(this);
 	if(!success) return;
 	
 	// highlight selected tab

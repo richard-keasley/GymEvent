@@ -43,7 +43,6 @@ public function playbtn($opts=[]) {
 	$ret = [];
 		
 	$track_url = $this->url();
-	$onclick = sprintf("playtrack.load('%s');", $track_url);
 		
 	if(in_array('player', $opts)) {
 		$label = $this->entry_num;
@@ -66,8 +65,9 @@ public function playbtn($opts=[]) {
 			$attrs = [
 				'title' => 'This track has not been checked',
 				'type' => 'button',
+				'data-url' => $track_url,
 				'class' => self::BUTTONS['unchecked'],
-				'onClick' => $onclick
+				'onClick' => "playtrack.button(this);",
 			];
 			break;
 
@@ -76,8 +76,9 @@ public function playbtn($opts=[]) {
 			$attrs = [
 				'title' => "This track is ready for the event",
 				'type' => 'button',
+				'data-url' => $track_url,
 				'class' => self::BUTTONS['play'],
-				'onClick' => $onclick
+				'onClick' => "playtrack.button(this);",
 			];
 			break;
 

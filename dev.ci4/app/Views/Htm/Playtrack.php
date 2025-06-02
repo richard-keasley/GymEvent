@@ -3,6 +3,38 @@
 <p class=""></p>
 <script>
 const playtrack = {
+	
+active_btn: 0,
+	
+button: function(el) {
+	var track_url = el.dataset.url;
+	if(!track_url) return false;
+	
+	var BUTTONS = <?php echo json_encode(\App\Libraries\Track::BUTTONS); ?>;
+		
+	// is a button active?
+	if(playtrack.active_btn) {
+		playtrack.active_btn.className = BUTTONS.repeat;
+		if(playtrack.active_btn.title==el.title) {
+			// fade current track
+			playtrack.pause(1000);
+			playtrack.active_btn = 0;
+			return true;
+		}
+		else {
+			// jump to new track
+			playtrack.pause();
+		}
+	}
+	// play requested track
+	playtrack.load(track_url);
+		
+	// set active button
+	playtrack.active_btn = el;
+	playtrack.active_btn.className = BUTTONS.pause;
+	return true;
+},	
+	
 load: function(track_url, autoplay=1) {
 	playtrack.pause();    
 
@@ -51,22 +83,22 @@ $(function() {
 playtrack.pause();
 
 playtrack.audio.onerror = (event) => {
-var html;
-switch(event.target.error.code) {
-	case event.target.error.MEDIA_ERR_ABORTED: html = 'Download aborted'; break;
-	case event.target.error.MEDIA_ERR_NETWORK: html = 'Network error'; break;
-	case event.target.error.MEDIA_ERR_DECODE: html = 'Decoding error'; break;
-	case event.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED: html = 'No decoder available'; break;
-	default: html = 'Unknown error';
-}
-html = '<a href="' + event.target.src + '" title="try to download this track" target="music">' + html + '</a>';
-playtrack.msg(html, 'danger');
+	var html;
+	switch(event.target.error.code) {
+		case event.target.error.MEDIA_ERR_ABORTED: html = 'Download aborted'; break;
+		case event.target.error.MEDIA_ERR_NETWORK: html = 'Network error'; break;
+		case event.target.error.MEDIA_ERR_DECODE: html = 'Decoding error'; break;
+		case event.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED: html = 'No decoder available'; break;
+		default: html = 'Unknown error';
+	}
+	html = '<a href="' + event.target.src + '" title="try to download this track" target="music">' + html + '</a>';
+	playtrack.msg(html, 'danger');
 };
 
 playtrack.audio.oncanplaythrough = (event) => {
-var html = playtrack.message.innerHTML;
-playtrack.msg(html, 'success');
-if(playtrack.autoplay) playtrack.audio.play();
+	var html = playtrack.message.innerHTML;
+	playtrack.msg(html, 'success');
+	if(playtrack.autoplay) playtrack.audio.play();
 };
 	
 });

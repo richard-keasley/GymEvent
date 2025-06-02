@@ -53,7 +53,6 @@ $this->endSection();
 
 $this->section('top');
 echo $this->include('player/local');
-echo $this->include('player/js_buttons');
 ?>
 <div class="sticky-top pb-1"><?php 
 echo $this->include('Htm/Playtrack');
@@ -62,7 +61,7 @@ echo $this->include('Htm/Playtrack');
 $(function() {
 
 $('button[name=trk]').click(function() {
-	var track_url = playbutton(this);
+	var track_url = playtrack.button(this);
 });
 	
 });
