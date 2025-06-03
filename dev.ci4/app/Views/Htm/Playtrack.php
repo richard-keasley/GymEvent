@@ -15,17 +15,18 @@ button: function(el) {
 	// is a button active?
 	if(playtrack.active_btn) {
 		playtrack.active_btn.className = BUTTONS.repeat;
-		if(playtrack.active_btn.title==el.title) {
+		if(playtrack.active_btn===el) {
 			// fade current track
 			playtrack.pause(1000);
 			playtrack.active_btn = 0;
 			return true;
 		}
 		else {
-			// jump to new track
+			// jump to requested track
 			playtrack.pause();
 		}
 	}
+	
 	// play requested track
 	playtrack.load(track_url);
 		
