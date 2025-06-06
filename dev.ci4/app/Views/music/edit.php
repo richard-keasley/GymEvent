@@ -26,7 +26,7 @@ echo $table->generate($tbody);
 
 $attrs = ['id' => "upload"];
 $hidden = ['cmd' => "upload"];
-echo form_open_multipart(current_url(), $attrs, $hidden);
+echo form_open_multipart('', $attrs, $hidden);
 ?>
 <fieldset><legend>Upload new track</legend>
 <div class="mb-3 row">
@@ -55,6 +55,11 @@ $('#upload').submit(function() {
 		.attr('disabled', 'disabled')
 		.html('<span class="spinner-border spinner-border-sm" role="status"></span> wait');
 });
+
+$('input[name=file]')[0].onchange = function() {
+    $('#upload').submit();
+};
+
 </script>
 <?php 
 echo form_close();
