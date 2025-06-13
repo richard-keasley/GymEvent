@@ -9,9 +9,9 @@ $this->section('content');
 $user_options = [0 => '-'];
 foreach($users as $id=>$user) $user_options[$id] = $user->name;
 
-$attr = ['id' => "control"];
+$attrs = ['id' => "player"];
 $hidden = ['cmd' => "update"];
-echo form_open(current_url(true), $attr, $hidden); 
+echo form_open('', $attrs, $hidden); 
 ?>
 <div class="toolbar nav row sticky-top">
 	<div class="input-group">
@@ -21,7 +21,8 @@ echo form_open(current_url(true), $attr, $hidden);
 		<button class="btn btn-info" type="submit" name="val" value="2" title="withdrawn"><i class="px-1 bi-x-square"></i></button>
 	</div>
 	<?php 
-	echo $this->include('Htm/Playtrack');
+	$options = ['audio' => true];
+	echo $this->include('Htm/Playtrack', $options);
 	?>	
 </div>
 

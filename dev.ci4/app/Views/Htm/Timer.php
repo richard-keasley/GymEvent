@@ -9,7 +9,7 @@ public function __construct($id='timer') {
 
 public function __toString() {
 ob_start(); ?>
-<div class="bg-dark text-light text-center fw-bold" style="width:4.7em; line-height:1.8em" id="<?php echo $this->id;?>">0</div>
+<div class="bg-dark text-light text-center fw-bold" style="width:4.7em; line-height:1.9em" id="<?php echo $this->id;?>">0</div>
 <script>
 function timer(selector) {
 	this.el = $('#'+selector);

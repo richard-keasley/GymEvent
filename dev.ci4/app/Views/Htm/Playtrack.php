@@ -1,107 +1,247 @@
-<div id="playtrack" class="w-100 d-flex flex-column">
-<audio class="w-100" preload="auto" controls="controls"></audio> 
-<p class=""></p>
+<?php
+// default options
+$options = [
+	'audio' => false,
+	'ui' => true,
+	'btns' => false,
+];
+// read options from request
+foreach(array_keys($options) as $key) {
+	$val = $this->renderVars['options'][$key] ?? null ;
+	if($val!==null) $options[$key] = $val;
+}
+
+# d($this->renderVars['options']);
+# d($options);
+
+?>
+<div id="playtrack">
+<?php
+$attrs = $options['audio'] ? 
+	'preload="auto" class="w-100" controls="controls"' : 
+	'preload="auto" class="d-none"' ;
+echo "<audio {$attrs}></audio>";
+
+$ui = $options['ui'] ? '' : 'd-none' ;
+
+
+?>
+<div id="pt-ui" class="<?php echo $ui;?>">
+
+<div class="d-flex">
+<?php if($options['btns']) { ?>
+<span id="pt-btns">
+<button id="pt-play" type="button" class="btn btn-sm btn-info" onclick="playtrack.play()"><span class="bi bi-play-fill"></span></button>
+<button id="pt-pause" type="button" class="btn btn-sm btn-info" onclick="playtrack.pause(1000)"><span class="bi bi-pause-fill"></span></button>
+</span>
+<?php } ?>
+<span id="pt-info"></span>
+<span id="pt-time-text"></span>
+<span id="pt-duration"></span>
+</div>
+
+<div id="pt-progress" class="position-relative">
+<div id="pt-buffer" class="progress position-absolute top-0 w-100">
+<div class="progress-bar progress-bar-striped bg-warning"></div>
+</div>
+<div id="pt-time-progbar" class="progress position-absolute top-0 w-100 bg-transparent">
+<div class="progress-bar progress-bar-striped progress-bar-animated"></div>
+</div>
+</div>
+
+</div>
+
+</div>
+
 <script>
 const playtrack = {
 	
+audio: document.querySelector('#playtrack audio'),
+ui: document.querySelector('#playtrack #pt-ui'),
+info: document.querySelector('#playtrack #pt-info'),
+time: {
+	text: document.querySelector('#playtrack #pt-time-text'),
+	progbar: document.querySelector('#playtrack #pt-time-progbar .progress-bar'),
+},
+duration: document.querySelector('#playtrack #pt-duration'),
+buffer: document.querySelector('#playtrack #pt-buffer .progress-bar'),
+options: <?php echo json_encode($options); ?>,
+buttons: <?php echo json_encode(\App\Libraries\Track::BUTTONS); ?>,
+btns: {
+	play: document.querySelector('#playtrack #pt-play'),
+	pause: document.querySelector('#playtrack #pt-pause'),
+},
 active_btn: 0,
-	
-button: function(el) {
-	var track_url = el.dataset.url;
-	if(!track_url) return false;
-	
-	var BUTTONS = <?php echo json_encode(\App\Libraries\Track::BUTTONS); ?>;
-		
-	// is a button active?
-	if(playtrack.active_btn) {
-		playtrack.active_btn.className = BUTTONS.repeat;
-		if(playtrack.active_btn===el) {
-			// fade current track
-			playtrack.pause(1000);
-			playtrack.active_btn = 0;
-			return true;
-		}
-		else {
-			// jump to requested track
-			playtrack.pause();
-		}
+
+init: function() {
+	if(playtrack.options.btns) {
+		playtrack.btns.play.classList.remove('d-none');
+		playtrack.btns.pause.classList.add('d-none');
 	}
 	
-	// play requested track
-	playtrack.load(track_url);
+	playtrack.audio.currentTime = 0;
+	playtrack.duration.innerHTML = '';
+	
+	playtrack.time.text.innerHTML = '<i class="bi bi-music-note-beamed"></i>';
+	playtrack.time.progbar.style = 'width:0';
+	playtrack.buffer.style = 'width:0';
+
+	if(playtrack.active_btn) {
+		playtrack.active_btn.className = playtrack.buttons.repeat;
+	}
+	playtrack.active_btn = 0;
+	playtrack.message('ready&hellip;', 'light');
+},
+
+button: function(el) {	
+	if(playtrack.active_btn===el) {
+		// fade current track
+		playtrack.pause(1000);
+		return;
+	}
+	// stop current track
+	playtrack.pause();
 		
 	// set active button
 	playtrack.active_btn = el;
-	playtrack.active_btn.className = BUTTONS.pause;
-	return true;
-},	
-	
+	// play requested track
+	playtrack.load(el.dataset.url ?? '');
+},
+
 load: function(track_url, autoplay=1) {
-	playtrack.pause();    
-
-	if(track_url) {
-		var temp = track_url.split('/').pop(); // filename
-		var html = temp.split('?')[0]; // remove query
-		html = html.replace(/^0+/, ''); // trim leading zeros
-		html = html.replace('.', ' (') + ')'; // place extension in bracket
-		html = html.replace('_', ' ');
-		playtrack.msg(html, 'warning');
+	if(!track_url) return;
 		
-		playtrack.audio.volume = 1;
-		playtrack.audio.src = track_url;
-		playtrack.audio.muted = false;
-		playtrack.audio.load();	
-		playtrack.autoplay = autoplay;
-	}
-}, 
-
-pause: function(fade=0) {
-	$('#playtrack audio').animate({volume: 0}, fade, function() {
-        playtrack.audio.pause();
-		$('#playtrack audio').animate({volume: 1}, 1);		
-	});
-	playtrack.msg('ready&hellip;', 'light');	
+	var temp = track_url.split('/').pop(); // filename
+	var html = temp.split('?')[0]; // remove query
+	html = html.replace(/^0+/, ''); // trim leading zeros
+	html = html.replace('.', ' (') + ')'; // place extension in bracket
+	html = html.replace('_', ' ');
+	playtrack.message(html, 'success');
+	
+	// playtrack.init();
+	playtrack.audio.src = track_url;
+	if(autoplay) playtrack.play();
 },
 
 play: function() {
+	if(playtrack.options.btns) {
+		playtrack.btns.play.classList.add('d-none');
+		playtrack.btns.pause.classList.remove('d-none');
+	}
+	
+	playtrack.audio.volume = 1;
+	playtrack.audio.muted = false;
 	playtrack.audio.play().catch(error => {
-		// Autoplay was blocked. Do something
-		playtrack.msg("Check autoplay is allowed on this page");
+		playtrack.error(error.name);
 	});
 },
 
-msg: function(html, alert='danger') {
-	playtrack.message.innerHTML = html;
-	playtrack.message.className = 'p-1 my-0 alert alert-' + alert;
+pause: function(fade=0) {
+	$('#playtrack audio').animate({volume: 0}, fade, function() {
+		playtrack.audio.pause();
+		$('#playtrack audio').animate({volume: 1}, 1);
+		playtrack.init();
+	});
 },
 
-audio: $('#playtrack audio')[0],
-message: $('#playtrack p')[0],
-autoplay: 1
+message: function(html, alert='danger') {
+	if(!playtrack.options.ui) return;
+	if(html!==null) playtrack.info.innerHTML = html;
+	playtrack.ui.className = 'p-1 m-0 alert alert-' + alert;
+},
+
+displaytime: function(secs) {
+	var minutes = Math.floor(secs / 60);
+	var seconds = Math.floor(secs % 60);
+	return seconds < 10 ? 
+		`${minutes}:0${seconds}` : 
+		`${minutes}:${seconds}` ;
+},
+
+timeupdate: function() {
+	if(playtrack.audio.paused) return;
+	
+	var secs = playtrack.audio.currentTime;
+	var pc = secs / playtrack.audio.duration * 100;
+	playtrack.time.progbar.style = 'width:'+pc+'%';
+	playtrack.time.text.innerHTML = playtrack.displaytime(secs);	
+		
+	secs = (playtrack.audio.buffered.length) ? 
+		 playtrack.audio.buffered.end(0) : 
+		 0 ;
+	pc = secs / playtrack.audio.duration * 100;
+	playtrack.buffer.style = 'width:'+pc+'%';
+	
+	playtrack.buffer.className = (pc>99) ? 
+		'progress-bar progress-bar-striped bg-success' : 
+		'progress-bar progress-bar-striped bg-warning' ;
+},
+
+error: function(error_name, notify=true) {
+	const messages = {
+		media_1: 'Download aborted',
+		media_2: 'Network error',
+		media_3: 'Decoding error',
+		media_4: 'No decoder', 
+		http_404: 'Track not found',
+		NotAllowedError: 'Allow automatic playback',
+	};
+	
+	var retval = {
+		name: error_name,
+		message: messages[error_name] ?? `unkown error (${error_name})`,
+	};
+	
+	playtrack.init();
+	if(notify) {
+		playtrack.message(`<span title="${retval.name}">${retval.message}</span>`);
+	}
+	return retval;
+},
+
 };
 
 $(function() {
-playtrack.pause();
 
-playtrack.audio.onerror = (event) => {
-	var html;
-	switch(event.target.error.code) {
-		case event.target.error.MEDIA_ERR_ABORTED: html = 'Download aborted'; break;
-		case event.target.error.MEDIA_ERR_NETWORK: html = 'Network error'; break;
-		case event.target.error.MEDIA_ERR_DECODE: html = 'Decoding error'; break;
-		case event.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED: html = 'No decoder available'; break;
-		default: html = 'Unknown error';
+playtrack.init();
+
+playtrack.audio.ontimeupdate = function() {
+	playtrack.timeupdate();
+}
+
+playtrack.audio.onloadedmetadata = function() {
+	var secs = playtrack.audio.duration;
+	playtrack.duration.innerHTML = playtrack.displaytime(secs);
+}
+
+playtrack.audio.onplay = function() {
+	// is a button active?
+	if(playtrack.active_btn) {
+		playtrack.active_btn.className = playtrack.buttons.pause + ' playing';	
 	}
-	html = '<a href="' + event.target.src + '" title="try to download this track" target="music">' + html + '</a>';
-	playtrack.msg(html, 'danger');
+}
+
+playtrack.audio.onended = function() {
+	playtrack.init();
+}
+
+playtrack.audio.onerror = function(event) {
+	var media_error = event.target.error;
+	
+	// look for http errors 
+	const regex = /^([0-9]{3}):/;
+	var http = media_error.message.match(regex);
+	if(http) http = http[1] ?? null ;
+	
+	// use media error if no http error
+	var error_name = http ? 
+		'http_' + http : 
+		'media_' + media_error.code ;
+	var error = playtrack.error(error_name, 0);
+	
+	// rewrite error message
+	playtrack.message(`<a href="${event.target.src}" title="try to download this track" target="music">${error.message}</a>`);
 };
 
-playtrack.audio.oncanplaythrough = (event) => {
-	var html = playtrack.message.innerHTML;
-	playtrack.msg(html, 'success');
-	if(playtrack.autoplay) playtrack.audio.play();
-};
-	
 });
 </script>
-</div>

@@ -111,13 +111,14 @@ foreach($methods as $method) {
 </div>
 </div>
 
-<div class="cmode-only my-2 p-1 border"><?php 
+<div class="cmode-only my-2 p-1 border"><?php
+// [filename, options]
 $include = match($music_player) {
-	'local' => 'Htm/Playtrack',
-	'sender' => 'player/sender',
+	'local' => ['Htm/Playtrack', ['btns' => true]],
+	'sender' => ['player/sender', null],
 	default => null
 };
-if($include) echo $this->include($include);
+if($include) echo $this->include($include[0], $include[1]);
 else echo $music_player;
 
 ?></div>
@@ -144,12 +145,6 @@ echo $this->include('teamtime/admin/progjump');
 ?>
 
 <script>
-// set up sender play button
-<?php if($music_player=='sender') { ?>
-$('#sse-play').click(function() {
-	ttcontrol.player.play();
-});
-<?php } ?>
 
 const ttcontrol = {
 
@@ -211,7 +206,7 @@ player: {
 				switch(ttcontrol.player.name) {
 					case 'local': 
 					if(status=='ok') playtrack.load(message, 0); // NB: no autoplay
-					else playtrack.msg(message);
+					else playtrack.message(message);
 					break;
 					
 					case 'sender': 
@@ -342,6 +337,11 @@ set: function(cmd) {
 };
 
 $(function() {
+
+// set up sender play button
+<?php if($music_player=='sender') { ?>
+sse.buttons.play.onclick = function() { ttcontrol.player.play(); };
+<?php } ?>
 
 var url = '<?php echo site_url("/api/teamtime/get/runvars");?>';
 $.get(url, function(response) {

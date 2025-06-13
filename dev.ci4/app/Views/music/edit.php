@@ -5,6 +5,9 @@ $username = $user->name ?? '??' ;
 printf('<h3>%s. %s (%s)</h3>', $entry->num, $entry->name, $username);
 printf('<p><em>%s</em></p>', $category->name);
 
+?>
+<div id="player"><?php 
+
 $exe_opts = []; $empty = null;
 $tbody = []; $tr = []; 
 
@@ -23,6 +26,9 @@ $tbody[] = $tr;
 $table = \App\Views\Htm\Table::load('default');
 $table->setHeading($exe_opts);
 echo $table->generate($tbody);
+
+?></div>
+<?php 
 
 $attrs = ['id' => "upload"];
 $hidden = ['cmd' => "upload"];

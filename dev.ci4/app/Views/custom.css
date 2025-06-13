@@ -17,3 +17,26 @@
 	font-size: 0.7em;
 	vertical-align: 0.25em;
 }
+
+#playtrack #pt-progress,
+#playtrack #pt-progress .progress {
+	height:.8em;
+}
+
+#playtrack .d-flex {
+	gap: 0.4em;
+}
+
+button.playing {
+	animation-name: btnplaying;
+	animation-duration: 0.8s;
+	animation-iteration-count: infinite;
+}
+
+@keyframes btnplaying {
+  0%  { opacity: 1  }
+  30% { opacity: 0.3}
+  40% { opacity: 0.3}
+  70% { opacity: 1  }
+}
+

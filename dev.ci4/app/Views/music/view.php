@@ -40,7 +40,8 @@ echo $this->include('Htm/Playtrack');
 if($event->music<2) { ?>
 	<p>Click <span class="text-primary"><span title="edit this entry" class="bi bi-pencil"></span> edit</span> to upload new tracks for each entry.</p>
 <?php } 
-
+?>
+<div id="player"><?php
 $table = \App\Views\Htm\Table::load('responsive');
 foreach($entries as $dis) { ?>
 	<section><h4><?php echo $dis->name;?></h4>
@@ -73,6 +74,6 @@ foreach($entries as $dis) { ?>
 	}
 	?>
 	</section>
-<?php } 
-
-$this->endSection(); 
+<?php } ?>
+</div>
+<?php $this->endSection(); 
