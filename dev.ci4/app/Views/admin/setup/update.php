@@ -27,11 +27,11 @@ foreach($datasets as $dataset) {
 $this->endSection();
 
 $this->section('top');
-$attr = [
+$attrs = [
 	'class' => "toolbar"
 ];
 $hidden = [];
-echo form_open(current_url(), $attr, $hidden); 
+echo form_open('', $attrs, $hidden); 
 echo \App\Libraries\View::back_link("setup"); 
 ?>
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#dlgUpdate">apply</button>

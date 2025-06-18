@@ -19,12 +19,12 @@ if($show_new) {
 }
 
 
-$attr = ['id' => "existing"];
+$attrs = ['id' => "existing"];
 $hidden = [
 	'tabView' => '#existing',
 	'hp-info' => ''
 ];
-echo form_open($current_url, $attr, $hidden);
+echo form_open($current_url, $attrs, $hidden);
 
 ?>
 <p>Your user name is your club name. 
@@ -62,7 +62,7 @@ if($show_reset) { ?>
 <?php } 
 
 if($show_new) { 
-$attr = [
+$attrs = [
 	'id' => "create",
 	'autocomplete' => "off"
 ];
@@ -70,7 +70,7 @@ $hidden = [
 	'tabView' => '#create',
 	'hp-info' => ''
 ];
-echo form_open(current_url(), $attr, $hidden);?>
+echo form_open('', $attrs, $hidden);?>
 <p class="form-floating">
 	<input class="form-control" type="text" name="name" value="<?php echo $postval['name'];?>" id="newname" placeholder="" required autofocus>
 	<label for="newname" title="Club name" class="form-label">Club name</label>

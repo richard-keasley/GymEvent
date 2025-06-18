@@ -2,7 +2,7 @@
 
 $this->section('content');
 	
-echo form_open(current_url());
+echo form_open();
 ?>
 <div class="toolbar"><?php 
 echo \App\Libraries\View::back_link("admin/entries/view/{$event->id}");

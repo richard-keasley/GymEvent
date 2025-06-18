@@ -14,10 +14,10 @@ $this->section('top'); ?>
 # d($event->users('', false));
 # d($event->users('clubrets', false));
 
-$attr = [
+$attrs = [
 	'class' => "toolbar nav sticky-top"
 ];
-echo form_open(current_url(), $attr);
+echo form_open('', $attrs);
 
 echo \App\Libraries\View::back_link('admin/events');
 

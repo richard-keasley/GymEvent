@@ -15,17 +15,18 @@ public function index() {
 	
 	// default values
 	$links = [
-		'follow' => "", 
-		'watch' => "", 
-		'scores' => "",
-		'judges' => "",
-		'info' => ""
+		'_heading' => "", // heading for links page
+		'follow' => "", // follow entrant's scores (audience)
+		'watch' => "", // open watch scores (coaches' console)
+		'scores' => "", // arena score display
+		'judges' => "", // judges' login
+		'info' => "", // open URL with info on this event
 	];
 	
 	// update
 	if($this->request->getPost('save')) {
 		foreach($links as $key=>$default) {
-			$links[$key] = $this->request->getPost($key);
+			$links[$key] = trim($this->request->getPost($key) ?? $default);
 		}
 		$appvar = new \App\Entities\Appvar;
 		$appvar->id = $var_name;

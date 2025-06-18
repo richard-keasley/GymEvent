@@ -11,6 +11,7 @@ $attrs = [
 ];
 foreach($links as $key=>$link) {
 	if(!$link) continue; // link closed
+	if($key[0]=='_') continue; // not a URL
 	$href = "x/{$key}";
 	$anchor = anchor($href, base_url($href), $attrs);
 	printf($format, $anchor, $link);

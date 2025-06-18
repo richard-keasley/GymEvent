@@ -54,27 +54,35 @@ foreach($tbody as $row_key=>$tr) {
 }
 ?></tbody>
 </table>
-<?php if($mode=='o') { ?>
+<?php if($mode=='o') { 
+
+?>
 
 <div id="timertick">
 <div class="progbar">&nbsp;</div>
 </div>
+<?php echo new \App\Views\js\timer('tttimer'); ?>
 <script>
 var runvars = <?php echo json_encode($runvars);?>;
-ttlib.timer.init(runvars['timer'], runvars['timer_current']);
-ttlib.timer.custom = ['#C00','#C30',"#C60","#C90","#9C0","#6C0","#3C0",'#0C0'];
-var timer_val = [];
-var $timer = $('#timertick .progbar')[0];
-var tt = setInterval(function() {
-	timer_val = ttlib.timer.tick(['%', 'custom', 'raw']);
-	// console.log(timer_val);
-	$timer.style.width = timer_val[0];
-	$timer.style.background = timer_val[1];
-	$timer.innerHTML = timer_val[2] ? '&nbsp;' : 'STOP';	
+var bgcolours = ['#0C0','#3C0',"#6C0","#9C0","#C90","#C60","#C30",'#C00'];
+var timerbar = $('#timertick .progbar')[0];
+
+tttimer.duration = runvars.timer * 1000;
+var bgmax = bgcolours.length - 1;
+var interval = setInterval(function() {
+	var pc = tttimer.format('pc');
+	var bgindex = Math.min(bgmax, Math.floor(pc / 100 * bgcolours.length));
+	timerbar.innerHTML = pc>99 ? 'STOP' : '&nbsp;' ;
+	timerbar.style.width = pc+'%';
+	timerbar.style.background = bgcolours[bgindex];
+	
+	// console.log(pc, bgindex);
 }, 1000);
+tttimer.start(runvars.timer_start * 1000, interval);
 </script>
 
-<?php }
+<?php 
+}
 
 if($runvars['message']) {
 	printf('<p class="message">%s</p>', htmlspecialchars($runvars['message']));

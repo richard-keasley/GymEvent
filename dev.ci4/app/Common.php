@@ -18,33 +18,31 @@ function getlink($path, $label='') {
 	$path = trim($path, '/');
 	if(!\App\Libraries\Auth::check_path($path)) return '';
 	
-	$attr = [
-		'class' => 'nav-link'
-	];
+	$attrs = ['class' => 'nav-link'];
 		
 	if(!$label) $label = basename($path);
 		
 	if($label=='edit') {
 		$label = '<span class="bi bi-pencil"></span>';
-		$attr['class'] = 'btn btn-outline-primary';
-		$attr['title'] = "edit";
+		$attrs['class'] = 'btn btn-outline-primary';
+		$attrs['title'] = "edit";
 	}	
 	if($label=='back') {
 		$label = '<span class="bi bi-box-arrow-left"></span>';
-		$attr['class'] = 'btn btn-outline-secondary';
-		$attr['title'] = "close";
+		$attrs['class'] = 'btn btn-outline-secondary';
+		$attrs['title'] = "close";
 	}		
 	if($label=='admin') {
 		$label = '<span class="bi bi-gear"></span>';
-		$attr['class'] = 'btn btn-outline-secondary';
-		$attr['title'] = "admin";
+		$attrs['class'] = 'btn btn-outline-secondary';
+		$attrs['title'] = "admin";
 	}		
 	foreach(['/edit', '/add'] as $method) {
 		if(strpos($path, $method)!==false) {
-			$attr['class'] = 'btn btn-outline-primary';
+			$attrs['class'] = 'btn btn-outline-primary';
 		}
 	}
-	return anchor($path, $label, $attr);
+	return anchor($path, $label, $attrs);
 }
 
 function formatBytes($bytes, $precision=0) { 

@@ -16,10 +16,10 @@ $this->section('bottom'); ?>
 <div class="modal fade" id="pageModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
 <?php 
-$attr = [
+$attrs = [
 	'class' =>"modal-content"
 ];
-echo form_open(current_url(), $attr); ?>
+echo form_open('', $attrs); ?>
 <div class="modal-header">
 	<h5 class="modal-title" id="exampleModalLabel">Edit programme</h5>
 	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

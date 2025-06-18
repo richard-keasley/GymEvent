@@ -67,9 +67,9 @@ function update_selector(dis_id) {
 </form>
 
 <?php 
-$attr = [];
+$attrs = [];
 $hidden = ['save'=>"1"];
-echo form_open('', $attr, $hidden);
+echo form_open('', $attrs, $hidden);
 
 $inputs = [
 	'category_id' => [
@@ -320,9 +320,9 @@ $this->section('bottom'); ?>
 <div class="modal fade" id="catmerge">
 <div class="modal-dialog modal-sm">
 <?php 
-$attr = ['class' => "modal-content"];
+$attrs = ['class' => "modal-content"];
 $hidden = ['batch' => 'catmerge'];
-echo form_open('', $attr, $hidden); 
+echo form_open('', $attrs, $hidden); 
 ?>
 <div class="modal-header">
 	<h5 class="modal-title">Merge category</h5>
@@ -354,9 +354,9 @@ echo form_open('', $attr, $hidden);
 <div class="modal fade" id="runorder">
 <div class="modal-dialog modal-sm">
 <?php 
-$attr = ['class' => "modal-content"];
+$attrs = ['class' => "modal-content"];
 $hidden = ['batch'=>'runorder'];
-echo form_open('', $attr, $hidden); 
+echo form_open('', $attrs, $hidden); 
 ?>
 <div class="modal-header">
 	<h5 class="modal-title">Running order</h5>

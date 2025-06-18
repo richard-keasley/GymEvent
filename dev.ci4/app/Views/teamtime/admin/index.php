@@ -103,9 +103,10 @@ foreach($methods as $method) {
 
 <div class="row omode-only my-2 p-1 border">
 <div class="col-auto">Timer</div>
-<div class="col-auto bg-dark text-light text-center" style="width:4.5em">
-	<span class="fw-bold align-middle" id="timertick"></span>
+<div class="col-auto">
+<div class="bg-dark text-light text-center fw-bold" style="width:4.5em; line-height:1.9em;" id="ttctimer">--</div>
 </div>
+
 <div class="col-auto">
 	<button type="button" class="btn btn-primary btn-sm bi bi-skip-backward-fill" onclick="ttrun.set('timer0')"></button>
 </div>
@@ -144,8 +145,11 @@ echo $this->include('teamtime/js');
 echo $this->include('teamtime/admin/progjump');
 ?>
 
+<?php
+$options = ['reverse' => true];
+echo new \App\Views\js\timer('ttctimer', $options);
+?>
 <script>
-
 const ttcontrol = {
 
 track_api: '<?php echo base_url("/api/music/track_url/{$event_id}");?>',
@@ -267,8 +271,12 @@ get: function(arr) {
 	
 	ttcontrol.message();
 	if(ttrun.val.mode=='o') {
-		$('.omode-only').show();
-		ttlib.timer.init(ttrun.val['timer'], ttrun.val['timer_current']);
+		$('.omode-only').show();		
+		ttctimer.duration = ttrun.val.timer * 1000;
+		var timer = setInterval(function() {
+			$('#ttctimer').text(ttctimer.format());
+		}, 1000);
+		ttctimer.start(ttrun.val.timer_start * 1000, timer);
 	}
 	else $('.omode-only').hide();
 	
@@ -352,10 +360,6 @@ $.get(url, function(response) {
 	ttcontrol.message( get_error(jqXHR) ); 
 });
 
-var tt = setInterval(function() {
-	$('#timertick').html(ttlib.timer.tick(['time']));
-}, 1000);
-
 /* 
 shortcut keys for buttons
 event.altKey 
@@ -395,4 +399,5 @@ $('[data-bs-toggle=collapse]').on('click', function(event) {
 
 });
 </script>
-<?php $this->endSection(); 
+<?php 
+$this->endSection(); 

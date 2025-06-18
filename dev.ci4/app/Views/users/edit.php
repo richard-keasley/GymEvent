@@ -52,12 +52,12 @@ if($user_self) {
 	$inputs['role']['disabled'] = 'disabled';
 }
 
-$attr = [
+$attrs = [
 	'id' => "editform",
 	'autocomplete' => "off",
 	'style' => "max-width:28em;"
 ];
-echo form_open(current_url(), $attr);
+echo form_open('', $attrs);
 foreach($inputs as $key=>$input) {
 	$input['id'] = "ctrl-$key";
 	$input['name'] = $key;

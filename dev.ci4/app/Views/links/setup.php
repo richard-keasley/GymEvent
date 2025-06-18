@@ -15,16 +15,15 @@ echo form_open('', $attrs, $hidden); ?>
 $tbody = []; 
 
 $input = [
-	'type' => 'url',
 	'class' => 'form-control',
 	'style' => 'min-width:30em'
 ];
 foreach($links as $key=>$link) {
-	if($key=='event') continue;
+	$input['type'] = $key[0]=='_' ? "text" : "url" ;
 	$input['value'] = $link;		
 	$input['name'] = $key;		
 	$tbody[] = [
-		sprintf('<label class="form-label">%s</label>', $key),
+		sprintf('<label class="form-label">%s</label>', humanize($key)),
 		form_input($input)
 	];
 }

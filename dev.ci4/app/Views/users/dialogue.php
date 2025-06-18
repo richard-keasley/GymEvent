@@ -8,13 +8,13 @@ if(empty($cmd)) $cmd = 'modalUser';
 $hidden = [
 	'cmd' => $cmd
 ];
-$attr = [
+$attrs = [
 	'id' => "modalUser",
 	'class' => "modal fade",
 	'tabindex' => "-1",
 	'aria-hidden' => "true"
 ];
-echo form_open(current_url(), $attr, $hidden);
+echo form_open('', $attrs, $hidden);
 ?>
 <div class="modal-dialog modal-dialog-scrollable">
 <div class="modal-content">

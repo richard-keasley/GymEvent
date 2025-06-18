@@ -9,10 +9,10 @@ $ok = $event->clubrets==2 & empty($event->deleted);
 <div class="modal-dialog">
 
 <?php 
-$attr = [
+$attrs = [
 	'class' => "modal-content"
 ];
-echo form_open(current_url(), $attr); ?>
+echo form_open('', $attrs); ?>
 <input type="hidden" name="populate" value="1">
 <div class="modal-header">
 	<h5 class="modal-title">Create entries for <?php echo $event->title;?></h5>

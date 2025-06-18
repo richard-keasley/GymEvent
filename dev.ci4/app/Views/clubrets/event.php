@@ -77,21 +77,21 @@ if($staff) {
 $this->endSection(); 
 
 $this->section('top');
-$attr = [
+$attrs = [
 	'class' => "toolbar sticky-top"
 ];
-echo form_open(current_url(), $attr);
+echo form_open('', $attrs);
 echo \App\Libraries\View::back_link($back_link); 
 if(isset($users_dialogue)) { ?>
 	<button type="button" class="btn btn-success bi bi-plus-circle" data-bs-toggle="modal" data-bs-target="#modalUser" title="Add new club return to this event"></button>
 	<?php
 }
 echo $this->include('entries/populate/button');
-$attr = [
+$attrs = [
 	'class' => "btn btn-outline-primary",
 	'title' => "View event name check"
 ];
-echo anchor("admin/clubrets/names/{$event->id}", 'names', $attr);
+echo anchor("admin/clubrets/names/{$event->id}", 'names', $attrs);
 echo form_close();
 
 ?>

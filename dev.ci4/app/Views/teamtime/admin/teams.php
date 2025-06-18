@@ -11,9 +11,9 @@ echo tt_lib::view_html('teams');
 $this->endSection(); 
 
 $this->section('top'); 
-$attr = ['class' => "toolbar sticky-top"];
+$attrs = ['class' => "toolbar sticky-top"];
 $hidden = ['reload' => "1"];
-echo form_open(current_url(), $attr, $hidden);
+echo form_open('', $attrs, $hidden);
 echo \App\Libraries\View::back_link('control/teamtime'); ?>
 <button class="btn btn-primary bi bi-pencil" title="edit team names" type="button" data-bs-toggle="modal" data-bs-target="#pageModal"></button>
 <?php 
@@ -26,8 +26,8 @@ $this->section('bottom'); ?>
 <div class="modal fade" id="pageModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
 <?php 
-$attr = ['class' =>"modal-content"];
-echo form_open(current_url(), $attr); ?>
+$attrs = ['class' =>"modal-content"];
+echo form_open('', $attrs); ?>
 <div class="modal-header">
 	<h5 class="modal-title">Edit team names</h5>
 	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

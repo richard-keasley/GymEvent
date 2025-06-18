@@ -87,7 +87,9 @@ private function error() {
 	if(!$this->mem_num)  return "has no membership number"; 
 
 	if(!$this->dob) return "has no DoB";
-	if(!$this->dt) return "has invalid DoB";	
+	if(!$this->dt) return "has invalid DoB";
+	$interval = $this->dt->diff(self::calc('now'));
+	if($interval->invert) return "has invalid DoB";
 	if($this->dt>self::calc('dob_max')) return "is too young";
 	if($this->dt<self::calc('dob_min')) return "has invalid DoB";
 		
@@ -139,12 +141,20 @@ static function get_dt($str) {
 		
 		// strip time from datetime
 		$dt->setTime(0,0);
+		
 		// check for 2 digit year	
-		$yr = (int) $dt->format('Y');
-		if($yr<100) {
-			// 2 digit year, bring it to this century
-			$add = $yr>self::calc('now_yr') ? 1900 : 2000 ;
-			$dt->add(new \DateInterval("P{$add}Y"));
+		$YoB = (int) $dt->format('Y');
+		if($YoB<100) {
+			// bring it to this century
+			$cent = self::calc('now_cent');
+			$dt->add(new \DateInterval("P{$cent}00Y"));
+		}
+		
+		// check date not in the future
+		$interval = $dt->diff(self::calc('now'));
+		if($interval->invert) {
+			// assume entered as this century
+			$dt->sub(new \DateInterval("P100Y"));
 		}
 		
 		return $dt;
@@ -153,24 +163,30 @@ static function get_dt($str) {
 		# d($ex);
 		return null;
 	}
-	
-	
 }
 
 static $calc = null;
 static function calc($key) {
 	if(!self::$calc) {
-		$calc = [];
 		$now = new \DateTimeImmutable;
-		$calc['now'] = $now;
-		$period = new \DateInterval("P5Y");
+		$calc = [
+			'now' => $now,
+			'now_year' => (int) $now->format('Y'),
+		];
+		$calc['now_cent'] = floor($calc['now_year'] / 100);
+		
+		$age = config('App')->min_age;
+		$period = new \DateInterval("P{$age}Y");
 		$calc['dob_max'] = $now->sub($period);
-		$period = new \DateInterval("P90Y");
+		
+		$age = config('App')->max_age;
+		$period = new \DateInterval("P{$age}Y");		
 		$calc['dob_min'] = $now->sub($period);
-		$calc['now_yr'] = (int) $now->format('y');
+		
 		self::$calc = $calc;
+		# d($calc);
 	}
-	return self::$calc[$key];
+	return self::$calc[$key] ?? null;
 }
 
 }

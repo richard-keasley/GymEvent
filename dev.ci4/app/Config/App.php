@@ -38,7 +38,10 @@ public function __construct() {
 	public $mailto = '';
 	// allowable disk usage for events (bytes)
 	public $events_space = 1073741824; // 1GB
-			
+	// age range for participants and staff
+	public $min_age = 5; 
+	public $max_age = 80; 
+				
 	/**
      * --------------------------------------------------------------------------
      * Base Site URL

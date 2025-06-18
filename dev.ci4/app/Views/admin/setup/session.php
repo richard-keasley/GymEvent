@@ -33,7 +33,7 @@ $this->endSection();
 
 $this->section('top'); 
 $attrs = ['class' => "toolbar sticky-top"];
-echo form_open(current_url(), $attrs);
+echo form_open('', $attrs);
 echo \App\Libraries\View::back_link("setup");
 ?>
 <button type="submit" name="cmd" value="purge" class="btn btn-danger"><i class="bi-trash"></i></button>

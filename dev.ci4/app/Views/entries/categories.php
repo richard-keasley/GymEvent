@@ -20,11 +20,11 @@ $('[name=disid]').change(function() { $('[name=selector]').submit(); });
 
 <?php 
 $action = current_url() . '?' . http_build_query(['disid'=>$filter['disid']]);
-$attr = [];
+$attrs = [];
 $hidden = [
 	'save' => '1'
 ];
-echo form_open($action, $attr, $hidden);
+echo form_open($action, $attrs, $hidden);
 ?>
 <div class="toolbar sticky-top">
 	<?php echo \App\Libraries\View::back_link("entries/view/{$event->id}");?>
@@ -242,9 +242,9 @@ $this->section('bottom'); ?>
 <div class="modal fade" id="mergeModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
 <?php
-$attr = ['class' => "modal-content"];
+$attrs = ['class' => "modal-content"];
 $hidden = ['merge' => '1', 'source'=>''];
-echo form_open($action, $attr, $hidden);
+echo form_open($action, $attrs, $hidden);
 ?>
 
 <div class="modal-header">

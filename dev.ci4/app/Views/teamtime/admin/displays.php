@@ -13,7 +13,7 @@ foreach($views as $key=>$view) {
 	if($key) $view_opts[$key] = $view['title'];
 }
 
-$attr = [
+$attrs = [
 	'id' => "editform"
 ];
 $hidden = [
@@ -21,7 +21,7 @@ $hidden = [
 	'displays' => '',
 	'views' => ''
 ];
-echo form_open(current_url(), $attr, $hidden);
+echo form_open('', $attrs, $hidden);
 ?>
 <section id="displays" class="mb-3">
 <h5>Displays</h5>

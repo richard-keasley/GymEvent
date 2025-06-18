@@ -1,9 +1,9 @@
 <?php $this->extend('default');
 
 $this->section('content');
-$attr = [];
+$attrs = [];
 $hidden = ['reset' => "1"];
-echo form_open(current_url(), $attr, $hidden);
+echo form_open('', $attrs, $hidden);
 ?>
 
 <div class="mb-3">

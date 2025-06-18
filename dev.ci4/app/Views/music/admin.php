@@ -177,12 +177,12 @@ $this->section('bottom'); ?>
 <div class="modal-dialog">
 <?php
 // same action as above
-$attr = [
+$attrs = [
 	'id' => "frmstate",
 	'class' => 'modal-content'
 ];
 $hidden = ['set_state' => "1"];
-echo form_open(current_url(true), $attr, $hidden);
+echo form_open('', $attrs, $hidden);
 ?>
 <div class="modal-header">
 <h5 class="modal-title" id="exampleModalLabel">Event music state</h5>

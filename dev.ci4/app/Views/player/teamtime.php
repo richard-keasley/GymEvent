@@ -96,10 +96,11 @@ if($action=='view') {
 	
 }
 $links[] = [
-	'label' => 'Receiver',
+	'label' => '<span class="bi bi-broadcast"></span>',
 	'attrs' => [
 		'title' => "Start player receiver",
-		'class' => "btn btn-outline-secondary"
+		'class' => "btn btn-outline-secondary",
+		'target' => "ssereceiver",
 	],
 	'href' => "control/player/receiver/{$event_id}"
 ];

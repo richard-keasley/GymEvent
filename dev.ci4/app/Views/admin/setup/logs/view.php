@@ -5,9 +5,9 @@ $this->section('content'); ?>
 <?php $this->endSection(); 
 
 $this->section('top');
-$attr = ['class' => 'toolbar sticky-top'];
+$attrs = ['class' => 'toolbar sticky-top'];
 $hidden = ['cmd' => 'delete', 'logkey' => $logkey];
-echo form_open('setup/logs', $attr, $hidden);
+echo form_open('setup/logs', $attrs, $hidden);
 echo implode(' ', $buttons);
 echo form_close();
 $this->endSection(); 

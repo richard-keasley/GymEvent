@@ -2,14 +2,14 @@
 use \App\Libraries\Teamtime as tt_lib;
 
 $this->section('content'); 
-$attr = [
+$attrs = [
 	'id' => "editform",
 	'style' => "max-width:45em;"
 ];
 $hidden = [
 	'save' => "1"
 ];
-echo form_open(current_url(), $attr, $hidden);
+echo form_open('', $attrs, $hidden);
 $evt_model = new \App\Models\Events;
 $events = $evt_model->orderBy('date')->findAll();
 $event_opts = [];

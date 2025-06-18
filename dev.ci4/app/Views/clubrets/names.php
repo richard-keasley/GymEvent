@@ -10,10 +10,10 @@ if($names) {
 $this->endSection();
 
 $this->section('top');
-$attr = [
+$attrs = [
 	'class' => "toolbar sticky-top"
 ];
-echo form_open(current_url(), $attr);
+echo form_open('', $attrs);
 echo \App\Libraries\View::back_link($back_link); 
 ?>
 <button type="submit" name="download" value="names" class="btn btn-secondary" title="Download this spreadsheet"><i class="bi-download"></i></button>

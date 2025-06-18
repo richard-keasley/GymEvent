@@ -18,13 +18,13 @@ foreach($kills as $kill) echo "<li><code>{$kill}</code></li>";
 ?></ul>
 <?php 
 */
-$attr = [
+$attrs = [
 	'class' =>"toolbar"
 ];
 $hidden = [
 	'cmd' => 'commit'
 ];
-echo form_open(current_url(), $attr, $hidden); ?>
+echo form_open('', $attrs, $hidden); ?>
 <button type="submit" name="cmd" value="commit" class="btn btn-danger" title="commit these changes"><i class="bi bi-trash"></i></button>
 <?php echo form_close();
 }

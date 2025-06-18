@@ -20,9 +20,9 @@ else { // new
 	$action = $clubret->url('add');
 	foreach(['name', 'address', 'phone', 'other'] as $key) $clubret->$key = '';
 }// discats for this view$discats = [];$dis_opts = [];foreach($event->discats as $discat) {	$key = $discat['name'];		$dis_opts[$key] = $discat['name'];		$cats = [];	foreach($discat['cats'] as $cat_key=>$cat_opts) {		foreach($cat_opts as $cat_name) {			$cats[$cat_key][$cat_name] = humanize($cat_name);		}	}			$discat['cats'] = $cats;		$discat['options'] = [];	foreach($discat['opts'] as $val) $discat['options'][$val] = humanize($val);		$discats[$key] = $discat;		# d($discat);}
-$attr = ['id' => "clubret"];
+$attrs = ['id' => "clubret"];
 $hidden = ['save' => "1"];
-echo form_open($action, $attr, $hidden);
+echo form_open($action, $attrs, $hidden);
 
 $tabs = new \App\Views\Htm\Tabs();
 

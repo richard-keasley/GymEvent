@@ -16,9 +16,9 @@ if($tbody) {
 $this->endSection();
 
 $this->section('top');
-$attr = ['class' => "toolbar sticky-top"];
+$attrs = ['class' => "toolbar sticky-top"];
 $hidden = [];
-echo form_open('', $attr, $hidden); 
+echo form_open('', $attrs, $hidden); 
 echo \App\Libraries\View::back_link("setup/scoreboard/data");
 ?>
 <div class="dropdown">

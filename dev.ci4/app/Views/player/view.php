@@ -94,16 +94,17 @@ if($action=='view') {
 	$links[] = [
 		'label' => '<i class="bi bi-gear-fill"></i>',
 		'attrs' => [
-			'title' => "Setup event",
+			'title' => "Setup player",
 			'class' => "btn btn-outline-secondary"
 		],
 		'href' => "control/player/edit/{$event->id}"
 	];
 	$links[] = [
-		'label' => 'Receiver',
+		'label' => '<span class="bi bi-broadcast"></span>',
 		'attrs' => [
 			'title' => "Start player receiver",
-			'class' => "btn btn-outline-secondary"
+			'class' => "btn btn-outline-secondary",
+			'target' => "ssereceiver",
 		],
 		'href' => "control/player/receiver/{$event->id}"
 	];

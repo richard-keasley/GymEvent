@@ -24,7 +24,6 @@ echo "<audio {$attrs}></audio>";
 
 $ui = $options['ui'] ? '' : 'd-none' ;
 
-
 ?>
 <div id="pt-ui" class="<?php echo $ui;?>">
 
@@ -36,8 +35,8 @@ $ui = $options['ui'] ? '' : 'd-none' ;
 </span>
 <?php } ?>
 <span id="pt-info"></span>
-<span id="pt-time-text"></span>
 <span id="pt-duration"></span>
+<span id="pt-time-text"></span>
 </div>
 
 <div id="pt-progress" class="position-relative">
@@ -72,40 +71,43 @@ btns: {
 	pause: document.querySelector('#playtrack #pt-pause'),
 },
 active_btn: 0,
+autoplay: true,
 
 init: function() {
-	if(playtrack.options.btns) {
-		playtrack.btns.play.classList.remove('d-none');
-		playtrack.btns.pause.classList.add('d-none');
+	if(this.options.btns) {
+		this.btns.play.classList.remove('d-none');
+		this.btns.pause.classList.add('d-none');
 	}
 	
-	playtrack.audio.currentTime = 0;
-	playtrack.duration.innerHTML = '';
-	
-	playtrack.time.text.innerHTML = '<i class="bi bi-music-note-beamed"></i>';
-	playtrack.time.progbar.style = 'width:0';
-	playtrack.buffer.style = 'width:0';
+	this.audio.currentTime = 0;
+	this.time.text.innerHTML = '<i class="bi bi-music-note-beamed"></i>';
+	this.time.progbar.style = 'width:0';
+	this.buffer.style = 'width:0';
 
-	if(playtrack.active_btn) {
-		playtrack.active_btn.className = playtrack.buttons.repeat;
+	if(this.active_btn) {
+		this.active_btn.className = this.buttons.repeat;
 	}
-	playtrack.active_btn = 0;
-	playtrack.message('ready&hellip;', 'light');
+	this.active_btn = 0;
+	
+	if(this.autoplay) {
+		this.duration.innerHTML = '';
+		this.message('ready&hellip;', 'light');
+	}
 },
 
 button: function(el) {	
-	if(playtrack.active_btn===el) {
+	if(this.active_btn===el) {
 		// fade current track
-		playtrack.pause(1000);
+		this.pause(1000);
 		return;
 	}
 	// stop current track
-	playtrack.pause();
+	this.pause();
 		
 	// set active button
-	playtrack.active_btn = el;
+	this.active_btn = el;
 	// play requested track
-	playtrack.load(el.dataset.url ?? '');
+	this.load(el.dataset.url ?? '');
 },
 
 load: function(track_url, autoplay=1) {
@@ -116,38 +118,39 @@ load: function(track_url, autoplay=1) {
 	html = html.replace(/^0+/, ''); // trim leading zeros
 	html = html.replace('.', ' (') + ')'; // place extension in bracket
 	html = html.replace('_', ' ');
-	playtrack.message(html, 'success');
+	this.message(html, 'success');
 	
 	// playtrack.init();
-	playtrack.audio.src = track_url;
-	if(autoplay) playtrack.play();
+	this.audio.src = track_url;
+	this.autoplay = autoplay;
+	if(autoplay) this.play();
 },
 
 play: function() {
-	if(playtrack.options.btns) {
-		playtrack.btns.play.classList.add('d-none');
-		playtrack.btns.pause.classList.remove('d-none');
+	if(this.options.btns) {
+		this.btns.play.classList.add('d-none');
+		this.btns.pause.classList.remove('d-none');
 	}
 	
-	playtrack.audio.volume = 1;
-	playtrack.audio.muted = false;
-	playtrack.audio.play().catch(error => {
-		playtrack.error(error.name);
+	this.audio.volume = 1;
+	this.audio.muted = false;
+	this.audio.play().catch(error => {
+		this.error(error.name);
 	});
 },
 
 pause: function(fade=0) {
 	$('#playtrack audio').animate({volume: 0}, fade, function() {
-		playtrack.audio.pause();
+		this.audio.pause();
 		$('#playtrack audio').animate({volume: 1}, 1);
-		playtrack.init();
-	});
+		this.init();
+	}.bind(this));
 },
 
 message: function(html, alert='danger') {
-	if(!playtrack.options.ui) return;
-	if(html!==null) playtrack.info.innerHTML = html;
-	playtrack.ui.className = 'p-1 m-0 alert alert-' + alert;
+	if(!this.options.ui) return;
+	if(html!==null) this.info.innerHTML = html;
+	this.ui.className = 'p-1 m-0 alert alert-' + alert;
 },
 
 displaytime: function(secs) {
@@ -159,20 +162,20 @@ displaytime: function(secs) {
 },
 
 timeupdate: function() {
-	if(playtrack.audio.paused) return;
+	if(this.audio.paused) return;
 	
-	var secs = playtrack.audio.currentTime;
-	var pc = secs / playtrack.audio.duration * 100;
-	playtrack.time.progbar.style = 'width:'+pc+'%';
-	playtrack.time.text.innerHTML = playtrack.displaytime(secs);	
+	var secs = this.audio.currentTime;
+	var pc = secs / this.audio.duration * 100;
+	this.time.progbar.style = 'width:'+pc+'%';
+	this.time.text.innerHTML = this.displaytime(secs);	
 		
-	secs = (playtrack.audio.buffered.length) ? 
-		 playtrack.audio.buffered.end(0) : 
+	secs = (this.audio.buffered.length) ? 
+		 this.audio.buffered.end(0) : 
 		 0 ;
-	pc = secs / playtrack.audio.duration * 100;
-	playtrack.buffer.style = 'width:'+pc+'%';
+	pc = secs / this.audio.duration * 100;
+	this.buffer.style = 'width:'+pc+'%';
 	
-	playtrack.buffer.className = (pc>99) ? 
+	this.buffer.className = (pc>99) ? 
 		'progress-bar progress-bar-striped bg-success' : 
 		'progress-bar progress-bar-striped bg-warning' ;
 },
@@ -192,9 +195,9 @@ error: function(error_name, notify=true) {
 		message: messages[error_name] ?? `unkown error (${error_name})`,
 	};
 	
-	playtrack.init();
+	this.init();
 	if(notify) {
-		playtrack.message(`<span title="${retval.name}">${retval.message}</span>`);
+		this.message(`<span title="${retval.name}">${retval.message}</span>`);
 	}
 	return retval;
 },

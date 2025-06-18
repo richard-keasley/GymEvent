@@ -12,6 +12,7 @@ public function __construct() {
 
 public function index() {
 	$this->data['title'] = 'links';
+	$this->data['heading'] = esc($this->data['links']['_heading'] ?? 'links');
 	return view('links/index', $this->data);
 }
 

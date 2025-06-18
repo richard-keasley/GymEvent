@@ -5,9 +5,11 @@
 <button id="sse-play" type="button" class="btn btn-sm btn-primary bi bi-play-fill px-3"></button>
 <button id="sse-pause" type="button" class="btn btn-sm btn-primary bi bi-stop-fill px-3 d-none" onclick="sse.send('pause')"></button>
 </div>
+
 <div class="col-auto">
-<?php echo new \App\Views\Htm\Timer('ssetimer'); ?>
+<div class="bg-dark text-light text-center fw-bold" style="min-width:4.7em; line-height:1.9em" id="ssetimer">0:00</div>
 </div>
+
 <div class="col-auto"><?php
 $attrs = [
 	'class' => "px-3 btn btn-outline-secondary btn-sm",
@@ -16,11 +18,14 @@ $attrs = [
 ]; 
 echo anchor("control/player/receiver/{$event_id}", '<span class="bi bi-broadcast"></span>', $attrs); 
 ?></div>
+
 </div>
 
 <p>ready...</p>
 </div>
+<?php echo new \App\Views\js\timer('ssetimer'); ?>
 <script>
+
 const sse = {
 	
 buttons: {
@@ -48,17 +53,20 @@ send: function(state, params={}) {
 	// update display
 	switch(state) {
 		case 'play':
-		this.timer.start();
+		var timer = setInterval(function() {
+			$('#ssetimer').text(ssetimer.format());
+		}, 1000);
+		ssetimer.start(0, timer);
+		
 		this.buttons.play.classList.add('d-none');
 		this.buttons.pause.classList.remove('d-none');
 		break;
 		
 		case 'pause':
-		this.timer.reset();
+		ssetimer.reset();
 		this.buttons.pause.classList.add('d-none');
 		this.buttons.play.classList.remove('d-none');
 		break;
-		
 	}
 },
 
@@ -82,7 +90,6 @@ message: function(message, state='error') {
 	$('#sender')[0].className = 'm-0 p-1 alert alert-' + alert;	
 },
 
-timer: new timer('ssetimer')
-
 }
+
 </script>

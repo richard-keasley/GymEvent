@@ -1,7 +1,8 @@
 <?php $this->extend('default');
 
-$this->section('content'); 
-echo form_open(current_url()); ?>
+$this->section('content');
+ 
+echo form_open(); ?>
 
 <div class="toolbar sticky-top">
 	<?php echo \App\Libraries\View::back_link("admin");?>
