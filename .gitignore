@@ -2,6 +2,7 @@
 dev.ci4/.env
 
 # codeigniter system
+ci4/*
 dev.ci4/system/*
 dev.ci4/writable/*
 dev.ci4/ci/*
