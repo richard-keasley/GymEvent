@@ -27,6 +27,13 @@ public static function not_found(string $message='Not found') {
 	return self::exception($message, 404);
 }
 
+public static function honeypot(string $message='Honeypot full') {
+	// remember this IP address;
+	(new \App\Models\Logins)->insert(['error' => $message]);
+	// ensure uninformative message for user
+	return self::exception("We're not feeling well!", 422);
+}
+
 public static function locked(string $message='Service unavailable') {
 	return self::exception($message, 423);
 }

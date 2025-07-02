@@ -1,7 +1,8 @@
 <?php
 helper('form');
+helper('html');
 
-if(empty($code)) $code = 500;
+$code = intval($code ?? 500);
 
 $title = match($code) {
 	401 => 'Unauthorised',
@@ -11,17 +12,17 @@ $title = match($code) {
 	500 => 'Server error',
 	default => 'Error'
 };
+$alert = match($code) {
+	401 => 'primary',
+	default => 'danger'
+};
+	
+// make it less scary to login
+if($code==401) $heading = 'Please log-in';
 	
 if(empty($message) || $message=='(null)') $message = "Sorry! We can't do that!";
-if($code==401) {
-	// make it less scary to login
-	$heading = 'Please log-in';
-	$message = [$message, 'primary'];
-}
-$messages = [$message];
+$messages = [[$message, $alert]];
+
+$breadcrumbs = [['', '<span class="bi-house-fill"></span>']];
 
 include(config('Paths')->viewDirectory . '/includes/_head.php'); 
-?>
-<ul class="breadcrumb">
-	<li class="breadcrumb-item active"><a href="<?php echo base_url();?>"><span class="bi-house-fill"> home</span></a></li>
-</ul>

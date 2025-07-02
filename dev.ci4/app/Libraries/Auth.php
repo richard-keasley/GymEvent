@@ -29,17 +29,6 @@ static function login_request($post=[]) {
 	// return unchecked user from POST
 	if(empty($post['login'])) return null;
 
-	if(isset($post['hp-info'])) {
-		$error = $post['hp-info'] ? 'Honey pot full' : false; 
-	}
-	else {
-		$error = 'No honey pot';
-	}
-	if($error) {
-		self::$lgn_model->insert(['error' => $error]);
-		return null;
-	}
-	
 	foreach(['name', 'password', 'password2'] as $key) {
 		$post[$key] = trim($post[$key] ?? '');
 	}

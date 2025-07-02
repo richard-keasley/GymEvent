@@ -159,6 +159,7 @@ function player($action='') {
 	if($action=='save') {
 		$this->data['showhelp'] = false;
 		$this->data['breadcrumbs'] = null;
+		$this->data['serviceworker'] = false;
 	}
 	else {
 		$action = 'view';

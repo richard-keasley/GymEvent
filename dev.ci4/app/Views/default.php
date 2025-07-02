@@ -1,12 +1,6 @@
 <?php 
 echo $this->include('includes/_head');
-
-echo $this->include('html/popup');
-
-$nav = new \App\Views\Htm\Breadcrumbs;
-echo $nav->htm($breadcrumbs);
 ?>
-
 <main class="clearfix"><?php 
 
 echo $this->renderSection('top');
@@ -33,5 +27,5 @@ echo $this->renderSection('bottom');
 <?php 
 
 echo $this->include('includes/_footer');
-echo $this->include('includes/js');
+echo $this->include('js/foot');
 echo $this->include('includes/_foot');

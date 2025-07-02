@@ -7,7 +7,8 @@ use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
 use CodeIgniter\Filters\DebugToolbar;
 use CodeIgniter\Filters\ForceHTTPS;
-use CodeIgniter\Filters\Honeypot;
+use App\Filters\Honeypot;
+# use CodeIgniter\Filters\Honeypot;
 use CodeIgniter\Filters\InvalidChars;
 use CodeIgniter\Filters\PageCache;
 use CodeIgniter\Filters\PerformanceMetrics;
@@ -34,7 +35,8 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
-		'auth'          => \App\Filters\Auth::class
+		'auth' 			=> \App\Filters\Auth::class,
+		'throttle' 		=> \App\Filters\Throttle::class,
     ];
 
     /**
@@ -54,11 +56,11 @@ class Filters extends BaseFilters
         'before' => [
             'forcehttps', // Force Global Secure Requests
             'pagecache',  // Web Page Caching
+			
         ],
         'after' => [
             'pagecache',   // Web Page Caching
             'performance', // Performance Metrics
-            // 'toolbar',     // Debug Toolbar
         ],
     ];
 
@@ -70,21 +72,23 @@ class Filters extends BaseFilters
      */
 	public array $globals = [
 		'before' => [
+			'honeypot',
 			'auth',
 			'csrf' => [
 				'except' => [
 					'/',
 				]
 			],
+			# 'throttle',
 		],
 		'after' => [
+			'honeypot',
 			'toolbar' => [
 				'except' => [
 					'api/*',
 					'teamtime/display/*',
 				]
 			],
-			// 'honeypot'
 		],
 	]; 
 	
@@ -101,7 +105,11 @@ class Filters extends BaseFilters
      *
      * @var array<string, list<string>>
      */
-    public array $methods = [];
+    public array $methods = [
+		'POST' => [
+			# 'throttle', // covered in filters\auth::before
+		]	
+	];
 
     /**
      * List of filter aliases that should run on any

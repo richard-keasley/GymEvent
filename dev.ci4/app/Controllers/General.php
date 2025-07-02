@@ -3,7 +3,6 @@
 class General extends \App\Controllers\BaseController {
 
 public function __construct() {
-	helper('html');
 	$this->data['back_link'] = 'general';
 	$this->data['breadcrumbs'][] = ['general', "General Gymnastics"];
 	$this->data['title'] = "General Gymnastics";
@@ -11,11 +10,6 @@ public function __construct() {
 	$this->data['filename'] = "fv_routines";
 	$this->data['head'] = '';
 	$this->data['rule_options'] = \App\Libraries\Rulesets::options('general');
-/*
-ToDo
-'<link rel="manifest" href="/app/mag/webmanifest.json">
-<meta name="apple-mobile-web-app-title" content="MAG routines">';
-*/
 }
 	
 public function index() {
@@ -65,12 +59,6 @@ public function videos() {
 	$this->data['heading'] = "F&amp;V videos";
 	$this->data['title'] = "Videos";
 	return view('general/videos', $this->data);
-}
-
-public function routineSW() {
-	// service worker
-	$this->response->setHeader('Content-Type', 'application/javascript');
-	return view('exeset/sw', $this->data);
 }
 
 public function routine($viewname='', $layout='') {

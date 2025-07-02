@@ -19,13 +19,23 @@ if(!empty($head)) echo $head;
 <body class="container-fluid">
 <header class="d-print-none">
 <?php 
+$idxsel = [];
 $attrs = [
 	'id' => "exeset-editlink",
 	'class' => "btn btn-primary bi bi-pencil-square",
 	'title' => "Edit these routines",
 	'href' => "", // set in JS after page load
 ];
-$idxsel = sprintf('<a %s></a>', stringify_attributes($attrs));
+$idxsel[] = sprintf('<a %s></a>', stringify_attributes($attrs));
+
+$attrs = [
+	'class' => "btn btn-primary bi bi-printer",
+	'title' => "Print these routines",
+	'onclick' => "window.print()",
+];
+$idxsel[] = sprintf('<a %s></a>', stringify_attributes($attrs));
+
+$idxsel = implode(' ', $idxsel);
 include __DIR__ . '/idxsel.php'; 
 ?>
 </header>

@@ -14,12 +14,12 @@ class Honeypot extends BaseConfig
     /**
      * Honeypot Label Content
      */
-    public string $label = 'Fill This Field';
+    public string $label = 'Required';
 
     /**
      * Honeypot Field Name
      */
-    public string $name = 'honeypot';
+    public string $name = 'hp_required';
 
     /**
      * Honeypot HTML Template

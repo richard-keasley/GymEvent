@@ -1,10 +1,16 @@
 <?php 
 use \App\Libraries\Auth;
+
 include __DIR__ . '/_head.php';
+
+// exceptions do not return
+// no honeypot filter will run after response
+// this hack ensures honeypot field can be displayed 
+$honeypot = \App\Filters\Honeypot::template();
+
 foreach(['name', 'email', 'password', 'password2', 'login'] as $key) {
 	$postval[$key] = trim(strval(filter_input(INPUT_POST, $key)));
 }
-$current_url = new \CodeIgniter\HTTP\URI(current_url());
 	
 // show reset after a failed attempt
 $show_reset = ($postval['name'] || $postval['password']) && Auth::check_path('reset');
@@ -13,18 +19,17 @@ $show_reset = ($postval['name'] || $postval['password']) && Auth::check_path('re
 $show_new = Auth::check_role(Auth::$min_role, Auth::def_role);
 if($show_new) {
 	// new users only for club returns
-	$segments = $current_url->getSegments();
+	$segments = service('request')->getURI()->getsegments();
 	$controller = $segments[0] ?? '' ;
 	$show_new = $controller=='clubrets';
 }
 
-
 $attrs = ['id' => "existing"];
 $hidden = [
 	'tabView' => '#existing',
-	'hp-info' => ''
+	'honeypot' => "w",
 ];
-echo form_open($current_url, $attrs, $hidden);
+echo form_open('', $attrs, $hidden);
 
 ?>
 <p>Your user name is your club name. 
@@ -51,6 +56,7 @@ Please <strong>create an account</strong> if you have not used this service befo
 </p>
 <?php 
 // #existing
+echo $honeypot;
 echo form_close();
 
 if($show_reset) { ?>
@@ -68,7 +74,6 @@ $attrs = [
 ];
 $hidden = [
 	'tabView' => '#create',
-	'hp-info' => ''
 ];
 echo form_open('', $attrs, $hidden);?>
 <p class="form-floating">
@@ -102,6 +107,7 @@ function tabShow(tabView) {
 </script>
 <?php 
 // #create
+echo $honeypot;
 echo form_close();
 }
 

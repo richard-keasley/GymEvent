@@ -28,6 +28,7 @@ protected $data = [
 	'body' => '',
 	'back_link' => '',
 	'showhelp' => true,
+	'serviceworker' => true,
 	'breadcrumbs' => [['', '<span class="bi-house-fill"></span>']]
 ];
 
@@ -38,7 +39,7 @@ protected $data = [
  *
  * @var array
  */
-protected $helpers = ['inflector', 'json', 'form'];
+protected $helpers = ['inflector', 'json', 'form', 'html'];
 
 /**
  * Constructor.
@@ -77,7 +78,6 @@ public function initController(RequestInterface $request, ResponseInterface $res
 	
 	// discourage search engines
 	$this->response->setHeader('X-Robots-Tag', ['noindex', 'nofollow']);
-	# d($this->response->getHeaders());
 }
 
 protected function download($data, $layout='table', $filetitle='download', $filetype='') {

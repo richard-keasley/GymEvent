@@ -14,11 +14,11 @@
  * @link: https://codeigniter4.github.io/CodeIgniter4/
  */
 
-function getlink($path, $label='') {
+function getlink($path, $label='', $attrs=[]) {
 	$path = trim($path, '/');
 	if(!\App\Libraries\Auth::check_path($path)) return '';
 	
-	$attrs = ['class' => 'nav-link'];
+	$attrs['class'] = 'nav-link';
 		
 	if(!$label) $label = basename($path);
 		

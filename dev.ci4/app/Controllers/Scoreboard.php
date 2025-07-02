@@ -28,6 +28,7 @@ public function follow($layout='') {
 	$this->data['breadcrumbs'][] = 'scoreboard/follow';
 	$this->data['title'] = 'Follow scores';
 	$this->data['heading'] = '<span class="display-1">Follow scores</span>';
+	$this->data['link'] = 'x/follow';
 	return view("scoreboard/{$view}", $this->data);
 }
 
@@ -39,6 +40,7 @@ public function info($layout='') {
 	$this->data['breadcrumbs'][] = 'scoreboard/info';
 	$this->data['title'] = 'Event info';
 	$this->data['heading'] = '<span class="display-1">Event information</span>';
+	$this->data['link'] = 'x/info';
 	return view("scoreboard/{$view}", $this->data);
 }
 

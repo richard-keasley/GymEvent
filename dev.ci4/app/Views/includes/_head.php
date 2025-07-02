@@ -7,31 +7,43 @@
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#600">
 <?php
-helper('html'); 
-$links = [
+$icons = [192, 48, 32, 16];
+foreach($icons as $icon) {
+	$size = "{$icon}x{$icon}";
+	$link_tag = [
+		'rel' => "icon",
+		'sizes' => $size, // optional and stripped out by CI
+		'href' => "app/icons/favicon-{$size}.png",
+		'type' => "image/png",
+	];
+	echo link_tag($link_tag); 
+}
+
+$manifest = (ENVIRONMENT=='development') ? 'manifest-dev' : 'manifest';
+
+$link_tags = [
+[
+	'rel' => "apple-touch-icon",
+	'type' => "image/png",
+	'href' => "app/icons/favicon-180x180.png"
+],
 [
 	'rel' => "shortcut icon",
 	'type' => "image/ico",
 	'href' => "app/icons/favicon.ico"
 ],
+
 [
-	'rel' => "apple-touch-icon",
-	'type' => "image/png",
-	'href' => "app/icons/apple-touch-icon.png"
+	'rel' => "manifest",
+	'href' => "app/{$manifest}.json",
+	'type' => "application/manifest+json",
 ],
-[
-	'rel' => "icon",
-	'type' => "image/png",
-	'href' => "app/icons/favicon-32x32.png"
-],
-[
-	'rel' => "icon",
-	'type' => "image/png",
-	'href' => "app/icons/favicon-16x16.png"
-],
-	'app/gymevent.css'
+
+'app/gymevent.css'
+
 ];
-foreach($links as $link) echo link_tag($link) . "\n"; 
+
+foreach($link_tags as $link_tag) echo link_tag($link_tag) . "\n";
 
 echo \App\ThirdParty\jquery::script();
 
@@ -40,35 +52,26 @@ echo \App\ThirdParty\jquery::script();
 $minifier = new MatthiasMullie\Minify\CSS(config('Paths')->viewDirectory . '/custom.css');
 echo $minifier->minify();
 ?></style> 
-<title><?php echo $title;?></title>
-<?php if(!empty($head)) echo $head;?>
+<title><?php echo $title; ?></title>
+<?php if(!empty($head)) echo $head; ?>
 </head>
 
 <body class="container">
 
 <header>
+<?php 
+if($showhelp ?? false) {
+	// look for help entry
+	$html = (new \App\Models\Htmls)->find_path();
+	if($html) {
+		$this->setVar('html', $html);
+		echo $this->include('html/popup');
+	}
+}
+?>
 <h1><?php echo empty($heading) ? $title : $heading;?></h1>
 <?php
-$session = \Config\Services::session();
-$flashdata = $session->getFlashdata('messages');
-if($flashdata) {
-	$messages = array_merge($messages, $flashdata);
-	$session->setFlashdata('messages', null);
-}
-$flashdata = $session->getFlashdata('error');
-if($flashdata) $messages[] = [$flashdata, 'danger'];
-
-if(!empty($messages)) { ?>
-<div class="messages"><?php 
-foreach($messages as $row) {
-	if(is_array($row)) {
-		$text = $row[0]; $class = $row[1];
-	}
-	else {
-		$text = $row; $class = 'danger';
-	}
-	printf('<div class="alert alert-%s alert-dismissible show fade" role="alert">%s<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>', $class, $text);
-}
-?></div>
-<?php } ?>
+include(__DIR__ . '/breadcrumbs.php');
+include(__DIR__ . '/messages.php');
+?>
 </header>

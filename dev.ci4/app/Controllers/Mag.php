@@ -3,7 +3,6 @@
 class Mag extends \App\Controllers\BaseController {
 
 public function __construct() {
-	helper('html');
 	$this->data['back_link'] = 'mag';
 	$this->data['breadcrumbs'][] = ['mag', "Men's Artistic"];
 	$this->data['title'] = "Men's Artistic";
@@ -11,12 +10,6 @@ public function __construct() {
 	$this->data['filename'] = "mag_routines";
 	$this->data['rule_options'] = \App\Libraries\Rulesets::options('mag');
 	$this->data['head'] = '';
-
-/*
-ToDo
-'<link rel="manifest" href="/app/mag/webmanifest.json">
-<meta name="apple-mobile-web-app-title" content="MAG routines">';
-*/
 }
 	
 public function index() {
@@ -34,12 +27,6 @@ public function rules($rulesetname = null) {
 	$this->data['title'] = $this->data['ruleset']->title;
 	$this->data['heading'] = $this->data['ruleset']->title;
 	return view('rulesets/view', $this->data);
-}
-
-public function routineSW() {
-	// service worker
-	$this->response->setHeader('Content-Type', 'application/javascript');
-	return view('exeset/sw', $this->data);
 }
 
 public function routine($viewname='', $layout='') {

@@ -20,8 +20,7 @@ if($logo_src) { ?>
 <?php } ?>
 
 <p>Discover more about General Gymnastics in the South-east region.</p>
-<p>Please tell Kim (Brighton) or Dave (Pegasus) if you see a problem on these pages.</p>
-
+<p>Please tell Kim (Brighton) if you see a problem on these pages.</p>
 
 <?php 
 if(count($files)) {

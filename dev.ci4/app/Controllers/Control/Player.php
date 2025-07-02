@@ -33,6 +33,7 @@ public function view($event_id=0, $action='view') {
 		case 'save':
 		$this->data['breadcrumbs'] = null;
 		$this->data['showhelp'] = false;
+		$this->data['serviceworker'] = false;
 		break;
 		
 		default:
@@ -62,6 +63,7 @@ public function receiver($event_id=0, $action='view') {
 		case 'save':
 		$this->data['breadcrumbs'] = null;
 		$this->data['music_path'] = "music/";
+		$this->data['serviceworker'] = false;
 		break;
 		
 		default:

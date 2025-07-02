@@ -12,12 +12,19 @@ $nav = [
 	'events',
 	'admin',
 	'general',
-	'mag',
+	['mag', 'MAG'],
 	'teamtime',
 	'scoreboard',
 	['user', 'Your info']
 ];
+$admin = \App\Libraries\Auth::check_path('admin');
+if($admin) $nav[] = 'links';
+
 $navbar = new \App\Views\Htm\Navbar($nav);
 echo $navbar->htm();
+
+if(session('pwa')==='standalone') {
+	echo $this->include('includes/login');
+}
 
 $this->endSection(); 

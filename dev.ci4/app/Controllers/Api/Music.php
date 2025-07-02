@@ -80,17 +80,6 @@ public function sse() {
 	}
 
 	return $this->respond($response);
-	
-	
-	
-	
-	
-	
-	$response = [
-		'status' => $url ? 'ok' : 'error',
-		'message' => $url ? $url : "No music found for {$entry_num} {$exe}"
-	];
-	return $this->respond($response);
 }
 
 public function usertracks($user_id=0, $ent_id=0) {

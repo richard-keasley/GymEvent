@@ -9,8 +9,11 @@ echo implode('<br>', $lines);
 ?></strong></div>
 
 <div class="col-6 col-sm-4"><?php
- echo $exeset->club;
-?></div> 
+echo $exeset->club;
+?><br><?php
+echo $exeset->event;
+?>
+</div> 
 
 <div class="text-end fst-italic text-muted d-none d-sm-block col-sm-4"><?php
 $lines = []; $format = 'd MMM yyyy';

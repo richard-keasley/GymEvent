@@ -41,7 +41,7 @@ echo form_open_multipart('', $attrs, $hidden);
 	<?php echo form_dropdown('exe', $exe_opts, $empty, 'class="form-control"');?>
 </div></div>
 <div class="col-auto">
-	<input class="form-control" type="file" name="file">
+	<input class="form-control" type="file" name="file" accept="audio/*">
 </div>
 <div class="col-auto">
 	<button class="btn btn-primary" type="submit" id="btnupload">upload</button>

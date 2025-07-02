@@ -1,5 +1,4 @@
 <?php $this->extend('default');
-helper('html');
 
 $this->section('content'); ?>
 <h4>Outstanding updates to live version</h4>

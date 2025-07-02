@@ -1,7 +1,4 @@
 <?php $this->extend('default');
-helper('html');
-
-$link = 'x/follow';
 
 $qr = [
     'src'   => 'app/scoreboard/qr-follow.png',

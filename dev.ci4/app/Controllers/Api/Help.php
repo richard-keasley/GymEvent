@@ -13,12 +13,28 @@ public function index() {
 public function view($id=0) {
 	$htmls = new \App\Models\Htmls;
 	$html = $htmls->find($id);
-	if(!$html) return $this->error("Can't find help for {$id}");;
-	return $this->respond($html->value);
-}
-
-public function error($msg='error') {
-	return sprintf('<p class="alert alert-danger">%s!</p>', $msg);
+	if(!$html) {
+		$message = "Can't find help for {$id}";
+		return $this->failNotFound($message);
+	}
+	
+	$allowed = \App\Libraries\Auth::check_path($html->path);
+	if($allowed) {
+		$response = [
+			'heading' => $html->heading,
+			'body' => $html->value,
+		];	
+		return $this->respond($response);
+	}
+	
+	if(session('user_id')) {
+		$message = "You do not have permission to view this";
+		return $this->failForbidden($message);
+	}
+	else {
+		$message = "You need to be logged in to view this";
+		return $this->failUnauthorized($message);
+	}	
 }
 
 }

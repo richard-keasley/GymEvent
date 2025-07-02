@@ -1,13 +1,19 @@
 <?php $this->extend('default');
 
 $buttons = [
+	'exit' => [
+		'class' => "btn btn-outline-secondary bi bi-box-arrow-left",
+		'title' => "Exit routine builder",
+		'type' => "button",
+		'href' => base_url("general"),	
+	],
 	'update' => [
 		'class' => "btn btn-primary bi bi-check-square",
 		'title' => "Re-check all start values after edits",
 		'type' => "button",
 		'onclick' => "exesets.update()",
 	],
-	'print' => [
+	'portrait' => [
 		'class' => "btn btn-primary bi bi-tablet",
 		'title' => "Printer friendly version of these routines",
 		'type' => "button",
@@ -76,7 +82,7 @@ $attrs = ['id'=>"editform"];
 echo form_open('', $attrs);
 
 $arr = [
-	$buttons['print']['button'],
+	$buttons['portrait']['button'],
 	$buttons['judge']['button']
 ];
 $idxsel = implode(' ', $arr);
@@ -148,7 +154,7 @@ function rulsetname_change(el) {
 <section id="edit-template"></section>
 
 <div class="toolbar"><?php
-$keys = ['update', 'clone', 'data', 'delete', 'help'];
+$keys = ['exit', 'update', 'clone', 'data', 'delete', 'help'];
 foreach($keys as $key) echo $buttons[$key]['button'];
 ?></div>
 
@@ -177,7 +183,7 @@ foreach($rule_options as $key=>$label) {
 
 <div class="modal-body">
 <?php 
-$keys = ['print', 'judge', 'update', 'clone', 'delete', 'data'];
+$keys = ['portrait', 'judge', 'update', 'clone', 'delete', 'data'];
 $tbody = [];
 foreach($keys as $key) {
 	$tbody[] = $buttons[$key];
@@ -299,7 +305,7 @@ echo form_open_multipart('', $attrs, $hidden);
 Uploading new a data file replaces the routines currently in the app.</p>
 <fieldset class="mb-3 row">
 	<div class="col-auto">
-	<input class="form-control" type="file" name="upload">
+	<input class="form-control" type="file" name="upload" accept="application/json">
 	</div>
 	
 	<div class="col-auto">

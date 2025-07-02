@@ -14,15 +14,13 @@ https://codeigniter4.github.io/userguide/incoming/filters.html
 public function before(RequestInterface $request, $arguments = null) {
 	\App\Libraries\Auth::init();
 	
-	$segments = $request->getUri()->getSegments();
-	$request_path = implode('/', $segments);
-	# $request_path = $request->getUri()->getPath();
+	$request_path = $request->getUri()->getPath();
 
 	$messages = [];
 	
-	$check_ip = \App\Libraries\Auth::$lgn_model->check_ip($request->getIPAddress());
-	if(!$check_ip) {
-		self::die_nice($request_path, 'Oops! Overuse injury', 423);
+	$allowed = \App\Libraries\Auth::$lgn_model->check_ip($request->getIPAddress());
+	if(!$allowed) {
+		throw new \App\Exceptions\Request('Oops! Overuse injury', 423);
 	}
 	
 	// check for existing login / logout
@@ -96,40 +94,11 @@ public function before(RequestInterface $request, $arguments = null) {
 			$code = 401;
 		}
 	}
-	self::die_nice($request_path, $message, $code);
+	throw new \App\Exceptions\Request($message, $code);
 }
 
 public function after(RequestInterface $request, ResponseInterface $response, $arguments = null) {
-        // Do something here
-}
-
-static function die_nice($request_path, $message='Application error', $code=500) {
-	$content_type = strpos($request_path, 'api/')===0 ? 'json' : 'html' ;
-	$app = config('App');
-
-	$data = [
-		'message' => $message,
-		'code' => $code
-	];
-	
-	$response = new \CodeIgniter\HTTP\Response($app);
-	$response->setStatusCode($code, $message);
-	
-	switch($content_type) {
-		case 'json' : 
-		$response->setJSON($data); 
-		break;
-		
-		case 'xml' : 
-		$response->setXML($data); 
-		break;
-		
-		case 'html' :
-		default:
-		throw \App\Exceptions\Exception::exception($message, $code);
-	}
-	$response->send();
-	die;	
+	// nothing to do
 }
 
 }
