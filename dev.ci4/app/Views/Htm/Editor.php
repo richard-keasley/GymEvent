@@ -26,7 +26,7 @@ public function __construct($attrs=[], $params=[]) {
 	foreach($attrs as $key=>$val) $this->attrs[$key] = $val;
 	
 	$this->params['document_base_url'] = base_url();
-	$this->params['content_css'] = site_url('/app/gymevent.css');
+	$this->params['content_css'] = site_url('/app/gymevent.css?v=1');
 	foreach($params as $key=>$val) $this->params[$key] = $val;
 }
 
