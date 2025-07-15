@@ -41,6 +41,8 @@ public function setStaff($arr) {
 	
 private $_event = null;
 public function event() {
+		d(debug_backtrace());
+
 	if(!$this->_event) {
 		$model = new \App\Models\Events();
 		$this->_event = $model->withDeleted()->find($this->event_id);
@@ -48,18 +50,26 @@ public function event() {
 	return $this->_event;
 }
 
-private $_user = null;
-public function user() {
-	if(!$this->_user && $this->user_id) {
-		$model = new \App\Models\Users();
-		$this->_user = $model->withDeleted()->find($this->user_id);
+private $attrs = [];
+public function getUser() {
+	$key = 'user';
+	if(!isset($this->attrs[$key])) {
+		$this->attrs[$key] = model('Users')->withDeleted()->find($this->user_id);
 	}
-	return $this->_user;
+	return $this->attrs[$key];
+}
+
+public function getEvent() {
+	$key = 'event';
+	if(!isset($this->attrs[$key])) {
+		$this->attrs[$key] = model('Events')->withDeleted()->find($this->event_id);
+	}
+	return $this->attrs[$key];
 }
 
 function breadcrumb($method='view', $controller='') {
 	if($method=='view') {
-		$user = $this->user();
+		$user = $this->user;
 		$label = $user ? $user->name : '[not found]';
 	}
 	else $label = $method;
@@ -131,8 +141,6 @@ public function setParticipants($arr) {
 }
 
 public function check() {
-	$event = $this->event();
-	
 	$this->errors = [];
 	$errors = [];
 	if($this->participants) { 
@@ -152,13 +160,13 @@ public function check() {
 		$errors[] = "No participants entered in this return";
 	}
 	
-	if($event->terms && !$this->terms) {
+	if($this->event->terms && !$this->terms) {
 		$errors[] = "Clubs entries will only be accepted after they agree to the terms of this event";
 	}
 	
 	if($errors) $this->errors['participants'] = $errors;
 	
-	if(!empty($event->staffcats[0])) {
+	if(!empty($this->event->staffcats[0])) {
 		$errors = [];
 		if($this->staff) {
 			foreach($this->staff as $rowkey=>$row) {
@@ -194,15 +202,13 @@ static function discat_sort($discats, $dis, $cat) {
 }
 
 public function fees($op=1) {
-	$event = $this->event();
-	
 	$fees = []; $evt_fees = []; 
 	foreach($this->participants as $participant) {
 		$dis = $participant['dis'];
 		if(empty($evt_fees[$dis])) {
 			$evt_fees[$dis] = [
-				'gymnast' => $event->discat_inf($dis, 'fg'),
-				'entry' => $event->discat_inf($dis, 'fe')
+				'gymnast' => $this->event->discat_inf($dis, 'fg'),
+				'entry' => $this->event->discat_inf($dis, 'fe')
 			];
 		}
 		$count = count($participant['names']);
@@ -211,8 +217,8 @@ public function fees($op=1) {
 		$fees[$dis][1] += $fee;
 	}
 	
-	if($event->stafffee && !$this->stafffee) {
-		$fees['_stafffee'] = ['Staff', $event->stafffee];
+	if($this->event->stafffee && !$this->stafffee) {
+		$fees['_stafffee'] = ['Staff', $this->event->stafffee];
 	}
 		
 	if($op=='fees') return $fees;
@@ -227,8 +233,8 @@ public function fees($op=1) {
 		$vartable->footer = [\App\Views\Htm\Table::money($total), 'Total'];
 		$retval = $vartable->htm();
 		
-		if($event->stafffee && !$this->stafffee) {
-			$retval .= sprintf('<p class="text-bg-light fw-bold">&pound;%1.2f has been added to you entry fee to cover staff costs for this event', $event->stafffee);
+		if($this->event->stafffee && !$this->stafffee) {
+			$retval .= sprintf('<p class="text-bg-light fw-bold">%s has been added to your entry fee to cover staff costs for this event', number_to_currency($this->event->stafffee));
 		}
 		
 		return $retval;

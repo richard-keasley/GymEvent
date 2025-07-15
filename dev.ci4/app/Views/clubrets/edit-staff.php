@@ -66,6 +66,6 @@ $input = [
 if($clubret->stafffee) $input['checked'] = "checked";
 echo form_input($input);
 ?>
-<label class="form-check-label" for="chkstafffee">This club will meet all staff requirements for this event (&pound;<?php echo $event->stafffee;?> will be added to your entry fee as "staff" if not).</label>
+<label class="form-check-label" for="chkstafffee">This club will meet all staff requirements for this event (<?php echo number_to_currency($event->stafffee); ?> will be added to your entry fee as "staff" if not).</label>
 </p>
 <?php } 

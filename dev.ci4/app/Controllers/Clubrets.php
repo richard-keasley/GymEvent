@@ -32,7 +32,7 @@ private function lookup($event_id, $user_id=null) {
 		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
-	$this->data['user'] = $this->data['clubret']->user();
+	$this->data['user'] = $this->data['clubret']->user;
 	$this->data['heading'] = sprintf('Return for %s / %s', $this->data['user']->name, $this->data['event']->title);
 	$this->data['title'] = $this->data['event']->title;
 }
@@ -53,10 +53,9 @@ public function index() {
 	$this->data['clubrets'] = [];
 	$clubrets = $this->model->where('user_id', $user_id)->findAll();
 	foreach($clubrets as $clubret) {
-		$event = $clubret->event();
-		if(!$event) continue;
-		if($event->deleted_at) continue;
-		if($event->private) continue;
+		if(!$clubret->event) continue;
+		if($clubret->event->deleted_at) continue;
+		if($clubret->event->private) continue;
 		$this->data['clubrets'][] = $clubret;
 	}
 	

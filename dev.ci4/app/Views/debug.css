@@ -1,0 +1,14 @@
+#toolbarContainer {
+	font-size: initial;
+	cursor: initial;
+}
+
+#toolbarContainer #debug-bar .toolbar {
+	margin: initial;
+	gap: initial;
+	background: initial;
+}
+
+#toolbarContainer img {
+	max-width: none;
+}

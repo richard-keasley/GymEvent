@@ -27,6 +27,7 @@ class Format extends BaseConfig
         'application/json',
         'application/xml', // machine-readable XML
         'text/xml', // human-readable XML
+		'text/csv', // spreadsheet
     ];
 
     /**
@@ -41,9 +42,10 @@ class Format extends BaseConfig
      * @var array<string, string>
      */
     public array $formatters = [
-        'application/json' => JSONFormatter::class,
-        'application/xml'  => XMLFormatter::class,
-        'text/xml'         => XMLFormatter::class,
+        'application/json'	=> JSONFormatter::class,
+        'application/xml'	=> XMLFormatter::class,
+        'text/xml'			=> XMLFormatter::class,
+		'text/csv'			=> \App\Format\CSVformatter::class,
     ];
 
     /**
@@ -60,5 +62,6 @@ class Format extends BaseConfig
         'application/json' => JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
         'application/xml'  => 0,
         'text/xml'         => 0,
+        'text/csv'         => [],
     ];
 }

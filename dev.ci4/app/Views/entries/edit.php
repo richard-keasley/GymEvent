@@ -22,7 +22,7 @@ foreach($entries as $dis) {
 # d($entries);
 ?>
 
-<form name="selector" method="GET">
+<getform name="selector">
 <p>Select the discipline and category; press 'GET'. Edit entry names, numbers, DoBs and add new entries.</p>
 <div class="row">
 <div class="col-auto"><?php 
@@ -64,7 +64,7 @@ function update_selector(dis_id) {
 	});
 }
 </script>
-</form>
+</getform>
 
 <?php 
 $attrs = [];

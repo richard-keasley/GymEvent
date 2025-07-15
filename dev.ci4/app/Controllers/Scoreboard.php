@@ -8,7 +8,7 @@ public function __construct() {
 
 public function index() {
 	$path = '~scoreboard';
-	$html = (new \App\Models\Htmls)->find_path($path);
+	$html = model('Htmls')->find_path($path);
 	if(!$html) {
 		$message = "Can't find '{$path}'";
 		throw \App\Exceptions\Exception::not_found($message);

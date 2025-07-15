@@ -29,6 +29,55 @@ public function track_url($event_id=0, $entry_num=0, $exe='') {
 	return $this->respond($response);
 }
 
+// send SSE from track_url, state
+public function ssetrack() {
+	if(!\App\Libraries\Auth::check_role('controller')) {
+		return $this->failUnauthorized('Permission denied');
+	}
+	
+	$state = $this->request->getPost('state');
+	if($state=='play') {
+		$filename = $this->request->getPost('url');
+		if(!$filename) return $this->failNotFound('Track not found');
+		
+		$filename = parse_url($filename, PHP_URL_PATH);
+		if(!$filename) return $this->failNotFound('path not found');
+		
+		$filename = pathinfo($filename, PATHINFO_BASENAME);
+		if(!$filename) return $this->failNotFound('filename not found');
+	}
+	else {
+		$state = 'pause';
+		$filename = '';
+	}
+			
+	$stream = new \App\Libraries\Sse\Stream('music');
+	$event = $stream->channel->read();
+	
+	$id = $event->id ?? 0 ;
+	$id++;
+	
+	$ssedata = [
+		'id' => $id,
+		'event' => $state,
+		'data' => $state=='play' ? $filename : '',
+	];
+	$event = new \App\Libraries\Sse\Event($ssedata);
+	$success = $stream->channel->write($event);
+	if($success) {
+		$event = $stream->channel->read();
+		$response = $event->__toArray();
+	} 
+	else {
+		$response = [
+			'event'=>'error', 
+			'data'=>'API error'
+		];
+	}
+	return $this->respond($response);
+}
+
+// send SSE from state, event_id, entry_num, exe
 public function sse() {
 	if(!\App\Libraries\Auth::check_role('controller')) {
 		return $this->failUnauthorized('Permission denied');
@@ -39,19 +88,18 @@ public function sse() {
 	
 	$id = $event->id ?? 0 ;
 	$id++;
-	if($id > 999) $id = 1;
 		
-	$arr = [
+	$ssedata = [
 		'id' => $id,
 		'event' => $this->request->getPost('state'),
 		'data' => '',
 	];
 	$response = [
-		'state' => $arr['event'],
+		'state' => $ssedata['event'],
 		'label' => ''
 	];
 	
-	if($arr['event']=='play') {
+	if($ssedata['event']=='play') {
 		// find track for this entry
 		$track = new \App\Libraries\Track;
 		$track->event_id = $this->request->getPost('event');
@@ -59,8 +107,8 @@ public function sse() {
 		$track->exe = $this->request->getPost('exe');	
 		$file = $track->file();
 		if($file) {
-			$arr['data'] = $file->getFilename();
-			$response['label'] = $arr['data'];
+			$ssedata['data'] = $file->getFilename();
+			$response['label'] = $ssedata['data'];
 		}
 		else {
 			$label = explode('_', $track->filebase());
@@ -69,16 +117,16 @@ public function sse() {
 				'state' => 'error', 
 				'label' => sprintf('%s - not found', implode(' ', $label))
 			];
-			$arr['event'] = 'pause';
-			$arr['data'] = $response['label'];
+			$ssedata['event'] = 'pause';
+			$ssedata['data'] = $response['label'];
 		}
 	}
-	$event = new \App\Libraries\Sse\Event($arr);
+	$event = new \App\Libraries\Sse\Event($ssedata);
 	$success = $stream->channel->write($event);
 	if(!$success) {
 		$response = ['state'=>'error', 'label'=>'API error'];
 	}
-
+	
 	return $this->respond($response);
 }
 

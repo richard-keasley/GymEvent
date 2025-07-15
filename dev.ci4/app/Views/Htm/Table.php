@@ -1,5 +1,12 @@
 <?php namespace App\Views\Htm;
 
+/*
+$table = \App\Views\Htm\Table::load();
+$table->setHeading(array_keys($tbody[0]));
+echo $table->generate($tbody);
+*/
+
+
 class Table {
 const templates = [
 'default' => [
@@ -33,8 +40,9 @@ static function load($tkey = 'default') {
 static function money($value) {
 	// returns a table cell formatted as money
 	return [
-		'data' => '&pound;&nbsp;' . number_format($value, 2),
-		'class' => "text-end"
+		'class' => "text-end",
+		'data' => number_to_currency($value, 'GBP', null, 2),
+
 	];
 }
 

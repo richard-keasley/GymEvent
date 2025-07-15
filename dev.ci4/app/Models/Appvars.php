@@ -21,4 +21,3 @@ public function save_var($appvar) {
 }
 
 }
-

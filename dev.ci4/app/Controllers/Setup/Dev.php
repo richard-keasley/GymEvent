@@ -14,7 +14,7 @@ public function index() {
 	return view('admin/setup/dev', $this->data);
 }
 
-public function test($test_name='index') {
+public function test($test_name='index', $param='') {
 	$this->data['breadcrumbs'][] = ['setup/dev/test', 'Test'];
 	
 	$test_path = 'admin/setup/test';
@@ -34,11 +34,39 @@ public function test($test_name='index') {
 	}
 	
 	$this->data['postvars'] = $this->request->getPost();
+	
+	if($test_name=='download') {
+		$this->data['filename'] = $this->request->getGet('filename') ?? '' ;
+		$this->data['layout'] = $this->request->getGet('layout') ?? '' ;
+		$data = [
+			[ 'dis' => 'MAG', 'cat' => 'snr', 'name' => 'John Doe', 'dob' => "12-May-2020" ],
+			[ 'dis' => 'MAG', 'cat' => 'snr', 'name' => 'Fred "Jones"', 'dob' => "12-May-2020" ],
+			[ 'dis' => 'MAG', 'cat' => 'jnr', 'name' => "Zoë O`hanlon", 'dob' => "12-May-2019" ],
+			[ 'dis' => 'MAG', 'cat' => 'jnr', 'name' => "Chloë O'Donnel", 'dob' => "12-May-2019" ],
+			[ 'dis' => 'WAG', 'cat' => 'snr', 'name' => "18° and more", 'dob' => "12-May-2010" ],
+			[ 'dis' => 'WAG', 'cat' => 'snr', 'name' => "=[0,-1]", 'dob' => "12-May-2014" ],
+			[ 'dis' => 'WAG', 'cat' => 'jnr', 'name' => "Fred&#8209;rick", 'dob' => "12-May-2000" ],
+		];
+		
+		if($this->data['filename']) {
+			switch($this->data['layout']) {
+				case 'cattable':
+				$cattable = new \App\Views\Htm\Cattable($data, ['dis', 'cat']);
+				$cattable->table_header = 1;
+				$data = $cattable;
+				break;
+			};
+			return $this->download($this->data['filename'], $data);
+		}
+		$this->data['data'] = $data;
+	}
+	
+	$this->data['param'] = $param;	
 	$this->data['heading'] = $this->data['title'];	
 	return view("{$test_path}/{$test_name}", $this->data);
 }
 
-public function woops() {
+public function whoops() {
 	return view('errors/html/production');
 }
 

@@ -1,7 +1,7 @@
 <?php $this->extend('default');
 
 $this->section('content');
-#d($source);
+# d($layout, $source);
 if($layout && $source) {
 	?>
 	<p class="alert alert-light p-1"><?php
@@ -18,7 +18,7 @@ if($layout && $source) {
 $this->endSection(); 
 
 $this->section('top'); ?>
-<form method="GET" id="selector" class="toolbar sticky-top"><?php 
+<getform id="selector" class="toolbar sticky-top"><?php 
 echo \App\Libraries\View::back_link("entries/view/{$event->id}");
 
 $input = [
@@ -37,6 +37,5 @@ foreach($filetypes as $filetype=>$icon) {
 }
 
 ?>
-
-</form>
+</getform>
 <?php $this->endSection(); 

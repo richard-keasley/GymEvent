@@ -9,7 +9,7 @@ public function __construct() {
 }
 	
 public function index() {
-	$htmls = new \App\Models\Htmls;
+	$htmls = model('Htmls');
 
 	$new_path = $this->request->getPost('path');
 	if($new_path) {
@@ -29,8 +29,7 @@ public function index() {
 }
 
 public function view($html_id=0) {
-	$htmls = new \App\Models\Htmls;
-	$this->data['html'] = $htmls->find($html_id);
+	$this->data['html'] = model('Htmls')->find($html_id);
 	if(!$this->data['html']) {
 		$message = "Can't find HTML entry {$html_id}";
 		throw \App\Exceptions\Exception::not_found($message);
@@ -40,7 +39,7 @@ public function view($html_id=0) {
 }
 
 public function edit($html_id=0) {
-	$htmls = new \App\Models\Htmls;
+	$htmls = model('Htmls');
 	$this->data['html'] = $htmls->find($html_id);
 	if(!$this->data['html']) {
 		$message = "Can't find HTML entry {$html_id}";

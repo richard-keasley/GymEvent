@@ -1,32 +1,49 @@
 <?php namespace App\Views\Htm;
 
 /*
-$cattable = new \App\Views\Htm\Cattable($headings);
-$cattable->data = $tbody;
-echo $cattable->htm();
+$cattable = new \App\Views\Htm\Cattable($tbody, $headings);
+echo $cattable;
 */
 
 class Cattable implements \stringable {
-public $data = null;
-public $headings = []; // data columns to convert to HTM headings
 public $table_header = false; // include table header
 public $template_name = 'bordered'; // table template
-private $_compiled = []; // compiled data
 
-public function __construct($headings=[]) {
-	$this->headings = $headings;
-	$this->_compiled = [];
+private $attribs = [];
+
+public function __construct($data, $headings=[]) {
+	$this->attribs = [
+		'data' => $data, // table body
+		'headings' => $headings // columns to be used as headings
+	];
 }
 
 public function __get($key) {
-	return match($key) {
-		'compiled' => $this->compile(),
+	if(isset($this->attribs[$key])) return $this->attribs[$key];
+	
+	$val = match($key) {
+		'compiled' => $this->compile(), // compiled data
+		'flattened' => $this->flatten(), // ready for csv
+		'tree' => $this->tree(), // ready for export
 		default => null
 	};
+	$this->attribs[$key] = $val;
+	return $val;
+}
+
+private function tree() {
+	$retval = [];
+	foreach($this->compiled as $cattable) {
+		$retval[] = [
+			'level' => array_key_first($cattable['headings']),
+			'heading' => implode(', ', $cattable['headings']),
+			'tbody' => $cattable['tbody'],
+		];
+	}
+	return $retval;
 }
 
 private function compile() {
-	if($this->_compiled) return $this->_compiled; // already done
 	if(!$this->data) return []; // no data
 	if(!$this->headings) return []; // no headings set
 	
@@ -67,24 +84,25 @@ private function compile() {
 		$compiled[$catkey]['tbody'][] = $row;
 	}
 	# dd($compiled);
-	$this->_compiled = $compiled;
-	return $this->_compiled;
+	return $compiled;
 }
 
-public function csv() {
-	$csv = new \App\Libraries\Csv;
+private function flatten() {
+	$retval = [];
 	foreach($this->compiled as $cattable) { 
 		foreach($cattable['headings'] as $level=>$heading) {
-			$csv->add_row([$heading]);
+			$retval[] = [$heading];
 		}
-		$csv->add_row(['']);
-		
-		$csv->add_table($cattable['tbody'], true);
-		$csv->add_row(['']);
-	} 
-	ob_start(); 
-	$csv->write('php://output');
-	return ob_get_clean();
+		$retval[] = [''];
+		$thead = $this->table_header; // need header?
+		foreach($cattable['tbody'] as $row) {
+			if($thead) $retval[] = array_keys($row);
+			$thead = false;
+			$retval[] = $row;
+		}
+		$retval[] = [''];
+	}
+	return $retval;
 }
 
 public function __toString() {

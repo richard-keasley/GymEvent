@@ -159,14 +159,14 @@ public function view($event_id=0) {
 		}
 	}
 	if($download=='entries') {
-		$export = ['export' => []];
+		$export = [];
 		foreach($tbody as $dis) {
 			$row = ['dis' => $dis['disname']];
 			foreach($dis['cats'] as $cat) {
-				$export['export'][] = array_merge($row, $cat);
+				$export[] = array_merge($row, $cat);
 			}
 		}
-		return $this->export($export, 'entries');
+		return $this->download('entries.csv', $export);
 	}
 	$this->data['entries'] = $tbody;
 			
@@ -277,12 +277,6 @@ public function edit($event_id=0) {
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb(null, 'admin');
 	$this->data['breadcrumbs'][] = $this->data['event']->breadcrumb('edit', 'admin');
 	return view('events/edit', $this->data);
-}
-
-private function export($export, $suffix='') {
-	$filetitle = $this->data['event']->title;
-	if($suffix) $filetitle .= "_{$suffix}";
-	return $this->download($export, 'table', $filetitle);
 }
 	
 }

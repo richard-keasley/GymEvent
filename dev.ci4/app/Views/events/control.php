@@ -45,7 +45,7 @@ echo '<h3>Returns summary</h3>';
 
 $fees = []; $cols = []; $count = []; $tbody = [];
 foreach($event->clubrets() as $rowkey=>$clubret) {
-	$user = $clubret->user();
+	$user = $clubret->user;
 	$label = $user ? $user->name : '[unknown]' ;
 	
 	$tbody[$rowkey] = [

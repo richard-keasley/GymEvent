@@ -87,11 +87,12 @@ foreach($exeset->exercises as $exekey=>$exercise) {
 
 			switch($input['type']) {
 				case 'select': 
-					unset($input['type']);
-					echo form_dropdown($input);
-					break;
+				unset($input['type']);
+				echo form_dropdown($input);
+				break;
+				
 				default:
-					echo form_input($input);
+				echo form_input($input);
 			}
 		}
 		

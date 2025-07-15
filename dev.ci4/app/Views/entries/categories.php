@@ -3,7 +3,7 @@ $scoreboard = new \App\ThirdParty\scoreboard;
 $exesets = $scoreboard->get_exesets();
 
 $this->section('content'); ?>
-<form name="selector" method="GET" class="input-group">
+<getform name="selector" class="input-group">
 <label class="input-group-text">Select discipline to edit</label> 
 <select name="disid" class="form-control"><?php 
 foreach($entries as $dis) { 
@@ -16,7 +16,7 @@ $(function() {
 $('[name=disid]').change(function() { $('[name=selector]').submit(); });
 });
 </script>
-</form>
+</getform>
 
 <?php 
 $action = current_url() . '?' . http_build_query(['disid'=>$filter['disid']]);

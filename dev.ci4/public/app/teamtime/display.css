@@ -1,17 +1,15 @@
-html {
+body {
 	font-size: 7vw;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: #006;
+	color: #FFF;
+	cursor: none;
+	font-family: sans-serif;
+	overflow: hidden;
 }
 
-body {
-	margin:0;
-	padding:0;
-	border:0;
-	background:#006;
-	color:#FFF;
-	cursor:none;
-	font-family:sans-serif;
-	overflow:hidden;
-}
 #display {
 	position: fixed;
 	overflow: hidden;
@@ -24,29 +22,7 @@ body {
 	left: 0;
 	right: 0;
 	bottom: 0;
-} 
-#info {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100vw;
-	height: 100vh;
-	z-index: 2;
 }
-#msg {
-	position: absolute;
-	left: 0;
-	top: 0;
-	z-index: 3;
-}
-#frametick {
-	font-size:4px;
-	position:absolute;
-	right:0;
-	top:0;
-	z-index: 3;
-}
-
 
 #display img  {
 	height: auto;
@@ -56,15 +32,14 @@ body {
 	left: 0;
 	z-index:1;
 }
-#msg p {
-	background: #fcc;
-	color: #033;
-	font-size: 0.6em;
-	opacity: .9;
-	padding: .5em;
-	margin: 0;
-	float: left;
-	line-height: normal;
+
+#info {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 2;
 }
 
 #info iframe{
@@ -79,6 +54,51 @@ body {
 	left: 0;
 	right: 0;
 	bottom: 0;
+}
+
+#frametick {
+	font-size:4px;
+	position:absolute;
+	right:0;
+	top:0;
+	z-index: 3;
+}
+
+#msg {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 3;
+}
+
+#msg p {
+	background: #f4d8d8;
+	color: #400;
+	font-size: 0.6em;
+	opacity: .9;
+	padding: .5em;
+	margin: 0;
+	float: left;
+	line-height: normal;
+}
+
+#timertick {
+	background:#333;
+	border:1px solid #000;
+	font-size:60%;
+	margin:.2em 0;
+	overflow:hidden;
+	padding:0;
+}
+
+#timertick .progbar {
+	border: 0;
+	color: #DDF;
+	margin: 0;
+	font-weight: bold;
+	padding: .2em 0;
+	white-space: nowrap;
+	text-align: center;
 }
 
 .runtable {
@@ -105,13 +125,6 @@ body {
 	table-layout: fixed;
 }
 
-.runtable table tbody td {
-	background:#FF9;
-	color:#006;
-	font-weight:bold;
-	white-space:nowrap;
-}
-
 .runtable table td {
 	border:0;
 	line-height:1.2em;
@@ -119,6 +132,13 @@ body {
 	padding:0;
 	text-align:center;
 	overflow: hidden;
+}
+
+.runtable table tbody td {
+	background:#FF9;
+	color:#006;
+	font-weight:bold;
+	white-space:nowrap;
 }
 
 .runtable table tr.omode.active td,
@@ -151,23 +171,4 @@ body {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-
-#timertick {
-	background:#333;
-	border:1px solid #000;
-	font-size:60%;
-	margin:.2em 0;
-	overflow:hidden;
-	padding:0;
-}
-
-#timertick .progbar {
-	border: 0;
-	color: #DDF;
-	margin: 0;
-	font-weight: bold;
-	padding: .2em 0;
-	white-space: nowrap;
-	text-align: center;
 }

@@ -4,10 +4,8 @@ $this->section('content');
 echo $html;
 $this->endSection();
 
-$this->section('bottom'); 
-
-$buffer = '';
-$buffer .= getlink("setup/help/edit/{$html->id}", 'edit');
+$this->section('bottom');
+$buffer = getlink("setup/help/edit/{$html->id}", 'edit');
 if($buffer) printf('<div class="toolbar">%s</div>', $buffer);	
 
 $include = __DIR__ . "/_{$stub}.php";

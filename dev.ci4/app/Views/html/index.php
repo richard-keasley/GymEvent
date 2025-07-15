@@ -47,7 +47,7 @@ echo form_open('', $attrs, $hidden);
 $this->section('sidebar');
 
 $nav = [];
-$htmls = (new \App\Models\Htmls)->orderBy('path', 'ASC')->findall();
+$htmls = model('Htmls')->orderBy('path', 'ASC')->findall();
 foreach($htmls as $html) {
 	$nav[] = ["/setup/help/view/{$html->id}", $html->path];
 }

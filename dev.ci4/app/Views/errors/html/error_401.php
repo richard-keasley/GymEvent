@@ -3,9 +3,12 @@ use \App\Libraries\Auth;
 
 include __DIR__ . '/_head.php';
 
-// exceptions do not return
-// no honeypot filter will run after response
-// this hack ensures honeypot field can be displayed 
+/*
+exceptions do not return
+no honeypot `after` filter will be applied to response
+this hack ensures honeypot field is entered for error_401
+ToDo: convert login form from 401 to normal view
+*/
 $honeypot = \App\Filters\Honeypot::template();
 
 foreach(['name', 'email', 'password', 'password2', 'login'] as $key) {
@@ -27,7 +30,6 @@ if($show_new) {
 $attrs = ['id' => "existing"];
 $hidden = [
 	'tabView' => '#existing',
-	'honeypot' => "w",
 ];
 echo form_open('', $attrs, $hidden);
 

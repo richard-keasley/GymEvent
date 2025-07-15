@@ -11,12 +11,14 @@
 </div>
 
 <div class="col-auto"><?php
+$href = "control/player/receiver/{$event_id}";
+$label = '<span class="bi bi-broadcast"></span>';
 $attrs = [
 	'class' => "px-3 btn btn-outline-secondary btn-sm",
 	'title' => "View music receiver",
-	'target' => "ssereceiver",
+	'target' => "_blank",
 ]; 
-echo anchor("control/player/receiver/{$event_id}", '<span class="bi bi-broadcast"></span>', $attrs); 
+echo anchor($href, $label, $attrs); 
 ?></div>
 
 </div>
@@ -35,12 +37,10 @@ buttons: {
 
 send: function(state, params={}) {
 	params['state'] = state;
-	params['<?php echo csrf_token();?>'] = '<?php echo csrf_hash(); ?>';
-	// console.log(params);
 
 	// send request	
 	var api = '<?php echo site_url("api/music/sse");?>';
-	$.post(api, params)
+	$.post(api, securepost(params))
 	.done(function(response) {
 		// console.log(response);
 		sse.message(response.label, response.state);

@@ -38,15 +38,22 @@ $link_tags = [
 	'type' => "application/manifest+json",
 ],
 
-'app/gymevent.css?v=1'
-
 ];
+
+$stylesheets = $stylesheets ?? ['gymevent.css?v=1'];
+foreach($stylesheets as $stylesheet) {
+	$link_tags[] = "app/{$stylesheet}";
+}
+
 foreach($link_tags as $link_tag) echo link_tag($link_tag);
 
-$minifier = new MatthiasMullie\Minify\CSS(config('Paths')->viewDirectory . '/custom.css');
+$viewpath = config('Paths')->viewDirectory;
+$minifier = new MatthiasMullie\Minify\CSS("{$viewpath}/custom.css");
+if(ENVIRONMENT!='production') { 
+	$minifier->add("{$viewpath}/debug.css");
+}
+$minifier->add($style ?? '');
 $buffer = $minifier->minify();
 if($buffer) echo "<style>{$buffer}</style>";
 
 echo \App\ThirdParty\jquery::script();
-
-if(!empty($head)) echo $head;

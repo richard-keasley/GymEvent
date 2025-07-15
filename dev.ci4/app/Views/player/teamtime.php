@@ -100,7 +100,7 @@ $links[] = [
 	'attrs' => [
 		'title' => "Start player receiver",
 		'class' => "btn btn-outline-secondary",
-		'target' => "ssereceiver",
+		'target' => "_blank",
 	],
 	'href' => "control/player/receiver/{$event_id}"
 ];

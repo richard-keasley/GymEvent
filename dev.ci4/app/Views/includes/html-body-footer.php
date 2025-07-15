@@ -2,7 +2,7 @@
 // logout form
 $logged_in = $_SESSION['user_id'] ?? false;
 if($logged_in) { ?>
-<footer class="alert alert-light p-1 d-print-none">
+<footer class="savepage-hide alert alert-light p-1 d-print-none">
 <?php echo form_open(site_url()); ?>
 <button class="btn btn-secondary" type="submit" name="logout" value="1">Logout</button>
 <?php echo getlink('admin', 'admin'); ?> 
@@ -19,7 +19,7 @@ echo $link ? $link : $label;
 if(ENVIRONMENT != 'development') return;
 if(!empty($exception)) return;
 ?>
-<footer class="row border-top bg-light text-secondary d-print-none">
+<footer class="savepage-hide row border-top bg-light text-secondary d-print-none">
 
 <div class="col-sm"><?php 
 $links = [

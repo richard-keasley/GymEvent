@@ -12,7 +12,7 @@ echo implode(', ', $ipinfo->attributes($keys)); // summary info
 
 class Ipinfo implements \Stringable {
 	
-const ttl = 21600; // 6 hours
+const ttl = 86400; // 24 hours
 const prefix = 'ip_';
 private $cache = null;
 private $attrs = []; // ip info array

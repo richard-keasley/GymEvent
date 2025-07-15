@@ -163,8 +163,7 @@ public function delete_category($category_id) {
 
 public function populate($event_id) {
 	// check event 
-	$mdl_events = new \App\Models\Events;
-	$event = $mdl_events->find($event_id);
+	$event = model('Events')->find($event_id);
 	if(!$event) return false;
 	if($event->clubrets!=2) return false;
 	// read participants from club returns

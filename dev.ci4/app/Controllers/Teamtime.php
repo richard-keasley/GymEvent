@@ -26,7 +26,7 @@ public function info($var_name) {
 	}
 	
 	/* from /app/teamtime/display.css */
-	$this->data['head'] = '<style>
+	$this->data['style'] = '
 	.runtable table {
 		border: 1px solid #226;
 		margin: 0;
@@ -51,8 +51,7 @@ public function info($var_name) {
 	.runtable thead td,
 	.runtable thead th {
 		font-weight: bold;
-	}
-	</style>';
+	}';
 
 	return view('teamtime/info', $this->data);
 }
@@ -62,7 +61,7 @@ public function display($ds_id=0) {
 	$this->data['display'] = tt_lib::get_value('displays', $ds_id);
 	$this->data['ds_id'] = $ds_id;
 	if(!$this->data['display']) {
-		$this->data['message'] = "Invalid display ({$ds_id})";
+		$this->data['error'] = "Invalid display ({$ds_id})";
 		return view('teamtime/displays/error', $this->data);
 	}
 	$get_var = tt_lib::get_var('displays');

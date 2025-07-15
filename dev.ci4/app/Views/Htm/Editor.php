@@ -18,8 +18,8 @@ private $params = [
 	'branding' => false,
 	'menubar' => false,
 	'browser_spellcheck' => true,
-	'plugins' => 'link code lists help',
-	'toolbar' => 'Undo Redo | Blocks | Bold Italic bullist | link code | help',
+	'plugins' => 'link code lists help fullscreen',
+	'toolbar' => 'Undo Redo | Blocks | Bold Italic bullist | link code fullscreen | help',
 ];
 
 public function __construct($attrs=[], $params=[]) {

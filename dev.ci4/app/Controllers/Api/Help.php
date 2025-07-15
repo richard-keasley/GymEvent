@@ -11,8 +11,7 @@ public function index() {
 }
 
 public function view($id=0) {
-	$htmls = new \App\Models\Htmls;
-	$html = $htmls->find($id);
+	$html = model('Htmls')->find($id);
 	if(!$html) {
 		$message = "Can't find help for {$id}";
 		return $this->failNotFound($message);

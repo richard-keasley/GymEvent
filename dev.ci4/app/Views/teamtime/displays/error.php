@@ -1,8 +1,7 @@
 <?php $this->extend('teamtime/displays/layout');
-if(empty($error)) $error = "unspecified error";
 
 $this->section('body'); ?>
-
-<div class="msg"><p><?php echo $message;?></p></div>
-
+<div id="msg"><p><?php 
+echo $error ?? "undefined error";
+?></p></div>
 <?php $this->endSection();

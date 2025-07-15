@@ -2,7 +2,7 @@
 
 $this->section('content');
 
-$html = (new \App\Models\Htmls)->find_path('~scoreboard');
+$html = model('Htmls')->find_path('~scoreboard');
 $html_id = $html->id ?? 0 ;
 echo $html ? $html : 'HTML not found';
 

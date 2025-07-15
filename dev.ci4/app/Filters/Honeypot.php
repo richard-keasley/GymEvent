@@ -8,58 +8,77 @@
 # namespace CodeIgniter\Filters;
 namespace App\Filters;
 
-use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Services;
 
-use CodeIgniter\Honeypot\Exceptions\HoneypotException;
+# use CodeIgniter\Honeypot\Exceptions\HoneypotException;
+use App\Exceptions\Exception as HoneypotException;
 
-
-/**
- * Honeypot filter
- *
- * @see \CodeIgniter\Filters\HoneypotTest
- */
-class Honeypot implements FilterInterface {
-/**
- * Checks if Honeypot field is empty, if not then the
- * requester is a bot
- *
- * @param array|null $arguments
- *
- * @throws HoneypotException
- */
+class Honeypot extends \CodeIgniter\Filters\Honeypot {
  
 public function before(RequestInterface $request, $arguments = null) {
 	if(!$request instanceof IncomingRequest) {
 		return;
 	}
-	if(Services::honeypot()->hasContent($request)) {
-		# throw HoneypotException::isBot();
-		throw \App\Exceptions\Exception::honeypot("Honeypot filled on page load");
+	
+	# return; // disable honeypot for testing
+	
+	$getPost = $request->getPost();
+	if(!$getPost) return; // nothing posted 
+	
+	$config = config('Honeypot');
+	$posted = $getPost[ $config->name ] ?? null ; 
+	if($posted===null) {
+		throw HoneypotException::honeypot("Honeypot not set");
 	}
+	if($posted) {
+		throw HoneypotException::honeypot("Honeypot completed");
+	}
+	
+	/*
+	if(Services::honeypot()->hasContent($request)) {
+		throw HoneypotException::isBot();
+	}
+	*/
 }
 
-/**
- * Attach a honeypot to the current response.
- *
- * @param array|null $arguments
- */
 public function after(RequestInterface $request, ResponseInterface $response, $arguments = null) {
-	Services::honeypot()->attachHoneypot($response);
+	parent::after($request, $response, $arguments);
+	
+	/*
+	stop honeypot attaching to GET forms
+	ensure it runs after honeypot!
+	*/
+	$body = $response->getBody();
+	if(!$body) return;
+	
+	$translate = [
+		'<getform' => '<form method="GET"',
+		'</getform>' => '</form>',
+	];
+	$body = strtr($body, $translate);
+	$response->setBody($body);
+    
+	return null;
 }
 
+/*
+exceptions do not return
+no honeypot `after` filter will be applied to response
+this hack ensures honeypot field is entered for error_401
+ToDo: convert login form from 401 to normal view
+*/
 static function template() : string {
-	// exceptions do not return
-	// no honeypot filter will run after response
-	// this hack ensures honeypot is entered for error_401
-	
-	$filters = config('Filters')->globals['after'];
-	$index = array_search('honeypot', $filters);
-	if($index===false) return ''; // honeypot not requested
-	
+	// is filter active for this request
+	$found = false;
+	foreach(service('filters')->getFilters() as $arr) {
+		if(in_array('honeypot', $arr)) $found = true;
+		if(isset($arr['honeypot'])) $found = true;
+	}
+	if(!$found) return '';
+		
 	// copied from CodeIgniter\Honeypot\honeypot::preparetemplate()
 	$config = config('Honeypot');
 	$template = $config->template;

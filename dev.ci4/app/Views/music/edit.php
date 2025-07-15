@@ -51,7 +51,9 @@ echo form_open_multipart('', $attrs, $hidden);
 </div>
 </div>
 <p>Ensure music is in a supported format (<?php echo implode(', ', \App\Libraries\Track::exts_allowed);?>)
-and smaller than <?php echo formatBytes(\App\Libraries\Track::$max_filesize);?>.</p>
+and smaller than <?php 
+echo number_to_size(\App\Libraries\Track::$max_filesize);
+?>.</p>
 <p class="bg-secondary bg-opacity-10">Please use <code>MP3</code> if at all possible. Music in this format gives us far less problems than any other.</p> 
 </fieldset>
 

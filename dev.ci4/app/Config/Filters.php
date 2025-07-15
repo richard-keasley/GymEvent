@@ -7,8 +7,7 @@ use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
 use CodeIgniter\Filters\DebugToolbar;
 use CodeIgniter\Filters\ForceHTTPS;
-use App\Filters\Honeypot;
-# use CodeIgniter\Filters\Honeypot;
+use App\Filters\Honeypot; # CodeIgniter\Filters\Honeypot;
 use CodeIgniter\Filters\InvalidChars;
 use CodeIgniter\Filters\PageCache;
 use CodeIgniter\Filters\PerformanceMetrics;
@@ -36,7 +35,6 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
 		'auth' 			=> \App\Filters\Auth::class,
-		'throttle' 		=> \App\Filters\Throttle::class,
     ];
 
     /**
@@ -55,12 +53,18 @@ class Filters extends BaseFilters
     public array $required = [
         'before' => [
             'forcehttps', // Force Global Secure Requests
-            'pagecache',  // Web Page Caching
-			
+            // 'pagecache',  // Web Page Caching
         ],
         'after' => [
-            'pagecache',   // Web Page Caching
+            // 'pagecache',   // Web Page Caching
             'performance', // Performance Metrics
+            'toolbar', 
+			/*=> [
+				'except' => [
+					'api/*',
+					'teamtime/display/*',
+				]
+			]*/
         ],
     ];
 
@@ -70,25 +74,23 @@ class Filters extends BaseFilters
      *
      * @var array<string, array<string, array<string, string>>>|array<string, list<string>>
      */
-	public array $globals = [
+    public array $globals = [
 		'before' => [
-			'honeypot',
 			'auth',
+			'honeypot',
 			'csrf' => [
 				'except' => [
 					'/',
-				]
+				],
 			],
-			# 'throttle',
 		],
-		'after' => [
-			'honeypot',
-			'toolbar' => [
+		'after' => [	
+			'honeypot' => [
 				'except' => [
-					'api/*',
-					'teamtime/display/*',
-				]
+					'api/*', // honeypot field set in JS function securepost() 
+				],
 			],
+			
 		],
 	]; 
 	
@@ -105,11 +107,7 @@ class Filters extends BaseFilters
      *
      * @var array<string, list<string>>
      */
-    public array $methods = [
-		'POST' => [
-			# 'throttle', // covered in filters\auth::before
-		]	
-	];
+    public array $methods = [];
 
     /**
      * List of filter aliases that should run on any

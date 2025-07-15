@@ -14,7 +14,7 @@ if($event->dates['music_closes']) {
 	printf('<p>The music upload service will close at 8:00pm on %s.</p>', $date->format('j F'));
 } ?>
 
-<form method="GET" id="selector" class="mb-2 toolbar">
+<getform id="selector" class="mb-2 toolbar">
 <?php 
 echo getlink("admin/music/view/{$event->id}", 'admin');
 $input = [
@@ -32,7 +32,7 @@ $(function() {
 	});
 });
 </script>
-</form>
+</getform>
 
 <?php 
 echo $this->include('Htm/Playtrack');

@@ -47,7 +47,7 @@ public function view($event_id=0, $action='view') {
 	$page = view("player/view", $this->data);
 	
 	return ($action=='save') ?
-		$this->saveplayer($event_id, 'player.htm', $page) :
+		$this->savepage('player.htm', $page, $event_id) :
 		$page ;
 }
 
@@ -78,7 +78,7 @@ public function receiver($event_id=0, $action='view') {
 	$page = view("player/receiver", $this->data);
 
 	return ($action=='save') ?
-		$this->saveplayer($event_id, 'receiver.htm', $page) :
+		$this->savepage('receiver.htm', $page, $event_id) :
 		$page ;
 }
 

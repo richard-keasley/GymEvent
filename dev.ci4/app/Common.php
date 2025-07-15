@@ -45,20 +45,6 @@ function getlink($path, $label='', $attrs=[]) {
 	return anchor($path, $label, $attrs);
 }
 
-function formatBytes($bytes, $precision=0) { 
-    $units = ['B', 'KB', 'MB', 'GB', 'TB']; 
-
-    $bytes = max($bytes, 0); 
-    $pow = floor(($bytes ? log($bytes) : 0) / log(1024)); 
-    $pow = min($pow, count($units) - 1); 
-
-    // Uncomment one of the following alternatives
-    # $bytes /= pow(1024, $pow);
-    $bytes /= (1 << (10 * $pow)); 
-
-    return round($bytes, $precision) . ' ' . $units[$pow]; 
-} 
-
 function csv_array($csv, $limit=null) {
 	// take a line from form input and return array
 	$csv = trim($csv);

@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<?php
-$viewdir = realpath(config('Paths')->viewDirectory);
-include "{$viewdir}/includes/_head_common.php";
+<head><?php
+echo $this->include('includes/html-head');
 ?>
 </head>
 
@@ -56,6 +54,8 @@ else {
 }
 ?>
 </script>
-
+<?php
+echo $this->include('includes/html-foot');
+?>
 </body>
 </html>

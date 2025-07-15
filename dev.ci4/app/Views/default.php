@@ -1,6 +1,13 @@
-<?php 
-echo $this->include('includes/_head');
+<!DOCTYPE html>
+<html lang="en">
+<head><?php 
+echo $this->include('includes/html-head');
 ?>
+</head>
+<body class="container">
+
+<?php echo $this->include('includes/html-body-header'); ?>
+
 <main class="clearfix"><?php 
 
 echo $this->renderSection('top');
@@ -26,6 +33,8 @@ echo $this->renderSection('bottom');
 
 <?php 
 
-echo $this->include('includes/_footer');
-echo $this->include('js/foot');
-echo $this->include('includes/_foot');
+echo $this->include('includes/html-body-footer');
+echo $this->include('includes/html-foot');
+?>
+</body>
+</html>

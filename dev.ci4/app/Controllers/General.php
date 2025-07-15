@@ -8,7 +8,6 @@ public function __construct() {
 	$this->data['title'] = "General Gymnastics";
 	$this->data['heading'] = "General Gymnastics";
 	$this->data['filename'] = "fv_routines";
-	$this->data['head'] = '';
 	$this->data['rule_options'] = \App\Libraries\Rulesets::options('general');
 }
 	
@@ -71,10 +70,6 @@ public function routine($viewname='', $layout='') {
 			$this->data[$key][] = $val;
 			break;
 			
-			case 'style':
-			$this->data['head'] .= sprintf('<style>%s</style>', $val);
-			break;
-			
 			default:
 			$this->data[$key] = $val;
 		}
@@ -97,7 +92,9 @@ public function export() {
 		$exeset = new \App\Libraries\Rulesets\Exeset($request);
 		$export[] = $exeset->export();
 	}
-	return $this->download($export, null, $this->data['filename'], 'json');
+	
+	$filename = "{$this->data['filename']}.json";
+	return $this->download($filename, $export);	
 }
 
 }

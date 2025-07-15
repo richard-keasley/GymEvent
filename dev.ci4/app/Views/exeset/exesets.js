@@ -71,10 +71,8 @@ formdata: {
 			exeset['rulesetname'] = $rulesets.find("option:first").val();
 		}
 		
-		exeset[exesets.csrf.token] = exesets.csrf.hash;
-		
 		var api = '<?php echo site_url("/api/exeset/exeval");?>';
-		$.post(api, exeset)
+		$.post(api, securepost(exeset))
 		.done(function(response) {
 			try {
 				// store cleaned data
@@ -83,12 +81,12 @@ formdata: {
 				exesets.formdata.htm(exeset);
 				
 				switch(viewname) {
-					case 'view-judge':
-					location.href = exesets.site_url('routine/view/judge');
+					case 'view-landscape':
+					location.href = exesets.site_url('routine/view/landscape');
 					break; 
 					
-					case 'view-default':
-					location.href = exesets.site_url('routine/view/default');
+					case 'view-portrait':
+					location.href = exesets.site_url('routine/view/portrait');
 					break; 
 					
 					default:
@@ -146,13 +144,12 @@ formdata: {
 viewdata: {
 	set: function(exeset, layout='default') {
 		exesets.log('clean view data via API');
-		exeset[exesets.csrf.token] = exesets.csrf.hash;
 		exeset['layout'] = layout;
 		// console.log(exeset);
 		
 		var html = '';
 		var api = '<?php echo site_url("/api/exeset/view");?>';
-		$.post(api, exeset)
+		$.post(api, securepost(exeset))
 		.done(function(response) {
 			try {
 				exesets.viewdata.msg(response, 1);
@@ -341,8 +338,8 @@ idxsel: {
 
 
 log: function(message, type='log') {
-	/*
-	// disable this for debug
+	// enable this for debug
+	
 	switch(type) {
 		case 'error': console.error(message); break;
 		default: console.log(message);

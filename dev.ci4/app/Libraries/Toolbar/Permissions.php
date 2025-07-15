@@ -10,17 +10,27 @@ protected $hasTabContent = true;
 protected $hasLabel = true;
 protected $title = 'Permissions';
 
-function display() {
+function display() : string {
 ob_start();
-echo '<ul style="list-style:none">';
-$format = '<li style="line-height:normal;color:%s" title="%s"><strong>%s :</strong> %s</li>';
+echo '<table>';
+
+$row = [
+	session('user_name') ?? '[guest]', 
+	session('user_role') ?? \App\Libraries\Auth::roles[0], 
+];
+$format = '<tr><td><strong>%s</strong></td></tr>';
+printf($format, implode(' / ', $row));
+
+$format = '<tr><td title="%s"><span style="font-weight:bold;color:%s">%s :</span> %s</td></tr>';
 foreach(\App\Libraries\Auth::check_paths() as $path=>$row) {
 	// $row = [ perm_name, perm_granted ]
+	if(!$path) $path = '[root]';
 	$colour = $row[1] ? '#0c0' : '#c00' ;
 	$title = $row[1] ? 'allowed' : 'forbidden' ;
-	printf($format, $colour, $title, $path, $row[0]);
+	printf($format, $title, $colour, $path, $row[0]);
 };
-echo '</ul>';
+
+echo '</table>';
 return ob_get_clean();
 }
 

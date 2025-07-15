@@ -9,9 +9,9 @@ $colour = ($pc>80) ? 'danger' : 'light' ;
 $format = '<p class="bg-%s-subtle p-1">Event files occupy %s of disk space (%u%% of %s allowance).</p>';
 printf($format, 
 	$colour,
-	formatBytes($files_size),
+	number_to_size($files_size, 0),
 	$pc,
-	formatBytes($allowed)
+	number_to_size($allowed, 0)
 );
 ?></section>
 

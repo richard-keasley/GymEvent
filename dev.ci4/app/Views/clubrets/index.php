@@ -8,8 +8,7 @@ You may edit any of these returns before the event's closing date.</p>
 $this->section('sidebar'); ?>
 <nav class="nav flex-column"><?php 
 foreach($clubrets as $clubret) {
-	$event = $clubret->event();
-	echo getlink($clubret->url('view'), $event->title);
+		echo getlink($clubret->url('view'), $clubret->event->title);
 } ?></nav>
 
 <?php $this->endSection(); 

@@ -2,14 +2,11 @@
 
 class Clubrets extends \App\Controllers\BaseController {
 	
-private $model = null;
-
 function __construct() {
-	$this->model = new \App\Models\Clubrets;
 	$this->data['clubret'] = new \App\Entities\Clubret();
 	// ToDo: move this to a button
-	$tidy = $this->model->tidy();
-	if($tidy) $this->data['messages'][] = ["Tidied $tidy entries", 'warning'];
+	$tidy = model('Clubrets')->tidy();
+	if($tidy) $this->data['messages'][] = ["Tidied {$tidy} entries", 'warning'];
 	$this->data['title'] = "Returns";
 	$this->data['heading'] = "Event returns - admin";
 	$this->data['breadcrumbs'][] = 'admin';
@@ -18,20 +15,20 @@ function __construct() {
 	
 private function lookup($event_id, $user_id) {
 	// don't use model->lookup() because we want to include deleted events and users 
-	$this->data['clubret'] = $this->model->where('event_id', $event_id)->where('user_id', $user_id)->first();
+	$this->data['clubret'] = model('Clubrets')->where('event_id', $event_id)->where('user_id', $user_id)->first();
 	if(!$this->data['clubret']) {
 		$message = "Can't find entry {$event_id}/{$user_id}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
-	$this->data['user'] = $this->data['clubret']->user();
-	$this->data['event'] = $this->data['clubret']->event();
+	$this->data['user'] = $this->data['clubret']->user;
+	$this->data['event'] = $this->data['clubret']->event;
 	$this->data['heading'] = sprintf('Return for %s / %s', $this->data['user']->name, $this->data['event']->title);
 	$this->data['title'] = $this->data['event']->title;
 }
 	
 public function index() {
-	echo 'Nothing to see here';
+	return view('admin/index', $this->data);
 }
 
 public function view($event_id=0, $user_id=0) {
@@ -44,7 +41,7 @@ public function view($event_id=0, $user_id=0) {
 			$clubret = $this->data['clubret'];
 			$clubret->user_id = $new_user;
 			// update clubret
-			if($this->model->save($clubret)) { 
+			if(model('Clubrets')->save($clubret)) { 
 				// reload 
 				$this->data['messages'][] = ["Updated return", 'success'];
 				$session = \Config\Services::session();
@@ -52,7 +49,7 @@ public function view($event_id=0, $user_id=0) {
 				return redirect()->to("admin/clubrets/view/{$event_id}/{$new_user}");
 			}
 			else {
-				$this->data['messages'] = $this->model->errors();
+				$this->data['messages'] = model('Clubrets')->errors();
 				$this->data['messages'][] = ["Couldn't update return", 'danger'];
 			}
 		}
@@ -65,14 +62,14 @@ public function view($event_id=0, $user_id=0) {
 	$this->data['delsure'] = new \App\Views\Htm\Delsure($delsure);
 	$del_id = $this->data['delsure']->request;
 	if($del_id) {
-		if($this->model->delete($del_id)) {
+		if(model('Clubrets')->delete($del_id)) {
 			$this->data['messages'][] = ["Return deleted", 'success'];
 			$session = \Config\Services::session();
 			$session->setFlashdata('messages', $this->data['messages']);
 			return redirect()->to($back_link);
 		}
 		else {
-			$this->data['messages'] = $this->model->errors();
+			$this->data['messages'] = model('Clubrets')->errors();
 		}	
 	}
 	
@@ -82,11 +79,10 @@ public function view($event_id=0, $user_id=0) {
 	$exclude = [];
 	$clubrets = $this->data['event']->clubrets();
 	foreach($clubrets as $clubret) $exclude[] = $clubret->user_id;
-	$model = new \App\Models\Users;
 	$this->data['users_dialogue'] = [
 		'title' => 'Change user for this return',
 		'user_id' => $this->data['user']->user_id,
-		'users' => $model->orderby('name')->whereNotIn('id', $exclude)->findAll(),
+		'users' => model('Users')->orderby('name')->whereNotIn('id', $exclude)->findAll(),
 		'description' => sprintf('Move this return from <em>%s</em> to selected user.', $this->data['user']->name)
 	];
 			
@@ -98,8 +94,7 @@ public function view($event_id=0, $user_id=0) {
 }
 
 public function event($event_id=0) {
-	$mdl_events = new \App\Models\Events();
-	$this->data['event'] = $mdl_events->find($event_id);
+	$this->data['event'] = model('Events')->find($event_id);
 	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
 		throw \App\Exceptions\Exception::not_found($message);
@@ -111,8 +106,7 @@ public function event($event_id=0) {
 	// create entries from returns
 	// see also App\Controllers\Admin\Events->event
 	if($this->request->getPost('populate')) {
-		$mdl_entries = new \App\Models\Entries;
-		if($mdl_entries->populate($event_id)) {
+		if(model('Entries')->populate($event_id)) {
 			$this->data['messages'][] = ['Club returns added to event entries', 'success'];
 		}
 		else {
@@ -123,8 +117,7 @@ public function event($event_id=0) {
 	// exclude users who have a return for this event
 	$exclude = [0];
 	foreach($clubrets as $clubret) $exclude[] = $clubret->user_id;
-	$model = new \App\Models\Users;
-	$users = $model->orderby('name')->whereNotIn('id', $exclude)->findAll();
+	$users = model('Users')->orderby('name')->whereNotIn('id', $exclude)->findAll();
 	// add new return 
 	if($this->request->getPost('cmd')=='modalUser') {
 		$user_id = intval($this->request->getPost('user_id'));
@@ -139,12 +132,12 @@ public function event($event_id=0) {
 				'participants' => []
 			];
 			$clubret = new \App\Entities\Clubret($data);
-			$newid = $this->model->insert($clubret);
+			$newid = model('Clubrets')->insert($clubret);
 		}
 		if($newid) {
 			$this->data['messages'][] = ["Created new entry", 'success'];
 			// reload event
-			$this->data['event'] = $mdl_events->find($event_id);
+			$this->data['event'] = model('Events')->find($event_id);
 			$clubrets = $this->data['event']->clubrets();
 		}
 		else {
@@ -162,7 +155,7 @@ public function event($event_id=0) {
 	// build summary table
 	$fees = []; $cols = []; $count = []; $tbody = [];
 	foreach($clubrets as $rowkey=>$clubret) {
-		$user = $clubret->user();
+		$user = $clubret->user;
 		if($download=='summary') {
 			$club = $user ? $user->name : '[unknown]' ;
 		}
@@ -226,9 +219,7 @@ public function event($event_id=0) {
 		$tbody[$rowkey]['fees'] = $fees[$rowkey];
 	}
 	if($download=='summary') {
-		# print_r($tbody); return;
-		$export = ['export' => $tbody];
-		return $this->export($export, 'summary');
+		return $this->export($tbody, 'summary');
 	}
 	$this->data['summary'] = $tbody;
 	
@@ -245,8 +236,7 @@ public function event($event_id=0) {
 		];
 	}
 	if($download=='staff') {
-		$export = ['export' => $tbody];
-		return $this->export($export, 'staff');
+		return $this->export($tbody, 'staff');
 	}
 	$this->data['staff'] = $tbody;
 	
@@ -270,8 +260,7 @@ public function event($event_id=0) {
 		}
 	}
 	if($download=='participants') {
-		$export = ['export'=>$tbody];
-		return $this->export($export, 'participants');
+		return $this->export($tbody, 'participants');
 	}
 	$this->data['participants'] = $tbody;
 
@@ -295,19 +284,17 @@ public function event($event_id=0) {
 }
 
 public function names($event_id=0) {
-	$mdl_events = new \App\Models\Events();
-	$this->data['event'] = $mdl_events->find($event_id);
+	$this->data['event'] = model('Events')->find($event_id);
 	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
 		
 	// build participants table
-	$mdl_users = new \App\Models\Users();
 	$users = [];
 	$tbody = [];
 	foreach($this->data['event']->clubrets() as $clubret) {
-		$user = $mdl_users->withDeleted()->find($clubret->user_id);
+		$user = model('Users')->withDeleted()->find($clubret->user_id);
 		$club = $user->abbr ?? '?';
 				
 		foreach($clubret->participants as $row) {
@@ -340,8 +327,7 @@ public function names($event_id=0) {
 	
 	$download = $this->request->getPost('download');
 	if($download=='names') {
-		$export = ['export'=>$tbody];
-		return $this->export($export, 'names');
+		return $this->export($tbody, 'names');
 	}
 	
 	// view
@@ -357,9 +343,10 @@ public function names($event_id=0) {
 }
 
 private function export($export, $suffix='') {
-	$filetitle = $this->data['event']->title;
-	if($suffix) $filetitle .= "_{$suffix}";
-	return $this->download($export, 'table', $filetitle);
+	$filename = $this->data['event']->title;
+	if($suffix) $filename .= "_{$suffix}";
+	$filename .= '.csv';
+	return $this->download($filename, $export);
 }
 
 }

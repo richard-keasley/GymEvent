@@ -5,8 +5,8 @@ $this->section('content'); ?>
 <h2>Database structure</h2>
 
 <div class="float-end" style="width:12em;">
-<img src="/app/setup/db1.png" class="m-1"><br>
-<img src="/app/setup/db2.png" class="m-1">
+<img src="/app/images/db1.png" class="m-1"><br>
+<img src="/app/images/db2.png" class="m-1">
 </div>
 
 <p><?php

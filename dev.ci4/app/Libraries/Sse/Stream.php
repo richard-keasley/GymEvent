@@ -8,12 +8,12 @@ private $attrs = [];
 function __construct($channel) {
 	// CI not required
 	$pattern = __DIR__ . '/channel/%s.php';
+	include_once sprintf($pattern, 'none');
+		
 	$include = sprintf($pattern, $channel);
-	if(!is_file($include)) {
-		$channel = 'none';
-		$include = sprintf($pattern, $channel);
-	}
-	include_once $include;
+	if(is_file($include)) include_once $include;
+	else $channel = 'none';
+	
 	$class = "\\App\\Libraries\\Sse\\channel\\{$channel}";
 	$this->attrs = [
 		'channel' => new $class

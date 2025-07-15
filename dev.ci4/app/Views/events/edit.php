@@ -1,5 +1,4 @@
 <?php $this->extend('default');
-helper('inflector');
 
 $this->section('content'); 
 #d($event);

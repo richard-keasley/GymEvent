@@ -1,10 +1,9 @@
 <?php namespace App\Libraries;
 
 /*
-https://fishbowl.pastiche.org/2004/01/19/persistent_login_cookie_best_practice
+* https://fishbowl.pastiche.org/2004/01/19/persistent_login_cookie_best_practice
+* requires helper: cookie
 */
-
-helper('cookie');
 
 class Auth {
 	

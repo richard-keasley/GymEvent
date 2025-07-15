@@ -29,7 +29,8 @@ protected $data = [
 	'back_link' => '',
 	'showhelp' => true,
 	'serviceworker' => true,
-	'breadcrumbs' => [['', '<span class="bi-house-fill"></span>']]
+	'breadcrumbs' => [['', '<span class="bi-house-fill"></span>']],
+	'stylesheets' => ['gymevent.css?v=1'],
 ];
 
 /**
@@ -39,7 +40,7 @@ protected $data = [
  *
  * @var array
  */
-protected $helpers = ['inflector', 'json', 'form', 'html'];
+protected $helpers = ['inflector', 'number'];
 
 /**
  * Constructor.
@@ -80,51 +81,59 @@ public function initController(RequestInterface $request, ResponseInterface $res
 	$this->response->setHeader('X-Robots-Tag', ['noindex', 'nofollow']);
 }
 
-protected function download($data, $layout='table', $filetitle='download', $filetype='') {
-	$filetype = strtolower($filetype);
-	$filetitle = strtolower(preg_replace('#[^A-Z0-9]#i', '_', $filetitle));
-
-	switch($filetype) {
-		case 'json':
-		$this->response->setJSON($data);
-		$response = $this->response->getBody();
-		break;
+protected function download($filename, $data) {
+	$echo = $this->request->getGet('echo');
+	# $echo = true; // good for debug
+	try {
+		$filename = strtolower(trim($filename));
+		$filename = preg_replace('#[^A-Z0-9\.]+#i', '_', $filename);
 		
-		case 'xml':
-		$this->response->setXML($data);
-		$response = $this->response->getBody();
-		// replace data line numbers 
-		// CI replaces integer keys with "item{int}"
-		$response = preg_replace('#<item[0-9]+>#', '<item>', $response);
-		$response = preg_replace('#</item[0-9]+>#', '</item>', $response);
-		break;
+		$extension = (string) pathinfo($filename, PATHINFO_EXTENSION);
+		$mimetype = (string) config('Mimes')::guessTypeFromExtension($extension);
+		if(!$mimetype) throw new \exception("{$extension} files are not supported");
 		
-		default:
-		$filetype = 'csv';
-		$data['format'] = $filetype;
-		$response = view("export/{$layout}", $data);
-		// remove DEBUG comments from view
-		$response = preg_replace('#<!--.*-->[\r\n]#', '', $response);
-		/* https://stackoverflow.com/questions/33592518/how-can-i-setting-utf-8-to-csv-file-in-php-codeigniter
-		prepend BOM to UTF8 file downloads
-		*/
-		$response = "\xEF\xBB\xBF" . $response; 
-	}
-	
-	if(false) {
-		// view response for debug
-		if($filetype=='csv') {
-			$this->response->setHeader('content-type', 'text/plain;charset=UTF-8'); 
+		$ci_format = new \CodeIgniter\Format\Format(config('Format'));
+		$formatter = $ci_format->getFormatter($mimetype);
+		
+		$vartype = gettype($data);
+		if($vartype=='object') $vartype = get_class($data);
+		switch($vartype) {
+			case 'App\Views\Htm\Cattable':
+			$data = match($mimetype) {
+				'text/csv' => $data->flattened,
+				default => $data->tree
+			};
+			break;
+			// default: leave as raw data
 		}
+		
+		$response = $formatter->format($data);
+	} 
+	catch(\throwable $ex) {
+		$echo = true;
+		$mimetype = 'text/plain';
+		$response = $ex->getMessage();
+	}
+		
+	if($echo) {
+		// echo to screen
+		$disallowed = ['text/csv'];
+		if(in_array($mimetype, $disallowed)) $mimetype = 'text/plain';
+		$this->response->setHeader('content-type', "{$mimetype};charset=UTF-8");
 		return $response;
 	}
-		
-	// send download
-	$filename = "{$filetitle}.{$filetype}";
+	
+	/*
+	https://stackoverflow.com/questions/33592518/how-can-i-setting-utf-8-to-csv-file-in-php-codeigniter
+	prepend BOM to UTF8 file downloads for Excel
+	*/
+	if($mimetype=='text/csv') {
+		$response = "\xEF\xBB\xBF" . $response;
+	}
 	return $this->response->download($filename, $response);
 }
 
-protected function saveplayer($event_id, $name, $html) {
+protected function savepage($filename, $html, $event_id=0) {
 	/* used by 
 	App\Controllers\Control\Player
 	App\Controllers\Control\Teamtime
@@ -132,18 +141,22 @@ protected function saveplayer($event_id, $name, $html) {
 	
 	// remove timestamp info
 	$html = preg_replace('#\?t=\d+"#', '"', $html);
-	// make paths relative and hide footers
+	
+	// hide elements with class "savepage-hide"
+	$pattern = '/<(\w+) .*savepage-hide.*>/U';
+	$html = preg_replace($pattern, '<$1 style="display:none">', $html);
+	
+	// make paths relative
 	$replacements = [
 		[base_url('app/'), 'app/'],
 		[base_url("public/events/{$event_id}/music/"), 'music/'],
-		['<footer ', '<footer style="display:none;" '],
 	];
 	foreach($replacements as $replacement) {
 		$html = str_replace($replacement[0], $replacement[1], $html);
 	}
-	
+		
 	# return $html; // debug
-	return $this->response->download($name, $html);	
+	return $this->response->download($filename, $html);	
 }
 
 }

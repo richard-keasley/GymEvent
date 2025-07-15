@@ -1,16 +1,12 @@
 <?php
 $format = $format ?? 'htm';
-$headings = $headings ?? [];
+$thead = $thead ?? true;
 $export = $export ?? [];
-# d($export);
-# print_r($headings);
+if(!$export) return;
  
-$cattable = new \App\Views\Htm\Cattable($headings);
-$cattable->data = $export;
-$cattable->table_header = $table_header ?? true;
-# echo $cattable; return;
+$headings = $headings ?? [];
+$cattable = new \App\Views\Htm\Cattable($export, $headings);
+$cattable->table_header = $thead;
+echo $cattable;
 
-echo match($format) {
-	'htm' => $cattable->__toString(),
-	default => $cattable->csv()
-};
+# d($export, $headings, $cattable);

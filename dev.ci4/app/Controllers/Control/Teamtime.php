@@ -12,7 +12,7 @@ function index() {
 	$this->data['breadcrumbs'] = null;
 	$this->data['title'] = 'TT control';
 	$this->data['heading'] = 'Teamtime control panel';
-	$this->data['head'] = '<link rel="stylesheet" type="text/css" href="/app/teamtime/admin.css">';
+	$this->data['stylesheets'][] = 'teamtime/admin.css';
 	
 	$cmd = $this->request->getPost('cmd');
 	if($cmd=='progjump') {
@@ -171,7 +171,7 @@ function player($action='') {
 	$page = view("player/teamtime", $this->data);
 	
 	return ($action=='save') ?
-		$this->saveplayer($event_id, 'player.htm', $page) :
+		$this->savepage('player.htm', $page, $event_id) :
 		$page ;
 	
 }

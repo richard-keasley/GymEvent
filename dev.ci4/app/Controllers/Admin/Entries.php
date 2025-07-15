@@ -4,27 +4,23 @@ use \App\Libraries\Teamtime as tt_lib;
 
 class Entries extends \App\Controllers\BaseController {
 	
-private $ent_model = null;
-private $evt_model = null;
 private $found = false;
 
 function __construct() {
 	$this->data['breadcrumbs'][] = 'admin';
 	$this->data['breadcrumbs'][] = 'admin/events';
-	$this->ent_model = new \App\Models\Entries;
-	$this->evt_model = new \App\Models\Events;
 	$this->data['title'] = "entries";
 	$this->data['heading'] = "Event entries - admin";
 }
 	
 private function find($event_id, $orderby='num') {
-	$this->data['event'] = $this->evt_model->find($event_id);
+	$this->data['event'] = model('Events')->find($event_id);
 	if(!$this->data['event']) {
 		$message = "Can't find event {$event_id}";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
 	
-	$this->data['entries'] = $this->ent_model->evt_discats($event_id, 1, $orderby);
+	$this->data['entries'] = model('Entries')->evt_discats($event_id, 1, $orderby);
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title;
 	if(!$this->found) {
@@ -35,19 +31,8 @@ private function find($event_id, $orderby='num') {
 }
 	
 public function index() {
-	$mdl_events = new \App\Models\Events();
-	$events = [];
-	$sql = "SELECT DISTINCT `events`.`id` FROM `events` 
-	INNER JOIN `evt_disciplines` ON `evt_disciplines`.`event_id`=`events`.`id`
-	WHERE `events`.`clubrets`=2
-	ORDER BY `events`.`date` DESC";
-	$query = $mdl_events->db->query($sql);
-	foreach($query->getResultArray() as $row) {
-		$events[] = $mdl_events->find($row['id']);
-		#$events[] = new \App\Entities\Event($row);
-
-	}
-	$this->data['events'] = $events;	
+	
+	$this->data['events'] = model('Events')->where('clubrets', 2)->findall();
 	$this->data['body'] = 'admin_entries';
 	$this->data['base_url'] = 'entries/view';
 	return view('events/index', $this->data);
@@ -63,13 +48,13 @@ public function view($event_id=0, $format='plain') {
 	$this->data['heading'] .= ' - entries';
 	
 	if($this->request->getPost('renumber')) {
-		$this->ent_model->renumber($event_id);
+		model('Entries')->renumber($event_id);
 		$this->data['messages'][] = ['Event renumbered', 'success'];
 		$this->find($event_id, $orderby);
 	}
 	
 	// view
-	foreach($this->ent_model->get_errors($event_id) as $error) {
+	foreach(model('Entries')->get_errors($event_id) as $error) {
 		$this->data['messages'][] = $error;
 	}
 	$this->data['format'] = $format;
@@ -116,8 +101,7 @@ public function clubs($event_id=0) {
 		
 	$download = $this->request->getGet('dl');
 	if($download=='clubs') {
-		$export = ['export' => $tbody];
-		return $this->download($export, 'table', $download);
+		return $this->download('clubs.csv', $tbody);
 	}
 		
 	$this->data['tbody'] = $tbody;
@@ -139,7 +123,7 @@ public function edit($event_id=0) {
 	if($this->request->getPost('save')) {
 		// update
 		$col_names = ['category_id', 'user_id', 'num', 'name', 'dob', 'guest', 'opt'];
-		$entries = $this->ent_model->cat_entries($filter['catid']);
+		$entries = model('Entries')->cat_entries($filter['catid']);
 		$data = [];
 		foreach($entries as $entry) {
 			foreach($col_names as $col_name) {
@@ -157,10 +141,10 @@ public function edit($event_id=0) {
 			# d($data);
 			
 			if($data['name']=='#delrow') {
-				$this->ent_model->delete($entry->id, 1);
+				model('Entries')->delete($entry->id, 1);
 			}
 			else {
-				$this->ent_model->update($entry->id, $data);
+				model('Entries')->update($entry->id, $data);
 			}
 		}
 		
@@ -173,7 +157,7 @@ public function edit($event_id=0) {
 		}
 		if($data['name']) {
 			$data['category_id'] = $filter['catid'];
-			$this->ent_model->add_entry($data);
+			model('Entries')->add_entry($data);
 		}
 		
 		// read 
@@ -189,7 +173,7 @@ public function edit($event_id=0) {
 			];
 			// update
 			$entrycat = new \App\Entities\Entrycat($cat_arr);
-			$this->ent_model->entrycats->save($entrycat);
+			model('Entries')->entrycats->save($entrycat);
 			// read 
 			$this->find($event_id);
 		}
@@ -224,7 +208,7 @@ public function edit($event_id=0) {
 			}
 		}
 		if($update) {	
-			$this->ent_model->update($ent_ids, $update);
+			model('Entries')->update($ent_ids, $update);
 			// read 
 			$this->find($event_id);
 		}
@@ -247,7 +231,7 @@ public function edit($event_id=0) {
 	}
 			
 	// view
-	foreach($this->ent_model->get_errors($event_id) as $error) {
+	foreach(model('Entries')->get_errors($event_id) as $error) {
 		$this->data['messages'][] = $error;
 	}
 	$this->data['breadcrumbs'][] = "admin/entries/edit/{$event_id}";
@@ -308,7 +292,7 @@ public function categories($event_id=0) {
 				foreach(['name', 'abbr'] as $col_name) {
 					$dis_arr[$col_name] = $this->request->getPost("dis{$dis->id}_{$col_name}");
 				}
-				$this->ent_model->update_discipline($dis->id, $dis_arr);
+				model('Entries')->update_discipline($dis->id, $dis_arr);
 				foreach($dis->cats as $cat) {
 					foreach($col_names as $col_name) {
 						$fld_name = "cat{$cat->id}_{$col_name}";
@@ -318,10 +302,10 @@ public function categories($event_id=0) {
 					$cat_arr['sort'] = sprintf('%03d', $cat_arr['sort']);
 					
 					if($cat_arr['name']=='#delrow') {
-						$cat_entries = $this->ent_model->cat_entries($cat->id);
+						$cat_entries = model('Entries')->cat_entries($cat->id);
 						// no delete when there are entries
 						if(!count($cat_entries)) {
-							$this->ent_model->delete_category($cat->id);
+							model('Entries')->delete_category($cat->id);
 						}
 					}
 					else {
@@ -334,7 +318,7 @@ public function categories($event_id=0) {
 							$cat_arr[$array_field] = $fld_val;
 						}
 						$entrycat = new \App\Entities\Entrycat($cat_arr);
-						$this->ent_model->entrycats->save($entrycat);
+						model('Entries')->entrycats->save($entrycat);
 					}
 				}
 				// look for new category
@@ -346,7 +330,7 @@ public function categories($event_id=0) {
 				if($cat_arr['name']) {
 					$cat_arr['discipline_id'] = $dis->id;
 					$cat_arr['sort'] = sprintf('%03d', $cat_arr['sort']);
-					$new_id = $this->ent_model->entrycats->insert($cat_arr);
+					$new_id = model('Entries')->entrycats->insert($cat_arr);
 					if($new_id) $this->data['messages'][] = ['Created new category', 'success'];
 				}
 			}
@@ -361,10 +345,10 @@ public function categories($event_id=0) {
 		if($source && $dest && $source!==$dest) {
 			$where = ['category_id'=>$source];
 			$ent_ids = [];
-			foreach($this->ent_model->where($where)->findAll() as $tmp) $ent_ids[] = $tmp->id;
+			foreach(model('Entries')->where($where)->findAll() as $tmp) $ent_ids[] = $tmp->id;
 			if($ent_ids) {
 				$update = ['category_id'=>$dest];
-				$this->ent_model->update($ent_ids, $update);
+				model('Entries')->update($ent_ids, $update);
 				// read 
 				$this->find($event_id);
 				$this->data['messages'][] = ['Merged categories', 'success'];
@@ -374,12 +358,9 @@ public function categories($event_id=0) {
 		
 	// view
 	$this->data['breadcrumbs'][] = "admin/entries/categories/{$event_id}";
-	
 	$this->data['col_names'] = $col_names;
-	
 	$this->data['heading'] .= ' - categories';
 	$this->data['filter'] = $filter;
-
 	return view('entries/categories', $this->data);
 }
 
@@ -481,16 +462,13 @@ public function import($event_id=0) {
 				$discat[$dis_key]['cats'][$cat_key]['entries'][] = $line;		
 			}
 			# d($discat); throw new \Exception('not finished yet', $ex_code);
-			
-			$ret_model = new \App\Models\Clubrets;
-			$usr_model = new \App\Models\Users;
-			
+				
 			// delete existing data
-			$this->ent_model->delete_event($event_id);
-			$ret_model->delete_event($event_id);
+			model('Entries')->delete_event($event_id);
+			model('Clubrets')->delete_event($event_id);
 			
 			// import new data
-			$current_user = $usr_model->find(session('user_id'));
+			$current_user = model('Users')->find(session('user_id'));
 			$ent_count = 0;
 			$clubs = [];
 			foreach($discat as $dis) {
@@ -498,9 +476,9 @@ public function import($event_id=0) {
 					'event_id' => $event_id, 
 					'name' => $dis['name']
 				];
-				$dis_id = $this->ent_model->add_discipline($arr);
+				$dis_id = model('Entries')->add_discipline($arr);
 				if(!$dis_id) {
-					$errors = $this->ent_model->errors();
+					$errors = model('Entries')->errors();
 					$errors[] = "Couldn't create discipline '{$dis['name']}'"; 
 					throw new \Exception(implode('<br>', $errors), $ex_code);
 				}
@@ -511,17 +489,17 @@ public function import($event_id=0) {
 						'exercises' => $cat['exercises'], 
 						'sort' => str_pad($sort, 3, '0', STR_PAD_LEFT)
 					];
-					$cat_id = $this->ent_model->entrycats->insert($arr);
+					$cat_id = model('Entries')->entrycats->insert($arr);
 					if(!$cat_id) {
-						$errors = $this->ent_model->errors();
+						$errors = model('Entries')->errors();
 						$errors[] = "Couldn't create category '{$cat['name']}'"; 
 						throw new \Exception(implode('<br>', $errors), $ex_code);
 					}
 					foreach($cat['entries'] as $entry) {
 						$entry['category_id'] = $cat_id;
 
-						$club = $usr_model->withDeleted()->where('name', $entry['club'])->first();
-						if(!$club) $club = $usr_model->withDeleted()->where('abbr', $entry['club'])->first();
+						$club = model('Users')->withDeleted()->where('name', $entry['club'])->first();
+						if(!$club) $club = model('Users')->withDeleted()->where('abbr', $entry['club'])->first();
 						
 						if($club) {
 							$user_id = $club->id;
@@ -534,12 +512,12 @@ public function import($event_id=0) {
 								'email' => $current_user->email
 							];
 							$club = new \App\Entities\User($data);
-							if($usr_model->insert($data)) {
-								$user_id = $usr_model->db->insertID();
+							if(model('Users')->insert($data)) {
+								$user_id = model('Users')->db->insertID();
 								$this->data['messages'][] = ["Created club {$data['name']}", 'success'];		
 							}
 							else {
-								$errors = $usr_model->errors();
+								$errors = model('Users')->errors();
 								$errors[] = "Couldn't create club '{$entry['club']}'"; 
 								throw new \Exception(implode('<br>', $errors), $ex_code);
 							}
@@ -550,7 +528,7 @@ public function import($event_id=0) {
 						# d($club);
 						# d($entry);
 						
-						$this->ent_model->add_entry($entry);
+						model('Entries')->add_entry($entry);
 						$ent_count++;
 					}
 				}
@@ -563,7 +541,7 @@ public function import($event_id=0) {
 					'user_id'=>$user_id
 				];
 				$clubret = new \App\Entities\Clubret($clubret);
-				$ret_model->insert($clubret);
+				model('Clubrets')->insert($clubret);
 			}
 			
 			$message = sprintf('%u entries, %u clubs', $ent_count, count($clubs));
@@ -588,7 +566,7 @@ public function import($event_id=0) {
 	return view('entries/import', $this->data);
 }
 
-public function export($event_id=0, $download=0) {
+public function export($event_id=0) {
 	$this->find($event_id);
 	$tg_id = tt_lib::get_value('settings', 'event_id');
 	$teamgym = ($tg_id==$event_id);
@@ -596,14 +574,13 @@ public function export($event_id=0, $download=0) {
 	$source = $this->request->getGet('source');
 	
 	// build user table
-	$usr_model = new \App\Models\Users();
 	$ent_users = [];
 	foreach($this->data['entries'] as $dis) { 
 		foreach($dis->cats as $cat) { 
 			foreach($cat->entries as $entry) {
 				$user_id = $entry->user_id;
 				if($user_id && empty($ent_users[$user_id])) {
-					$ent_users[$user_id] = $usr_model->withDeleted()->find($user_id);
+					$ent_users[$user_id] = model('Users')->withDeleted()->find($user_id);
 				}
 			}	
 		}
@@ -660,7 +637,7 @@ public function export($event_id=0, $download=0) {
 			}
 		}
 		$this->data['layout'] = 'cattable';
-		$this->data['table_header'] = true;
+		$this->data['thead'] = true;
 		$this->data['headings'] = ['dis', 'cat'];
 		break;
 		
@@ -682,7 +659,7 @@ public function export($event_id=0, $download=0) {
 			}
 		}
 		$this->data['layout'] = 'cattable';
-		$this->data['table_header'] = false;
+		$this->data['thead'] = false;
 		$this->data['headings'] = ['dis', 'cat'];
 		break;
 		
@@ -710,7 +687,7 @@ public function export($event_id=0, $download=0) {
 		array_multisort($sort, $export_table);
 
 		$this->data['layout'] = 'table';
-		$this->data['table_header'] = true;
+		$this->data['thead'] = true;
 		break;
 		
 		case 'running_order':
@@ -784,7 +761,7 @@ public function export($event_id=0, $download=0) {
 			array_multisort($sort, $export_table);
 			# d($sort);
 			$this->data['layout'] = 'cattable';
-			$this->data['table_header'] = false;
+			$this->data['thead'] = false;
 			$this->data['headings'] = ['runorder', 'dis', 'cat'];
 		}
 		break;
@@ -936,7 +913,14 @@ public function export($event_id=0, $download=0) {
 		# 'xml' => "code"
 	];
 	if(isset($this->data['filetypes'][$filetype])) {
-		return $this->download($this->data, $this->data['layout'], $source, $filetype);
+		$filename = "{$source}.{$filetype}";
+		if($this->data['layout']=='cattable') {
+			$cattable = new \App\Views\Htm\Cattable($this->data['export'], $this->data['headings']);
+			$cattable->table_header = $this->data['thead'];
+			$this->data['export'] = $cattable;
+		}
+		
+		return $this->download($filename, $this->data['export']);
 	}
 	
 	// view

@@ -58,7 +58,7 @@ if(!$event->deleted_at) {
 		echo getlink("admin/entries/export/{$event->id}", 'export');
 	}
 
-	if(in_array($event->music, [2, 3])) {
+	if(in_array($event->music, [1, 2])) {
 		echo getlink("admin/music/view/{$event->id}", 'music');
 	}
 
@@ -82,7 +82,7 @@ foreach($states as $fldname) {
 <section class="my-2 row"><?php 
 $arr = [
 	'<span class="fw-bold">Current disk usage:</span>',
-	'Disk space: ' . formatBytes($file_size),
+	'Disk space: ' . number_to_size($file_size, 0),
 	'File count: ' . count($files)
 ];
 if(count($files) && $event->deleted_at) { 

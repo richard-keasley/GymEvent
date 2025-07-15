@@ -46,7 +46,7 @@ public function view($stub='index') {
 		$message = "Can't find '{$stub}'";
 		throw \App\Exceptions\Exception::not_found($message);
 	}
-	$html = (new \App\Models\Htmls)->find_path($option['html_path']);
+	$html = model('Htmls')->find_path($option['html_path']);
 	if(!$html) {
 		$message = "Can't find '{$option['html_path']}'";
 		throw \App\Exceptions\Exception::not_found($message);

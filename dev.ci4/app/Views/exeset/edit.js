@@ -13,10 +13,11 @@ init: function() {
 modals: null,
 show: function(showname) {
 	// prepare modal content
+	console.log(showname);
 	switch(showname) {
 		// ensure it's saved
-		case 'view-judge':
-		case 'view-default':
+		case 'view-landscape':
+		case 'view-portrait':
 		case 'data':
 		exesets.update(showname);
 		break;

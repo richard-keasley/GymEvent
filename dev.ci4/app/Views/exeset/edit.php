@@ -5,7 +5,7 @@ $buttons = [
 		'class' => "btn btn-outline-secondary bi bi-box-arrow-left",
 		'title' => "Exit routine builder",
 		'type' => "button",
-		'href' => base_url("general"),	
+		'href' => dirname(current_url()),	
 	],
 	'update' => [
 		'class' => "btn btn-primary bi bi-check-square",
@@ -17,13 +17,13 @@ $buttons = [
 		'class' => "btn btn-primary bi bi-tablet",
 		'title' => "Printer friendly version of these routines",
 		'type' => "button",
-		'onclick' => "esedit.show('view-default')",
+		'onclick' => "esedit.show('view-portrait')",
 	],
-	'judge' => [
+	'landscape' => [
 		'class' => "btn btn-primary bi bi-tablet-landscape",
 		'title' => "Judging notes (landscape)",
 		'type' => "button",
-		'onclick' => "esedit.show('view-judge')",
+		'onclick' => "esedit.show('view-landscape')",
 	],
 	'clone' => [
 		'class' => "btn btn-primary bi bi-plus-square",
@@ -78,12 +78,13 @@ foreach($buttons as $key=>$button) {
 }
  
 $this->section('content');
+
 $attrs = ['id'=>"editform"];
 echo form_open('', $attrs);
 
 $arr = [
 	$buttons['portrait']['button'],
-	$buttons['judge']['button']
+	$buttons['landscape']['button']
 ];
 $idxsel = implode(' ', $arr);
 include __DIR__ . '/idxsel.php';
@@ -183,7 +184,7 @@ foreach($rule_options as $key=>$label) {
 
 <div class="modal-body">
 <?php 
-$keys = ['portrait', 'judge', 'update', 'clone', 'delete', 'data'];
+$keys = ['portrait', 'landscape', 'update', 'clone', 'delete', 'data'];
 $tbody = [];
 foreach($keys as $key) {
 	$tbody[] = $buttons[$key];

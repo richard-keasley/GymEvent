@@ -2,16 +2,18 @@
 
 $this->section('content');
 
-$payload = [
-	csrf_token() => csrf_hash(),
-	'test' => "Random"
+$request = [
+	'test' => "Random",
+	'value' => '999',
 ];
-d($payload);
 
-$attrs = [];
-echo form_open('api/exeset/test/post', $attrs, $payload); ?>
-<input type="submit" value="OK">
-<button type="button" onclick="testapi()">API</button>
+$attrs = [
+	'id' => "apiform",
+];
+echo form_open('', $attrs, $request); ?>
+<button type="submit">OK</button>
+<button type="button" onclick="testapi('post')">post API</button>
+<button type="button" onclick="testapi('get')">get API</button>
 <?php echo form_close();
 
 $this->endSection();
@@ -20,25 +22,91 @@ $this->section('top'); ?>
 
 <?php $this->endSection();
 
-$this->section('bottom'); 
-d($_POST);
-?>
+$this->section('bottom'); ?>
+
+<h6>Form vars</h6>
+<pre><?php 
+	foreach($request as $key=>$val) 
+	echo "{$key}: {$val}\n";
+?></pre>
+
+<h6>HTM request</h6>
+<pre id="htmrequest"></pre>
+
+<h6>HTM response</h6>
+<pre><?php 
+	foreach($_POST as $key=>$val) 
+	echo "{$key}: {$val}\n";
+?></pre>
+
+<h6>API request</h6>
+<pre id="apirequest"></pre>
+
+<h6>API response</h6>
+<pre id="apiresponse"></pre>
+
 <script>
-function testapi() {
-	var payload = <?php echo json_encode($payload);?>;
-	var api = '<?php echo site_url("api/exeset/exeval");?>';
-	// var api = '<?php echo site_url("/api/teamtime/control");?>';
-	console.log(api, payload);
-	$.post(api, payload)
-		.done(function( response ) {
-			console.log(  response );
-		})
-		.fail(function( response ) {
-			console.log(  response );
+$(function() {
+	var arr = {};
+	$.each($('#apiform').serializeArray(), function(i, field) {
+		arr[field.name] = field.value;
+	});
+	htm_arr(arr, '#htmrequest'); 
+});
+
+function htm_arr(arr, selector) {
+	var htm = '';
+	$.each(arr, function(key, value) {
+		htm += `${key}: ${value} \n`;
+	});
+	$(selector).html(htm);
+}
+
+function testapi(method='post') {
+	var request = <?php echo json_encode($request);?>;
+	var api = '<?php 
+		$api = 'api/home/test';
+		if($param) $api .= "/{$param}";
+		echo site_url($api); 
+		?>';
+		
+	if(method!=='get') method = 'post';
+	
+	if(method=='post') {
+		request = securepost(request);
+	}
+	
+	// console.log(api, request);
+	htm_arr(request, '#apirequest');
+		
+	$.get(api, request)
+	.done(function(response) {
+		api_response(response);	
+	})
+	.fail(function(response) {
+		api_response(response, true);
+	});
+}
+
+function api_response(response, is_err=false) {
+	var htm = '';
+	
+	if(is_err) {
+		// console.error(response);
+		htm = get_error(response);
+		$('#apiresponse').html();
+	}
+	else {
+		// console.log(response);
+		$.each(response, function(section, arr) {
+			htm += `${section}\n`;
+			$.each(arr, function(key, value) {
+				htm += ` - ${key}: ${value} \n`;
+			});
+			
 		});
-	
-	
-	
+	}
+	$('#apiresponse').html(htm);
 }
 </script>
 <?php 

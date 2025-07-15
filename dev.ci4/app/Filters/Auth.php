@@ -13,14 +13,12 @@ https://codeigniter4.github.io/userguide/incoming/filters.html
 
 public function before(RequestInterface $request, $arguments = null) {
 	\App\Libraries\Auth::init();
-	
-	$request_path = $request->getUri()->getPath();
 
 	$messages = [];
 	
 	$allowed = \App\Libraries\Auth::$lgn_model->check_ip($request->getIPAddress());
 	if(!$allowed) {
-		throw new \App\Exceptions\Request('Oops! Overuse injury', 423);
+		throw \App\Exceptions\Exception::exception('Oops! Overuse injury', 423);
 	}
 	
 	// check for existing login / logout
@@ -75,6 +73,7 @@ public function before(RequestInterface $request, $arguments = null) {
 	}
 	
 	// check permissions
+	$request_path = $request->getUri()->getPath();
 	$allowed = \App\Libraries\Auth::check_path($request_path);
 	if($allowed) return;
 
@@ -94,7 +93,8 @@ public function before(RequestInterface $request, $arguments = null) {
 			$code = 401;
 		}
 	}
-	throw new \App\Exceptions\Request($message, $code);
+	throw \App\Exceptions\Exception::exception($message, $code);
+	# throw new \App\Exceptions\Request($message, $code);
 }
 
 public function after(RequestInterface $request, ResponseInterface $response, $arguments = null) {

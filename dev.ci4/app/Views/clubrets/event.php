@@ -68,9 +68,8 @@ if($staff) {
 
 <div class="d-flex flex-wrap gap-3 d-print-block"><?php
 	$headings = ['dis', 'cat'];
-	$cattable = new \App\Views\Htm\Cattable($headings);
-	$cattable->data = $participants;
-	echo $cattable;
+	echo new \App\Views\Htm\Cattable($participants, $headings);
+	
 ?></div>
 
 <?php 

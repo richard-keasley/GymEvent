@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="robots" content="noindex">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="/app/teamtime/display.css" rel="stylesheet" type="text/css">
 <?php 
-echo \App\ThirdParty\jquery::script(); 
-if(!empty($title)) printf('<title>%s</title>', $title);
+$stylesheets = ['teamtime/display.css'];
+$this->setData(['stylesheets' => $stylesheets]);
+echo $this->include('includes/html-head');
+
 echo $this->include('teamtime/js');
-if(!empty($style)) echo "<style>{$style}</style>";
 ?>
 </head>
 <body><?php 
+
 echo $this->renderSection('body'); 
-echo $this->include('js/foot');
-?></body>
+
+echo $this->include('includes/html-foot');
+?>
+</body>
 </html>

@@ -51,6 +51,7 @@ $this->endSection();
 
 $this->section('bottom'); ?>
 <script>
+
 const receiver = {
 
 url: '<?php echo $source_url;?>',

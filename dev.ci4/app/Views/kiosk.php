@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<?php 
-$viewdir = realpath(config('Paths')->viewDirectory);
-include "{$viewdir}/includes/_head_common.php";
-
-$minifier = new MatthiasMullie\Minify\CSS("{$viewdir}/kiosk.css");
-$buffer = $minifier->minify();
-if($buffer) echo "<style>{$buffer}</style>";
+<head><?php 
+$viewpath = config('Paths')->viewDirectory;
+$style = $style ?? '';
+$style .= file_get_contents("{$viewpath}/kiosk.css");
+$this->setData(['style' => $style]);
+echo $this->include('includes/html-head');
 ?>
 </head>
 <body id="kiosk">
@@ -23,5 +21,8 @@ echo base_url($link);
 <img id="logo" src="/app/profile/logo.png">
 
 </div>
+<?php
+echo $this->include('includes/html-foot');
+?>
 </body>
 </html>
