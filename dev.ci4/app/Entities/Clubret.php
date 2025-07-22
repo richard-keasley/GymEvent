@@ -234,7 +234,9 @@ public function fees($op=1) {
 		$retval = $vartable->htm();
 		
 		if($this->event->stafffee && !$this->stafffee) {
-			$retval .= sprintf('<p class="text-bg-light fw-bold">%s has been added to your entry fee to cover staff costs for this event', number_to_currency($this->event->stafffee));
+			$retval .= 
+				$this->event->staff . 
+				sprintf('<p class="text-bg-light fw-bold">%s has been added to your entry fee to cover staff costs for this event', number_to_currency($this->event->stafffee)) ;
 		}
 		
 		return $retval;
