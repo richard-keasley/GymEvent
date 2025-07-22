@@ -17,5 +17,5 @@ if($event->dates['clubrets_closes']) {
 
 ?>
 <div><?php echo $event->payment;?></div>
-<?php echo $clubret->fees('htm');?>
+<?php echo $this->include('clubrets/fees'); ?>
 <p><strong>NB:</strong> Save any changes to update the fees calculation.</p>

@@ -201,7 +201,7 @@ static function discat_sort($discats, $dis, $cat) {
 	return $ret;
 }
 
-public function fees($op=1) {
+public function getFees() {
 	$fees = []; $evt_fees = []; 
 	foreach($this->participants as $participant) {
 		$dis = $participant['dis'];
@@ -221,28 +221,7 @@ public function fees($op=1) {
 		$fees['_stafffee'] = ['Staff', $this->event->stafffee];
 	}
 		
-	if($op=='fees') return $fees;
-	
-	$total = array_sum(array_column($fees, 1));
-	
-	if($op=='htm') {
-		$vartable = new \App\Views\Htm\Vartable;
-		foreach($fees as $fee) {
-			$vartable->items[$fee[0]] = \App\Views\Htm\Table::money($fee[1]);
-		}
-		$vartable->footer = [\App\Views\Htm\Table::money($total), 'Total'];
-		$retval = $vartable->htm();
-		
-		if($this->event->stafffee && !$this->stafffee) {
-			$retval .= 
-				$this->event->staff . 
-				sprintf('<p class="text-bg-light fw-bold">%s has been added to your entry fee to cover staff costs for this event', number_to_currency($this->event->stafffee)) ;
-		}
-		
-		return $retval;
-	}
-	
-	return $total;
+	return $fees;
 }
 
 }

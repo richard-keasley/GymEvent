@@ -61,7 +61,7 @@ foreach($event->clubrets() as $rowkey=>$clubret) {
 		if(!in_array($dis, $cols)) $cols[] = $dis;
 	}
 		
-	$cr_fees = $clubret->fees('fees');
+	$cr_fees = $clubret->fees;
 	$fees[$rowkey] = array_sum(array_column($cr_fees, 1));
 }
 

@@ -79,7 +79,7 @@ if($html) { ?>
 <section>
 <h2>Payment</h2>
 <div class="textarea"><?php echo $event->payment;?></div>
-<?php echo $clubret->fees('htm'); ?>
+<?php echo $this->include('clubrets/fees'); ?>
 </section>
 <?php $this->endSection(); 
 
