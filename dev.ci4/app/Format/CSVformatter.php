@@ -73,8 +73,7 @@ public function format($data) {
 	ob_start();	
 	foreach($tbody as $rowkey=>$row) {
 		foreach($row as $colkey=>$cell) {
-			$row[$colkey] = (new xlcell($colkey, $rowkey, $cell))->__toString();
-			# $row[$colkey] = html_entity_decode((string) $xlcell, $quote_style, 'UTF-8');
+			$row[$colkey] = (string) new xlcell($colkey, $rowkey, $cell);
 		}
 		fputcsv($fp, $row, $opt['sep'], $opt['enc'], $opt['esc'], $opt['eol']);
 	}
@@ -96,12 +95,13 @@ function __construct($x=0, $y=0, $content='')  {
 		'y' => intval($y) + 1,
 		'content' => strval($content)
 	];
+	
 	$text = $this->attributes['content'];
 	
 	// process if starts with equals
 	if(preg_match('#^=.+#i', $text)) {
 		// find all matches of [x,y] 
-		preg_match_all('#\[[^\]]+\]#', $text, $vals);
+		preg_match_all('#\[.+\]#U', $text, $vals);
 		$vals = $vals[0] ?? [];
 		// convert [x,y] to A1 
 		foreach(array_unique($vals) as $val) {
@@ -124,23 +124,26 @@ function __toString() {
 	return $this->text;
 }
 
-function address($dx='', $dy='') {
-	$lock_char = '$';
+function address($dx=0, $dy=0) {
 	$dx = strval($dx);
 	$dy = strval($dy);
+	$lock_char = '$';
 	
-	$int = intval(trim($dx, $lock_char));
-	$x = $this->x + $int;
-	$x = chr(64 + $x);
 	$lock = strpos($dx, $lock_char)===0;
-	if($lock) $x = "{$lock_char}{$x}";
+	$int = intval(trim($dx, $lock_char));
+	$col = $this->x + $int;
+	if($col<1) return '#range';
+	if($col>26) return '#range';
+	$col = chr($col + 64);
+	if($lock) $col = $lock_char . $col;
 	
-	$int = intval(trim($dy, $lock_char));
-	$y = $this->y + $int;
 	$lock = strpos($dy, $lock_char)===0;
-	if($lock) $y = "{$lock_char}{$y}";
+	$int = intval(trim($dy, $lock_char));
+	$row = $this->y + $int;
+	if($row<1) return '#range';
+	if($lock) $row = $lock_char . $row;
 
-	return "{$x}{$y}";
+	return $col . $row;
 }
 
 }

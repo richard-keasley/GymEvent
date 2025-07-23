@@ -4,7 +4,8 @@ namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Format\JSONFormatter;
-use CodeIgniter\Format\XMLFormatter;
+use App\Format\XMLFormatter;
+use App\Format\CSVFormatter;
 
 class Format extends BaseConfig
 {
@@ -45,7 +46,7 @@ class Format extends BaseConfig
         'application/json'	=> JSONFormatter::class,
         'application/xml'	=> XMLFormatter::class,
         'text/xml'			=> XMLFormatter::class,
-		'text/csv'			=> \App\Format\CSVformatter::class,
+		'text/csv'			=> CSVFormatter::class,
     ];
 
     /**
