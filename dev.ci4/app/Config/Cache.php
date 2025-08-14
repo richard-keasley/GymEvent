@@ -21,7 +21,7 @@ class Cache extends BaseConfig
      * The name of the preferred handler that should be used. If for some reason
      * it is not available, the $backupHandler will be used in its place.
      */
-    public string $handler = 'memcached';
+    public string $handler = 'file';
 
     /**
      * --------------------------------------------------------------------------
@@ -32,7 +32,7 @@ class Cache extends BaseConfig
      * unreachable. Often, 'file' is used here since the filesystem is
      * always available, though that's not always practical for the app.
      */
-    public string $backupHandler = 'file';
+    public string $backupHandler = 'dummy';
 
     /**
      * --------------------------------------------------------------------------
@@ -78,7 +78,7 @@ class Cache extends BaseConfig
      * Your file storage preferences can be specified below, if you are using
      * the File driver.
      *
-     * @var array<string, int|string|null>
+     * @var array{storePath?: string, mode?: int}
      */
     public array $file = [
         'storePath' => WRITEPATH . 'cache/',
@@ -95,7 +95,7 @@ class Cache extends BaseConfig
      *
      * @see https://codeigniter.com/user_guide/libraries/caching.html#memcached
      *
-     * @var array<string, bool|int|string>
+     * @var array{host?: string, port?: int, weight?: int, raw?: bool}
      */
     public array $memcached = [
         'host'   => '127.0.0.1',
@@ -108,10 +108,11 @@ class Cache extends BaseConfig
      * -------------------------------------------------------------------------
      * Redis settings
      * -------------------------------------------------------------------------
+     *
      * Your Redis server can be specified below, if you are using
      * the Redis or Predis drivers.
      *
-     * @var array<string, int|string|null>
+     * @var array{host?: string, password?: string|null, port?: int, timeout?: int, database?: int}
      */
     public array $redis = [
         'host'     => '127.0.0.1',

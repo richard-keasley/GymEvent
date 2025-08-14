@@ -69,23 +69,32 @@ function testapi(method='post') {
 		if($param) $api .= "/{$param}";
 		echo site_url($api); 
 		?>';
-		
-	if(method!=='get') method = 'post';
 	
-	if(method=='post') {
+	switch(method) {
+		case 'get':
+		$.get(api, request)
+		.done(function(response) {
+			api_response(response);	
+		})
+		.fail(function(response) {
+			api_response(response, true);
+		});
+		break;
+		
+		default:
+		method = 'post';
 		request = securepost(request);
+		$.post(api, request)
+		.done(function(response) {
+			api_response(response);	
+		})
+		.fail(function(response) {
+			api_response(response, true);
+		});
 	}
 	
 	// console.log(api, request);
 	htm_arr(request, '#apirequest');
-		
-	$.get(api, request)
-	.done(function(response) {
-		api_response(response);	
-	})
-	.fail(function(response) {
-		api_response(response, true);
-	});
 }
 
 function api_response(response, is_err=false) {
@@ -98,13 +107,7 @@ function api_response(response, is_err=false) {
 	}
 	else {
 		// console.log(response);
-		$.each(response, function(section, arr) {
-			htm += `${section}\n`;
-			$.each(arr, function(key, value) {
-				htm += ` - ${key}: ${value} \n`;
-			});
-			
-		});
+		htm = JSON.stringify(response, null, 2);
 	}
 	$('#apiresponse').html(htm);
 }

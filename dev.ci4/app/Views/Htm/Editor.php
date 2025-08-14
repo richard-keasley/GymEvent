@@ -1,7 +1,7 @@
 <?php namespace App\Views\Htm;
 
 class Editor implements \stringable {
-const version = '7.9.1'; # '7.8.0' 
+const version = '8.0.2'; # '7.9.1'; 
 static $script_done = false;
 
 private $attrs = [
@@ -12,6 +12,7 @@ private $attrs = [
 
 private $params = [
 	'license_key' => 'gpl',
+	'selector' => ".htmeditor textarea",
 	'relative_urls' => false,
 	'remove_script_host' => false,
 	'promotion' => false,
@@ -23,10 +24,10 @@ private $params = [
 ];
 
 public function __construct($attrs=[], $params=[]) {
-	foreach($attrs as $key=>$val) $this->attrs[$key] = $val;
-	
 	$this->params['document_base_url'] = base_url();
 	$this->params['content_css'] = site_url('/app/gymevent.css?v=1');
+	
+	foreach($attrs as $key=>$val) $this->attrs[$key] = $val;
 	foreach($params as $key=>$val) $this->params[$key] = $val;
 }
 
@@ -36,11 +37,15 @@ public function __get($key) {
 
 public function __toString() {
 ob_start();
-$id = "{$this->attrs['name']}-editor";
-$this->params['selector'] = "#{$id} textarea";
-printf('<div id="%s">', $id);
+echo '<div class="htmeditor">';
 if($this->label) printf('<label>%s</label>', humanize($this->name));
 echo form_textarea($this->attrs);
+echo '</div>';
+
+if(self::$script_done) return ob_get_clean();
+
+self::$script_done = true;
+
 ?>
 <script>
 $(function() {
@@ -48,15 +53,9 @@ tinymce.init(<?php echo json_encode($this->params);?>);
 });
 </script>
 <?php
-echo '</div>';
 
-if(!self::$script_done) {
-	$attrs = [
-		'src' => sprintf('/app/tinymce_%s/tinymce/js/tinymce/tinymce.min.js', self::version)
-	];
-	printf('<script %s></script>', stringify_attributes($attrs));
-}
-self::$script_done = true;
+$src = sprintf('/app/tinymce_%s/tinymce/js/tinymce/tinymce.min.js', self::version);
+echo script_tag($src);
 
 return ob_get_clean();
 }
