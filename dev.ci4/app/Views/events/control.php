@@ -40,8 +40,10 @@ $this->section('content');
 # d($event);
 
 // start returns summary
-if($event->clubrets==1) {
-echo '<h3>Returns summary</h3>';
+if($event->clubrets==1) { ?>
+<section class="my-1">
+<h3>Returns summary</h3>
+<?php
 
 $fees = []; $cols = []; $count = []; $tbody = [];
 foreach($event->clubrets() as $rowkey=>$clubret) {
@@ -125,6 +127,7 @@ foreach($event->participants() as $dis) { ?>
 <?php } ?>
 </div>
 
+</section>
 <?php }
 // end returns summary
 
