@@ -151,7 +151,7 @@ $input = [
 	'class' => 'form-control',
 	'cols' => 5,
 	'rows' => 5,
-	'style' => "min-width:6em;"
+	'style' => "min-width:8em;"
 ]
 ];
 

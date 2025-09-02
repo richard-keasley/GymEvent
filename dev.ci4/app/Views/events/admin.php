@@ -110,13 +110,6 @@ foreach($dates as $key=>$val) {
 		printf($format, humanize($key), $date->format('j F'));
 	}
 }
-if(!$event->deleted_at && in_array($event->clubrets, [0, 1, 2])) {
-	$event_url = site_url("admin/clubrets/event/{$event->id}");
-	$format = '<li>Link: %s</li>';
-	printf($format, anchor($event_url));
-}
-
-
 ?></ul>
 </section>
 
