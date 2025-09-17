@@ -1,7 +1,7 @@
 <?php $this->extend('default');
 
 $this->section('top'); ?>
-<ul class="list-group">
+<ul class="list-group mb-3">
 <?php
 $format = '<li class="list-group-item list-group-item-%s">%s.</li>';
 
@@ -39,103 +39,94 @@ printf($format, $colour, $message);
 $this->section('content'); 
 # d($event);
 
-// start returns summary
-if($event->clubrets==1) { ?>
-<section class="my-1">
-<h3>Returns summary</h3>
-<?php
+$items = [];
+$format = '<p class="p-1"><a href="?dl=%1$s" class="btn btn-secondary" title="Download %1$s as spreadsheet">download <span class="bi-download"></span></a></p>%2$s';
 
-$fees = []; $cols = []; $count = []; $tbody = [];
-foreach($event->clubrets() as $rowkey=>$clubret) {
-	$user = $clubret->user;
-	$label = $user ? $user->name : '[unknown]' ;
-	
-	$tbody[$rowkey] = [
-		'club' => $label,
-		'updated' => $clubret->updated
-	];
-			
-	$count[$rowkey] = [];
-	foreach($clubret->participants as $participant) {
-		$dis = $participant['dis'];
-		if(empty($count[$rowkey][$dis])) $count[$rowkey][$dis] = 0;
-		$count[$rowkey][$dis]++;
-		if(!in_array($dis, $cols)) $cols[] = $dis;
-	}
-		
-	$cr_fees = $clubret->fees;
-	$fees[$rowkey] = array_sum(array_column($cr_fees, 1));
-}
-
-foreach($tbody as $rowkey=>$row) {
-	foreach($cols as $colkey) {
-		$val = $count[$rowkey][$colkey] ?? 0;
-		$tbody[$rowkey][$colkey] = $val;
-	}
-	$tbody[$rowkey]['fees'] = $fees[$rowkey];
-}
-
-// add table cell formatting
-$thead = []; $tfoot = [];
-foreach($tbody as $rowkey=>$row) {
-	if(!$thead) {
-		foreach($row as $key=>$val) {
-			$thead[$key] = ($key);
-			$arr = array_column($tbody, $key);
-			$tfoot[$key] = match($key) {
-				'club' => count($arr),
-				'updated' => '',
-				'fees' => \App\Views\Htm\Table::money(array_sum($arr)),
-				default => \App\Views\Htm\Table::number(array_sum($arr))
-			};
+foreach($tables as $tbl_key=>$tbody) {
+	// add table cell formatting
+	$thead = []; $tfoot = [];
+	switch($tbl_key) {
+		case 'club_returns':
+		foreach($tbody as $rowkey=>$row) {
+			if(!$thead) {
+				foreach($row as $key=>$val) {
+					$thead[$key] = $key;
+					$arr = array_column($tbody, $key);
+					$tfoot[$key] = match($key) {
+						'club' => count($arr),
+						'email' => '',
+						'staff' => '',
+						'terms' => '',
+						'updated' => '',
+						'fees' => \App\Views\Htm\Table::money(array_sum($arr)),
+						default => \App\Views\Htm\Table::number(array_sum($arr))
+					};
+				}
+			}
+			foreach($row as $key=>$val) {
+				$tbody[$rowkey][$key] = match($key) {
+					'club' => $val,
+					'email' => $val,
+					'staff' => $val ? 
+						'<span class="bi-check text-success"></span>' : 		
+						'<span class="bi-x text-danger"></span>' ,
+					'terms' => $val ? 
+						'<span class="bi-check text-success"></span>' : 		
+						'<span class="bi-x text-danger"></span>' ,
+					'updated' => \App\Views\Htm\Table::date($val),
+					'fees' => \App\Views\Htm\Table::money($val),
+					default => \App\Views\Htm\Table::number($val)
+				};
+			}
 		}
+		break;
+		
+		case 'categories':
+		foreach($tbody as $rowkey=>$row) {
+			if(!$thead) {
+				$thead = array_keys($row);
+				$arr = array_column($tbody, 'count');
+				$tfoot = [
+					'', 
+					\App\Views\Htm\Table::number(count($arr)), 
+					\App\Views\Htm\Table::number(array_sum($arr))
+				];
+			}
+			$tbody[$rowkey]['count'] = \App\Views\Htm\Table::number($row['count']);
+		}
+		break;
+		
+		case 'staff':
+		foreach($tbody as $rowkey=>$row) {
+			if(!$thead) {
+				$thead = array_keys($row);
+			}
+		}
+		break;
+		
+		case 'participants':
+		foreach($tbody as $rowkey=>$row) {
+			if(!$thead) {
+				$thead = array_keys($row);
+			}
+			$tbody[$rowkey]['DoB'] = \App\Views\Htm\Table::date($row['DoB']);
+		}
+		break;
 	}
-	foreach($row as $key=>$val) {
-		$tbody[$rowkey][$key] = match($key) {
-			'club' => $row[$key],
-			'updated' => \App\Views\Htm\Table::date($val),
-			'fees' => \App\Views\Htm\Table::money($val),
-			default => \App\Views\Htm\Table::number($val)
-		};
-	}
+	
+	$table = \App\Views\Htm\Table::load('responsive');
+	$table->setHeading($thead);
+	$table->setFooting($tfoot);	
+	
+	$items[] = [
+		'heading' => humanize($tbl_key),
+		'content' => sprintf($format, $tbl_key, $table->generate($tbody)),
+	];
 }
-	
-$table = \App\Views\Htm\Table::load('responsive');
-$table->setHeading($thead);
-$table->setFooting($tfoot);	
-# d($tbody);
-echo $table->generate($tbody);
-	
-?>
-<h3>Participants</h3>
-<div class="row">
-<?php
-$table = \App\Views\Htm\Table::load('small');
-foreach($event->participants() as $dis) { ?>
-	<div class="col-auto">
-	<?php 
-	$tbody = []; $total = 0;
-	foreach($dis['cats'] as $cat) { 
-		$count = count($cat['entries']);
-		$total += $count;
-		$tbody[] = [$cat['name'], ['data'=>$count,'class'=>"text-end"]];
-	}
-	$table->setHeading([$dis['name'], ['data'=>$total,'class'=>"text-end"]]);
-	echo $table->generate($tbody);
-	?>
-	</div>
-<?php } ?>
-</div>
 
-</section>
-<?php }
-// end returns summary
+echo new \App\Views\Htm\Tabs($items);
 
 $this->endSection();
-
-
-
-
 
 $this->section('bottom'); ?>
 <div class="toolbar nav"><?php

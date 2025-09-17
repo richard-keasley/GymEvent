@@ -30,7 +30,7 @@ echo $table->generate($tbody);
 ?></div>
 <?php 
 
-$attrs = ['id' => "upload"];
+$attrs = ['id' => "upload", 'onsubmit'=>"show_busy(this);"];
 $hidden = ['cmd' => "upload"];
 echo form_open_multipart('', $attrs, $hidden);
 ?>
@@ -58,16 +58,9 @@ echo number_to_size(\App\Libraries\Track::$max_filesize);
 </fieldset>
 
 <script>
-$('#upload').submit(function() {
-	$('#upload button')
-		.attr('disabled', 'disabled')
-		.html('<span class="spinner-border spinner-border-sm" role="status"></span> wait');
-});
-
-$('input[name=file]')[0].onchange = function() {
+$('#upload input[name=file]')[0].onchange = function() {
     $('#upload').submit();
 };
-
 </script>
 <?php 
 echo form_close();

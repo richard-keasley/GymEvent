@@ -19,6 +19,7 @@ foreach($summary as $row) {
 			$arr = array_column($summary, $key);
 			$tfoot[$key] = match($key) {
 				'club' => count($arr),
+				'email' => '',
 				'updated' => '',
 				'staff' => '',
 				'terms' => '',
@@ -30,11 +31,12 @@ foreach($summary as $row) {
 	
 	foreach($row as $key=>$val) {
 		$tr[$key] = match($key) {
-			'fees' => \App\Views\Htm\Table::money($val),
-			'updated' => \App\Views\Htm\Table::time($val),
-			'terms' => $val,
-			'staff' => $val,
 			'club' => $val,
+			'email' => $val,
+			'updated' => \App\Views\Htm\Table::time($val),
+			'staff' => $val,
+			'terms' => $val,
+			'fees' => \App\Views\Htm\Table::money($val),
 			default => \App\Views\Htm\Table::number($val)
 		};		
 	}

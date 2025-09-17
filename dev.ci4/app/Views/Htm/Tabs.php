@@ -1,6 +1,6 @@
 <?php namespace App\Views\Htm;
 
-class Tabs {
+class Tabs implements \stringable {
 public $id = '';
 public $selected = null;
 public $items = [];
@@ -18,6 +18,10 @@ public $format = [
 public function __construct($items=[], $id='tabs') {
 	$this->items = $items;
 	$this->id = $id;
+}
+
+public function __toString():string {
+	return $this->htm();
 }
 
 public function set_item($heading, $content, $key=null) {

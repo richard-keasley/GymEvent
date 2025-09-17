@@ -235,7 +235,10 @@ public function entries() {
 	return $model->evt_discats($this->id);
 }
 
+private $_participants = null;
 public function participants() {
+	if(!is_null($this->_participants)) return $this->_participants;
+	
 	// get a sorted list of participants from club returns 
 	$mdl_users = new \App\Models\Users();
 	$participants = [];
@@ -334,7 +337,8 @@ public function participants() {
 	}
 	array_multisort($dis_sort, $participants);
 	
-	return $participants;
+	$this->_participants = $participants;
+	return $this->_participants;
 }
 
 private $_staff = null;

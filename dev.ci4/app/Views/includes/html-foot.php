@@ -31,6 +31,12 @@ function error_reason(status) {
 	return status>499 ? 'server error' : 'client error' ;
 }
 
+function show_busy(el) {
+	$btns = $(el).find('button.btn');
+	$btns.attr('disabled', 'disabled')
+		.html('<span class="spinner-border spinner-border-sm" role="status"></span> wait');
+}
+
 function securepost(request) {
 <?php
 // add in security fields before posting

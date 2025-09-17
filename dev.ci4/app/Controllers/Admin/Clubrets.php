@@ -176,6 +176,7 @@ public function event($event_id=0) {
 		
 		$tbody[$rowkey] = [
 			'club' => $club,
+			'email' => $user ? $user->email : '',
 			'updated' => $clubret->updated
 		];
 		
