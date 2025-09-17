@@ -3,7 +3,7 @@
 $this->section('top'); ?>
 <ul class="list-group mb-3">
 <?php
-$format = '<li class="list-group-item list-group-item-%s">%s.</li>';
+$format = '<li class="list-group-item list-group-item-%s">%s</li>';
 
 $state = intval($event->clubrets);
 $colour = match($state) {
@@ -11,11 +11,10 @@ $colour = match($state) {
 	2 => 'warning',
 	default => 'danger'
 };
-$message = 'Entries for this event are ';
-$message .= match($state) {
-	1 => 'open',
-	2 => 'completed',
-	default => 'closed'
+$message = match($state) {
+	1 => 'Entries for this event are open.',
+	2 => 'Entries for this event are completed. Entries may have been edited since the closing date.',
+	default => 'Entries for this event are closed.'
 };
 printf($format, $colour, $message);
 
@@ -25,11 +24,10 @@ $colour = match($state) {
 	2 => 'warning',
 	default => 'danger'
 };
-$message = 'Music upload is ';
-$message .= match($state) {
-	1 => 'open',
-	2 => 'completed',
-	default => 'inactive'
+$message = match($state) {
+	1 => 'Music upload is open.',
+	2 => 'Music upload is completed.',
+	default => 'Music upload is inactive.'
 };
 printf($format, $colour, $message);
 ?>
