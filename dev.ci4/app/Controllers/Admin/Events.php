@@ -133,42 +133,40 @@ public function view($event_id=0) {
 	$tbody = [];
 	if($this->data['event']->clubrets==2) { 
 		$base_edit = "/admin/entries/edit/{$event_id}";
-		$tbody = [];
+		$tbody = []; $export = [];
 		foreach($this->data['event']->entries() as $diskey=>$dis) { 
 			$cats = [];
 			foreach($dis->cats as $cat) {
-				$label = $cat->name;
 				$count = count($cat->entries);
-				if($download!='entries') {
-					$params = [
-						'disid' => $dis->id,
-						'catid' =>$cat->id
-					];
-					$href = $base_edit .'?' . http_build_query($params);
-					$label = anchor($href, $label, ['title' => 'Edit category']);
-				}
+				$params = [
+					'disid' => $dis->id,
+					'catid' =>$cat->id
+				];
+				$href = $base_edit .'?' . http_build_query($params);
+				
 				$cats[] = [
-					'category' => $label, 
+					'category' => anchor($href, $cat->name, ['title' => 'Edit category']), 
 					'count' => $count
 				];
+				
+				$export[] = [
+					'dis' => $dis->name,
+					'cat' => $cat->name,
+					'count' => $count,
+				];
 			}
+			
 			$tbody[$diskey] = [
 				'disname' => $dis->name,
 				'cats' => $cats
-			];
+			];	
 		}
-	}
-	if($download=='entries') {
-		$export = [];
-		foreach($tbody as $dis) {
-			$row = ['dis' => $dis['disname']];
-			foreach($dis['cats'] as $cat) {
-				$export[] = array_merge($row, $cat);
-			}
-		}
-		return $this->download('entries.csv', $export);
 	}
 	$this->data['entries'] = $tbody;
+	if($download=='entries') {
+		return $this->download('entries.csv', $export);
+	}
+	# d($tbody, $export);
 			
 	// view
 	$this->data['back_link'] = "/admin/events";
