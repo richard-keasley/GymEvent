@@ -140,7 +140,8 @@ foreach($dates as $key=>$val) {
 	foreach($entries as $dis) {
 		foreach($dis->cats as $cat) {
 			if($cat->music) {
-				$selector[$dis->id][$cat->id] = $cat->name;
+				// make key a string to stop JS sorting by key
+				$selector[$dis->id]["c{$cat->id}"] = $cat->name;
 			}
 		}
 		if(!empty($selector[$dis->id])) $dis_opts[$dis->id] = $dis->name;
@@ -150,6 +151,7 @@ foreach($dates as $key=>$val) {
 		$dis_opts = ['-'] + $dis_opts;
 	}
 	echo form_dropdown('dis', $dis_opts, $filter['dis'], 'class="form-control"');
+	# d($selector);
 ?>
 </div>
 <div class="col-auto">
@@ -246,6 +248,7 @@ function update_selector(dis_id) {
 	$cat_sel.find('option').remove();
 	$cat_sel.append('<option value="0">-</option>');
 	$.each(selector[dis_id], function(value, text) {
+		value = value.substr(1); // strip force string
 		selected = value==filter.cat ? 'selected="selected"' : '' ;
         $cat_sel.append('<option value="'+value+'" '+selected+'>'+text+'</option>');
 	});
