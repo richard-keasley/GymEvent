@@ -731,35 +731,9 @@ public function export($event_id=0) {
 			$this->data['layout'] = 'table';
 		}
 		else {
-			$sort = [];
-			foreach($this->data['entries'] as $dis) {
-				foreach($dis->cats as $cat) {
-					foreach($cat->entries as $rowkey=>$entry) {
-						$row = [
-							'runorder' => implode(', ', $entry->get_rundata('runorder')),
-							'dis' => $dis->name,
-							'cat' => $cat->name,
-							'num' => $entry->num,
-							'club' => $ent_users[$entry->user_id]->abbr ?? '?',
-							'name' => $entry->name
-						];
-						if($entry->guest) $row['name'] .= ' (G)';
-						
-						if(!$rowkey) $has_opt = $entry->opt;
-						if($has_opt) $row['opt'] = humanize($entry->opt);
-						$export_table[] = $row;
-						
-						$sort[] = [
-							$entry->get_rundata('order'),
-							$dis->abbr,
-							$cat->sort,
-							$entry->num
-						];
-					}
-				}
-			}
-			array_multisort($sort, $export_table);
-			# d($sort);
+			$entries = new \App\Libraries\Entries($event_id);
+			// running order
+			$export_table = $entries->export('running_order');
 			$this->data['layout'] = 'cattable';
 			$this->data['thead'] = false;
 			$this->data['headings'] = ['runorder', 'dis', 'cat'];
@@ -890,7 +864,6 @@ public function export($event_id=0) {
 		// preserve sort order for Kev
 		foreach($export_table as $rowkey=>$row) {
 			$export_table[$rowkey]['order'] = sprintf('%04d', $rowkey + 1);
-			# $export_table[$rowkey]['order'] = implode('-', $sort[$rowkey]);
 		}
 	}
 

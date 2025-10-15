@@ -1,10 +1,10 @@
 <?php
-$format = $format ?? 'htm';
-$thead = $thead ?? true;
 $export = $export ?? [];
+$thead = $thead ?? true;
+$headings = $headings ?? [];
+
 if(!$export) return;
  
-$headings = $headings ?? [];
 $cattable = new \App\Views\Htm\Cattable($export, $headings);
 $cattable->table_header = $thead;
 echo $cattable;

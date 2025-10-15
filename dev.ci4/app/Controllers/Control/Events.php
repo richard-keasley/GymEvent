@@ -91,30 +91,6 @@ public function view($event_id=0) {
 	}
 	
 	if(in_array($this->data['event']->clubrets, [2])) {
-		// participants detail 
-		$tbody = []; $count = 1;
-		foreach($this->data['event']->participants() as $dis) { 
-			foreach($dis['cats'] as $cat) { 	 
-				foreach($cat['entries'] as $entkey=>$entry) {
-					if(!$entry['club']) $entry['club'] = 'unknown';
-					$row = [
-						'#' => $count++,
-						'dis' => $dis['name'],
-						'cat' => humanize($cat['name']),
-						'club' => $entry['club'],
-						'name' => $entry['name'],
-						'DoB' => $entry['dob'],
-					];
-					if(!$entkey) $has_opt = $entry['opt'];
-					if($has_opt) $row['opt'] = humanize($entry['opt']);
-					$tbody[] = $row;
-				}
-			}
-		}
-		$this->data['tables']['participants'] = $tbody;
-	}
-	
-	if(in_array($this->data['event']->clubrets, [2])) {
 		// staff	
 		$tbody = [];
 		foreach($this->data['event']->staff() as $entkey=>$entry) {
@@ -128,11 +104,25 @@ public function view($event_id=0) {
 			];
 		}
 		$this->data['tables']['staff'] = $tbody;
+				
+		$entries = new \App\Libraries\Entries($event_id);
+				
+		// running order
+		$this->data['tables']['running_order'] = $entries->export('running_order');
+	
 	}
 	
 	$dl = $this->request->getGet('dl');
 	$export = $this->data['tables'][$dl] ?? null;
 	if($export) {
+		switch($dl) {
+			case 'running_order':
+			$cattable = new \App\Views\Htm\Cattable($export, ['runorder', 'dis', 'cat']);
+			$cattable->table_header = false;
+			$export = $cattable;
+			break;
+		}
+		
 		$filename = "{$this->data['event']->title}_{$dl}.csv";
 		return $this->download($filename, $export);
 	}

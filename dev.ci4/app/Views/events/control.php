@@ -42,7 +42,8 @@ $format = '<p class="p-1"><a href="?dl=%1$s" class="btn btn-secondary" title="Do
 
 foreach($tables as $tbl_key=>$tbody) {
 	// add table cell formatting
-	$thead = []; $tfoot = [];
+	$layout = 'table';
+	$thead = []; $tfoot = []; $headings = false;
 	switch($tbl_key) {
 		case 'club_returns':
 		foreach($tbody as $rowkey=>$row) {
@@ -110,15 +111,24 @@ foreach($tables as $tbl_key=>$tbody) {
 			$tbody[$rowkey]['DoB'] = \App\Views\Htm\Table::date($row['DoB']);
 		}
 		break;
+		
+		case 'running_order':
+		$layout = 'cattable';
+		$thead = false;
+		$headings = ['runorder', 'dis', 'cat'];
+		break;
 	}
 	
-	$table = \App\Views\Htm\Table::load('responsive');
-	$table->setHeading($thead);
-	$table->setFooting($tfoot);	
+	$data = [
+		'thead' => $thead,
+		'tfoot' => $tfoot,
+		'headings' => $headings,
+		'export' => $tbody,
+	];
 	
 	$items[] = [
 		'heading' => humanize($tbl_key),
-		'content' => sprintf($format, $tbl_key, $table->generate($tbody)),
+		'content' => sprintf($format, $tbl_key, view("export/{$layout}", $data)),
 	];
 }
 
