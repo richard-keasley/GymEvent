@@ -8,4 +8,9 @@ protected $casts = [
 	'music' => 'json-array',
 ];
 
+public function setSort($value) {
+	$this->attributes['sort'] = sprintf('%03d', $value);
+	return $this;
+}
+
 }

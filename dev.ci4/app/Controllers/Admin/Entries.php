@@ -297,9 +297,11 @@ public function categories($event_id=0) {
 					foreach($col_names as $col_name) {
 						$fld_name = "cat{$cat->id}_{$col_name}";
 						$fld_val = trim($this->request->getPost($fld_name));
+						if(in_array($col_name, $array_fields)) {
+							$fld_val = csv_array($fld_val);
+						}
 						$cat_arr[$col_name] = $fld_val;
 					}					
-					$cat_arr['sort'] = sprintf('%03d', $cat_arr['sort']);
 					
 					if($cat_arr['name']=='#delrow') {
 						$cat_entries = model('Entries')->cat_entries($cat->id);
@@ -310,27 +312,24 @@ public function categories($event_id=0) {
 					}
 					else {
 						$cat_arr['id'] = $cat->id;
-						foreach($array_fields as $array_field) {
-							$fld_val = [];
-							foreach(explode(',', str_replace(' ', '', $cat_arr[$array_field])) as $val) {
-								if($val) $fld_val[] = $val;
-							}
-							$cat_arr[$array_field] = $fld_val;
-						}
 						$entrycat = new \App\Entities\Entrycat($cat_arr);
 						model('Entries')->entrycats->save($entrycat);
 					}
 				}
+				
 				// look for new category
 				foreach($col_names as $col_name) {
 					$fld_name = "newrow_{$col_name}";
-					$fld_val = $this->request->getPost($fld_name);
+					$fld_val = trim($this->request->getPost($fld_name));
+					if(in_array($col_name, $array_fields)) {
+						$fld_val = csv_array($fld_val);
+					}
 					$cat_arr[$col_name] = $fld_val;
 				}
 				if($cat_arr['name']) {
 					$cat_arr['discipline_id'] = $dis->id;
-					$cat_arr['sort'] = sprintf('%03d', $cat_arr['sort']);
-					$new_id = model('Entries')->entrycats->insert($cat_arr);
+					$entrycat = new \App\Entities\Entrycat($cat_arr);
+					$new_id = model('Entries')->entrycats->insert($entrycat);
 					if($new_id) $this->data['messages'][] = ['Created new category', 'success'];
 				}
 			}

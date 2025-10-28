@@ -47,7 +47,7 @@ function getlink($path, $label='', $attrs=[]) {
 
 function csv_array($csv, $limit=null) {
 	// take a line from form input and return array
-	$csv = trim($csv);
+	$csv = filter_string($csv);
 	if($limit) {
 		$arr = preg_split("/[\s,]+/", $csv, $limit);
 		return array_pad($arr, $limit, '');
@@ -62,7 +62,7 @@ function filter_json($val, $array=1) {
 	return $array ? [] : new stdClass();
 }
 
-function filter_string($input) {
+function filter_string($input) : string {
 	// ensure POST value is valid string
 	
 	// return string
