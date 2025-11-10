@@ -180,7 +180,7 @@ public function populate($event_id) {
 			$cat_arr = [
 				'discipline_id' => $dis_id, 
 				'name' => humanize($cat['name']), 
-				'sort' => sprintf('%03u', $sort * 5)
+				'sort' => sprintf('%03u', $sort * 10)
 			];
 			$cat_id = $this->entrycats->insert($cat_arr);
 			if($cat_id) {
