@@ -149,6 +149,7 @@ protected function savepage($filename, $html, $event_id=0) {
 	// make paths relative
 	$replacements = [
 		[base_url('app/'), 'app/'],
+		['app/sse.php', base_url('app/sse.php')], // preserve SSE
 		[base_url("public/events/{$event_id}/music/"), 'music/'],
 	];
 	foreach($replacements as $replacement) {
