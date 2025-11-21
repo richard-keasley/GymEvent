@@ -117,13 +117,20 @@ if($dis->id==$filter['disid']) { ?>
 		$last[] = getlink("admin/entries/edit/{$event->id}?disid={$dis->id}&catid={$cat->id}", 'edit');
 				
 		$count = count($cat->entries);
+		
 		if($count) {
 			$last[] = sprintf('<button title="merge this category" class="btn btn-warning bi-layer-backward" type="button" onClick="mergerow(%u)"></button>', $cat->id);
+		}
+		
+		$last[] = '<button title="add a category" class="btn btn-success bi-plus-circle" type="button" onClick="copyrow(this)"></button>';
+			
+		if($count) {
 			$last[] = $count;
 		}
 		else {
 			$last[] = '<button class="btn btn-danger bi-trash" type="button" onClick="delrow(this)"></button>';
 		}
+		
 		$tr['last'] = implode(' ', $last);
 		$tbody[] = $tr;
 	}
@@ -174,6 +181,39 @@ function mergerow(cat_id) {
 	$('#mergeModal input[name=source]').val(cat_id);
 	var mergeModal = new bootstrap.Modal('#mergeModal', {});
 	mergeModal.show();
+}
+
+
+function copyrow(btn) {
+	var $row = $(btn).closest('tr');
+	var vals = {};
+	var key, copyval;
+	
+	var keys = ['name', 'abbr', 'sort', 'music'];
+	$inputs = $row.find('input').each(function(index) {
+		key = keys[index] ?? null ;
+		if(key) {
+			copyval = this.value;
+			if(key=='sort') copyval = Number(copyval) + 1;
+			vals[key] = copyval;			
+		}
+	});
+		
+	keys = ['exercises'];
+	$inputs = $row.find('select').each(function(index) {
+		key = keys[index] ?? null ;
+		if(key) {
+			copyval = this.value;
+			if(key=='exercises') copyval = Number(copyval);
+			vals[key] = copyval;			
+		}
+	});
+	
+	for(key in vals) {
+		$('#newrow > table [name=newrow_'+key+']').val(vals[key]);
+	}
+	
+	$row.closest('form').submit();		
 }
 
 function newrow(show) {
