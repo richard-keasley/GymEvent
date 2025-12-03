@@ -101,12 +101,19 @@ public function clubs($event_id=0) {
 	$this->data['entries'] = $this->data['event']->entries();
 	
 	$status = $this->request->getGet('status');
-	if(!isset(\App\Libraries\Track::state_labels[$status])) $status = 0;
-	$this->data['state_labels'] = $status ? [$status] : \App\Libraries\Track::state_labels;
+	$status_label = \App\Libraries\Track::state_labels[$status] ?? null ;
+	if($status_label) {
+		$this->data['state_labels'] = [$status_label];
+	}
+	else {
+		$this->data['state_labels'] = \App\Libraries\Track::state_labels;
+		$status = 'all';
+	}
 	$this->data['status'] = $status;
 		
 	// build table
 	$recipients = [];
+	$tracklists = [];
 	$tbody = []; $orderby = [];
 	$track = new \App\Libraries\Track();
 	$track->event_id = $event_id;
@@ -141,15 +148,22 @@ public function clubs($event_id=0) {
 							}
 						}
 						$tbody[$user_id][$state_label]++;
+						
+						if(!isset($tracklists[$user_id])) $tracklists[$user_id] = [];
+						$tracklists[$user_id][] = array_flatten_with_dots([
+							'entry' => $entry->toarray(),
+							'track' => $track->toarray(),
+						]);
 					}
 				}
 			}
 		}
 	}
-	array_multisort($orderby, $tbody);
+	array_multisort($orderby, $tbody);	
 	$this->data['tbody'] = $tbody;
 	
 	if($this->request->getPost('sendmail')) {
+		
 		$email = \Config\Services::email();
 		$email_subject = $this->request->getPost('subject');
 		$email_template = $this->request->getPost('body');
@@ -160,22 +174,38 @@ public function clubs($event_id=0) {
 		$placeholders = [
 			'event' => $this->data['event']->placeholders()
 		];
+		/*
+		Tiny MCE won't accept UL formatted as a loop for parser
+		Convert these are all processing 
+		*/
+		$html_ul = [
+			'{ul}' => '<ul>',
+			'{/ul}' => '</ul>',
+			'{li}' => '<li>',
+			'{/li}' => '</li>',
+		];
 		
 		$count = 0;
 		$error = null;
 		foreach($recipients as $recipient) {
 			$placeholders['user'] = $recipient->placeholders();
+			
 			$translate = array_flatten_with_dots($placeholders);
+			$translate['user.tracklist'] = $tracklists[$recipient->id] ?? [] ;
+			
 			$email_message = $parser->setData($translate)->renderString($email_template);
+			$email_message = strtr($email_message, $html_ul);
+						
 			$email->setMessage($email_message);
-
 			$email->setSubject($email_subject);
 			$email->setBCC($app_mailto);
 			$email_to = (ENVIRONMENT == 'production') ? $recipient->email : $app_mailto;
 			$email->setTo($email_to);
-			# d($translate); 
+			
+			# d($placeholders, $translate); 
 			# echo $email_message; 
-			# d($email); 
+			# d($email);
+			# continue;
 			
 			if($email->send()) {
 				$count++; 
@@ -194,7 +224,7 @@ public function clubs($event_id=0) {
 			
 	$this->data['title'] = $this->data['event']->title;
 	$this->data['heading'] = $this->data['event']->title;
-	
+
 	return view('music/clubs', $this->data);
 }
 

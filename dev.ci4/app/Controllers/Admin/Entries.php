@@ -112,7 +112,9 @@ public function edit($event_id=0) {
 	$this->find($event_id);
 	
 	$filter = []; $flds = ['disid', 'catid'];
-	foreach($flds as $fld) $filter[$fld] = $this->request->getGet($fld);
+	foreach($flds as $fld) {
+		$filter[$fld] = (int) $this->request->getGet($fld);
+	}
 	if(empty($filter['catid']) && $this->data['entries']) {
 		$dis = $this->data['entries'][0];
 		$filter['disid'] = $dis->id;
@@ -220,7 +222,7 @@ public function edit($event_id=0) {
 	$opt_count = 0;
 	foreach($this->data['entries'] as $dis) {
 		foreach($dis->cats as $cat) {
-			if($cat->id===$filter['catid']) {
+			if($cat->id==$filter['catid']) {
 				$this->data['exeset_id'] = $cat->exercises;
 				$this->data['cat_entries'] = $cat->entries;
 				foreach($cat->entries as $entry) {

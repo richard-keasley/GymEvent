@@ -16,7 +16,15 @@ static $max_filesize = 0; // max upload size [B]
 public $event_id = 0; 
 public $entry_num = 0; 
 public $exe = ''; // stored in db
-public $check_state = 0; // stored in db 
+public $check_state = 0; // stored in db
+function toArray() {
+	return [
+		'event_id' => $this->event_id, 
+		'entry_num' => $this->entry_num, 
+		'exe' => $this->exe, 
+		'check_state' => $this->check_state, 
+	];
+}
 
 static function enabled() {
 	return \App\Libraries\Auth::check_path('music', 0) != 'disabled';
@@ -130,22 +138,20 @@ public function playbtn($opts=[]) {
 }
 
 const state_labels = [
-	'missing' => 'missing', 
-	'unchecked' => 'unchecked', 
-	'ok' => 'ok', 
-	'archived' => 'archived', 
-	'withdrawn' => 'withdrawn'
+	'missing', 
+	'unchecked', 
+	'ok', 
+	'archived', 
+	'withdrawn',
 ];
 public function status() {
 	// returns a state_label
-	switch($this->check_state) {
-		case 1: // ok
-			return $this->file() ? 'ok' : 'archived' ;
-		case 2: // withdrawn
-			return 'withdrawn';
-		default: // unchecked
-			return $this->file() ? 'unchecked' : 'missing' ;
-	}
+	$key = match($this->check_state) {
+		1 => $this->file() ? 2 : 3, // OK
+		2 => 4, // withdrawn
+		default => $this->file() ? 1 : 0 // unchecked
+	};
+	return self::state_labels[$key];
 } 
 
 public function label() {

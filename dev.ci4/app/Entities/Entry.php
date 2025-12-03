@@ -4,13 +4,6 @@ use CodeIgniter\Entity\Entity;
 
 class Entry extends Entity {
 
-protected $casts = [
-	'user_id' => 'integer',
-	'category_id' => 'integer',
-	'guest' => 'integer',
-	'name' => 'string'
-];
-
 private $model;
 
 function breadcrumb($controller) {
@@ -85,7 +78,7 @@ public function getMusic() {
 	$entity_val = [];
 	$cat = $this->get_category();
 	foreach($cat->music as $exe) {
-		$entity_val[$exe] = isset($db_val[$exe]) ? $db_val[$exe] : 0 ;
+		$entity_val[$exe] = (int) ($db_val[$exe] ?? 0) ;
 	}
 	return $entity_val;
 }

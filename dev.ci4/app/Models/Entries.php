@@ -7,6 +7,11 @@ protected $table      = 'evt_entries';
 protected $primaryKey = 'id';
 protected $allowedFields = ['num', 'category_id', 'user_id', 'name', 'dob', 'guest', 'music', 'runorder', 'opt'];
 protected $returnType   = 'App\Entities\Entry';
+protected array $casts = [
+	'user_id' => 'int',
+	'category_id' => 'int',
+	'guest' => 'int',
+];
 
 protected $disciplines = null;
 protected $entrycats = null;
@@ -36,9 +41,15 @@ public function evt_discats($event_id, $entries=1, $orderby='num') {
 
 /* disciplines */
 
-public function evt_disciplines($event_id) {
+private function evt_disciplines($event_id) {
+	$retval = [];
 	$query = $this->disciplines->orderBy('name', 'ASC')->getWhere(['event_id'=>$event_id]);
-	return $query->getResult();
+	foreach($query->getResult() as $dis) {
+		$dis->id = (int) $dis->id;
+		$dis->event_id = (int) $dis->event_id;
+		$retval[] = $dis;
+	}
+	return $retval;
 } 
 
 public function update_discipline($id, $data) {
@@ -227,6 +238,12 @@ protected $table      = 'evt_categories';
 protected $primaryKey = 'id';
 protected $allowedFields = ['discipline_id', 'name', 'abbr', 'sort', 'exercises', 'music'];
 protected $returnType   = 'App\Entities\EntryCat';
+
+protected array $casts = [
+	'id' => 'int',
+	'discipline_id' => 'int',
+	'exercises' => 'int',
+];
 
 protected $validationRules = [
 	'discipline_id' => 'integer|greater_than[0]',

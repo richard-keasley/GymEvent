@@ -4,12 +4,6 @@ use CodeIgniter\Entity\Entity;
 
 class Clubret extends Entity {
 
-protected $casts = [
-	'user_id' => 'integer',
-	'event_id' => 'integer',
-	'stafffee' => 'integer'
-];
-
 static function enabled() {
 	return \App\Libraries\Auth::check_path('clubrets', 0) != 'disabled';
 }
@@ -37,17 +31,6 @@ public function setStaff($arr) {
 	}
 	$this->attributes['staff'] = json_encode($staff);
 	return $this;
-}
-	
-private $_event = null;
-public function event() {
-		d(debug_backtrace());
-
-	if(!$this->_event) {
-		$model = new \App\Models\Events();
-		$this->_event = $model->withDeleted()->find($this->event_id);
-	}
-	return $this->_event;
 }
 
 private $attrs = [];

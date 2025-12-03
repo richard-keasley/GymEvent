@@ -138,7 +138,7 @@ foreach($dates as $key=>$val) {
 <div class="col-auto"><?php 
 	$selector = []; $dis_opts = [];
 	foreach($entries as $dis) {
-		foreach($dis->cats as $cat) {
+		foreach($dis->cats as $cat) {	
 			if($cat->music) {
 				// make key a string to stop JS sorting by key
 				$selector[$dis->id]["c{$cat->id}"] = $cat->name;

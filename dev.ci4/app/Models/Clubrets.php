@@ -15,6 +15,13 @@ protected $allowedFields = [
 	'stafffee', 'terms',
 	'updated'
 ];
+protected array $casts = [
+	'id' => 'int',
+	'event_id' => 'int',
+	'user_id' => 'int',
+	'stafffee' => 'int',
+	'terms' => 'int',
+];
 
 public function tidy() {
 	$return = [];
