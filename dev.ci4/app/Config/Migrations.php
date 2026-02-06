@@ -25,9 +25,7 @@ class Migrations extends BaseConfig
      *
      * This is the name of the table that will store the current migrations state.
      * When migrations runs it will store in a database table which migration
-     * level the system is at. It then compares the migration level in this
-     * table to the $config['migration_version'] if they are not the same it
-     * will migrate up. This must be set.
+     * files have already been run.
      */
     public string $table = 'migrations';
 
@@ -40,7 +38,7 @@ class Migrations extends BaseConfig
      * using the CLI command:
      *   > php spark make:migration
      *
-     * Note: if you set an unsupported format, migration runner will not find
+     * NOTE: if you set an unsupported format, migration runner will not find
      *       your migration files.
      *
      * Supported formats:
@@ -49,4 +47,19 @@ class Migrations extends BaseConfig
      * - Y_m_d_His_
      */
     public string $timestampFormat = 'Y-m-d-His_';
+
+    /**
+     * --------------------------------------------------------------------------
+     * Enable/Disable Migration Lock
+     * --------------------------------------------------------------------------
+     *
+     * Locking is disabled by default.
+     *
+     * When enabled, it will prevent multiple migration processes
+     * from running at the same time by using a lock mechanism.
+     *
+     * This is useful in production environments to avoid conflicts
+     * or race conditions during concurrent deployments.
+     */
+    public bool $lock = false;
 }

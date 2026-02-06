@@ -6,10 +6,10 @@ use CodeIgniter\Config\BaseConfig;
 
 class Email extends BaseConfig
 {
-	public $fromEmail = 'website@gymevent.uk';
-	public $fromName = 'GymEvent';
-	public $userAgent = 'GymEvent website';
-	public $mailType = 'html';
+	public string $fromEmail = 'website@gymevent.uk';
+	public string $fromName = 'GymEvent';
+	public string $userAgent = 'GymEvent website';
+	public string $mailType = 'html';
 	
 	
 	
