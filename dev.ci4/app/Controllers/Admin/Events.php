@@ -114,16 +114,18 @@ public function view($event_id=0) {
 	$state = $this->request->getPost('state');
 	switch($state) {
 		case 'list':
-			$this->data['event']->deleted_at = null;
-			$this->mdl_events->save($this->data['event']);
-			$this->data['messages'][] = ['Event now listed', 'success'];
-			break;
+		$this->data['event']->deleted_at = null;
+		$this->mdl_events->save($this->data['event']);
+		$this->data['messages'][] = ['Event now listed', 'success'];
+		break;
+		
 		case 'hide':
-			$this->mdl_events->delete($event_id);
-			$this->data['messages'][] = ['Event hidden', 'danger'];
-			break;
+		$this->mdl_events->delete($event_id);
+		$this->data['messages'][] = ['Event hidden', 'danger'];
+		break;
+		
 		default:
-			$state = '';
+		$state = '';
 	}
 	if($state) $this->find($event_id);
 		
@@ -164,7 +166,7 @@ public function view($event_id=0) {
 	}
 	$this->data['entries'] = $tbody;
 	if($download=='entries') {
-		return $this->download('entries.csv', $export);
+		return $this->download('categories.csv', $export);
 	}
 	# d($tbody, $export);
 			

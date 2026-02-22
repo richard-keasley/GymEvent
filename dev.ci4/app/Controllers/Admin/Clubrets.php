@@ -343,9 +343,8 @@ public function names($event_id=0) {
 	return view('clubrets/names', $this->data);
 }
 
-private function export($export, $suffix='') {
-	$filename = $this->data['event']->title;
-	if($suffix) $filename .= "_{$suffix}";
+private function export($export, $filename='') {
+	if(!$filename) $filename = $this->data['event']->title;
 	$filename .= '.csv';
 	return $this->download($filename, $export);
 }
