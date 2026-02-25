@@ -6,6 +6,7 @@ $this->section('content'); ?>
 <getform name="selector" class="input-group">
 <label class="input-group-text">Select discipline to edit</label> 
 <select name="disid" class="form-control"><?php 
+
 foreach($entries as $dis) { 
 	$selected = $filter['disid']===$dis->id ? 'selected="selected"' : '' ;
 	printf('<option value="%s" %s>%s</option>', $dis->id, $selected, $dis->name);

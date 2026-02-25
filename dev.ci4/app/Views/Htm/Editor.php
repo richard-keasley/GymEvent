@@ -1,7 +1,7 @@
 <?php namespace App\Views\Htm;
 
 class Editor implements \stringable {
-const version = '8.0.2'; # '7.9.1'; 
+const version = '8.3.2'; # '8.0.2'
 static $script_done = false;
 
 private $attrs = [
