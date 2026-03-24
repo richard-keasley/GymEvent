@@ -1,4 +1,12 @@
-<div class="modal" id="dlgevterms" tabindex="-1" data-bs-backdrop="static">
+<?php 
+// no terms or password needed 
+if(!$event->terms && !$event->password) return '';
+// already agreed
+if($clubret->terms) return ''; 
+
+// show nag-screen every page load
+?>
+<div class="modal" id="dlgevterms" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
 <div class="modal-dialog">
 <div class="modal-content">
 
@@ -8,6 +16,19 @@
 	  
 <div class="modal-body">
 <?php
+
+if($event->password) { ?>
+<p>Please enter the event password: <?php
+$input = [
+	'name' => "evpass",
+	'type' => "text",
+	'autocomplete' => "new-password",
+	'class' => "form-control",
+];
+echo form_input($input);
+?></p>
+<?php }
+
 $terms_layout = 'view';
 include __DIR__ . '/_terms.php';
 $terms_layout = $this->data['terms_layout'] ?? null ;
@@ -26,31 +47,51 @@ $terms_layout = $this->data['terms_layout'] ?? null ;
 
 const evterms = {
 
+modal_id: 'dlgevterms',
 modal: null,
 checkbox: $('[name=terms]')[0],
 escape: '<?php echo site_url("events/view/{$event->id}");?>',
+password: <?php echo $event->password ? 'true' : 'false' ;?>,
 
 show: function() {
-	var el = document.getElementById('dlgevterms');
-	evterms.modal = new bootstrap.Modal(el);
-	evterms.modal.show();
+	var el = document.getElementById(this.modal_id);
+	this.modal = new bootstrap.Modal(el);
+	this.modal.show();
 	
 	el.addEventListener('hide.bs.modal', (event) => {
 		if(!evterms.checkbox.checked) {
-			// ESC is too fast, this won't happen
 			window.location.href = evterms.escape;
 		}
 	});
 },
 	
 accept: function() {
-	evterms.checkbox.checked = true;
-	evterms.modal.hide();
+	if(this.password) {
+		var postvars = {
+			password: $(`#${this.modal_id} [name=evpass]`).val(),
+		};
+		var api = '<?php echo base_url("api/events/password/{$event->id}");?>';
+		
+		$.post(api, securepost(postvars))
+		.done(function(response) {
+			if(response===true) evterms.confirm();
+			else {
+				alert('Your password is not correct');
+			}
+		});
+	}
+	else this.confirm();
+},
+
+confirm: function() {
+	this.checkbox.checked = true;
+	this.modal.hide();
 },
 
 decline: function() {
-	evterms.checkbox.checked = false;
-	evterms.modal.hide();
+	window.location.href = evterms.escape;
+	// evterms.checkbox.checked = false;
+	// evterms.modal.hide();
 },
 
 };

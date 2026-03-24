@@ -40,6 +40,7 @@ public function index() {
 }
 
 public function view($event_id=0) {
+	$event_id = (int) $event_id;
 	if(!$event_id) return $this->index();
 	$this->find($event_id);
 

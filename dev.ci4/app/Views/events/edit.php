@@ -303,11 +303,24 @@ echo form_input($input);
 </label>
 </div>
 
+<div class="input-group my-2">
+<label class="input-group-text">Event password</label><?php
+$input = [
+	'name' => "password",
+	'value' => $event->password,
+	'class' => "form-control",
+	'type' => "text",
+];
+echo form_input($input);
+
+?></div>
+
+
 <?php
 $colours = \App\Entities\Event::state_colours;
 $input = ['class' => 'btn-check'];
 foreach($states as $fieldname) { ?>
-	<div class="btn-bar mb-2">
+	<div class="btn-bar my-2">
 	<div class="btn-group">
 	<label class="input-group-text"><?php echo $fieldname;?></label>
 	<?php 

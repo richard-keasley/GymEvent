@@ -44,7 +44,6 @@ protected function clean_save($arr) {
 	}
 	if(isset($arr['data']['abbr'])) {
 		$arr['data']['abbr'] = preg_replace('/[^ \w\-\&]/', '', $arr['data']['abbr']);
-		# d($arr['data']['abbr']);
 	}
 	return $arr;
 }

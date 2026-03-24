@@ -3,6 +3,11 @@
 use CodeIgniter\Model;
 
 class Events extends Model {
+/*
+Note: Password is stored as plain text
+It's only used as part of event terms in club returns
+Stops clubs entering an event if they don't know password
+*/
 	
 protected $table      = 'events';
 protected $primaryKey = 'id';
@@ -25,7 +30,8 @@ protected $allowedFields = [
 	'staffcats', 
 	'stafffee', 
 	'deleted_at',
-	'private'
+	'private',
+	'password',
 ];
 protected $validationRules = [
 	'title' => 'required|alpha_numeric_punct|min_length[5]',

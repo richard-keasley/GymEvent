@@ -15,6 +15,5 @@ delstaff: function(btn) {	if(editform.staffrows().length<2) return;	$(btn).clo
 	$('[name=staff]').val(JSON.stringify(staff));	//console.log({staff, participants});	$('#clubret').submit();},
 };</script>
 <?php echo form_close();$this->endSection();
-$this->section('bottom');if($event->terms && !$clubret->terms) {	// show nag-screen every page load	echo $this->include('events/_terms_modal');
-}
+$this->section('bottom');echo $this->include('events/_terms_modal');
 $this->endSection();
