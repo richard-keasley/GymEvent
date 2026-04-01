@@ -165,15 +165,14 @@ $headings = [
 	'club' => 'Club', 
 	'name' => 'Name', 
 	'dob' => 'DoB',
-	'<abbr title="guest">G</abbr>',
-	'Opt', 
-	'Run order', 
+	'guest' => '<abbr title="guest">G</abbr>',
+	'option' => 'Opt', 
+	'run_order' => "Run order", 
 	''
 ];
 
-$keys = ['num', 'club', 'name', 'dob'];
 $request_sort = $query['sort'] ?? '';
-foreach($keys as $sort) {
+foreach($allowed_sorts as $sort) {
 	$label = $headings[$sort];
 	if($sort==$request_sort) $label .= ' <span class="bi-sort-down"></span>';
 	$query['sort'] = $sort;

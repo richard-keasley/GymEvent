@@ -31,7 +31,6 @@ private function find($event_id, $orderby='num') {
 }
 	
 public function index() {
-	
 	$this->data['events'] = model('Events')->where('clubrets', 2)->findall();
 	$this->data['body'] = 'admin_entries';
 	$this->data['base_url'] = 'entries/view';
@@ -241,9 +240,9 @@ public function edit($event_id=0) {
 	$this->data['filter'] = $filter;
 	
 	// sort requested?
-	$allowed = ['name', 'club', 'dob'];
+	$this->data['allowed_sorts'] = ['name', 'club', 'dob', 'run_order'];
 	$sort_field = $this->request->getGet('sort');
-	if(!in_array($sort_field, $allowed)) $sort_field = false;
+	if(!in_array($sort_field, $this->data['allowed_sorts'])) $sort_field = false;
 	$this->data['sort'] = $sort_field;
 	if($sort_field) {
 		$orderby = [];
@@ -750,15 +749,14 @@ public function export($event_id=0) {
 				foreach($cat->entries as $rowkey=>$entry) {
 					$this_sort = [
 						$entry->get_rundata('order'),
-						$dis->abbr,
-						$cat->sort
+						# $dis->abbr,
+						# $cat->sort
 					];
 					$key = array_search($this_sort, $sort);
 					if($key===false) {
 						$key = count($sort);
 						$row = $entry->get_rundata('export');
-						$row['dis'] = $dis->name;
-						$row['cat'] = $cat->name;
+						# $row['discat'] = "{$dis->abbr}: {$cat->abbr}";
 						$row['count'] = 0;
 						$export_table[$key] = $row;
 						$sort[$key] = $this_sort;
@@ -783,14 +781,40 @@ public function export($event_id=0) {
 		break;
 		
 		case 'categories':
+		$reserved = ['dis', 'cat', 'total'];
+		$sort = [];
+		$array = [];
+		foreach($ent_users as $user) {
+			$userkey = $user->abbr;
+			if(in_array(strtolower($userkey), $reserved)) $userkey = "u{$user->id}";
+			$reserved[] = $userkey;
+			$array[] = [$user->id, $userkey];
+			$sort[] = $user->abbr;
+		}
+		array_multisort($sort, $array);
+		$userkeys = [];
+		foreach($array as $row) {
+			$userkeys[$row[0]] = $row[1];
+		}
+		
 		$sort = [];
 		foreach($this->data['entries'] as $dis) {
 			foreach($dis->cats as $cat) {
-				$export_table[] = [
+				$row = [
 					'dis' => $dis->name,
 					'cat' => $cat->name,
-					'count' => count($cat->entries)
 				];
+				foreach($userkeys as $key=>$userkey) {
+					$row[$userkey] = 0;
+				}
+				foreach($cat->entries as $entry) {
+					$userkey = $userkeys[$entry->user_id];
+					$val = $row[$userkey] ?? 0;
+					$row[$userkey] = $val + 1;
+				}
+				$row['total'] = count($cat->entries);
+				
+				$export_table[] = $row;
 				$sort[] = "{$dis->name}-{$cat->sort}";
 			}
 		}
@@ -798,9 +822,9 @@ public function export($event_id=0) {
 			array_multisort($sort, $export_table);
 			foreach(array_keys($export_table[0]) as $key) {
 				$this->data['tfoot'][$key] = match($key) {
-					'cat' => 'count',
-					'count' => 'sum',
-					default => ''
+					'dis' => 'count',
+					'cat' => '',
+					default => 'sum'
 				};
 			}
 		}
