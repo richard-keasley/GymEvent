@@ -14,6 +14,8 @@ echo getlink('admin/events/add', 'create new event');
 <?php $this->endSection(); 
 
 $this->section('sidebar');
+$admin = strpos(current_url(), '/admin/');
+
 $nav = [];
 foreach($events as $event) {
 	if($event->deleted_at) {
@@ -30,10 +32,17 @@ foreach($events as $event) {
 		};
 	}
 	
-	$date = new DateTime($event->date);
+	$label = $event->title;
+	if($admin) {
+		$music = realpath($event->filepath('music'));
+		if($music) $label .= '<i class="ms-1 bi bi-music-note text-primary"></i>';
+	}
+	
+	
+	$date = (new DateTime($event->date))->format('j-M-y');
 	$nav[] = [
 		sprintf('%s/%u', $base_url, $event->id),
-		sprintf('%s %s: %s', $icon, $date->format('j-M-y'), $event->title)
+		sprintf('%s %s: %s', $icon, $date, $label)
 	];
 }
 // navbar won't display private events unless permitted
