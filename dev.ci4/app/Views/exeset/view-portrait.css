@@ -10,8 +10,21 @@
 
 @media print {
 
-@page {
-	size: A4 portrait; 
-}
+@page { size: A4 portrait; }
+body.container-fluid { min-width:18cm; }
+.d-sm-block {display:block !important}
+.col-sm-auto { flex:0 0 auto; width:auto }
+.col-sm-1 { flex:0 0 auto; width:8.33333% }
+.col-sm-2 { flex:0 0 auto; width:16.66667% }
+.col-sm-3 { flex:0 0 auto; width:25% }
+.col-sm-4 { flex:0 0 auto; width:33.33333% }
+.col-sm-5 { flex:0 0 auto; width:41.66667% }
+.col-sm-6 { flex:0 0 auto; width:50% }
+.col-sm-7 { flex:0 0 auto; width:58.33333% }
+.col-sm-8 { flex:0 0 auto; width:66.66667% }
+.col-sm-9 { flex:0 0 auto; width:75% }
+.col-sm-10{ flex:0 0 auto; width:83.33333% }
+.col-sm-11{ flex:0 0 auto; width:91.66667% }
+.col-sm-12{ flex:0 0 auto; width:100% }
 
 }
