@@ -2,7 +2,7 @@
 
 use CodeIgniter\Config\BaseConfig;
 
-class Auth extends BaseConfig {
+class _auth extends BaseConfig {
 
 /* check IP address for errors */
 public $errors = [

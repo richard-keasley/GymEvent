@@ -36,7 +36,7 @@ static $config = null;
 
 function check_ip($ip) {
 	if(!self::$config) {
-		$config = config('Auth');
+		$config = config('_auth');
 		$ttl = intval($config->errors['ttl']);
 		if($ttl) {
 			self::$config = [

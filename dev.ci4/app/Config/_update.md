@@ -12,6 +12,3 @@
 - Routing
 - Security
 - Toolbar
-
-## additional config files
-- Auth

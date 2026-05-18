@@ -69,7 +69,7 @@ foreach($logins as $login) {
 		'time' => date('d M y H:i', strtotime($login['updated'])),
 		'IP' => $IP,
 		'location' => implode(', ', $ip_info),
-		'result' => $login['error'] ? sprintf('<span class="bg-danger text-light px-1">%s</span>', $login['error']) : '<span class="text-success">OK</span>'
+		'result' => $login['error'] ? sprintf('<div class="alert alert-danger py-0 m-0">%s</div>', $login['error']) : '<span class="text-success">OK</span>'
 	];
 }
 if($tbody) {

@@ -12,8 +12,8 @@ echo implode(', ', $ipinfo->attributes($keys)); // summary info
 
 class Ipinfo implements \Stringable {
 	
-const ttl = 86400; // 24 hours
-const prefix = 'ip_';
+private $ttl = 432000; // results cached for 5 days
+private $prefix = 'ip_'; // cache prefix
 private $cache = null;
 private $attrs = []; // ip info array
 
@@ -32,7 +32,7 @@ function __toString() {
 }
 
 private function _key($ip) {
-	return str_replace('.', '_', self::prefix . $ip);
+	return str_replace('.', '_', $this->prefix . $ip);
 }
 
 function get($ip) {
@@ -69,7 +69,7 @@ function get($ip) {
 		}
 		curl_close($ch);
 		# echo "saving {$key} ";
-		$this->cache->save($key, $response, self::ttl);
+		$this->cache->save($key, $response, $this->ttl);
 	}
 	$this->attrs = $response;
 	return $this;
@@ -96,10 +96,10 @@ function attributes($keys=null) {
 }
 
 function list() {
-	$expiry = time() - self::ttl;
+	$expiry = time() - $this->ttl;
 	$list = [];
 	foreach($this->cache->getCacheInfo() as $key=>$row) {
-		if(strpos($key, self::prefix)!==0) continue;
+		if(strpos($key, $this->prefix)!==0) continue;
 		$date = $row['date'] ?? 0;
 		$list[] = [
 			'key' => $key,
