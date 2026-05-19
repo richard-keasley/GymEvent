@@ -199,10 +199,16 @@ public function populate($event_id) {
 					$entry['category_id'] = $cat_id;
 					unset($entry['club']); 
 					
-					try {$dt = new \datetime($entry['dob']);}
-					catch(\throwable) {$dt = null;}
-					$entry['dob'] = $dt ? $dt->format('Y-m-d') : null ;
-				
+					try {
+						if(!$entry['dob']) throw new \exception('No DoB supplied');
+						$dt = new \datetime($entry['dob']);
+						$entry['dob'] = $dt ? $dt->format('Y-m-d') : null ;
+					}
+					catch(\throwable $ex) {
+						// silent fail
+						$entry['dob'] = null;
+					}
+					
 					$this->add_entry($entry);
 					$count++;
 				}
