@@ -12,12 +12,15 @@ echo implode(', ', $ipinfo->attributes($keys)); // summary info
 
 class Ipinfo implements \Stringable {
 	
-private $ttl = 432000; // results cached for 5 days
+private $ttl = 432000; // results cache [seconds]
 private $prefix = 'ip_'; // cache prefix
 private $cache = null;
 private $attrs = []; // ip info array
 
 function __construct() {
+	$config = config('_ipinfo');
+	$this->ttl = $config->ttl;
+	$this->prefix = $config->prefix;
 	$this->cache = service('cache');
 }
 
@@ -31,17 +34,22 @@ function __toString() {
 		'' ;
 }
 
-private function _key($ip) {
+private function ip_key($ip) {
 	return str_replace('.', '_', $this->prefix . $ip);
+}
+private function key_ip($key) {
+	$trimmed = substr($key, strlen($this->prefix));
+	return str_replace('_', '.', $trimmed);
 }
 
 function get($ip) {
 	if(!$ip) return $this;
-	$key = $this->_key($ip);
+	$key = $this->ip_key($ip);
 	$response = $this->cache->get($key);
 
 	// nothing in cache, use API
 	if(!$response) {
+		# d('running...');
 		$url = "http://ip-api.com/json/{$ip}";
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -100,10 +108,13 @@ function list() {
 	$list = [];
 	foreach($this->cache->getCacheInfo() as $key=>$row) {
 		if(strpos($key, $this->prefix)!==0) continue;
-		$date = $row['date'] ?? 0;
+		$date = $row['date'] ?? '';
+		if($date) $date = date('d-M-Y H:i', $row['date']);
+		
 		$list[] = [
 			'key' => $key,
 			'date' => $date,
+			'ip' => $this->key_ip($key),
 			'current' => $date > $expiry
 		];
 	}
@@ -122,7 +133,7 @@ function clean() {
 
 function delete($key, $ip=false) {
 	// convert IP to key
-	if($ip) $key = $this->_key($key);
+	if($ip) $key = $this->ip_key($key);
 	return $this->cache->delete($key);
 }
 
