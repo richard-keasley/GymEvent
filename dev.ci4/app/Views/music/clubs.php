@@ -40,7 +40,10 @@ if($tbody && $status!=='all') { // email dialogue
 <div class="modal fade" id="email" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog modal-lg">
 <?php
-$attrs = ['class' => "modal-content"];
+$attrs = [
+	'class' => "modal-content", 
+	'onSubmit' => "show_busy(this);"
+];
 $hidden = ['sendmail' => "1"];
 $action = uri_string() . "?status={$status}";
 echo form_open($action, $attrs, $hidden);

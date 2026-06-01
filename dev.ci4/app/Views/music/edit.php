@@ -30,7 +30,10 @@ echo $table->generate($tbody);
 ?></div>
 <?php 
 
-$attrs = ['id' => "upload", 'onsubmit'=>"show_busy(this);"];
+$attrs = [
+	'id' => "upload", 
+	'onSubmit' => "show_busy(this);"
+];
 $hidden = ['cmd' => "upload"];
 echo form_open_multipart('', $attrs, $hidden);
 ?>

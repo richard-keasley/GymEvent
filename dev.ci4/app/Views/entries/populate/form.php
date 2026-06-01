@@ -9,7 +9,7 @@ $attrs = [
 	'id' => "populateForm",
 	'tabindex' => "-1",
 	'aria-hidden' => "true",
-	'onsubmit' => "show_busy(this)",
+	'onSubmit' => "show_busy(this)",
 ];
 $hidden = [
 	'populate' => "1",
