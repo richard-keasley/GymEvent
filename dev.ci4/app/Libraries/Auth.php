@@ -153,6 +153,42 @@ static function logout() {
 	self::clear_session();
 }
 
+static function complexity(string $password) : int {
+	$groups = [ 
+		'lower' => '#[a-z]#',
+		'upper' => '#[A-Z]#',
+		'number' => '#\d#',
+	];
+	
+	$charcounts = [];
+	$strlen = strlen($password);
+	// 2 point for each character 
+	$complexity = 2 * $strlen;
+	for($pos=0; $pos<$strlen; $pos++) {
+		$char = substr($password, $pos, 1);
+		
+		$char_group = 'symbol';
+		foreach($groups as $name=>$pattern) {
+			if(preg_match($pattern, $char)) {
+				$char_group = $name;
+			}
+		}
+		
+		$charcount = $charcounts[$char_group] ?? 0;
+		$charcount ++;
+		$charcounts[$char_group] = $charcount;
+		$complexity += match($charcount) {
+			1 => 5, // 5 points or 1st
+			2 => 3, // 3 points for 2nd
+			3 => 1, // 1 points for 3rd
+			default => 0 // no points
+		};
+	}
+	# d($charcounts);
+	return $complexity; 
+}
+
+
 /* roles and permissions */ 
 const roles = ['-', 'club', 'controller', 'admin', 99=>'superuser'];
 const def_role = 'club';

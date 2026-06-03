@@ -65,4 +65,13 @@ class Format extends BaseConfig
         'text/xml'         => 0,
         'text/csv'         => [],
     ];
+	
+	 /**
+     * --------------------------------------------------------------------------
+     * Maximum depth for JSON encoding.
+     * --------------------------------------------------------------------------
+     *
+     * This value determines how deep the JSON encoder will traverse nested structures.
+     */
+    public int $jsonEncodeDepth = 512;
 }
