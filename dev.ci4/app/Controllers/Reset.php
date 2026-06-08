@@ -55,18 +55,9 @@ public function index() {
 		return view($vw_index, $this->data);
 	}
 	
-	// build reset key 
-	$reset_key = [];
-	for($i=0; $i<3; $i++) {
-		$bytes = random_bytes(2);
-		$reset_key[] = bin2hex($bytes);
-	}
-	$reset_key = strtoupper(implode('-', $reset_key));
-	$reset_time = date('Y-m-d H:i:s');
-	
 	// add reset key to user
-	$user->reset_key = $reset_key;
-	$user->reset_time = $reset_time;
+	$user->reset_key = \App\Libraries\Auth::generate_token(6, true);
+	$user->reset_time = date('Y-m-d H:i:s');
 	$this->usr_model->save($user);
 	$this->lgn_model->insert(['error'=>'reset requested', 'user_id'=>$user->id]);
 

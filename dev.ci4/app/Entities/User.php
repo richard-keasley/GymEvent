@@ -13,7 +13,8 @@ public function self() {
 }
 
 public function getAbbr() {
-	$val = $this->attributes['abbr'] ? $this->attributes['abbr'] : $this->attributes['name'];
+	$val = $this->attributes['abbr'] ?? '';
+	if(!$val) $val = $this->attributes['name'] ?? '';
 	return substr($val, 0, 5);
 }
 
@@ -25,15 +26,13 @@ public function link() {
 }
 
 public function clubrets() {
-	$retval = [];
-	$model = new \App\Models\Clubrets;
-	// only returns if event is listed
-	$sql = "SELECT `clubrets`.`id` FROM `clubrets` 
+	// only returns listed events
+	$sql = "SELECT `clubrets`.* FROM `clubrets` 
 		INNER JOIN `events` ON `clubrets`.`event_id`=`events`.`id`
 		WHERE `events`.`deleted_at` IS NULL 
 		AND `clubrets`.`user_id`='{$this->id}';";
-	$res = $model->query($sql)->getResultArray();
-	return $res ? $model->find(array_column($res, 'id')) : [] ;
+	$res = model('Clubrets')->query($sql)->getResultArray();
+	return $res ? model('Clubrets')->find(array_column($res, 'id')) : [] ;
 }
 
 public function placeholders() {

@@ -271,7 +271,7 @@ public function add() {
 		$this->data['user'] = new \App\Entities\User($postUser);
 	}
 	else {
-		$this->data['user'] = $this->usr_model->getNew();
+		$this->data['user'] = new \App\Entities\User;
 	}
 	
 	// view

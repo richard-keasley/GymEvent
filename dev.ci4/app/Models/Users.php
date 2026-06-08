@@ -47,11 +47,5 @@ protected function clean_save($arr) {
 	}
 	return $arr;
 }
-
-public function getNew() {
-	$retval = new $this->returnType;
-	foreach($this->allowedFields as $field) $retval->$field = '';
-	return $retval;
-}
  
 } 

@@ -52,13 +52,22 @@ static function clear_session() {
 
 static function update_login($user, $method='login', $cookie=null) {
 	// record successful login
-	$user->cookie = $cookie ? $cookie : md5(rand());
-	// 14400 4 hours @ 3600 sec/hr
-	set_cookie('auth', sprintf('%s-%s', $user->id, $user->cookie) , 14400);
+	$user->cookie = $cookie ? $cookie : static::generate_token();
+	// 604800 = 7 days  @ 3600 sec/hr
+	set_cookie('auth', sprintf('%s-%s', $user->id, $user->cookie) , 604800);
 	$user->updated = date('Y-m-d H:i:s');
 	if($user->hasChanged()) self::$usr_model->save($user);
 	$_SESSION['method'] = $method;
 	foreach(['id', 'name', 'role'] as $key) $_SESSION["user_{$key}"] = $user->$key;
+}
+
+static function generate_token($length=16, $chunk=false) {
+	$str = bin2hex(random_bytes($length));
+	if($chunk) {
+		$str = str_split($str, 4);
+		$str = strtoupper(implode('-', $str));
+	}
+	return $str;
 }
 
 static function check_login() { 
