@@ -163,40 +163,37 @@ static function logout() {
 }
 
 static function complexity(string $password) : int {
-	$groups = [ 
+	$charsets = [ 
 		'lower' => '#[a-z]#',
 		'upper' => '#[A-Z]#',
 		'number' => '#\d#',
 	];
 	
 	$charcounts = [];
-	$strlen = strlen($password);
-	// 2 point for each character 
-	$complexity = 2 * $strlen;
-	for($pos=0; $pos<$strlen; $pos++) {
-		$char = substr($password, $pos, 1);
-		
-		$char_group = 'symbol';
-		foreach($groups as $name=>$pattern) {
+	$complexity = 0;
+	$arr = str_split($password);
+	$complexity += (count( (array_unique($arr)) ) * 2);
+	foreach($arr as $char) {
+		$_charset = 'symbol';
+		foreach($charsets as $charset=>$pattern) {
 			if(preg_match($pattern, $char)) {
-				$char_group = $name;
+				$_charset = $charset;
 			}
 		}
 		
-		$charcount = $charcounts[$char_group] ?? 0;
+		$charcount = $charcounts[$_charset] ?? 0;
 		$charcount ++;
-		$charcounts[$char_group] = $charcount;
+		$charcounts[$_charset] = $charcount;
 		$complexity += match($charcount) {
-			1 => 5, // 5 points or 1st
-			2 => 3, // 3 points for 2nd
-			3 => 1, // 1 points for 3rd
-			default => 0 // no points
+			1 => 7, 
+			2 => 5, 
+			3 => 3, 
+			default => 2
 		};
 	}
 	# d($charcounts);
 	return $complexity; 
 }
-
 
 /* roles and permissions */ 
 const roles = ['-', 'club', 'controller', 'admin', 99=>'superuser'];
